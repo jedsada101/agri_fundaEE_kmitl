@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ 6 ระบบไฟฟ้ากระแสสลับ | Fundamental of Electrical Engineering</title>
+<meta name="description" content="Chapter 6 — Sinusoids, complex numbers and phasors, impedance, and how Ohm's and Kirchhoff's laws carry over into AC circuits.">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+<script src="../assets/js/mathjax-config.js"></script>
+<script defer src="../assets/vendor/mathjax/tex-svg.js"></script>
+<style>
+  .sys-fig text { font-family: var(--font-sans); }
+  .sys-fig .lbl { font-size: 12px; font-weight: 600; fill: #0d1128; }
+  .sys-fig .sub { font-size: 10.5px; fill: #6c757d; }
+  .sys-fig .cap { font-size: 11px; font-weight: 700; fill: #fd5f00; }
+  .sys-fig .wire { stroke: #0d1128; stroke-width: 2; fill: none; }
+  .sys-fig .sym  { stroke: #0d1128; stroke-width: 2; fill: #fff; }
+  .sys-fig .axis { stroke: #6c757d; stroke-width: 1.5; }
+  .sys-fig .node { fill: #fd5f00; }
+  .sys-fig .vwave { stroke: #fd5f00; stroke-width: 3; fill: none; }
+  .sys-fig .iwave { stroke: #2b6cb0; stroke-width: 2.5; fill: none; stroke-dasharray: 7 4; }
+
+  /* --- A phasor turning once, and the sine wave it draws ---------------
+     Three animations on one timeline: the arm rotates, a guide line rides
+     up and down with its height, and a dot runs along the wave at that
+     same height. Paused, the wave and the circle still read normally. --- */
+  .ph-fig .rot, .ph-fig .guide, .ph-fig .wdot { transform-box: view-box; }
+  @keyframes ph-rot { to { transform: rotate(-360deg); } }
+  @keyframes ph-guide {
+      0%     { transform: translateY(0); }
+      8.33%  { transform: translateY(-40px); }
+      16.67% { transform: translateY(-69px); }
+      25%    { transform: translateY(-80px); }
+      33.33% { transform: translateY(-69px); }
+      41.67% { transform: translateY(-40px); }
+      50%    { transform: translateY(0); }
+      58.33% { transform: translateY(40px); }
+      66.67% { transform: translateY(69px); }
+      75%    { transform: translateY(80px); }
+      83.33% { transform: translateY(69px); }
+      91.67% { transform: translateY(40px); }
+      100%   { transform: translateY(0); }
+  }
+  @keyframes ph-dot {
+      0%     { transform: translate(0, 0); }
+      8.33%  { transform: translate(33px, -40px); }
+      16.67% { transform: translate(67px, -69px); }
+      25%    { transform: translate(100px, -80px); }
+      33.33% { transform: translate(133px, -69px); }
+      41.67% { transform: translate(167px, -40px); }
+      50%    { transform: translate(200px, 0); }
+      58.33% { transform: translate(233px, 40px); }
+      66.67% { transform: translate(267px, 69px); }
+      75%    { transform: translate(300px, 80px); }
+      83.33% { transform: translate(333px, 69px); }
+      91.67% { transform: translate(367px, 40px); }
+      100%   { transform: translate(400px, 0); }
+  }
+  .ph-fig .rot   { transform-origin: 150px 160px; animation: ph-rot   5s linear infinite; }
+  .ph-fig .guide { animation: ph-guide 5s linear infinite; }
+  .ph-fig .wdot  { animation: ph-dot   5s linear infinite; }
+
+  /* --- Three pairs of phasors turning together, each pair holding its
+         own fixed angle: in step for R, I behind for L, I ahead for C. -- */
+  .rlc-fig .rot { transform-box: view-box; animation: ph-rot 4s linear infinite; }
+  .rlc-fig .p-r { transform-origin: 120px 90px; }
+  .rlc-fig .p-l { transform-origin: 360px 90px; }
+  .rlc-fig .p-c { transform-origin: 600px 90px; }
+</style>
+</head>
+<body data-chapter="ch06">
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="../index.html#chapters"><span class="th">บทเรียนทั้งหมด</span><span class="en">All chapters</span></a></li>
+      <li><a href="#pretest"><span class="th">Pre-test</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการ</span><span class="en">Laboratory</span></a></li>
+      <li><a href="ch07.html" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">บทถัดไป</span><span class="en">Next</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a> ·
+      <a href="../index.html#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a> ·
+      <span class="th">บทที่ 6</span><span class="en">Chapter 6</span>
+    </div>
+    <span class="eyebrow"><span class="th">สัปดาห์ที่ 6 · บทที่ 6</span><span class="en">Week 6 · Chapter 6</span></span>
+    <h1><span class="th">ระบบไฟฟ้ากระแสสลับ</span>
+        <span class="en">The Alternating-Current System</span></h1>
+    <p class="lead">
+      <span class="th">ไฟฟ้าที่เข้าฟาร์มจริงเป็นกระแสสลับ ไม่ใช่กระแสตรงอย่างที่เราใช้ฝึกมาห้าบท
+        ถ้าต้องแก้สมการเชิงอนุพันธ์ของตัวเก็บประจุและตัวเหนี่ยวนำทุกครั้งที่วิเคราะห์วงจร
+        งานจะหนักจนทำไม่ไหว บทนี้จึงแนะนำเครื่องมือที่เปลี่ยนแคลคูลัสให้กลายเป็นพีชคณิต —
+        <b>เฟเซอร์และจำนวนเชิงซ้อน</b> ซึ่งทำให้กฎของโอห์ม กฎของเคอร์ชอฟฟ์ และการวิเคราะห์แบบโนด
+        ที่เรียนมาแล้วทั้งหมด ใช้กับวงจรไฟฟ้ากระแสสลับได้ทันทีโดยแทบไม่ต้องเปลี่ยนอะไรเลย</span>
+      <span class="en">The electricity that actually reaches a farm alternates; it is not the direct current
+        we have practised on for five chapters. Solving the differential equations of capacitors and
+        inductors afresh for every circuit would be unbearable, so this chapter introduces the tool that
+        turns that calculus into algebra — <b>phasors and complex numbers</b> — with which Ohm's law,
+        Kirchhoff's laws and nodal analysis all carry straight over into AC with hardly a change.</span>
+    </p>
+    <div class="hero-meta">
+      <span>⏱ <strong>2+2</strong> <span class="th">ชั่วโมง</span><span class="en">hours</span></span>
+      <span>📘 <span class="th">หัวข้อหลัก</span><span class="en">Main topics</span> <strong>4</strong></span>
+      <span>🧪 <span class="th">ปฏิบัติการที่ 6</span><span class="en">Laboratory 6</span></span>
+      <span>📝 <span class="th">Pre / Post-test</span><span class="en">Pre / post-test</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+<div class="chapter-layout">
+
+  <!-- ============================================================= TOC -->
+  <aside class="toc">
+    <div class="toc-title"><span class="th">สารบัญบทเรียน</span><span class="en">On this page</span></div>
+    <ul>
+      <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
+      <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#s1"><span class="th">6.1 ฟังก์ชันไซน์</span><span class="en">6.1 The sinusoid</span></a></li>
+      <li><a href="#s2"><span class="th">6.2 จำนวนเชิงซ้อนและเฟเซอร์</span><span class="en">6.2 Complex numbers and phasors</span></a></li>
+      <li><a href="#s3"><span class="th">6.3 อิมพีแดนซ์</span><span class="en">6.3 Impedance</span></a></li>
+      <li><a href="#s4"><span class="th">6.4 กฎเดิมทั้งหมดในวงจร AC</span><span class="en">6.4 The old laws in AC</span></a></li>
+      <li><a href="#summary"><span class="th">สรุปบทเรียน</span><span class="en">Summary</span></a></li>
+      <li><a href="#activity"><span class="th">กิจกรรมในชั้นเรียน</span><span class="en">Class activity</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการที่ 6</span><span class="en">Laboratory 6</span></a></li>
+      <li><a href="#posttest"><span class="th">แบบทดสอบหลังเรียน</span><span class="en">Post-test</span></a></li>
+      <li><a href="#refs"><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ==================================================== CHAPTER BODY -->
+  <main class="chapter-body">
+
+    <!-- ---------------------------------------------------- Objectives -->
+    <section id="objectives">
+      <div class="callout callout-objective">
+        <div class="callout-title">🎯 <span class="th">จุดประสงค์การเรียนรู้</span>
+          <span class="en">Learning objectives</span></div>
+        <p><span class="th">เมื่อเรียนจบบทนี้ นักศึกษาจะสามารถ</span>
+           <span class="en">After this chapter you will be able to:</span></p>
+        <ol>
+          <li><span class="th">เขียนสมการของสัญญาณไซน์จากค่ายอด ความถี่ และมุมเฟส
+            และหาค่าที่เวลาใด ๆ ได้</span>
+            <span class="en">write the equation of a sinusoid from its peak value, frequency and phase
+            angle, and evaluate it at any instant;</span></li>
+          <li><span class="th">อธิบายความสัมพันธ์ระหว่างเฟเซอร์ที่หมุนกับคลื่นไซน์ที่มันสร้างขึ้น</span>
+            <span class="en">explain the relationship between a rotating phasor and the sine wave it
+            traces;</span></li>
+          <li><span class="th">แปลงจำนวนเชิงซ้อนระหว่างรูปเชิงขั้วกับรูปสี่เหลี่ยมมุมฉาก
+            และบวก ลบ คูณ หารได้อย่างคล่องแคล่ว</span>
+            <span class="en">convert complex numbers between polar and rectangular form, and add, subtract,
+            multiply and divide them fluently;</span></li>
+          <li><span class="th">คำนวณอิมพีแดนซ์ของ R, L และ C ที่ความถี่ใด ๆ
+            และอธิบายว่าเหตุใดตัวเก็บประจุจึงยอมให้ความถี่สูงผ่านแต่กั้นความถี่ต่ำ</span>
+            <span class="en">compute the impedance of R, L and C at any frequency, and explain why a
+            capacitor passes high frequencies but blocks low ones;</span></li>
+          <li><span class="th">ใช้กฎของโอห์มและกฎของเคอร์ชอฟฟ์ในรูปเฟเซอร์แก้วงจรไฟฟ้ากระแสสลับ</span>
+            <span class="en">apply Ohm's and Kirchhoff's laws in phasor form to solve AC circuits;</span></li>
+          <li><span class="th">อธิบายว่าเหตุใดกระแสของโหลดสองตัวจึงบวกกันแบบเลขคณิตไม่ได้
+            และคำนวณกระแสรวมที่ถูกต้องด้วยเฟเซอร์</span>
+            <span class="en">explain why the currents of two loads cannot simply be added arithmetically,
+            and compute the true total with phasors.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ Pre-test -->
+    <section id="pretest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบก่อนเรียน</span>
+          <span class="en">Pre-test</span></h2>
+      <p class="muted"><span class="th">ทำก่อนเริ่มอ่านเนื้อหา เพื่อสำรวจความรู้เดิมของตนเอง</span>
+        <span class="en">Take this before reading, to see what you already know.</span></p>
+
+      <section class="quiz" id="pretest-q" data-quiz="pre" data-chapter="ch06">
+        <div class="quiz-head">
+          <h3><span class="th">ก่อนเรียน: บทที่ 6</span><span class="en">Pre-test: Chapter 6</span></h3>
+          <p><span class="th">5 ข้อ · ปรนัย · ตรวจคำตอบได้ทันที</span>
+             <span class="en">5 multiple-choice questions · marked instantly</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="คาบคือส่วนกลับของความถี่ T = 1/f = 1/50 = 0.02 วินาที = 20 มิลลิวินาที (หัวข้อ 6.1)"
+               data-explain-en="The period is the reciprocal of the frequency: T = 1/f = 1/50 = 0.02 s = 20 ms (Section 6.1).">
+            <div class="q-text"><span class="th">ไฟฟ้าในประเทศไทยมีความถี่ 50 Hz คาบของคลื่นเป็นเท่าใด</span>
+              <span class="en">Thailand's supply is at 50 Hz. What is the period of the waveform?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>50 ms</span></label>
+              <label class="opt" data-opt="b"><span>2 ms</span></label>
+              <label class="opt" data-opt="c"><span>20 ms</span></label>
+              <label class="opt" data-opt="d"><span>0.5 s</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="ค่ายอดของคลื่นไซน์เท่ากับ √2 เท่าของค่าอาร์เอ็มเอส จึงได้ 230 × 1.414 = 325 V ซึ่งเป็นเหตุผลที่อุปกรณ์ต้องทนแรงดันได้มากกว่า 230 V (หัวข้อ 6.1)"
+               data-explain-en="The peak of a sinusoid is √2 times the rms value: 230 × 1.414 = 325 V — which is why equipment must withstand more than 230 V (Section 6.1).">
+            <div class="q-text"><span class="th">ไฟบ้าน 230 V มีค่ายอด (peak) เท่าใด</span>
+              <span class="en">A 230 V mains supply has what peak value?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>230 V</span></label>
+              <label class="opt" data-opt="b"><span>325 V</span></label>
+              <label class="opt" data-opt="c"><span>163 V</span></label>
+              <label class="opt" data-opt="d"><span>460 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="ความถี่เชิงมุม ω = 2πf มีหน่วยเรเดียนต่อวินาที ที่ 50 Hz จะได้ ω = 2π(50) = 314 rad/s (หัวข้อ 6.1)"
+               data-explain-en="The angular frequency is ω = 2πf in radians per second; at 50 Hz, ω = 2π(50) = 314 rad/s (Section 6.1).">
+            <div class="q-text"><span class="th">ความถี่เชิงมุม ω ของระบบ 50 Hz มีค่าเท่าใด</span>
+              <span class="en">What is the angular frequency ω of a 50 Hz system?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>50 rad/s</span></label>
+              <label class="opt" data-opt="b"><span>100 rad/s</span></label>
+              <label class="opt" data-opt="c"><span>157 rad/s</span></label>
+              <label class="opt" data-opt="d"><span>314 rad/s</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="ตัวเหนี่ยวนำต้านการเปลี่ยนแปลงของกระแส (บทที่ 5) กระแสจึงตามหลังแรงดันอยู่ 90 องศา ส่วนตัวเก็บประจุกลับกัน คือกระแสนำหน้าแรงดัน 90 องศา (หัวข้อ 6.3)"
+               data-explain-en="An inductor opposes change of current (Chapter 5), so its current lags the voltage by 90°. A capacitor is the reverse: its current leads by 90° (Section 6.3).">
+            <div class="q-text"><span class="th">ในตัวเหนี่ยวนำบริสุทธิ์ กระแสกับแรงดันมีความสัมพันธ์อย่างไร</span>
+              <span class="en">In a pure inductor, how do the current and voltage relate?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">กระแสตามหลังแรงดัน 90°</span><span class="en">The current lags the voltage by 90°</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">กระแสนำหน้าแรงดัน 90°</span><span class="en">The current leads the voltage by 90°</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">อยู่ในเฟสเดียวกัน</span><span class="en">They are in phase</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ตรงข้ามกัน 180°</span><span class="en">They are 180° apart</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="อิมพีแดนซ์คือการขยายแนวคิดความต้านทานให้ใช้กับไฟฟ้ากระแสสลับ โดยบอกทั้ง 'ขนาด' ของการต้านการไหลและ 'มุมเฟส' ระหว่างแรงดันกับกระแส จึงต้องเขียนเป็นจำนวนเชิงซ้อน (หัวข้อ 6.3)"
+               data-explain-en="Impedance generalises resistance to AC, carrying both the magnitude of the opposition and the phase angle between voltage and current — which is why it must be a complex number (Section 6.3).">
+            <div class="q-text"><span class="th">อิมพีแดนซ์ (impedance) ต่างจากความต้านทานอย่างไร</span>
+              <span class="en">How does impedance differ from resistance?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ใช้หน่วยต่างกัน อิมพีแดนซ์ไม่ใช่โอห์ม</span><span class="en">It has different units; impedance is not in ohms</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">บอกทั้งขนาดและมุมเฟส จึงเป็นจำนวนเชิงซ้อน</span><span class="en">It carries both magnitude and phase angle, so it is a complex number</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ใช้ได้กับไฟตรงเท่านั้น</span><span class="en">It applies only to direct current</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ไม่ต่างกันเลย เป็นคำเรียกอีกอย่างของความต้านทาน</span><span class="en">It does not differ; it is another name for resistance</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== 6.1 -->
+    <section id="s1">
+      <h2><span class="num">6.1</span><span class="th">ฟังก์ชันไซน์</span>
+          <span class="en">The sinusoid</span></h2>
+
+      <p><span class="th">ในบทที่ 12 เราได้เหตุผลแล้วว่าทำไมไฟฟ้าที่ใช้กันจึงเป็นคลื่นไซน์ —
+        ไม่ใช่เพราะใครเลือก แต่เพราะขดลวดที่หมุนในสนามแม่เหล็กสร้างมันขึ้นมาเองโดยธรรมชาติ
+        ตอนนี้เราจะมองย้อนกลับ คือเริ่มจากคลื่นไซน์ที่มีอยู่ แล้วถามว่าจะอธิบายมันด้วยตัวเลขอย่างไร
+        คำตอบคือต้องใช้ตัวเลขสามตัวเท่านั้น — <b>ค่ายอด ความถี่ และมุมเฟส</b></span>
+        <span class="en">Chapter 12 gave the reason our electricity is a sine wave: nobody chose it — a coil
+        turning in a magnetic field produces one of its own accord. Now we look the other way round,
+        starting from the wave and asking how to describe it numerically. It takes just three numbers:
+        <b>the peak value, the frequency, and the phase angle</b>.</span></p>
+
+      <div class="equation">
+        \[ v(t) = V_m \sin(\omega t + \phi) \qquad\qquad
+           \omega = 2\pi f = \frac{2\pi}{T} \]
+      </div>
+      <p class="eq-note"><span class="th">\(V_m\) = ค่ายอด, \(\omega\) = ความถี่เชิงมุม (rad/s),
+        \(\phi\) = มุมเฟส, \(T\) = คาบ (s)</span>
+        <span class="en">\(V_m\) = peak value, \(\omega\) = angular frequency in rad/s,
+        \(\phi\) = phase angle, \(T\) = period in seconds</span></p>
+
+      <figure>
+        <div class="figure-box is-animated ph-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 330" role="img" width="720"
+               aria-label="A rotating phasor on the left and the sine wave it traces on the right, linked by a guide line at the same height">
+            <!-- ===== the rotating phasor ===== -->
+            <circle cx="150" cy="160" r="80" fill="none" stroke="#e4e7ec" stroke-width="2"/>
+            <line class="axis" x1="60" y1="160" x2="240" y2="160" opacity=".5"/>
+            <line class="axis" x1="150" y1="70" x2="150" y2="250" opacity=".5"/>
+
+            <g class="rot">
+              <line x1="150" y1="160" x2="230" y2="160" stroke="#fd5f00" stroke-width="4"/>
+              <polygon points="226,152 240,160 226,168" fill="#fd5f00"/>
+            </g>
+            <circle cx="150" cy="160" r="5" fill="#0d1128"/>
+
+            <text class="cap th" x="150" y="52" text-anchor="middle">เฟเซอร์หมุนทวนเข็ม</text>
+            <text class="cap en" x="150" y="52" text-anchor="middle">the phasor turns anticlockwise</text>
+            <text class="sub th" x="150" y="272" text-anchor="middle">ความยาวแขน = ค่ายอด V_m</text>
+            <text class="sub en" x="150" y="272" text-anchor="middle">the arm's length is the peak, V_m</text>
+            <text class="sub th" x="150" y="288" text-anchor="middle">หมุนครบหนึ่งรอบ = หนึ่งคาบ T</text>
+            <text class="sub en" x="150" y="288" text-anchor="middle">one revolution is one period, T</text>
+
+            <!-- the guide line that rides up and down -->
+            <g class="guide">
+              <line x1="70" y1="160" x2="284" y2="160" stroke="#6c757d" stroke-width="1.5" stroke-dasharray="5 4"/>
+            </g>
+
+            <!-- ===== the wave it draws ===== -->
+            <line class="axis" x1="270" y1="160" x2="700" y2="160"/>
+            <polygon points="700,156 710,160 700,164" fill="#6c757d"/>
+            <line class="axis" x1="280" y1="70" x2="280" y2="250" opacity=".6"/>
+
+            <path class="vwave" d="M280 160 C313 118 347 80 380 80 C413 80 447 118 480 160
+                                    C513 202 547 240 580 240 C613 240 647 202 680 160"/>
+            <circle class="wdot" cx="280" cy="160" r="7" fill="#0d1128"/>
+
+            <!-- markers -->
+            <line x1="380" y1="80" x2="380" y2="164" stroke="#eef1f5" stroke-width="1"/>
+            <line x1="280" y1="80" x2="380" y2="80" stroke="#eef1f5" stroke-width="1"/>
+            <text class="sub" x="272" y="84" text-anchor="end">V_m</text>
+            <text class="sub" x="380" y="178" text-anchor="middle">T/4</text>
+            <text class="sub" x="480" y="178" text-anchor="middle">T/2</text>
+            <text class="sub" x="680" y="178" text-anchor="middle">T</text>
+            <text class="sub th" x="490" y="290" text-anchor="middle">เวลา t</text>
+            <text class="sub en" x="490" y="290" text-anchor="middle">time t</text>
+
+            <text class="sub th" x="300" y="312">ความสูงของปลายแขนที่เวลาใด ๆ คือค่าของคลื่นที่เวลานั้นพอดี นั่นคือ v = V_m sin(ωt)</text>
+            <text class="sub en" x="300" y="312">the height of the arm's tip at any moment is the value of the wave at that moment: v = V_m sin(ωt)</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 6.1</span><span class="en">Figure 6.1</span></b>
+          <span class="th"> ภาพเดียวที่อธิบายทั้งบทนี้ — เฟเซอร์คือแขนที่หมุนด้วยความเร็วเชิงมุมคงที่ \(\omega\)
+            และคลื่นไซน์คือ <b>เงาของมันในแนวตั้ง</b> เมื่อเวลาผ่านไป
+            เส้นประคอยเชื่อมความสูงของปลายแขนกับจุดบนคลื่นให้เห็นว่าเป็นค่าเดียวกันเสมอ
+            <br>ความสำคัญอยู่ตรงนี้: ถ้าเรารู้ว่าแขนยาวเท่าใดและชี้ไปทางไหน
+            เราก็รู้คลื่นทั้งคลื่นแล้ว <b>จึงไม่จำเป็นต้องลากกราฟอีกต่อไป
+            เก็บแค่ความยาวกับมุมก็พอ</b> ซึ่งเป็นแนวคิดที่ทำให้การคำนวณวงจร AC
+            ง่ายลงจนเหลือแค่พีชคณิต</span>
+          <span class="en"> The one picture that explains this whole chapter. A phasor is an arm turning at a
+            constant angular speed \(\omega\), and the sine wave is <b>its vertical shadow</b> as time
+            passes; the dashed line keeps linking the tip's height to the point on the wave to show they are
+            always the same number. <br>Here is why it matters: knowing how long the arm is and which way it
+            points tells you the entire wave. <b>So the graph can be thrown away — keep only a length and an
+            angle</b>, and the arithmetic of AC circuits collapses into algebra.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 6.1</span><span class="en">Example 6.1</span></span>
+          <span class="th">อธิบายไฟบ้านด้วยตัวเลข</span>
+          <span class="en">Describing the mains supply numerically</span></div>
+        <div class="example-body">
+          <p><span class="th">ไฟฟ้าที่เข้าโรงเรือนคือ 230 V 50 Hz ตามตารางที่ 1.2 จงหา
+            (ก) ค่ายอด (ข) คาบ (ค) ความถี่เชิงมุม (ง) เขียนสมการ \(v(t)\)
+            และ (จ) หาแรงดันขณะ \(t = 12\) ms หลังจากคลื่นตัดศูนย์ขาขึ้น</span>
+            <span class="en">The greenhouse supply is 230 V at 50 Hz, from Table 1.2. Find (a) the peak
+            value, (b) the period, (c) the angular frequency, (d) write \(v(t)\), and (e) find the voltage
+            12 ms after the wave's rising zero crossing.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) ค่า 230 V ที่ระบุคือค่าอาร์เอ็มเอส ไม่ใช่ค่ายอด
+              (จะพิสูจน์ที่มาของ \(\sqrt{2}\) ในบทที่ 7)</span>
+              <span class="en">(a) The stated 230 V is the rms value, not the peak — where the \(\sqrt{2}\)
+              comes from is proved in Chapter 7:</span></p>
+            \[ V_m = \sqrt{2}\,V_{\text{rms}} = 1.414 \times 230 = 325\ \text{V} \]
+
+            <p><span class="th">(ข) และ (ค)</span><span class="en">(b) and (c)</span></p>
+            \[ T = \frac{1}{f} = \frac{1}{50} = 20\ \text{ms}
+               \qquad \omega = 2\pi f = 2\pi(50) = 314\ \text{rad/s} \]
+
+            <p><span class="th">(ง) ถ้านับเวลาจากจุดตัดศูนย์ขาขึ้น มุมเฟสเป็นศูนย์</span>
+              <span class="en">(d) Timing from the rising zero crossing makes the phase angle zero:</span></p>
+            \[ v(t) = 325\sin(314\,t)\ \text{V} \]
+
+            <p><span class="th">(จ) แทน \(t = 0.012\) s</span>
+              <span class="en">(e) Substituting \(t = 0.012\) s:</span></p>
+            \[ \omega t = (314)(0.012) = 3.77\ \text{rad} = 216^{\circ} \]
+            \[ v = 325\sin(216^{\circ}) = 325(-0.588) = -191\ \text{V} \]
+
+            <div class="callout callout-danger mb-0">
+              <div class="callout-title">⚠️ <span class="th">ตัวเลข 325 V ที่ต้องไม่ลืม</span>
+                <span class="en">The 325 V not to forget</span></div>
+              <p class="mb-0"><span class="th">อุปกรณ์ที่ต่อกับไฟบ้าน 230 V ต้องทนแรงดัน <b>325 V</b> ไม่ใช่ 230 V
+                เพราะทุกครึ่งคาบแรงดันจะขึ้นไปถึงยอดนั้นจริง ๆ
+                นี่คือเหตุผลที่ตัวเก็บประจุสำหรับไฟบ้านระบุพิกัด 400 V ขึ้นไป
+                และเป็นเหตุผลที่ฉนวนสายไฟต้องออกแบบเผื่อไว้มาก
+                <br>และสังเกตว่าที่ \(t = 12\) ms แรงดันเป็น <b>ลบ</b> 191 V —
+                ในไฟฟ้ากระแสสลับ สายที่เรียกว่า "สายไฟ" มีศักย์สูงกว่าและต่ำกว่านิวทรัลสลับกันไปมา
+                วินาทีละร้อยครั้ง ซึ่งไม่ได้ทำให้มันอันตรายน้อยลงเลย</span>
+                <span class="en">Equipment on a 230 V supply must withstand <b>325 V</b>, not 230, because
+                twice every cycle the voltage really does reach that peak. It is why capacitors for mains
+                use are rated 400 V or more, and why cable insulation is specified with such margin.
+                <br>Note too that at \(t = 12\) ms the voltage is <b>minus</b> 191 V: in AC the conductor we
+                call "live" is alternately above and below the neutral, a hundred times a second — which
+                makes it no less dangerous.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 6.2 -->
+    <section id="s2">
+      <h2><span class="num">6.2</span><span class="th">จำนวนเชิงซ้อนและเฟเซอร์</span>
+          <span class="en">Complex numbers and phasors</span></h2>
+
+      <p><span class="th">รูปที่ 6.1 บอกเราว่าคลื่นไซน์หนึ่งคลื่นอธิบายได้ด้วย <b>ความยาวกับมุม</b> เท่านั้น
+        ซึ่งก็คือลูกศรหนึ่งอันบนระนาบ และเครื่องมือทางคณิตศาสตร์ที่ออกแบบมาเพื่อจัดการลูกศรบนระนาบพอดี
+        คือ <b>จำนวนเชิงซ้อน</b> นี่ไม่ใช่เรื่องบังเอิญ แต่เป็นเหตุผลที่วิศวกรไฟฟ้าใช้มัน —
+        ไม่ใช่เพราะชอบคณิตศาสตร์ แต่เพราะมันประหยัดแรงมหาศาล</span>
+        <span class="en">Figure 6.1 showed that a sine wave is fully described by <b>a length and an
+        angle</b> — that is, by one arrow on a plane. And the mathematical tool built precisely for
+        handling arrows on a plane is the <b>complex number</b>. This is no coincidence; it is why
+        electrical engineers use them — not from a love of mathematics but because they save an enormous
+        amount of work.</span></p>
+
+      <div class="equation">
+        \[ \mathbf{Z} = a + \mathrm{j}b \qquad\text{(รูปสี่เหลี่ยมมุมฉาก / rectangular)} \]
+        \[ \mathbf{Z} = |Z|\angle\theta \qquad\text{(รูปเชิงขั้ว / polar)} \]
+        \[ |Z| = \sqrt{a^{2} + b^{2}} \qquad \theta = \tan^{-1}\!\frac{b}{a} \]
+        \[ a = |Z|\cos\theta \qquad b = |Z|\sin\theta \]
+      </div>
+      <p class="eq-note"><span class="th">วิศวกรไฟฟ้าใช้ \(\mathrm{j}\) แทน \(i\) ของนักคณิตศาสตร์
+        เพราะ \(i\) ถูกใช้แทนกระแสไปแล้ว</span>
+        <span class="en">Electrical engineers write \(\mathrm{j}\) where mathematicians write \(i\), because
+        \(i\) is already taken by current</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 320" role="img" width="720"
+               aria-label="A complex number shown in rectangular and polar form, and the j operator as a ninety-degree rotation">
+            <text class="cap th" x="180" y="28" text-anchor="middle">ก. สองวิธีบอกตำแหน่งลูกศรเดียวกัน</text>
+            <text class="cap en" x="180" y="28" text-anchor="middle">a. Two ways of locating the same arrow</text>
+            <text class="cap th" x="540" y="28" text-anchor="middle">ข. การคูณด้วย j คือการหมุน 90°</text>
+            <text class="cap en" x="540" y="28" text-anchor="middle">b. Multiplying by j is a 90° turn</text>
+
+            <!-- ===== panel A ===== -->
+            <line class="axis" x1="60" y1="200" x2="330" y2="200"/>
+            <line class="axis" x1="170" y1="280" x2="170" y2="60"/>
+            <polygon points="330,196 340,200 330,204" fill="#6c757d"/>
+            <polygon points="166,66 170,56 174,66" fill="#6c757d"/>
+            <text class="sub th" x="338" y="216">แกนจริง</text>
+            <text class="sub en" x="338" y="216">real</text>
+            <text class="sub th" x="178" y="62">แกนจินตภาพ</text>
+            <text class="sub en" x="178" y="62">imaginary</text>
+
+            <line x1="170" y1="200" x2="290" y2="110" stroke="#fd5f00" stroke-width="3.5"/>
+            <polygon points="285,103 298,104 290,116" fill="#fd5f00"/>
+            <circle cx="290" cy="110" r="5" fill="#fd5f00"/>
+
+            <line x1="290" y1="110" x2="290" y2="200" stroke="#6c757d" stroke-width="1" stroke-dasharray="4 3"/>
+            <line x1="170" y1="110" x2="290" y2="110" stroke="#6c757d" stroke-width="1" stroke-dasharray="4 3"/>
+            <text class="lbl" x="230" y="216" text-anchor="middle">a</text>
+            <text class="lbl" x="160" y="158" text-anchor="end">b</text>
+            <text class="lbl" x="218" y="145">|Z|</text>
+            <path d="M206 200 A36 36 0 0 0 197 178" stroke="#2b6cb0" stroke-width="2" fill="none"/>
+            <text class="lbl" x="212" y="186" fill="#2b6cb0">θ</text>
+
+            <text class="sub th" x="60" y="252">รูปสี่เหลี่ยมมุมฉาก Z = a + jb — สะดวกเวลา <b>บวกและลบ</b></text>
+            <text class="sub en" x="60" y="252">rectangular, Z = a + jb — convenient for <b>adding and subtracting</b></text>
+            <text class="sub th" x="60" y="272">รูปเชิงขั้ว Z = |Z|∠θ — สะดวกเวลา <b>คูณและหาร</b></text>
+            <text class="sub en" x="60" y="272">polar, Z = |Z|∠θ — convenient for <b>multiplying and dividing</b></text>
+            <text class="sub th" x="60" y="298">เลือกใช้รูปที่เหมาะกับงาน แล้วแปลงไปมาเมื่อจำเป็น</text>
+            <text class="sub en" x="60" y="298">pick whichever suits the job, and convert when you must</text>
+
+            <line x1="370" y1="20" x2="370" y2="312" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== panel B ===== -->
+            <line class="axis" x1="450" y1="170" x2="640" y2="170"/>
+            <line class="axis" x1="545" y1="250" x2="545" y2="90"/>
+            <circle cx="545" cy="170" r="62" fill="none" stroke="#e4e7ec" stroke-width="1.5"/>
+
+            <line x1="545" y1="170" x2="600" y2="170" stroke="#0d1128" stroke-width="3"/>
+            <polygon points="596,165 607,170 596,175" fill="#0d1128"/>
+            <text class="lbl" x="616" y="174">1</text>
+
+            <line x1="545" y1="170" x2="545" y2="115" stroke="#fd5f00" stroke-width="3"/>
+            <polygon points="540,119 545,108 550,119" fill="#fd5f00"/>
+            <text class="lbl" x="556" y="110" fill="#fd5f00">j</text>
+
+            <line x1="545" y1="170" x2="490" y2="170" stroke="#2b6cb0" stroke-width="3"/>
+            <polygon points="494,165 483,170 494,175" fill="#2b6cb0"/>
+            <text class="lbl" x="470" y="174" fill="#2b6cb0">j² = −1</text>
+
+            <line x1="545" y1="170" x2="545" y2="225" stroke="#2f855a" stroke-width="3"/>
+            <polygon points="540,221 545,232 550,221" fill="#2f855a"/>
+            <text class="lbl" x="556" y="236" fill="#2f855a">j³ = −j</text>
+
+            <path d="M586 152 A44 44 0 0 0 563 129" stroke="#fd5f00" stroke-width="2" fill="none"/>
+            <polygon points="568,126 560,132 566,136" fill="#fd5f00"/>
+            <text class="sub" x="596" y="130" fill="#fd5f00">90°</text>
+
+            <text class="sub th" x="430" y="278">j ไม่ใช่ตัวเลขลึกลับ แต่คือ <b>คำสั่งให้หมุน 90 องศาทวนเข็ม</b></text>
+            <text class="sub en" x="430" y="278">j is no mystery — it is <b>an instruction to turn 90° anticlockwise</b></text>
+            <text class="sub th" x="430" y="298">หมุนสองครั้งได้ −1 ซึ่งก็คือ j × j = −1 พอดี</text>
+            <text class="sub en" x="430" y="298">turn twice and you face backwards, which is exactly j × j = −1</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 6.2</span><span class="en">Figure 6.2</span></b>
+          <span class="th"> ซ้าย: ลูกศรอันเดียวกันบอกตำแหน่งได้สองวิธี
+            เลือกรูปสี่เหลี่ยมมุมฉากเมื่อต้องบวกกัน (บวกส่วนจริงกับส่วนจริง ส่วนจินตภาพกับส่วนจินตภาพ)
+            และเลือกรูปเชิงขั้วเมื่อต้องคูณหาร (คูณขนาด บวกมุม)
+            <br>ขวา: ความหมายที่แท้จริงของ \(\mathrm{j}\) ซึ่งหลายคนเรียนมาว่าเป็น
+            "รากที่สองของลบหนึ่ง" แล้วรู้สึกว่าไร้ความหมาย
+            แต่ในทางวิศวกรรมไฟฟ้า \(\mathrm{j}\) มีความหมายทางกายภาพที่จับต้องได้
+            คือ <b>ความต่างเฟส 90 องศา</b> ซึ่งเป็นสิ่งที่เกิดขึ้นจริงกับตัวเหนี่ยวนำและตัวเก็บประจุ</span>
+          <span class="en"> Left: one arrow, located two ways. Use rectangular form when adding — reals to
+            reals, imaginaries to imaginaries — and polar form when multiplying, where magnitudes multiply
+            and angles add. <br>Right: what \(\mathrm{j}\) actually means. Many people meet it as "the
+            square root of minus one" and find it meaningless; in electrical engineering it has a physical
+            meaning you can point at — <b>a phase difference of 90 degrees</b>, which is precisely what
+            inductors and capacitors produce.</span></figcaption>
+      </figure>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">💡 <span class="th">กฎสี่ข้อที่ใช้ตลอดทั้งบท</span>
+          <span class="en">The four rules used throughout this chapter</span></div>
+        <ul class="mb-0">
+          <li><span class="th"><b>บวก–ลบ</b> ต้องอยู่ในรูปสี่เหลี่ยมมุมฉาก:
+            \((a_1 + \mathrm{j}b_1) + (a_2 + \mathrm{j}b_2) = (a_1+a_2) + \mathrm{j}(b_1+b_2)\)</span>
+            <span class="en"><b>Add and subtract</b> in rectangular form:
+            \((a_1 + \mathrm{j}b_1) + (a_2 + \mathrm{j}b_2) = (a_1+a_2) + \mathrm{j}(b_1+b_2)\)</span></li>
+          <li><span class="th"><b>คูณ</b> ในรูปเชิงขั้ว: คูณขนาด บวกมุม —
+            \(|Z_1|\angle\theta_1 \times |Z_2|\angle\theta_2 = |Z_1||Z_2|\angle(\theta_1+\theta_2)\)</span>
+            <span class="en"><b>Multiply</b> in polar form: magnitudes multiply, angles add —
+            \(|Z_1|\angle\theta_1 \times |Z_2|\angle\theta_2 = |Z_1||Z_2|\angle(\theta_1+\theta_2)\)</span></li>
+          <li><span class="th"><b>หาร</b> ในรูปเชิงขั้ว: หารขนาด ลบมุม — ซึ่งเป็นรูปที่เราใช้บ่อยที่สุด
+            เพราะ \(\mathbf{I} = \mathbf{V}/\mathbf{Z}\)</span>
+            <span class="en"><b>Divide</b> in polar form: magnitudes divide, angles subtract — the form used
+            most often, since \(\mathbf{I} = \mathbf{V}/\mathbf{Z}\)</span></li>
+          <li><span class="th">เครื่องคิดเลขวิศวกรรมทุกรุ่นมีปุ่มแปลง <b>Pol</b> และ <b>Rec</b> อยู่แล้ว
+            ควรหัดใช้ให้คล่องก่อนสอบ เพราะจะประหยัดเวลาได้มาก</span>
+            <span class="en">Every engineering calculator has <b>Pol</b> and <b>Rec</b> conversion keys.
+            Learn them before the examination; they save a great deal of time.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== 6.3 -->
+    <section id="s3">
+      <h2><span class="num">6.3</span><span class="th">อิมพีแดนซ์</span>
+          <span class="en">Impedance</span></h2>
+
+      <p><span class="th">ตอนนี้เรารวมทุกอย่างเข้าด้วยกันได้แล้ว ในบทที่ 5 เราเห็นว่าตัวเหนี่ยวนำต้านการเปลี่ยนแปลงของกระแส
+        และตัวเก็บประจุต้านการเปลี่ยนแปลงของแรงดัน ผลของการต้านนั้นเมื่อเจอกับคลื่นไซน์
+        คือทำให้กระแสกับแรงดัน <b>ไม่ตรงเฟสกัน</b> และความต่างเฟสนั้นเท่ากับ 90 องศาพอดี
+        ซึ่งก็คือ \(\mathrm{j}\) นั่นเอง เราจึงเขียน "ความต้านทานแบบทั่วไป" ที่บอกทั้งขนาดและเฟสได้
+        เรียกว่า <b>อิมพีแดนซ์</b> มีหน่วยเป็นโอห์มเหมือนเดิม</span>
+        <span class="en">Now everything comes together. Chapter 5 showed that an inductor opposes any change
+        of current and a capacitor any change of voltage. Against a sine wave, that opposition puts the
+        current and voltage <b>out of step</b> — and by exactly 90 degrees, which is to say by
+        \(\mathrm{j}\). So we can write a generalised resistance carrying both magnitude and phase, called
+        <b>impedance</b>, still measured in ohms:</span></p>
+
+      <div class="equation">
+        \[ \mathbf{Z}_R = R \qquad\qquad
+           \mathbf{Z}_L = \mathrm{j}\omega L = \mathrm{j}X_L \qquad\qquad
+           \mathbf{Z}_C = \frac{1}{\mathrm{j}\omega C} = -\mathrm{j}X_C \]
+        \[ X_L = \omega L \qquad\qquad X_C = \frac{1}{\omega C} \]
+      </div>
+
+      <figure>
+        <div class="figure-box is-animated rlc-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 360" role="img" width="720"
+               aria-label="Voltage and current phasors turning together for a resistor, an inductor and a capacitor, with the waveforms each pair produces">
+            <text class="cap th" x="120" y="24" text-anchor="middle">ตัวต้านทาน R</text>
+            <text class="cap en" x="120" y="24" text-anchor="middle">Resistor R</text>
+            <text class="cap th" x="360" y="24" text-anchor="middle">ตัวเหนี่ยวนำ L</text>
+            <text class="cap en" x="360" y="24" text-anchor="middle">Inductor L</text>
+            <text class="cap th" x="600" y="24" text-anchor="middle">ตัวเก็บประจุ C</text>
+            <text class="cap en" x="600" y="24" text-anchor="middle">Capacitor C</text>
+
+            <!-- ===== R ===== -->
+            <circle cx="120" cy="90" r="55" fill="none" stroke="#e4e7ec" stroke-width="1.5"/>
+            <g class="rot p-r">
+              <line x1="120" y1="90" x2="168" y2="90" stroke="#fd5f00" stroke-width="4"/>
+              <polygon points="164,84 177,90 164,96" fill="#fd5f00"/>
+            </g>
+            <g class="rot p-r">
+              <line x1="120" y1="90" x2="158" y2="90" stroke="#2b6cb0" stroke-width="3"/>
+              <polygon points="155,86 165,90 155,94" fill="#2b6cb0"/>
+            </g>
+            <circle cx="120" cy="90" r="4" fill="#0d1128"/>
+            <text class="sub th" x="120" y="164" text-anchor="middle">อยู่ในเฟสเดียวกัน</text>
+            <text class="sub en" x="120" y="164" text-anchor="middle">exactly in step</text>
+            <text class="lbl" x="120" y="182" text-anchor="middle">Z = R∠0°</text>
+
+            <!-- ===== L ===== -->
+            <circle cx="360" cy="90" r="55" fill="none" stroke="#e4e7ec" stroke-width="1.5"/>
+            <g class="rot p-l">
+              <line x1="360" y1="90" x2="408" y2="90" stroke="#fd5f00" stroke-width="4"/>
+              <polygon points="404,84 417,90 404,96" fill="#fd5f00"/>
+            </g>
+            <g class="rot p-l">
+              <g transform="rotate(90 360 90)">
+                <line x1="360" y1="90" x2="398" y2="90" stroke="#2b6cb0" stroke-width="3"/>
+                <polygon points="395,86 405,90 395,94" fill="#2b6cb0"/>
+              </g>
+            </g>
+            <circle cx="360" cy="90" r="4" fill="#0d1128"/>
+            <text class="sub th" x="360" y="164" text-anchor="middle">กระแสตามหลัง 90°</text>
+            <text class="sub en" x="360" y="164" text-anchor="middle">the current lags by 90°</text>
+            <text class="lbl" x="360" y="182" text-anchor="middle">Z = jX_L = X_L∠90°</text>
+
+            <!-- ===== C ===== -->
+            <circle cx="600" cy="90" r="55" fill="none" stroke="#e4e7ec" stroke-width="1.5"/>
+            <g class="rot p-c">
+              <line x1="600" y1="90" x2="648" y2="90" stroke="#fd5f00" stroke-width="4"/>
+              <polygon points="644,84 657,90 644,96" fill="#fd5f00"/>
+            </g>
+            <g class="rot p-c">
+              <g transform="rotate(-90 600 90)">
+                <line x1="600" y1="90" x2="638" y2="90" stroke="#2b6cb0" stroke-width="3"/>
+                <polygon points="635,86 645,90 635,94" fill="#2b6cb0"/>
+              </g>
+            </g>
+            <circle cx="600" cy="90" r="4" fill="#0d1128"/>
+            <text class="sub th" x="600" y="164" text-anchor="middle">กระแสนำหน้า 90°</text>
+            <text class="sub en" x="600" y="164" text-anchor="middle">the current leads by 90°</text>
+            <text class="lbl" x="600" y="182" text-anchor="middle">Z = −jX_C = X_C∠−90°</text>
+
+            <!-- ===== waveforms ===== -->
+            <line class="axis" x1="20" y1="250" x2="220" y2="250" opacity=".4"/>
+            <path class="vwave" d="M20 250 C37 229 53 210 70 210 C87 210 103 229 120 250
+                                    C137 271 153 290 170 290 C187 290 203 271 220 250"/>
+            <path class="iwave" d="M20 250 C37 234 53 220 70 220 C87 220 103 234 120 250
+                                    C137 266 153 280 170 280 C187 280 203 266 220 250"/>
+
+            <line class="axis" x1="260" y1="250" x2="460" y2="250" opacity=".4"/>
+            <path class="vwave" d="M260 250 C277 229 293 210 310 210 C327 210 343 229 360 250
+                                    C377 271 393 290 410 290 C427 290 443 271 460 250"/>
+            <path class="iwave" d="M260 280 C277 280 293 266 310 250 C327 234 343 220 360 220
+                                    C377 220 393 234 410 250 C427 266 443 280 460 280"/>
+
+            <line class="axis" x1="500" y1="250" x2="700" y2="250" opacity=".4"/>
+            <path class="vwave" d="M500 250 C517 229 533 210 550 210 C567 210 583 229 600 250
+                                    C617 271 633 290 650 290 C667 290 683 271 700 250"/>
+            <path class="iwave" d="M500 220 C517 220 533 234 550 250 C567 266 583 280 600 280
+                                    C617 280 633 266 650 250 C667 234 683 220 700 220"/>
+
+            <!-- legend -->
+            <line x1="40" y1="330" x2="72" y2="330" stroke="#fd5f00" stroke-width="3"/>
+            <text class="sub th" x="80" y="334">แรงดัน v</text>
+            <text class="sub en" x="80" y="334">voltage v</text>
+            <line x1="170" y1="330" x2="202" y2="330" stroke="#2b6cb0" stroke-width="2.5" stroke-dasharray="7 4"/>
+            <text class="sub th" x="210" y="334">กระแส i</text>
+            <text class="sub en" x="210" y="334">current i</text>
+            <text class="sub th" x="320" y="334">มุมระหว่างลูกศรสองอันคงที่เสมอ ไม่ว่าจะหมุนไปถึงไหน — นั่นคือสิ่งที่ Z บอกเรา</text>
+            <text class="sub en" x="320" y="334">the angle between the two arrows never changes, wherever they point — and that is what Z records</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 6.3</span><span class="en">Figure 6.3</span></b>
+          <span class="th"> เฟเซอร์ของแรงดัน (ส้ม) และกระแส (น้ำเงิน) หมุนไปพร้อมกันทั้งสามกรณี
+            แต่ <b>มุมระหว่างกันต่างกัน</b> — ในตัวต้านทานทับกันสนิท ในตัวเหนี่ยวนำกระแสตามหลังหนึ่งในสี่รอบ
+            และในตัวเก็บประจุกระแสนำหน้าหนึ่งในสี่รอบ
+            คลื่นด้านล่างคือผลที่ได้จากการหมุนนั้น
+            <br>วิธีจำที่ใช้กันทั่วโลกคือ <b>"ELI the ICE man"</b> — ใน <b>L</b> แรงดัน (<b>E</b>)
+            มาก่อนกระแส (<b>I</b>) ส่วนใน <b>C</b> กระแส (<b>I</b>) มาก่อนแรงดัน (<b>E</b>)</span>
+          <span class="en"> The voltage phasor (orange) and current phasor (blue) turn together in all three
+            cases, but <b>the angle between them differs</b>: in the resistor they lie on top of one
+            another; in the inductor the current trails by a quarter turn; in the capacitor it leads by a
+            quarter turn. The waves below are what that rotation produces. <br>The mnemonic used the world
+            over is <b>"ELI the ICE man"</b>: in an <b>L</b>, voltage (<b>E</b>) comes before current
+            (<b>I</b>); in a <b>C</b>, current comes before voltage.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 6.2</span><span class="en">Example 6.2</span></span>
+          <span class="th">อิมพีแดนซ์เปลี่ยนไปตามความถี่อย่างไร</span>
+          <span class="en">How impedance changes with frequency</span></div>
+        <div class="example-body">
+          <p><span class="th">วงจรกรองสัญญาณเซนเซอร์ในตัวอย่างที่ 5.4 ใช้ \(R = 10\ \text{k}\Omega\)
+            กับ \(C = 1.5\ \mu\text{F}\) จงหาอิมพีแดนซ์ของตัวเก็บประจุที่ความถี่ 50 Hz (สัญญาณรบกวนจากไฟบ้าน)
+            และที่ 20 kHz (สัญญาณสวิตชิ่งจากอินเวอร์เตอร์) จากนั้นใช้อิมพีแดนซ์คำนวณอัตราส่วนแรงดันขาออก
+            แล้วเทียบกับคำตอบที่ได้จากสูตรในบทที่ 5</span>
+            <span class="en">The sensor filter of Example 5.4 uses \(R = 10\ \text{k}\Omega\) with
+            \(C = 1.5\ \mu\text{F}\). Find the capacitor's impedance at 50 Hz, the mains noise, and at
+            20 kHz, the inverter's switching, then use impedance to compute the output ratio and compare it
+            with the answer from the Chapter 5 formula.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">ที่ความถี่ 50 Hz</span><span class="en">At 50 Hz:</span></p>
+            \[ \omega = 2\pi(50) = 314\ \text{rad/s} \]
+            \[ X_C = \frac{1}{\omega C} = \frac{1}{(314)(1.5\times10^{-6})} = 2122\ \Omega
+               \quad\Rightarrow\quad \mathbf{Z}_C = -\mathrm{j}2122\ \Omega \]
+
+            <p><span class="th">ที่ความถี่ 20 kHz</span><span class="en">At 20 kHz:</span></p>
+            \[ \omega = 2\pi(20\,000) = 125\,664\ \text{rad/s} \]
+            \[ X_C = \frac{1}{(125\,664)(1.5\times10^{-6})} = 5.31\ \Omega
+               \quad\Rightarrow\quad \mathbf{Z}_C = -\mathrm{j}5.31\ \Omega \]
+
+            <p><span class="th">วงจรกรองคือวงจรแบ่งแรงดัน (บทที่ 3) เพียงแต่ใช้อิมพีแดนซ์แทนความต้านทาน
+              เราสนใจเฉพาะขนาด จึงใช้ \(|Z|\)</span>
+              <span class="en">The filter is a voltage divider from Chapter 3, only with impedances in place
+              of resistances. Since only the magnitude is wanted, work with \(|Z|\):</span></p>
+            \[ \left|\frac{V_{\text{out}}}{V_{\text{in}}}\right|
+               = \frac{X_C}{\sqrt{R^{2} + X_C^{2}}} \]
+            \[ \text{ที่ 50 Hz:}\quad \frac{2122}{\sqrt{10\,000^{2} + 2122^{2}}}
+               = \frac{2122}{10\,223} = 0.208 \]
+            \[ \text{ที่ 20 kHz:}\quad \frac{5.31}{\sqrt{10\,000^{2} + 5.31^{2}}}
+               = \frac{5.31}{10\,000} = 5.3\times10^{-4} \]
+
+            <div class="callout callout-tip mb-0">
+              <div class="callout-title">💡 <span class="th">คำตอบเดียวกันเป๊ะกับบทที่ 5</span>
+                <span class="en">Exactly the answer Chapter 5 gave</span></div>
+              <p class="mb-0"><span class="th">ทั้ง 0.208 และ \(5.3\times10^{-4}\) ตรงกับที่คำนวณไว้ในตัวอย่างที่ 5.4
+                ทุกหลัก ซึ่งไม่ใช่เรื่องบังเอิญ — สูตร
+                \(1/\sqrt{1 + (f/f_c)^2}\) ที่เราใช้ในบทที่ 5 นั้น
+                <b>เป็นเพียงกรณีเฉพาะของการหารอิมพีแดนซ์ในบทนี้</b>
+                ลองแทน \(f_c = 1/(2\pi RC)\) กลับเข้าไปในนิพจน์ข้างบนแล้วจัดรูป จะได้สูตรเดิมออกมาพอดี
+                <br><b>บทเรียน:</b> อิมพีแดนซ์ไม่ใช่เรื่องใหม่ที่ต้องจำเพิ่ม แต่เป็นเครื่องมือทั่วไปกว่า
+                ที่ครอบคลุมสิ่งที่เราเคยเรียนมาแล้ว และยังใช้กับวงจรที่ซับซ้อนกว่านี้ได้อีกมาก
+                <br>สังเกตด้วยว่าที่ 20 kHz ตัวเก็บประจุมีอิมพีแดนซ์เพียง 5.3 Ω คือ
+                <b>เกือบเป็นลัดวงจร</b> ส่วนที่ความถี่ต่ำมาก ๆ มันจะกลายเป็นวงจรเปิด
+                ซึ่งตรงกับที่เรียนในบทที่ 5 ว่าในไฟตรง (f = 0) ตัวเก็บประจุคือวงจรเปิด —
+                แทน \(f = 0\) ในสูตร \(X_C = 1/(2\pi fC)\) จะได้อนันต์พอดี</span>
+                <span class="en">Both 0.208 and \(5.3\times10^{-4}\) match Example 5.4 to every digit, and
+                not by chance: the formula \(1/\sqrt{1 + (f/f_c)^2}\) used in Chapter 5 <b>is simply a
+                special case of the impedance division done here</b>. Substitute
+                \(f_c = 1/(2\pi RC)\) into the expression above and rearrange, and the Chapter 5 formula
+                falls out. <br><b>The lesson:</b> impedance is not a new thing to memorise but a more
+                general tool that contains what we already knew — and reaches much further.
+                <br>Note also that at 20 kHz the capacitor's impedance is only 5.3 Ω, <b>very nearly a short
+                circuit</b>, while at very low frequency it becomes an open one. That agrees with Chapter 5,
+                where a capacitor was an open circuit to DC: put \(f = 0\) into
+                \(X_C = 1/(2\pi fC)\) and the result is infinite.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 6.3</span><span class="en">Example 6.3</span></span>
+          <span class="th">อิมพีแดนซ์ของมอเตอร์ปั๊มน้ำ</span>
+          <span class="en">The impedance of an irrigation pump motor</span></div>
+        <div class="example-body">
+          <p><span class="th">ขดลวดสเตเตอร์ของมอเตอร์ปั๊มน้ำหนึ่งเฟสตัวหนึ่ง วัดได้ความต้านทาน
+            \(R = 18\ \Omega\) และความเหนี่ยวนำ \(L = 60\ \text{mH}\) ต่อเข้ากับไฟบ้าน 230 V 50 Hz
+            จงหาอิมพีแดนซ์ กระแสที่ไหล และตัวประกอบกำลัง</span>
+            <span class="en">The stator winding of a single-phase irrigation pump motor measures
+            \(R = 18\ \Omega\) and \(L = 60\ \text{mH}\). It is connected to a 230 V, 50 Hz supply. Find the
+            impedance, the current drawn, and the power factor.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th"><b>ขั้นที่ 1</b> หารีแอคแตนซ์ของขดลวด</span>
+              <span class="en"><b>Step 1</b> Find the winding's reactance:</span></p>
+            \[ X_L = \omega L = 2\pi(50)(0.060) = (314.16)(0.060) = 18.85\ \Omega \]
+
+            <p><span class="th"><b>ขั้นที่ 2</b> รวมเป็นอิมพีแดนซ์ในรูปสี่เหลี่ยมมุมฉาก
+              แล้วแปลงเป็นรูปเชิงขั้ว</span>
+              <span class="en"><b>Step 2</b> Assemble the impedance in rectangular form, then convert to
+              polar:</span></p>
+            \[ \mathbf{Z} = R + \mathrm{j}X_L = 18 + \mathrm{j}18.85\ \Omega \]
+            \[ |Z| = \sqrt{18^{2} + 18.85^{2}} = \sqrt{324 + 355.3} = \sqrt{679.3} = 26.06\ \Omega \]
+            \[ \theta = \tan^{-1}\!\frac{18.85}{18} = \tan^{-1}(1.047) = 46.3^{\circ} \]
+            \[ \mathbf{Z} = 26.06\angle 46.3^{\circ}\ \Omega \]
+
+            <p><span class="th"><b>ขั้นที่ 3</b> ใช้กฎของโอห์มในรูปเฟเซอร์ โดยยึดแรงดันเป็นมุมอ้างอิง
+              คือ \(\mathbf{V} = 230\angle 0^{\circ}\) V</span>
+              <span class="en"><b>Step 3</b> Apply Ohm's law in phasor form, taking the supply voltage as
+              the reference angle, \(\mathbf{V} = 230\angle 0^{\circ}\) V:</span></p>
+            \[ \mathbf{I} = \frac{\mathbf{V}}{\mathbf{Z}}
+               = \frac{230\angle 0^{\circ}}{26.06\angle 46.3^{\circ}}
+               = 8.83\angle -46.3^{\circ}\ \text{A} \]
+
+            <p><span class="th"><b>ขั้นที่ 4</b> ตัวประกอบกำลังคือโคไซน์ของมุมระหว่างแรงดันกับกระแส</span>
+              <span class="en"><b>Step 4</b> The power factor is the cosine of the angle between voltage and
+              current:</span></p>
+            \[ \text{pf} = \cos(46.3^{\circ}) = 0.691 \ \text{lagging} \]
+
+            <div class="callout callout-note mb-0">
+              <div class="callout-title">📌 <span class="th">อ่านคำตอบให้เป็น</span>
+                <span class="en">Reading the answer properly</span></div>
+              <p class="mb-0"><span class="th">เครื่องหมายลบของมุม \(-46.3^{\circ}\) บอกว่ากระแส
+                <b>ตามหลัง</b> แรงดัน ซึ่งเป็นพฤติกรรมปกติของมอเตอร์ทุกตัว เพราะขดลวดคือตัวเหนี่ยวนำ
+                <br>ตัวประกอบกำลัง 0.691 หมายความว่า สายไฟและเบรกเกอร์ต้องรับกระแส 8.83 A
+                แต่พลังงานที่กลายเป็นงานจริงมีเพียง 69.1 % ของที่ดูเหมือนจะจ่ายไป
+                ส่วนที่เหลือไหลไปกลับระหว่างแหล่งจ่ายกับสนามแม่เหล็กของมอเตอร์
+                เรื่องนี้คือหัวใจของบทที่ 7 และเป็นเหตุผลที่โรงงานต้องติดตั้งตัวเก็บประจุแก้ตัวประกอบกำลัง
+                <br>สังเกตว่าถ้าใช้ความต้านทานอย่างเดียว (18 Ω) เราจะทำนายกระแสได้ 230/18 = 12.8 A
+                ซึ่ง <b>สูงเกินจริงไป 45 %</b> — การมองข้ามรีแอคแตนซ์จึงทำให้เลือกอุปกรณ์ผิดพลาดได้</span>
+                <span class="en">The minus sign on \(-46.3^{\circ}\) says the current <b>lags</b> the
+                voltage, the normal behaviour of any motor, because its winding is an inductor.
+                <br>A power factor of 0.691 means the cable and breaker must carry all 8.83 A, yet only
+                69.1 % of what appears to be delivered is turned into work; the rest sloshes back and forth
+                between supply and magnetic field. That is the subject of Chapter 7, and the reason
+                factories fit power-factor correction capacitors. <br>Note too that using resistance alone
+                (18 Ω) would predict 230/18 = 12.8 A, an <b>overestimate of 45 %</b>. Ignoring reactance
+                leads straight to the wrong equipment.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 6.4 -->
+    <section id="s4">
+      <h2><span class="num">6.4</span><span class="th">กฎของโอห์ม เคอร์ชฮอฟฟ์ และการวิเคราะห์โนดในระบบไฟฟ้ากระแสสลับ</span>
+          <span class="en">Ohm's law, Kirchhoff's laws and nodal analysis in AC</span></h2>
+
+      <p><span class="th">นี่คือส่วนที่ให้ผลตอบแทนคุ้มค่าที่สุดของทั้งบท เพราะคำตอบคือ
+        <b>ไม่มีอะไรใหม่ต้องเรียนเลย</b> กฎทุกข้อในบทที่ 3 และบทที่ 4 ใช้ได้เหมือนเดิมทุกประการ
+        เพียงแต่เปลี่ยนตัวเลขธรรมดาเป็นจำนวนเชิงซ้อน และเปลี่ยน \(R\) เป็น \(\mathbf{Z}\)</span>
+        <span class="en">This is where the chapter pays for itself, because the answer is that
+        <b>there is nothing new to learn</b>. Every law from Chapters 3 and 4 holds exactly as before; only
+        the ordinary numbers become complex ones, and \(R\) becomes \(\mathbf{Z}\).</span></p>
+
+      <div class="equation">
+        \[ \mathbf{V} = \mathbf{I}\,\mathbf{Z} \qquad\qquad
+           \sum \mathbf{I}_{\text{เข้าโนด}} = 0 \qquad\qquad
+           \sum \mathbf{V}_{\text{รอบลูป}} = 0 \]
+        \[ \mathbf{Z}_{\text{อนุกรม}} = \mathbf{Z}_1 + \mathbf{Z}_2 + \cdots \qquad\qquad
+           \frac{1}{\mathbf{Z}_{\text{ขนาน}}} = \frac{1}{\mathbf{Z}_1} + \frac{1}{\mathbf{Z}_2} + \cdots \]
+      </div>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 300" role="img" width="720"
+               aria-label="A series RL circuit, the phasor diagram of its voltages, and the matching impedance triangle">
+            <text class="cap th" x="130" y="26" text-anchor="middle">ก. วงจร R-L อนุกรม</text>
+            <text class="cap en" x="130" y="26" text-anchor="middle">a. Series R-L circuit</text>
+            <text class="cap th" x="370" y="26" text-anchor="middle">ข. สามเหลี่ยมแรงดัน</text>
+            <text class="cap en" x="370" y="26" text-anchor="middle">b. Voltage triangle</text>
+            <text class="cap th" x="600" y="26" text-anchor="middle">ค. สามเหลี่ยมอิมพีแดนซ์</text>
+            <text class="cap en" x="600" y="26" text-anchor="middle">c. Impedance triangle</text>
+
+            <!-- ===== a: circuit ===== -->
+            <path d="M60 90 L215 90" stroke="#0d1128" stroke-width="2.5" fill="none"/>
+            <path d="M215 90 L215 200" stroke="#0d1128" stroke-width="2.5" fill="none"/>
+            <path d="M215 200 L60 200" stroke="#0d1128" stroke-width="2.5" fill="none"/>
+            <path d="M60 200 L60 165" stroke="#0d1128" stroke-width="2.5" fill="none"/>
+            <path d="M60 90 L60 125" stroke="#0d1128" stroke-width="2.5" fill="none"/>
+
+            <circle cx="60" cy="145" r="20" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <path d="M48 145 C52 135 56 135 60 145 C64 155 68 155 72 145"
+                  stroke="#fd5f00" stroke-width="2" fill="none"/>
+            <text class="lbl" x="30" y="150" text-anchor="middle">V</text>
+
+            <rect x="92" y="78" width="46" height="24" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <text class="lbl" x="115" y="95" text-anchor="middle">R</text>
+            <text class="lbl" x="115" y="64" text-anchor="middle" fill="#fd5f00">V_R</text>
+
+            <path d="M158 90 q7 -14 14 0 q7 -14 14 0 q7 -14 14 0" stroke="#0d1128"
+                  stroke-width="2.5" fill="none"/>
+            <text class="lbl" x="179" y="110" text-anchor="middle">L</text>
+            <text class="lbl" x="179" y="64" text-anchor="middle" fill="#2b6cb0">V_L</text>
+
+            <polygon points="130,194 144,200 130,206" fill="#2f855a"/>
+            <text class="lbl" x="150" y="219" fill="#2f855a">I</text>
+            <text class="sub th" x="60" y="248">กระแส I ตัวเดียวกันไหลผ่านทั้ง R และ L</text>
+            <text class="sub en" x="60" y="248">the same current I flows through both R and L</text>
+            <text class="sub th" x="60" y="268">จึงใช้ I เป็นมุมอ้างอิงในรูป ข.</text>
+            <text class="sub en" x="60" y="268">so I is the reference angle in panel b</text>
+
+            <line x1="248" y1="40" x2="248" y2="285" stroke="#e4e7ec" stroke-width="1"/>
+            <line x1="490" y1="40" x2="490" y2="285" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== b: voltage triangle ===== -->
+            <line x1="285" y1="205" x2="385" y2="205" stroke="#fd5f00" stroke-width="3.5"/>
+            <polygon points="381,200 393,205 381,210" fill="#fd5f00"/>
+            <text class="lbl" x="335" y="226" text-anchor="middle" fill="#fd5f00">V_R = IR</text>
+
+            <line x1="385" y1="205" x2="385" y2="110" stroke="#2b6cb0" stroke-width="3.5"/>
+            <polygon points="380,114 385,102 390,114" fill="#2b6cb0"/>
+            <text class="lbl" x="395" y="155" fill="#2b6cb0">V_L = IX_L</text>
+
+            <line x1="285" y1="205" x2="385" y2="110" stroke="#0d1128" stroke-width="3.5"/>
+            <polygon points="380,104 392,105 385,117" fill="#0d1128"/>
+            <text class="lbl" x="300" y="146" fill="#0d1128">V</text>
+            <path d="M318 205 A33 33 0 0 0 310 183" stroke="#2f855a" stroke-width="2" fill="none"/>
+            <text class="lbl" x="325" y="192" fill="#2f855a">θ</text>
+            <circle cx="285" cy="205" r="4" fill="#0d1128"/>
+            <text class="sub th" x="262" y="262">V_R กับ V_L ตั้งฉากกันเสมอ จึงบวกกันตรง ๆ ไม่ได้</text>
+            <text class="sub en" x="262" y="262">V_R and V_L are always perpendicular, so they never add directly</text>
+
+            <!-- ===== c: impedance triangle ===== -->
+            <line x1="520" y1="205" x2="620" y2="205" stroke="#fd5f00" stroke-width="3.5"/>
+            <text class="lbl" x="570" y="226" text-anchor="middle" fill="#fd5f00">R</text>
+            <line x1="620" y1="205" x2="620" y2="110" stroke="#2b6cb0" stroke-width="3.5"/>
+            <text class="lbl" x="630" y="160" fill="#2b6cb0">X_L</text>
+            <line x1="520" y1="205" x2="620" y2="110" stroke="#0d1128" stroke-width="3.5"/>
+            <text class="lbl" x="536" y="146" fill="#0d1128">|Z|</text>
+            <path d="M553 205 A33 33 0 0 0 545 183" stroke="#2f855a" stroke-width="2" fill="none"/>
+            <text class="lbl" x="560" y="192" fill="#2f855a">θ</text>
+            <circle cx="520" cy="205" r="4" fill="#0d1128"/>
+            <text class="sub th" x="500" y="262">รูปเดียวกับ ข. เป๊ะ เพียงหารด้วย I ทุกด้าน</text>
+            <text class="sub en" x="500" y="262">the very same triangle as b, every side divided by I</text>
+            <text class="sub th" x="500" y="282">มุม θ จึงเท่ากัน — และคือมุมของอิมพีแดนซ์</text>
+            <text class="sub en" x="500" y="282">so θ is the same angle — the angle of the impedance</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 6.4</span><span class="en">Figure 6.4</span></b>
+          <span class="th"> จุดสำคัญที่สุดของรูปนี้คือ ข. กับ ค. เป็นรูปสามเหลี่ยมเดียวกัน
+            เพราะแรงดันทุกด้านเกิดจากกระแส \(I\) ตัวเดียวกันคูณกับอิมพีแดนซ์ของแต่ละตัว
+            เมื่อหารทุกด้านด้วย \(I\) สามเหลี่ยมแรงดันจึงกลายเป็นสามเหลี่ยมอิมพีแดนซ์ทันที
+            นี่คือเหตุผลที่ \(|Z| = \sqrt{R^2 + X_L^2}\) ใช้เครื่องหมายบวกใต้รากเสมอ
+            แม้ว่า \(\mathbf{Z} = R + \mathrm{j}X_L\) จะมี \(\mathrm{j}\) อยู่ก็ตาม
+            <br>และเป็นเหตุผลว่าทำไมถ้าวัดแรงดันคร่อม R ได้ 100 V คร่อม L ได้ 105 V
+            แรงดันรวมจะ <b>ไม่ใช่ 205 V</b> แต่เป็น 145 V ซึ่งเป็นสิ่งที่ทำให้นักศึกษาสับสนบ่อยที่สุดในห้องปฏิบัติการ</span>
+          <span class="en"> The essential point is that b and c are the same triangle. Every voltage is the
+            one shared current \(I\) times the impedance of its element, so dividing each side by \(I\)
+            turns the voltage triangle straight into the impedance triangle. That is why
+            \(|Z| = \sqrt{R^2 + X_L^2}\) always carries a plus sign under the root, even though
+            \(\mathbf{Z} = R + \mathrm{j}X_L\) contains a \(\mathrm{j}\). <br>It is also why, if you measure
+            100 V across the resistor and 105 V across the inductor, the total is <b>not 205 V</b> but
+            145 V — the single result that most often astonishes students in the laboratory.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 6.4</span><span class="en">Example 6.4</span></span>
+          <span class="th">กระแสรวมของตู้ควบคุมโรงเรือน</span>
+          <span class="en">Total current in a greenhouse control panel</span></div>
+        <div class="example-body">
+          <p><span class="th">ตู้ควบคุมโรงเรือนหนึ่งตู้จ่ายไฟ 230 V 50 Hz ให้โหลดสองชุดที่ต่อขนานกัน</span>
+            <span class="en">A greenhouse control panel feeds two loads in parallel from a 230 V, 50 Hz
+            supply:</span></p>
+          <ul>
+            <li><span class="th"><b>ฮีตเตอร์เพาะกล้า</b> เป็นโหลดความต้านทานล้วน กินกระแส 10 A</span>
+              <span class="en"><b>A seedling heater</b>, purely resistive, drawing 10 A</span></li>
+            <li><span class="th"><b>มอเตอร์พัดลมระบายอากาศ</b> กินกระแส 10 A เช่นกัน แต่ตามหลังแรงดัน 46.3°
+              (เป็นมอเตอร์ตัวเดียวกับตัวอย่างที่ 6.3)</span>
+              <span class="en"><b>A ventilation fan motor</b>, also drawing 10 A but lagging the voltage by
+              46.3° — the same motor as in Example 6.3</span></li>
+          </ul>
+          <p><span class="th">จงหากระแสรวมที่ไหลผ่านเบรกเกอร์หลัก</span>
+            <span class="en">Find the total current through the main breaker.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">ใช้กฎกระแสของเคอร์ชฮอฟฟ์ในรูปเฟเซอร์ที่โนดของบัสบาร์
+              โดยยึดแรงดัน 230 V เป็นมุมอ้างอิง 0° เนื่องจากโหลดต่อขนานกันจึงเห็นแรงดันเดียวกัน</span>
+              <span class="en">Apply Kirchhoff's current law in phasor form at the busbar node, taking the
+              230 V supply as the 0° reference — the loads are in parallel and so share it:</span></p>
+            \[ \mathbf{I}_1 = 10\angle 0^{\circ}\ \text{A} \qquad
+               \mathbf{I}_2 = 10\angle -46.3^{\circ}\ \text{A} \]
+
+            <p><span class="th"><b>ขั้นที่ 1</b> แปลงเป็นรูปสี่เหลี่ยมมุมฉากก่อน เพราะเราจะบวกกัน</span>
+              <span class="en"><b>Step 1</b> Convert to rectangular form, because we are going to add:</span></p>
+            \[ \mathbf{I}_1 = 10 + \mathrm{j}0 \]
+            \[ \mathbf{I}_2 = 10\cos(-46.3^{\circ}) + \mathrm{j}\,10\sin(-46.3^{\circ})
+               = 6.91 - \mathrm{j}7.23 \]
+
+            <p><span class="th"><b>ขั้นที่ 2</b> บวกส่วนจริงกับส่วนจริง ส่วนจินตภาพกับส่วนจินตภาพ</span>
+              <span class="en"><b>Step 2</b> Add reals to reals and imaginaries to imaginaries:</span></p>
+            \[ \mathbf{I}_T = (10 + 6.91) + \mathrm{j}(0 - 7.23) = 16.91 - \mathrm{j}7.23\ \text{A} \]
+
+            <p><span class="th"><b>ขั้นที่ 3</b> แปลงกลับเป็นรูปเชิงขั้วเพื่ออ่านค่าที่แอมป์มิเตอร์จะวัดได้</span>
+              <span class="en"><b>Step 3</b> Convert back to polar to read what an ammeter would show:</span></p>
+            \[ |I_T| = \sqrt{16.91^{2} + 7.23^{2}} = \sqrt{285.9 + 52.3} = \sqrt{338.2} = 18.39\ \text{A} \]
+            \[ \theta = \tan^{-1}\!\frac{-7.23}{16.91} = -23.2^{\circ} \]
+            \[ \mathbf{I}_T = 18.39\angle -23.2^{\circ}\ \text{A} \]
+
+            <div class="callout callout-warn mb-0">
+              <div class="callout-title">⚠️ <span class="th">10 + 10 ไม่ได้ 20</span>
+                <span class="en">Ten plus ten does not make twenty</span></div>
+              <p class="mb-0"><span class="th">โหลดสองตัวกินกระแสตัวละ 10 A แต่กระแสรวมคือ
+                <b>18.39 A ไม่ใช่ 20 A</b> เพราะกระแสทั้งสองไม่ได้ขึ้นถึงยอดพร้อมกัน
+                เมื่อฮีตเตอร์ถึงยอด มอเตอร์ยังไปไม่ถึง จึงหักล้างกันบางส่วน
+                <br><b>ผลทางวิศวกรรม:</b> ถ้าคำนวณแบบบวกตรง ๆ ได้ 20 A แล้วเลือกเบรกเกอร์ 25 A กับสาย 4 mm²
+                ก็ยัง <b>ปลอดภัยแต่เปลืองเกินจำเป็น</b> — กรณีนี้การบวกผิดทำให้ออกแบบเผื่อไว้มากเกินไป
+                <br>แต่ต้องระวังให้มาก เพราะ <b>กรณีที่อันตรายคือทางกลับกัน</b> เมื่อมีตัวเก็บประจุแก้ตัวประกอบกำลัง
+                อยู่ในวงจร กระแสของตัวเก็บประจุจะ <b>นำหน้า</b> แรงดัน จึงไปหักล้างกับกระแสของมอเตอร์
+                กระแสในบางกิ่งอาจสูงกว่ากระแสรวมที่วัดได้ที่เบรกเกอร์หลัก
+                ผู้ที่บวกขนาดกระแสตรง ๆ โดยไม่สนใจมุม จะประเมินกระแสในกิ่งนั้นต่ำกว่าความจริง
+                <br>ข้อสรุปคือ <b>กระแสสลับต้องบวกกันแบบเวกเตอร์เท่านั้น</b> การบวกขนาดตรง ๆ
+                ใช้ได้เฉพาะเมื่อโหลดทุกตัวมีตัวประกอบกำลังเท่ากันพอดี</span>
+                <span class="en">Two loads of 10 A each give a total of <b>18.39 A, not 20 A</b>, because the
+                two currents do not peak together: when the heater is at its crest the motor has not yet
+                arrived, so they partly cancel. <br><b>What it means in practice:</b> adding the magnitudes
+                gives 20 A, which would lead you to a 25 A breaker and 4 mm² cable — <b>safe, but larger
+                than necessary</b>. Here the wrong arithmetic merely wastes copper.
+                <br>Be careful, though, because <b>the dangerous case runs the other way</b>. Where
+                power-factor-correction capacitors are present, their current <b>leads</b> the voltage and
+                cancels part of the motor current, so an individual branch can carry more current than the
+                main breaker ever registers. Anyone who adds magnitudes and ignores angles will underestimate
+                that branch. <br>The rule is simply that <b>alternating currents add as vectors</b>. Adding
+                magnitudes is correct only when every load happens to share the same power factor.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Summary -->
+    <section id="summary">
+      <h2><span class="num">📌</span><span class="th">สรุปบทเรียน</span><span class="en">Chapter summary</span></h2>
+      <div class="card">
+        <ul class="mb-0">
+          <li><span class="th">คลื่นไซน์หนึ่งคลื่นอธิบายได้ครบด้วยสามตัวเลข คือ ค่ายอด \(V_m\) ความถี่เชิงมุม
+            \(\omega = 2\pi f\) และมุมเฟส \(\phi\) ส่วนค่าที่มิเตอร์อ่านได้คือค่าอาร์เอ็มเอส
+            \(V_{\text{rms}} = V_m/\sqrt{2}\) ดังนั้นไฟบ้าน 230 V จึงมีค่ายอดถึง 325 V</span>
+            <span class="en">A sine wave is fully described by three numbers: its peak \(V_m\), its angular
+            frequency \(\omega = 2\pi f\), and its phase angle \(\phi\). What a meter reads is the rms
+            value, \(V_{\text{rms}} = V_m/\sqrt{2}\) — so a 230 V mains supply peaks at 325 V.</span></li>
+          <li><span class="th">เฟเซอร์คือลูกศรที่หมุนด้วยความเร็ว \(\omega\) และเงาของมันคือคลื่นไซน์
+            เมื่อทุกอย่างในวงจรหมุนด้วยความเร็วเท่ากัน เราจึงหยุดการหมุนทิ้งไปได้
+            แล้วเหลือแค่ลูกศรนิ่ง ๆ ที่บอกขนาดกับมุม</span>
+            <span class="en">A phasor is an arrow turning at \(\omega\), and its shadow is the sine wave.
+            Because everything in the circuit turns at the same rate, we can freeze the rotation and keep
+            only a still arrow carrying a magnitude and an angle.</span></li>
+          <li><span class="th">\(\mathrm{j}\) ไม่ใช่ตัวเลขลึกลับ แต่คือคำสั่ง "หมุน 90 องศา"
+            ซึ่งตรงกับความต่างเฟสที่ตัวเหนี่ยวนำและตัวเก็บประจุสร้างขึ้นจริง ๆ</span>
+            <span class="en">\(\mathrm{j}\) is not a mystery but an instruction to turn through 90 degrees —
+            exactly the phase shift that inductors and capacitors actually produce.</span></li>
+          <li><span class="th">อิมพีแดนซ์คือความต้านทานแบบทั่วไปที่บอกทั้งขนาดและเฟส
+            \(\mathbf{Z}_R = R\), \(\mathbf{Z}_L = \mathrm{j}\omega L\) และ
+            \(\mathbf{Z}_C = -\mathrm{j}/(\omega C)\)
+            จำด้วย <b>ELI the ICE man</b> ว่าใน L แรงดันมาก่อน ส่วนใน C กระแสมาก่อน</span>
+            <span class="en">Impedance is a generalised resistance carrying both magnitude and phase:
+            \(\mathbf{Z}_R = R\), \(\mathbf{Z}_L = \mathrm{j}\omega L\) and
+            \(\mathbf{Z}_C = -\mathrm{j}/(\omega C)\). Remember <b>ELI the ICE man</b>: in an L the voltage
+            leads, in a C the current does.</span></li>
+          <li><span class="th">รีแอคแตนซ์ขึ้นกับความถี่ — \(X_L\) โตตามความถี่ ส่วน \(X_C\) เล็กลงตามความถี่
+            ตัวเก็บประจุจึงเป็นวงจรเปิดสำหรับไฟตรงและเกือบลัดวงจรสำหรับสัญญาณความถี่สูง</span>
+            <span class="en">Reactance depends on frequency: \(X_L\) grows with it while \(X_C\) shrinks.
+            A capacitor is therefore an open circuit to DC and very nearly a short to high
+            frequencies.</span></li>
+          <li><span class="th">กฎของโอห์ม กฎของเคอร์ชฮอฟฟ์ และการวิเคราะห์โนดในบทที่ 3 และ 4
+            <b>ใช้ได้เหมือนเดิมทุกข้อ</b> เพียงเปลี่ยนตัวเลขธรรมดาเป็นจำนวนเชิงซ้อน
+            บวกลบในรูปสี่เหลี่ยมมุมฉาก คูณหารในรูปเชิงขั้ว</span>
+            <span class="en">Ohm's law, Kirchhoff's laws and nodal analysis from Chapters 3 and 4 <b>all hold
+            unchanged</b>; only the numbers become complex. Add and subtract in rectangular form, multiply
+            and divide in polar.</span></li>
+          <li><span class="th">กระแสสลับบวกกันแบบเวกเตอร์เสมอ โหลด 10 A สองตัวที่ต่างเฟสกันรวมกันได้
+            <b>น้อยกว่า</b> 20 A การบวกขนาดตรง ๆ ใช้ได้เฉพาะเมื่อทุกโหลดมีตัวประกอบกำลังเท่ากัน</span>
+            <span class="en">Alternating currents always add as vectors: two 10 A loads out of step total
+            <b>less</b> than 20 A. Adding magnitudes is right only when every load shares one power
+            factor.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Activity -->
+    <section id="activity">
+      <h2><span class="num">🧭</span><span class="th">กิจกรรมในชั้นเรียน</span>
+          <span class="en">Class activity</span></h2>
+
+      <div class="activity">
+        <div class="activity-head">
+          <h3><span class="th">กิจกรรมที่ 6.1 — เบรกเกอร์หลักของโรงเรือนต้องใหญ่เท่าไร</span>
+              <span class="en">Activity 6.1 — How big must the greenhouse main breaker be?</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">45 นาที</span><span class="en">45 minutes</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO2, CLO4</span><span class="en">CLO2, CLO4</span></span>
+          </div>
+        </div>
+        <div class="activity-body">
+          <p><span class="th"><b>สถานการณ์:</b> ผู้รับเหมารายหนึ่งคิดกระแสรวมของตู้ควบคุมโรงเรือนด้วยการ
+            <b>บวกกระแสของโหลดทุกตัวตรง ๆ</b> แล้วเสนอเบรกเกอร์ 40 A พร้อมสาย 10 mm²
+            เจ้าของฟาร์มรู้สึกว่าแพงเกินไปจึงขอให้กลุ่มของคุณตรวจสอบ
+            โหลดทั้งหมดต่อขนานกับไฟ 230 V 50 Hz ตามตารางข้างล่าง
+            ให้ทุกกลุ่มคำนวณกระแสรวมที่ถูกต้องแบบเฟเซอร์ แล้วเสนอขนาดเบรกเกอร์ที่เหมาะสม</span>
+            <span class="en"><b>Scenario:</b> A contractor has worked out the total current of a greenhouse
+            panel by <b>adding every load current arithmetically</b>, and has quoted a 40 A breaker with
+            10 mm² cable. The farm owner thinks this expensive and has asked your group to check it. All the
+            loads sit in parallel across a 230 V, 50 Hz supply, as tabulated below. Compute the true total
+            as phasors and recommend a breaker size.</span></p>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ใบงานกิจกรรมที่ 6.1</span>
+                <span class="en">Activity 6.1 worksheet</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">โหลด</span><span class="en">Load</span></th>
+                  <th class="num"><span class="th">กระแส (A)</span><span class="en">Current (A)</span></th>
+                  <th class="num">pf</th>
+                  <th class="num">θ</th>
+                  <th class="num"><span class="th">ส่วนจริง</span><span class="en">Real part</span></th>
+                  <th class="num"><span class="th">ส่วนจินตภาพ</span><span class="en">Imaginary part</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="th">ฮีตเตอร์เพาะกล้า 3 kW</span><span class="en">3 kW seedling heater</span></td>
+                  <td class="num">13.04</td><td class="num">1.00</td>
+                  <td><input type="text" aria-label="a1"></td><td><input type="text" aria-label="a2"></td>
+                  <td><input type="text" aria-label="a3"></td>
+                </tr>
+                <tr>
+                  <td><span class="th">ปั๊มน้ำเพื่อการชลประทาน</span><span class="en">Irrigation pump</span></td>
+                  <td class="num">8.70</td><td class="num">0.75</td>
+                  <td><input type="text" aria-label="b1"></td><td><input type="text" aria-label="b2"></td>
+                  <td><input type="text" aria-label="b3"></td>
+                </tr>
+                <tr>
+                  <td><span class="th">พัดลมระบายอากาศ 2 ตัว ตัวละ 4.2 A</span><span class="en">Two ventilation fans, 4.2 A each</span></td>
+                  <td class="num">8.40</td><td class="num">0.68</td>
+                  <td><input type="text" aria-label="c1"></td><td><input type="text" aria-label="c2"></td>
+                  <td><input type="text" aria-label="c3"></td>
+                </tr>
+                <tr>
+                  <td><span class="th">ชุดไฟ LED ปลูกพืช</span><span class="en">LED grow-light array</span></td>
+                  <td class="num">1.80</td><td class="num">0.95</td>
+                  <td><input type="text" aria-label="d1"></td><td><input type="text" aria-label="d2"></td>
+                  <td><input type="text" aria-label="d3"></td>
+                </tr>
+                <tr>
+                  <td colspan="4"><b><span class="th">ผลรวม</span><span class="en">Totals</span></b></td>
+                  <td><input type="text" aria-label="t1"></td><td><input type="text" aria-label="t2"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol class="steps">
+            <li><span class="th"><b>หามุมของแต่ละโหลด</b> จาก \(\theta = -\cos^{-1}(\text{pf})\)
+              เครื่องหมายลบเพราะโหลดทุกตัวในตารางนี้เป็นแบบเหนี่ยวนำ กระแสจึงตามหลังแรงดัน</span>
+              <span class="en"><b>Find each load's angle</b> from \(\theta = -\cos^{-1}(\text{pf})\). The
+              sign is negative because every load here is inductive, so its current lags.</span></li>
+            <li><span class="th"><b>แตกเป็นส่วนจริงและส่วนจินตภาพ</b> ด้วย
+              \(I\cos\theta\) และ \(I\sin\theta\) แล้วบวกลงในแถวผลรวม</span>
+              <span class="en"><b>Resolve into real and imaginary parts</b> with \(I\cos\theta\) and
+              \(I\sin\theta\), and add them into the totals row.</span></li>
+            <li><span class="th"><b>รวมกลับเป็นขนาดและมุม</b> แล้วเปรียบเทียบกับผลบวกขนาดตรง ๆ ของผู้รับเหมา
+              (31.94 A) ต่างกันกี่แอมแปร์ และคิดเป็นกี่เปอร์เซ็นต์</span>
+              <span class="en"><b>Recombine into a magnitude and angle</b>, then compare with the
+              contractor's arithmetic sum of 31.94 A. By how many amperes, and what percentage, do they
+              differ?</span></li>
+            <li><span class="th"><b>เลือกเบรกเกอร์</b> จากขนาดมาตรฐาน 16, 20, 25, 32, 40, 50 A
+              โดยเผื่อไว้ตามมาตรฐาน วสท. ไม่น้อยกว่า 1.25 เท่าของกระแสต่อเนื่อง
+              แล้วเทียบกับที่ผู้รับเหมาเสนอ</span>
+              <span class="en"><b>Choose a breaker</b> from the standard sizes 16, 20, 25, 32, 40 and 50 A,
+              allowing the EIT-standard margin of at least 1.25 times the continuous current, and compare
+              with the contractor's proposal.</span></li>
+            <li><span class="th"><b>หาตัวประกอบกำลังรวม</b> ของตู้ทั้งตู้ แล้วอภิปรายว่า
+              ถ้าติดตั้งตัวเก็บประจุแก้ตัวประกอบกำลังจนได้ pf = 0.95 กระแสรวมจะลดลงเหลือเท่าใด
+              (คำใบ้: ส่วนจริงไม่เปลี่ยน เปลี่ยนเฉพาะส่วนจินตภาพ)</span>
+              <span class="en"><b>Find the panel's overall power factor</b>, then discuss what the total
+              current would fall to if correction capacitors brought it to 0.95. Hint: the real part does
+              not change; only the imaginary one does.</span></li>
+            <li><span class="th"><b>เตรียมนำเสนอ 3 นาที</b> ในฐานะวิศวกรที่ปรึกษา
+              อธิบายให้เจ้าของฟาร์มที่ไม่ได้เรียนวิศวกรรมเข้าใจว่าเหตุใด 13 + 9 + 8 + 2
+              จึงไม่เท่ากับกระแสที่ไหลจริง</span>
+              <span class="en"><b>Prepare a three-minute presentation</b> as consulting engineers,
+              explaining to a farm owner with no engineering training why 13 + 9 + 8 + 2 is not the current
+              that actually flows.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">✅ <span class="th">เกณฑ์การประเมิน (10 คะแนน)</span>
+              <span class="en">Marking guide (10 marks)</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">แตกส่วนจริง–จินตภาพและรวมกลับได้ถูกต้องพร้อมหน่วยและเครื่องหมายมุม — 4 คะแนน</span>
+                  <span class="en">Correct resolution and recombination, with units and the right sign on
+                  the angle — 4 marks</span></li>
+              <li><span class="th">เลือกเบรกเกอร์ได้เหมาะสมพร้อมอ้างเกณฑ์เผื่อ 1.25 เท่า — 3 คะแนน</span>
+                  <span class="en">A defensible breaker choice citing the 1.25 margin — 3 marks</span></li>
+              <li><span class="th">อธิบายให้ผู้ที่ไม่ใช่วิศวกรเข้าใจได้ชัดเจน — 3 คะแนน</span>
+                  <span class="en">A clear explanation for a non-engineer — 3 marks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Laboratory -->
+    <section id="lab">
+      <h2><span class="num">🧪</span><span class="th">ปฏิบัติการที่ 6</span>
+          <span class="en">Laboratory 6</span></h2>
+
+      <div class="lab">
+        <div class="lab-head">
+          <h3><span class="th">ปฏิบัติการที่ 6 — วัดมุมเฟสและอิมพีแดนซ์ด้วยออสซิลโลสโคป</span>
+              <span class="en">Laboratory 6 — Measuring phase angle and impedance with an oscilloscope</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">2 ชั่วโมง</span><span class="en">2 hours</span></span>
+            <span>👥 <span class="th">กลุ่มละ 2–3 คน</span><span class="en">Groups of 2–3</span></span>
+            <span>🎯 <span class="th">CLO2, CLO6</span><span class="en">CLO2, CLO6</span></span>
+          </div>
+        </div>
+        <div class="lab-body">
+
+          <h4 class="mt-0"><span class="th">วัตถุประสงค์</span><span class="en">Objectives</span></h4>
+          <ol>
+            <li><span class="th">วัดความต่างเฟสระหว่างแรงดันกับกระแสด้วยออสซิลโลสโคป
+              แล้วยืนยันว่าตัวเหนี่ยวนำทำให้กระแสตามหลัง และตัวเก็บประจุทำให้กระแสนำหน้า</span>
+                <span class="en">Measure the phase difference between voltage and current with an
+                oscilloscope, confirming that an inductor makes the current lag and a capacitor makes it
+                lead.</span></li>
+            <li><span class="th">วัด \(X_L\) และ \(X_C\) ที่ความถี่ต่าง ๆ แล้วเทียบกับ
+              \(\omega L\) และ \(1/(\omega C)\)</span>
+                <span class="en">Measure \(X_L\) and \(X_C\) at several frequencies and compare with
+                \(\omega L\) and \(1/(\omega C)\).</span></li>
+            <li><span class="th">พิสูจน์ด้วยการวัดจริงว่าแรงดันคร่อม R บวกกับแรงดันคร่อม L
+              ไม่เท่ากับแรงดันรวม แต่รากที่สองของผลบวกกำลังสองเท่ากันพอดี</span>
+                <span class="en">Show by measurement that the voltage across R plus the voltage across L
+                does not equal the total, while the root of the sum of their squares does.</span></li>
+            <li><span class="th">เขียนผลการวัดทั้งหมดเป็นแผนภาพเฟเซอร์ตามมาตราส่วน</span>
+                <span class="en">Draw all the measurements as a phasor diagram to scale.</span></li>
+          </ol>
+
+          <h4><span class="th">อุปกรณ์</span><span class="en">Equipment</span></h4>
+          <ul>
+            <li><span class="th">ออสซิลโลสโคปสองช่องสัญญาณ · เครื่องกำเนิดสัญญาณ · มัลติมิเตอร์แบบวัดค่าอาร์เอ็มเอสแท้</span>
+                <span class="en">A two-channel oscilloscope, a function generator, and a true-rms
+                multimeter</span></li>
+            <li><span class="th">ตัวต้านทาน 100 Ω (ใช้เป็นตัวตรวจจับกระแส) · 220 Ω · 470 Ω</span>
+                <span class="en">Resistors of 100 Ω, used as a current sense, plus 220 Ω and 470 Ω</span></li>
+            <li><span class="th">ตัวเหนี่ยวนำ 100 mH · ตัวเก็บประจุ 1 µF และ 100 nF (ชนิดไม่มีขั้ว)</span>
+                <span class="en">A 100 mH inductor, and 1 µF and 100 nF non-polarised capacitors</span></li>
+            <li><span class="th">แผงต่อวงจรและสายวัดพร้อมคลิปจระเข้</span>
+                <span class="en">A breadboard and test leads with crocodile clips</span></li>
+          </ul>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">⚠️ <span class="th">ข้อควรระวัง</span>
+              <span class="en">Safety precautions</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th"><b>ปฏิบัติการนี้ใช้ไฟจากเครื่องกำเนิดสัญญาณเท่านั้น ห้ามต่อกับไฟบ้าน 230 V เด็ดขาด</b>
+                แรงดันยอด 325 V ที่คำนวณในตัวอย่างที่ 6.1 เป็นอันตรายถึงชีวิต</span>
+                  <span class="en"><b>This laboratory uses the function generator only; never connect any of
+                  it to the 230 V mains.</b> The 325 V peak computed in Example 6.1 is lethal.</span></li>
+              <li><span class="th">สายกราวด์ของโพรบทั้งสองช่องของสโคปต่อถึงกันภายในเครื่อง
+                <b>ต้องหนีบที่จุดเดียวกันเสมอ</b> มิฉะนั้นจะลัดวงจรส่วนหนึ่งของวงจรทิ้งไป</span>
+                  <span class="en">Both probe grounds are joined inside the scope, so <b>they must clip to
+                  the same point</b>, or part of your circuit will be shorted out.</span></li>
+              <li><span class="th">ตัวเหนี่ยวนำจะร้อนได้เมื่อจ่ายกระแสนาน ๆ ให้จับตรวจอุณหภูมิเป็นระยะ</span>
+                  <span class="en">The inductor warms up under sustained current; check it by hand from time
+                  to time.</span></li>
+            </ul>
+          </div>
+
+          <h4><span class="th">ขั้นตอนการทดลอง</span><span class="en">Procedure</span></h4>
+
+          <p><b><span class="th">ตอนที่ 1: มองเห็นความต่างเฟสด้วยตาตัวเอง</span>
+            <span class="en">Part 1: Seeing the phase difference</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อ \(R = 100\ \Omega\) อนุกรมกับ \(L = 100\ \text{mH}\)
+              ป้อนคลื่นไซน์ 5 V ค่ายอด ความถี่ 500 Hz
+              ให้กราวด์ของโพรบทั้งสองอยู่ที่ปลายล่างของ \(R\)</span>
+                <span class="en">Wire \(R = 100\ \Omega\) in series with \(L = 100\ \text{mH}\) and feed a
+                5 V peak sine wave at 500 Hz, with both probe grounds at the bottom of \(R\).</span></li>
+            <li><span class="th">ช่อง 1 วัดแรงดันรวมของแหล่งจ่าย ช่อง 2 วัดคร่อม \(R\)
+              เนื่องจาก \(v_R = iR\) รูปคลื่นช่อง 2 จึง <b>มีรูปร่างและเฟสเดียวกับกระแส</b>
+              นี่คือวิธีดูกระแสบนสโคปซึ่งวัดได้เฉพาะแรงดัน</span>
+                <span class="en">Put channel 1 across the whole supply and channel 2 across \(R\). Since
+                \(v_R = iR\), channel 2 <b>has the shape and phase of the current</b> — this is how you see
+                current on a scope that can only measure voltage.</span></li>
+            <li><span class="th">วัดระยะเวลา \(\Delta t\) ระหว่างจุดตัดศูนย์ของสองรูปคลื่น
+              แล้วแปลงเป็นมุมด้วย \(\theta = 360^{\circ} \times \Delta t / T\)
+              รูปคลื่นกระแสมาก่อนหรือหลัง</span>
+                <span class="en">Measure the time \(\Delta t\) between the two zero crossings and convert to
+                an angle with \(\theta = 360^{\circ} \times \Delta t / T\). Does the current come before or
+                after?</span></li>
+            <li><span class="th">คำนวณมุมที่คาดไว้จาก \(\theta = \tan^{-1}(X_L/R)\)
+              โดย \(X_L = 2\pi(500)(0.1)\) แล้วเทียบกับที่วัดได้</span>
+                <span class="en">Compute the expected angle from \(\theta = \tan^{-1}(X_L/R)\) with
+                \(X_L = 2\pi(500)(0.1)\), and compare.</span></li>
+            <li><span class="th">เปลี่ยน \(L\) เป็น \(C = 1\ \mu\text{F}\) ทำซ้ำทั้งหมด
+              คราวนี้กระแสมาก่อนหรือหลัง ตรงกับ <b>ELI the ICE man</b> หรือไม่</span>
+                <span class="en">Replace \(L\) with \(C = 1\ \mu\text{F}\) and repeat. Now does the current
+                come before or after, and does it match <b>ELI the ICE man</b>?</span></li>
+          </ol>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางบันทึกผลที่ 6.1 — ความต่างเฟส</span>
+                <span class="en">Results table 6.1 — phase difference</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">วงจร</span><span class="en">Circuit</span></th>
+                  <th class="num">T (ms)</th>
+                  <th class="num">Δt (µs)</th>
+                  <th class="num"><span class="th">θ วัดได้</span><span class="en">θ measured</span></th>
+                  <th class="num"><span class="th">θ คำนวณ</span><span class="en">θ calculated</span></th>
+                  <th class="num"><span class="th">นำ / ตาม</span><span class="en">Lead / lag</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>R–L, 500 Hz</td>
+                  <td><input type="text" aria-label="p1"></td><td><input type="text" aria-label="p2"></td>
+                  <td><input type="text" aria-label="p3"></td><td><input type="text" aria-label="p4"></td>
+                  <td><input type="text" aria-label="p5"></td>
+                </tr>
+                <tr>
+                  <td>R–C, 500 Hz</td>
+                  <td><input type="text" aria-label="q1"></td><td><input type="text" aria-label="q2"></td>
+                  <td><input type="text" aria-label="q3"></td><td><input type="text" aria-label="q4"></td>
+                  <td><input type="text" aria-label="q5"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><b><span class="th">ตอนที่ 2: รีแอคแตนซ์เปลี่ยนไปตามความถี่</span>
+            <span class="en">Part 2: Reactance against frequency</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ใช้วงจร R–L เดิม วัดแรงดันคร่อม \(R\) และคร่อม \(L\)
+              ด้วยมัลติมิเตอร์แบบอาร์เอ็มเอสแท้ ที่ความถี่ 100, 200, 500, 1000 และ 2000 Hz</span>
+                <span class="en">With the same R–L circuit, measure the rms voltage across \(R\) and across
+                \(L\) at 100, 200, 500, 1000 and 2000 Hz.</span></li>
+            <li><span class="th">หากระแสจาก \(I = V_R/R\) แล้วหา \(X_L = V_L/I\) ในแต่ละความถี่</span>
+                <span class="en">Find the current from \(I = V_R/R\), then \(X_L = V_L/I\) at each
+                frequency.</span></li>
+            <li><span class="th">เขียนกราฟ \(X_L\) เทียบกับ \(f\) ได้เส้นตรงหรือไม่
+              และความชันของเส้นตรงนั้นควรเท่ากับ \(2\pi L\) ตรวจสอบดู</span>
+                <span class="en">Plot \(X_L\) against \(f\). Is it a straight line, and is its slope
+                \(2\pi L\) as it should be?</span></li>
+            <li><span class="th">ทำซ้ำกับ \(C = 100\ \text{nF}\) แล้วเขียนกราฟ \(X_C\) เทียบกับ \(f\)
+              คราวนี้ได้เส้นตรงหรือไม่ ลองเขียนกราฟ \(X_C\) เทียบกับ \(1/f\) แทนแล้วเปรียบเทียบ</span>
+                <span class="en">Repeat with \(C = 100\ \text{nF}\) and plot \(X_C\) against \(f\). Is that a
+                straight line? Now plot \(X_C\) against \(1/f\) instead and compare.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 3: การพิสูจน์ว่า 100 + 105 ไม่ได้ 205</span>
+            <span class="en">Part 3: Proving that 100 plus 105 is not 205</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ปรับความถี่จนกระทั่งแรงดันคร่อม \(R\) กับคร่อม \(L\) มีค่าใกล้เคียงกัน
+              ซึ่งจะเกิดขึ้นเมื่อ \(X_L \approx R\) คือประมาณ 160 Hz สำหรับ 100 Ω กับ 100 mH</span>
+                <span class="en">Adjust the frequency until the voltages across \(R\) and \(L\) are about
+                equal, which happens when \(X_L \approx R\) — near 160 Hz for 100 Ω with
+                100 mH.</span></li>
+            <li><span class="th">วัดแรงดันคร่อม \(R\) คร่อม \(L\) และแรงดันรวมของแหล่งจ่าย
+              ด้วยมิเตอร์ตัวเดียวกัน บันทึกทั้งสามค่า</span>
+                <span class="en">Measure the voltage across \(R\), across \(L\), and the total supply
+                voltage, all with the same meter, and record the three.</span></li>
+            <li><span class="th">เปรียบเทียบผลบวกตรง ๆ ของสองค่าแรกกับแรงดันรวมที่วัดได้ ต่างกันมากเพียงใด</span>
+                <span class="en">Compare the arithmetic sum of the first two with the measured total. How
+                far apart are they?</span></li>
+            <li><span class="th">คำนวณ \(\sqrt{V_R^2 + V_L^2}\) แล้วเทียบกับแรงดันรวมอีกครั้ง
+              ผลนี้ยืนยันรูปที่ 6.4 หรือไม่</span>
+                <span class="en">Now compute \(\sqrt{V_R^2 + V_L^2}\) and compare with the total again. Does
+                this confirm Figure 6.4?</span></li>
+            <li><span class="th">เขียนแผนภาพเฟเซอร์ตามมาตราส่วนบนกระดาษกราฟ
+              โดยวางแรงดันคร่อม \(R\) ตามแนวนอน และแรงดันคร่อม \(L\) ตั้งฉากขึ้น
+              แล้ววัดความยาวด้านตรงข้ามมุมฉากเทียบกับแรงดันรวมที่วัดได้</span>
+                <span class="en">Draw the phasor diagram to scale on graph paper, the resistor voltage
+                horizontal and the inductor voltage vertical, then measure the hypotenuse and compare it
+                with the measured total.</span></li>
+          </ol>
+
+          <h4><span class="th">คำถามท้ายปฏิบัติการ</span><span class="en">Questions</span></h4>
+          <ol>
+            <li><span class="th">มุมเฟสที่วัดได้ในตอนที่ 1 ต่างจากที่คำนวณกี่องศา
+              ให้ระบุสาเหตุอย่างน้อยสามข้อ (พิจารณาความต้านทานของขดลวดตัวเหนี่ยวนำซึ่งไม่ใช่ศูนย์
+              ความคลาดเคลื่อนของการอ่าน \(\Delta t\) บนหน้าจอ และความคลาดเคลื่อนของค่า \(L\) ที่พิมพ์มา)</span>
+              <span class="en">By how many degrees did the measured phase differ from the calculated one?
+              Give at least three reasons, considering that the inductor's winding resistance is not zero,
+              the error in reading \(\Delta t\) off the screen, and the tolerance on the printed
+              \(L\).</span></li>
+            <li><span class="th">เหตุใดจึงต้องวัดกระแสโดยดูแรงดันคร่อมตัวต้านทานแทนที่จะวัดกระแสโดยตรง
+              และเหตุใดตัวต้านทานตัวนั้นจึงควรมีค่าน้อย ๆ (ย้อนไปดูผลของการโหลดในบทที่ 2)</span>
+              <span class="en">Why do we watch the voltage across a resistor instead of measuring the current
+              directly, and why should that resistor be small? Look back at the loading effect in
+              Chapter 2.</span></li>
+            <li><span class="th">จากกราฟในตอนที่ 2 ถ้าต้องการปิดกั้นสัญญาณรบกวนความถี่สูงจากอินเวอร์เตอร์
+              ควรใช้ตัวเหนี่ยวนำหรือตัวเก็บประจุต่ออนุกรมกับสายสัญญาณ เพราะเหตุใด</span>
+              <span class="en">From the graphs of Part 2, would you put an inductor or a capacitor in series
+              with a signal line to block high-frequency inverter noise, and why?</span></li>
+            <li><span class="th">ในตอนที่ 3 ถ้าเปลี่ยนตัวเหนี่ยวนำเป็นตัวเก็บประจุที่ให้
+              \(X_C\) เท่ากับ \(X_L\) เดิมพอดี แรงดันรวมจะเปลี่ยนไปหรือไม่ และมุมเฟสจะเป็นอย่างไร</span>
+              <span class="en">In Part 3, if the inductor were replaced by a capacitor with \(X_C\) exactly
+              equal to the old \(X_L\), would the total voltage change, and what would the phase angle
+              be?</span></li>
+            <li><span class="th">ออกแบบ: มอเตอร์พัดลมโรงเรือนตัวหนึ่งกินกระแส 6 A ที่ตัวประกอบกำลัง 0.70
+              จากไฟ 230 V 50 Hz จงหา \(R\) และ \(L\) สมมูลของมอเตอร์
+              แล้วคำนวณว่าต้องใช้ตัวเก็บประจุกี่ไมโครฟารัดต่อขนาน จึงจะหักล้างส่วนจินตภาพของกระแสได้หมด</span>
+              <span class="en">Design: a greenhouse fan motor draws 6 A at a power factor of 0.70 from a
+              230 V, 50 Hz supply. Find its equivalent \(R\) and \(L\), then work out how many microfarads
+              in parallel would cancel the imaginary part of the current entirely.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">📄 <span class="th">การส่งรายงาน (20 คะแนน)</span>
+              <span class="en">Report submission (20 marks)</span></div>
+            <p class="mb-0"><span class="th">ส่งรายงานความยาวไม่เกิน 6 หน้า ประกอบด้วย วัตถุประสงค์
+              ภาพหน้าจอสโคปของวงจร R–L และ R–C พร้อมทำเครื่องหมายจุดตัดศูนย์และ \(\Delta t\)
+              ตารางบันทึกผลที่ 6.1 ที่กรอกครบ กราฟ \(X_L\) เทียบกับ \(f\) และ \(X_C\) เทียบกับ \(1/f\)
+              พร้อมระบุความชัน แผนภาพเฟเซอร์ตามมาตราส่วนจากตอนที่ 3
+              ตัวอย่างการคำนวณอย่างละเอียด 1 ชุด คำตอบของคำถามท้ายปฏิบัติการ และข้อสรุป
+              ภายในสัปดาห์ถัดไป</span>
+              <span class="en">Submit a report of no more than six pages — objectives; scope photographs of
+              the R–L and R–C circuits with the zero crossings and \(\Delta t\) marked; the completed
+              results table 6.1; plots of \(X_L\) against \(f\) and \(X_C\) against \(1/f\) with their
+              slopes stated; the scale phasor diagram from Part 3; one fully worked calculation; answers to
+              the questions; and a conclusion — by the following week.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Post-test -->
+    <section id="posttest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบหลังเรียน</span>
+          <span class="en">Post-test</span></h2>
+      <p class="muted"><span class="th">ทำหลังอ่านเนื้อหาและทำปฏิบัติการแล้ว ควรได้อย่างน้อย 6 จาก 8 ข้อ</span>
+        <span class="en">Take this after the notes and the laboratory; aim for at least 6 out of 8.</span></p>
+
+      <section class="quiz" id="posttest-q" data-quiz="post" data-chapter="ch06">
+        <div class="quiz-head">
+          <h3><span class="th">หลังเรียน: บทที่ 6</span><span class="en">Post-test: Chapter 6</span></h3>
+          <p><span class="th">8 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">8 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="b"
+               data-explain-th="V_m = √2 × V_rms = 1.414 × 230 = 325 V ซึ่งเป็นเหตุผลที่ฉนวนของอุปกรณ์ต้องทนได้อย่างน้อย 325 V ไม่ใช่ 230 V"
+               data-explain-en="V_m = √2 × V_rms = 1.414 × 230 = 325 V — which is why insulation must withstand at least 325 V, not 230 V.">
+            <div class="q-text"><span class="th">ไฟบ้าน 230 V 50 Hz มีค่าแรงดันยอดเท่าใด</span>
+              <span class="en">What is the peak voltage of a 230 V, 50 Hz mains supply?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>230 V</span></label>
+              <label class="opt" data-opt="b"><span>325 V</span></label>
+              <label class="opt" data-opt="c"><span>163 V</span></label>
+              <label class="opt" data-opt="d"><span>460 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="ω = 2πf = 2π(50) = 314 rad/s ข้อผิดพลาดที่พบบ่อยคือลืมคูณ 2π หรือใช้องศาแทนเรเดียน"
+               data-explain-en="ω = 2πf = 2π(50) = 314 rad/s. The usual slips are forgetting the 2π or working in degrees.">
+            <div class="q-text"><span class="th">ความถี่ 50 Hz คิดเป็นความถี่เชิงมุมเท่าใด</span>
+              <span class="en">What angular frequency corresponds to 50 Hz?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>50 rad/s</span></label>
+              <label class="opt" data-opt="b"><span>100 rad/s</span></label>
+              <label class="opt" data-opt="c"><span>314 rad/s</span></label>
+              <label class="opt" data-opt="d"><span>628 rad/s</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="การคูณด้วย j คือการหมุนเฟเซอร์ไป 90 องศาทวนเข็มนาฬิกา หมุนสองครั้งจึงได้ 180 องศา ซึ่งก็คือ j² = −1 พอดี"
+               data-explain-en="Multiplying by j turns a phasor 90° anticlockwise; twice gives 180°, which is exactly j² = −1.">
+            <div class="q-text"><span class="th">ในทางวิศวกรรมไฟฟ้า การคูณเฟเซอร์ด้วย j มีความหมายทางกายภาพว่าอย่างไร</span>
+              <span class="en">In electrical engineering, what does multiplying a phasor by j mean physically?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span class="th">หมุนไป 90° ทวนเข็มนาฬิกา</span><span class="en">a 90° anticlockwise rotation</span></label>
+              <label class="opt" data-opt="b"><span class="th">เพิ่มขนาดเป็นสองเท่า</span><span class="en">doubling the magnitude</span></label>
+              <label class="opt" data-opt="c"><span class="th">กลับเครื่องหมายของขนาด</span><span class="en">reversing the sign of the magnitude</span></label>
+              <label class="opt" data-opt="d"><span class="th">เพิ่มความถี่เป็นสองเท่า</span><span class="en">doubling the frequency</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="X_L = ωL = 2π(50)(0.1) = 31.4 Ω และเนื่องจากเป็นตัวเหนี่ยวนำจึงเขียนเป็น Z = +j31.4 Ω"
+               data-explain-en="X_L = ωL = 2π(50)(0.1) = 31.4 Ω, and being an inductor it is written Z = +j31.4 Ω.">
+            <div class="q-text"><span class="th">ตัวเหนี่ยวนำ 100 mH ที่ความถี่ 50 Hz มีอิมพีแดนซ์เท่าใด</span>
+              <span class="en">What is the impedance of a 100 mH inductor at 50 Hz?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>j5.0 Ω</span></label>
+              <label class="opt" data-opt="b"><span>−j31.4 Ω</span></label>
+              <label class="opt" data-opt="c"><span>j31.4 Ω</span></label>
+              <label class="opt" data-opt="d"><span>j314 Ω</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="จำด้วย ICE — ในตัวเก็บประจุ (C) กระแส (I) มาก่อนแรงดัน (E) คือกระแสนำหน้าแรงดัน 90 องศา"
+               data-explain-en="Remember ICE — in a capacitor (C) the current (I) comes before the voltage (E): the current leads by 90°.">
+            <div class="q-text"><span class="th">ในตัวเก็บประจุล้วน กระแสมีความสัมพันธ์ทางเฟสกับแรงดันอย่างไร</span>
+              <span class="en">In a pure capacitor, how does the current relate in phase to the voltage?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span class="th">อยู่ในเฟสเดียวกัน</span><span class="en">exactly in phase</span></label>
+              <label class="opt" data-opt="b"><span class="th">ตามหลัง 90°</span><span class="en">lags by 90°</span></label>
+              <label class="opt" data-opt="c"><span class="th">ตามหลัง 180°</span><span class="en">lags by 180°</span></label>
+              <label class="opt" data-opt="d"><span class="th">นำหน้า 90°</span><span class="en">leads by 90°</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="|Z| = √(30² + 40²) = √(900 + 1600) = √2500 = 50 Ω และ θ = tan⁻¹(40/30) = 53.1° จึงได้ 50∠53.1° Ω"
+               data-explain-en="|Z| = √(30² + 40²) = √(900 + 1600) = √2500 = 50 Ω with θ = tan⁻¹(40/30) = 53.1°, giving 50∠53.1° Ω.">
+            <div class="q-text"><span class="th">อิมพีแดนซ์ Z = 30 + j40 Ω เขียนในรูปเชิงขั้วได้เป็นเท่าใด</span>
+              <span class="en">Written in polar form, what is the impedance Z = 30 + j40 Ω?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>70∠53.1° Ω</span></label>
+              <label class="opt" data-opt="b"><span>50∠53.1° Ω</span></label>
+              <label class="opt" data-opt="c"><span>50∠36.9° Ω</span></label>
+              <label class="opt" data-opt="d"><span>35∠45.0° Ω</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="แรงดันคร่อม R กับคร่อม L ตั้งฉากกัน จึงต้องรวมแบบพีทาโกรัส คือ √(60² + 80²) = √10000 = 100 V ไม่ใช่ 140 V"
+               data-explain-en="The two voltages are perpendicular, so they combine by Pythagoras: √(60² + 80²) = √10000 = 100 V, not 140 V.">
+            <div class="q-text"><span class="th">วงจร R–L อนุกรม วัดแรงดันคร่อม R ได้ 60 V และคร่อม L ได้ 80 V แรงดันของแหล่งจ่ายเป็นเท่าใด</span>
+              <span class="en">In a series R–L circuit, 60 V is measured across R and 80 V across L. What is the supply voltage?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>100 V</span></label>
+              <label class="opt" data-opt="b"><span>140 V</span></label>
+              <label class="opt" data-opt="c"><span>70 V</span></label>
+              <label class="opt" data-opt="d"><span>20 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="ตัวแรกคือ 10 + j0 ตัวที่สองคือ 10cos(−60°) + j10sin(−60°) = 5 − j8.66 รวมได้ 15 − j8.66 ขนาดคือ √(225 + 75) = 17.3 A ไม่ใช่ 20 A"
+               data-explain-en="The first is 10 + j0, the second 10cos(−60°) + j10sin(−60°) = 5 − j8.66. Their sum 15 − j8.66 has magnitude √(225 + 75) = 17.3 A, not 20 A.">
+            <div class="q-text"><span class="th">โหลดสองตัวต่อขนานกัน ตัวแรกกินกระแส 10 A ที่มุม 0° ตัวที่สองกินกระแส 10 A ที่มุม −60° กระแสรวมมีขนาดเท่าใด</span>
+              <span class="en">Two parallel loads draw 10 A at 0° and 10 A at −60°. What is the magnitude of the total current?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>20.0 A</span></label>
+              <label class="opt" data-opt="b"><span>14.1 A</span></label>
+              <label class="opt" data-opt="c"><span>17.3 A</span></label>
+              <label class="opt" data-opt="d"><span>10.0 A</span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== References -->
+    <section id="refs">
+      <h2><span class="num">📚</span><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></h2>
+      <ol class="references">
+        <li>Boylestad, R. L. (2016). <i>Introductory Circuit Analysis</i> (13th ed.), Ch. 13–15.
+          Pearson.
+          <span class="small muted">— <span class="th">บทที่ 14 อธิบายเฟเซอร์และอิมพีแดนซ์อย่างค่อยเป็นค่อยไป</span>
+          <span class="en">Chapter 14 builds up phasors and impedance gently</span></span></li>
+        <li>Alexander, C. K., &amp; Sadiku, M. N. O. (2020). <i>Fundamentals of Electric Circuits</i>
+          (7th ed.), Ch. 9. McGraw-Hill.</li>
+        <li>Nilsson, J. W., &amp; Riedel, S. A. (2019). <i>Electric Circuits</i> (11th ed.), Ch. 9.
+          Pearson.</li>
+        <li>Irwin, J. D., &amp; Nelms, R. M. (2021). <i>Basic Engineering Circuit Analysis</i>
+          (12th ed.), Ch. 8. Wiley.</li>
+        <li>Hughes, E., Hiley, J., Brown, K., &amp; Smith, I. M. (2016).
+          <i>Hughes Electrical and Electronic Technology</i> (12th ed.), Ch. 9–10. Pearson.
+          <span class="small muted">— <span class="th">เขียนในแนวปฏิบัติ เหมาะกับการอ่านคู่กับปฏิบัติการที่ 6</span>
+          <span class="en">a practical treatment, good alongside Laboratory 6</span></span></li>
+        <li>Rizzoni, G., &amp; Hartley, T. T. (2021). <i>Principles and Applications of Electrical
+          Engineering</i> (7th ed.), Ch. 4. McGraw-Hill.</li>
+        <li>Steinmetz, C. P. (1893). Complex quantities and their use in electrical engineering.
+          <i>Proceedings of the International Electrical Congress</i>, 33–74.
+          <span class="small muted">— <span class="th">ต้นฉบับที่ทำให้วิธีเฟเซอร์กลายเป็นเครื่องมือมาตรฐานของวิศวกรไฟฟ้า</span>
+          <span class="en">the paper that made the phasor method standard practice</span></span></li>
+        <li>International Electrotechnical Commission. (2009).
+          <i>IEC 60038: IEC standard voltages</i>. IEC.
+          <span class="small muted">— <span class="th">ที่มาของแรงดัน 230/400 V และเกณฑ์ความคลาดเคลื่อนที่ยอมรับได้</span>
+          <span class="en">the source of the 230/400 V system and its permitted tolerances</span></span></li>
+        <li><span class="th">วิศวกรรมสถานแห่งประเทศไทย ในพระบรมราชูปถัมภ์ (วสท.). (2565).
+          <i>มาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย</i> (ฉบับปรับปรุงครั้งที่ 2), บทที่ 3. กรุงเทพฯ: วสท.</span>
+          <span class="en">Engineering Institute of Thailand. (2022).
+          <i>Thailand Electrical Installation Standard</i> (2nd rev. ed.), Ch. 3. Bangkok: EIT.</span></li>
+        <li>American Society of Agricultural and Biological Engineers. (2020).
+          <i>ASABE EP342.3: Design and Installation of Electrical Systems for Agricultural Buildings</i>.
+          ASABE.
+          <span class="small muted">— <span class="th">แนวทางคิดโหลดและเลือกขนาดวงจรสำหรับอาคารเกษตร</span>
+          <span class="en">how loads are totalled and circuits sized for farm buildings</span></span></li>
+      </ol>
+    </section>
+
+    <!-- =============================================== Chapter nav -->
+    <nav class="chapter-nav">
+      <a href="ch05.html">
+        <div class="dir">← <span class="th">บทก่อนหน้า</span><span class="en">Previous</span></div>
+        <div class="ttl"><span class="th">บทที่ 5 · ตัวเก็บประจุและตัวเหนี่ยวนำ</span>
+          <span class="en">Chapter 5 · Capacitance and Inductance</span></div>
+      </a>
+      <a href="ch07.html" class="next">
+        <div class="dir"><span class="th">บทถัดไป</span><span class="en">Next chapter</span> →</div>
+        <div class="ttl"><span class="th">บทที่ 7 · กำลังไฟฟ้ากระแสสลับ</span>
+          <span class="en">Chapter 7 · AC Power</span></div>
+      </a>
+    </nav>
+
+  </main>
+</div>
+</div>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span><span class="th">บทที่ 6 — ระบบไฟฟ้ากระแสสลับ</span>
+        <span class="en">Chapter 6 — The Alternating-Current System</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>
