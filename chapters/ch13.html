@@ -1,0 +1,2459 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ 13 อุปกรณ์อิเล็กทรอนิกส์พื้นฐาน | Fundamental of Electrical Engineering</title>
+<meta name="description" content="Chapter 13 — The PN junction, diodes, LEDs, BJTs and MOSFETs, with applications in smart-agriculture electronics.">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+<script src="../assets/js/mathjax-config.js"></script>
+<script defer src="../assets/vendor/mathjax/tex-svg.js"></script>
+<style>
+  .sys-fig text { font-family: var(--font-sans); }
+  .sys-fig .lbl { font-size: 12px; font-weight: 600; fill: #0d1128; }
+  .sys-fig .sub { font-size: 10.5px; fill: #6c757d; }
+  .sys-fig .cap { font-size: 11px; font-weight: 700; fill: #fd5f00; }
+  .sys-fig .wire { stroke: #0d1128; stroke-width: 2; fill: none; }
+  .sys-fig .sym  { stroke: #0d1128; stroke-width: 2; fill: #fff; }
+  .sys-fig .axis { stroke: #6c757d; stroke-width: 1.5; }
+  .sys-fig .node { fill: #fd5f00; }
+  .sys-fig .hole { fill: #d64545; }
+  .sys-fig .elec { fill: #2b6cb0; }
+  .sys-fig .p-reg { fill: #fdecec; stroke: #0d1128; stroke-width: 2; }
+  .sys-fig .n-reg { fill: #e9f2fb; stroke: #0d1128; stroke-width: 2; }
+  .sys-fig .dep   { fill: #eef1f5; stroke: #6c757d; stroke-width: 1.5; stroke-dasharray: 4 3; }
+
+  /* --- PN junction: majority carriers drift toward the junction ------
+     Only the forward-biased panel moves. The reverse-biased panel is
+     deliberately still — that contrast is the whole point.           */
+  .pn-fig .flow { transform-box: view-box; }
+  @keyframes pn-right { to { transform: translateX(32px); } }
+  @keyframes pn-left  { to { transform: translateX(-32px); } }
+  .pn-fig .drift-r { animation: pn-right 1.5s linear infinite; }
+  .pn-fig .drift-l { animation: pn-left  1.5s linear infinite; }
+
+  /* --- Bridge rectifier: the two conducting pairs alternate ---------- */
+  .br-fig .half { transform-box: view-box; }
+  @keyframes br-half { 0%, 42% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  .br-fig .half-a { animation: br-half 3.2s linear infinite; }
+  .br-fig .half-b { animation: br-half 3.2s linear infinite; animation-delay: -1.6s; }
+
+  /* --- MOSFET PWM: the duty cycle sweeps and the average follows ----- */
+  .pwm-fig .pwm-pulse, .pwm-fig .pwm-avg, .pwm-fig .pwm-bar { transform-box: view-box; }
+  @keyframes pwm-duty { from { transform: scaleX(0.15); } to { transform: scaleX(0.92); } }
+  @keyframes pwm-avg  { from { transform: translateY(0); }  to { transform: translateY(-77px); } }
+  @keyframes pwm-bar  { from { transform: scaleY(0.15); } to { transform: scaleY(0.92); } }
+  .pwm-fig .pwm-pulse { animation: pwm-duty 4s ease-in-out infinite alternate; }
+  .pwm-fig .p1 { transform-origin:  90px 0; }
+  .pwm-fig .p2 { transform-origin: 180px 0; }
+  .pwm-fig .p3 { transform-origin: 270px 0; }
+  .pwm-fig .p4 { transform-origin: 360px 0; }
+  .pwm-fig .p5 { transform-origin: 450px 0; }
+  .pwm-fig .pwm-avg { animation: pwm-avg 4s ease-in-out infinite alternate; }
+  .pwm-fig .pwm-bar { transform-origin: 640px 190px;
+                      animation: pwm-bar 4s ease-in-out infinite alternate; }
+</style>
+</head>
+<body data-chapter="ch13">
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="../index.html#chapters"><span class="th">บทเรียนทั้งหมด</span><span class="en">All chapters</span></a></li>
+      <li><a href="#pretest"><span class="th">Pre-test</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการ</span><span class="en">Laboratory</span></a></li>
+      <li><a href="ch14.html" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">บทถัดไป</span><span class="en">Next</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a> ·
+      <a href="../index.html#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a> ·
+      <span class="th">บทที่ 13</span><span class="en">Chapter 13</span>
+    </div>
+    <span class="eyebrow"><span class="th">สัปดาห์ที่ 14 · บทที่ 13</span><span class="en">Week 14 · Chapter 13</span></span>
+    <h1><span class="th">อุปกรณ์อิเล็กทรอนิกส์พื้นฐาน</span>
+        <span class="en">Basic Electronic Devices</span></h1>
+    <p class="lead">
+      <span class="th">ตลอด 12 บทที่ผ่านมา อุปกรณ์ทุกตัวของเราเป็นเชิงเส้น —
+        ความต้านทานคงที่ กฎของโอห์มใช้ได้เสมอ บทนี้เปิดประตูสู่อุปกรณ์อีกกลุ่มหนึ่งที่
+        <b>ไม่เป็นเชิงเส้น</b> และทำสิ่งที่ตัวต้านทานทำไม่ได้เลย คือ <b>ยอมให้กระแสไหลทางเดียว</b>
+        และ <b>ให้สัญญาณเล็ก ๆ ควบคุมกำลังก้อนใหญ่</b> สองความสามารถนี้เองที่ทำให้ตัวควบคุมในฟาร์ม
+        สั่งงานปั๊ม วาล์ว และไฟปลูกพืชได้</span>
+      <span class="en">For twelve chapters every element we met was linear: a fixed resistance, Ohm's law
+        always valid. This chapter opens the door to a different family of devices that are
+        <b>non-linear</b>, and that do two things no resistor can — they <b>let current pass one way
+        only</b>, and they <b>let a tiny signal command a large amount of power</b>. Those two abilities
+        are what allow a controller to operate a farm's pumps, valves and grow lights.</span>
+    </p>
+    <div class="hero-meta">
+      <span>⏱ <strong>2+2</strong> <span class="th">ชั่วโมง</span><span class="en">hours</span></span>
+      <span>📘 <span class="th">หัวข้อหลัก</span><span class="en">Main topics</span> <strong>5</strong></span>
+      <span>🧪 <span class="th">ปฏิบัติการที่ 13</span><span class="en">Laboratory 13</span></span>
+      <span>📝 <span class="th">Pre / Post-test</span><span class="en">Pre / post-test</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+<div class="chapter-layout">
+
+  <!-- ============================================================= TOC -->
+  <aside class="toc">
+    <div class="toc-title"><span class="th">สารบัญบทเรียน</span><span class="en">On this page</span></div>
+    <ul>
+      <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
+      <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#s1"><span class="th">13.1 รอยต่อพีเอ็น</span><span class="en">13.1 The PN junction</span></a></li>
+      <li><a href="#s2"><span class="th">13.2 ไดโอดและการประยุกต์</span><span class="en">13.2 Diodes and their uses</span></a></li>
+      <li><a href="#s3"><span class="th">13.3 แอลอีดีและอุปกรณ์รับแสง</span><span class="en">13.3 LEDs and light sensors</span></a></li>
+      <li><a href="#s4"><span class="th">13.4 ทรานซิสเตอร์ BJT</span><span class="en">13.4 The BJT</span></a></li>
+      <li><a href="#s5"><span class="th">13.5 มอสเฟตและการควบคุมด้วย PWM</span><span class="en">13.5 MOSFETs and PWM</span></a></li>
+      <li><a href="#summary"><span class="th">สรุปบทเรียน</span><span class="en">Summary</span></a></li>
+      <li><a href="#activity"><span class="th">กิจกรรมในชั้นเรียน</span><span class="en">Class activity</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการที่ 13</span><span class="en">Laboratory 13</span></a></li>
+      <li><a href="#posttest"><span class="th">แบบทดสอบหลังเรียน</span><span class="en">Post-test</span></a></li>
+      <li><a href="#refs"><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ==================================================== CHAPTER BODY -->
+  <main class="chapter-body">
+
+    <!-- ---------------------------------------------------- Objectives -->
+    <section id="objectives">
+      <div class="callout callout-objective">
+        <div class="callout-title">🎯 <span class="th">จุดประสงค์การเรียนรู้</span>
+          <span class="en">Learning objectives</span></div>
+        <p><span class="th">เมื่อเรียนจบบทนี้ นักศึกษาจะสามารถ</span>
+           <span class="en">After this chapter you will be able to:</span></p>
+        <ol>
+          <li><span class="th">อธิบายการเกิดแถบพร่องที่รอยต่อพีเอ็น และเหตุผลที่ไดโอดซิลิคอนต้องการแรงดัน
+            ประมาณ 0.7 โวลต์จึงจะนำกระแส</span>
+            <span class="en">explain how the depletion region forms at a PN junction, and why a silicon diode
+            needs about 0.7 V before it conducts;</span></li>
+          <li><span class="th">วิเคราะห์วงจรเรียงกระแสแบบบริดจ์พร้อมตัวเก็บประจุกรอง
+            และคำนวณแรงดันกระเพื่อมเพื่อเลือกขนาดตัวเก็บประจุ</span>
+            <span class="en">analyse a bridge rectifier with a smoothing capacitor, and compute the ripple in
+            order to size that capacitor;</span></li>
+          <li><span class="th">อธิบายหน้าที่ของไดโอดฟลายแบ็ก และคำนวณแรงดันที่เกิดขึ้นหากไม่มีไดโอดตัวนี้</span>
+            <span class="en">explain what a flyback diode does, and calculate the voltage that appears if it
+            is left out;</span></li>
+          <li><span class="th">ออกแบบวงจรขับหลอด LED ปลูกพืช และเชื่อมโยงกำลังไฟฟ้ากับปริมาณแสงที่พืชได้รับต่อวัน</span>
+            <span class="en">design a drive circuit for horticultural LEDs, and relate the electrical power
+            to the light a crop receives each day;</span></li>
+          <li><span class="th">ออกแบบวงจรขับรีเลย์ด้วยทรานซิสเตอร์ BJT พร้อมคำนวณตัวต้านทานเบสและตรวจสอบสภาวะอิ่มตัว</span>
+            <span class="en">design a BJT relay driver, compute the base resistor and verify
+            saturation;</span></li>
+          <li><span class="th">เลือกใช้มอสเฟตควบคุมโหลดกระแสตรงด้วย PWM และเปรียบเทียบกำลังสูญเสียกับการใช้ BJT</span>
+            <span class="en">select a MOSFET to control a DC load by PWM, and compare its losses with a
+            BJT's.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ Pre-test -->
+    <section id="pretest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบก่อนเรียน</span>
+          <span class="en">Pre-test</span></h2>
+      <p class="muted"><span class="th">ทำก่อนเริ่มอ่านเนื้อหา เพื่อสำรวจความรู้เดิมของตนเอง</span>
+        <span class="en">Take this before reading, to see what you already know.</span></p>
+
+      <section class="quiz" id="pretest-q" data-quiz="pre" data-chapter="ch13">
+        <div class="quiz-head">
+          <h3><span class="th">ก่อนเรียน: บทที่ 13</span><span class="en">Pre-test: Chapter 13</span></h3>
+          <p><span class="th">5 ข้อ · ปรนัย · ตรวจคำตอบได้ทันที</span>
+             <span class="en">5 multiple-choice questions · marked instantly</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="b"
+               data-explain-th="ไดโอดซิลิคอนต้องการแรงดันไบแอสตรงประมาณ 0.7 V เพื่อเอาชนะกำแพงศักย์ที่แถบพร่อง จึงจะเริ่มนำกระแสได้ (หัวข้อ 13.1)"
+               data-explain-en="A silicon diode needs about 0.7 V of forward bias to overcome the potential barrier of the depletion region before it conducts (Section 13.1).">
+            <div class="q-text"><span class="th">ไดโอดซิลิคอนต้องการแรงดันไบแอสตรงประมาณเท่าใดจึงจะเริ่มนำกระแส</span>
+              <span class="en">Roughly what forward voltage does a silicon diode need before it conducts?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>0.2 V</span></label>
+              <label class="opt" data-opt="b"><span>0.7 V</span></label>
+              <label class="opt" data-opt="c"><span>1.5 V</span></label>
+              <label class="opt" data-opt="d"><span>12 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="วงจรเรียงกระแสแบบบริดจ์ใช้ไดโอด 4 ตัว โดยนำกระแสครั้งละ 2 ตัวสลับกันตามครึ่งคลื่นบวกและลบ ทำให้ได้เอาต์พุตแบบเต็มคลื่น (หัวข้อ 13.2)"
+               data-explain-en="A bridge rectifier uses four diodes, two conducting at a time on alternate half-cycles, giving full-wave output (Section 13.2).">
+            <div class="q-text"><span class="th">วงจรเรียงกระแสแบบบริดจ์ใช้ไดโอดกี่ตัว</span>
+              <span class="en">How many diodes does a bridge rectifier use?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>1</span></label>
+              <label class="opt" data-opt="b"><span>2</span></label>
+              <label class="opt" data-opt="c"><span>4</span></label>
+              <label class="opt" data-opt="d"><span>6</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="LED มีลักษณะสมบัติ V–I ที่ชันมาก แรงดันเพิ่มขึ้นเพียงเล็กน้อยทำให้กระแสพุ่งสูงจนไหม้ จึงต้องมีตัวต้านทานหรือวงจรจ่ายกระแสคงที่มาจำกัดกระแส (หัวข้อ 13.3)"
+               data-explain-en="An LED's V–I curve is extremely steep: a small rise in voltage sends the current up until the LED burns out, so a resistor or a constant-current driver must limit it (Section 13.3).">
+            <div class="q-text"><span class="th">เหตุใดจึงต้องต่อตัวต้านทานอนุกรมกับ LED เสมอ</span>
+              <span class="en">Why must an LED always have a series resistor?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เพื่อให้ LED สว่างขึ้น</span><span class="en">To make the LED brighter</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เพื่อเปลี่ยนสีของแสง</span><span class="en">To change the colour of the light</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เพื่อให้กระแสไหลย้อนกลับได้</span><span class="en">To let current flow backwards</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เพื่อจำกัดกระแส ไม่ให้พุ่งสูงจนไหม้</span><span class="en">To limit the current, which would otherwise run away and destroy it</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="เมื่อตัดวงจรขดลวด กระแสที่ไหลอยู่ไม่สามารถหยุดทันทีได้ จึงเกิดแรงดันย้อนกลับสูงมากตาม v = L·di/dt ไดโอดฟลายแบ็กเปิดทางให้กระแสวนต่อจนหมดพลังงาน ป้องกันไม่ให้ทรานซิสเตอร์พัง (หัวข้อ 13.2)"
+               data-explain-en="When a coil's circuit is broken the current cannot stop instantly, so a large reverse voltage appears, v = L·di/dt. The flyback diode gives that current a path to circulate until its energy is gone, saving the transistor (Section 13.2).">
+            <div class="q-text"><span class="th">ไดโอดฟลายแบ็กที่ต่อคร่อมคอยล์ของวาล์วโซลินอยด์ทำหน้าที่อะไร</span>
+              <span class="en">What does the flyback diode across a solenoid valve's coil do?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เปิดทางให้กระแสในขดลวดวนต่อ ป้องกันแรงดันพุ่งทำลายสวิตช์</span><span class="en">Gives the coil current a path to circulate, stopping a voltage spike from destroying the switch</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ทำให้วาล์วเปิดเร็วขึ้น</span><span class="en">Makes the valve open faster</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ลดกระแสที่คอยล์ใช้</span><span class="en">Reduces the current the coil draws</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">แปลงไฟสลับเป็นไฟตรงให้คอยล์</span><span class="en">Rectifies AC into DC for the coil</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="BJT ควบคุมด้วยกระแสเบส จึงต้องจ่ายกระแสเข้าขาเบสตลอดเวลาที่นำกระแส ส่วนมอสเฟตควบคุมด้วยแรงดันที่ขาเกต แทบไม่กินกระแสในสภาวะคงที่ (หัวข้อ 13.4 และ 13.5)"
+               data-explain-en="A BJT is controlled by base current, which must be supplied the whole time it conducts; a MOSFET is controlled by gate voltage and draws almost no steady current (Sections 13.4 and 13.5).">
+            <div class="q-text"><span class="th">ข้อใดคือความแตกต่างพื้นฐานระหว่าง BJT กับมอสเฟต</span>
+              <span class="en">What is the fundamental difference between a BJT and a MOSFET?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">BJT ใช้กับไฟสลับ ส่วนมอสเฟตใช้กับไฟตรง</span><span class="en">A BJT works on AC, a MOSFET on DC</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">BJT ควบคุมด้วยกระแส ส่วนมอสเฟตควบคุมด้วยแรงดัน</span><span class="en">A BJT is current-controlled, a MOSFET is voltage-controlled</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">BJT มีสองขา ส่วนมอสเฟตมีสามขา</span><span class="en">A BJT has two terminals, a MOSFET three</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">มอสเฟตไม่สามารถใช้เป็นสวิตช์ได้</span><span class="en">A MOSFET cannot be used as a switch</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== 13.1 -->
+    <section id="s1">
+      <h2><span class="num">13.1</span><span class="th">รอยต่อพีเอ็น</span>
+          <span class="en">The PN junction</span></h2>
+
+      <p><span class="th">ซิลิคอนบริสุทธิ์นำไฟฟ้าได้แย่มาก เพราะอิเล็กตรอนวงนอกทั้งสี่ตัวถูกใช้จับคู่กับอะตอมข้างเคียงจนหมด
+        ไม่มีตัวไหนว่างพอจะเคลื่อนที่ได้ วิศวกรจึงเติมสารเจือปนลงไปเล็กน้อย —
+        เติมฟอสฟอรัสซึ่งมีอิเล็กตรอนวงนอก 5 ตัว จะเหลืออิเล็กตรอนอิสระหนึ่งตัวต่ออะตอม เรียกว่า
+        <b>สารกึ่งตัวนำชนิดเอ็น (N-type)</b> หรือเติมโบรอนซึ่งมีเพียง 3 ตัว จะเกิด “ที่ว่าง” ที่อิเล็กตรอนข้างเคียงกระโดดเข้ามาแทนได้
+        เรียกที่ว่างนั้นว่า <b>โฮล (hole)</b> และเรียกสารนั้นว่า <b>ชนิดพี (P-type)</b></span>
+        <span class="en">Pure silicon conducts very badly: all four of its outer electrons are locked into
+        bonds with neighbouring atoms, leaving none free to move. So engineers add a trace of another
+        element. Add phosphorus, with five outer electrons, and one spare electron is left over per atom —
+        <b>N-type</b> semiconductor. Add boron, with only three, and a vacancy is created that a
+        neighbouring electron can hop into — that vacancy is called a <b>hole</b>, and the material is
+        <b>P-type</b>.</span></p>
+
+      <p><span class="th">สิ่งที่น่าสนใจเกิดขึ้นเมื่อนำทั้งสองชนิดมาติดกัน อิเล็กตรอนจากฝั่ง N
+        แพร่ข้ามไปรวมกับโฮลฝั่ง P บริเวณรอยต่อ ทำให้ตรงนั้นไม่เหลือพาหะอิสระเลย เรียกว่า
+        <b>แถบพร่อง (depletion region)</b> และเกิดสนามไฟฟ้าภายในที่ต้านการแพร่ต่อไป
+        สนามนี้เทียบเท่ากำแพงศักย์ประมาณ <b>0.7 โวลต์</b> สำหรับซิลิคอน
+        ตัวเลข 0.7 ที่เราใช้กันจนชินนี้จึงไม่ใช่ค่าที่ใครกำหนดขึ้น แต่เป็นผลจากธรรมชาติของวัสดุ</span>
+        <span class="en">Something interesting happens when the two are joined. Electrons from the N side
+        diffuse across and fill holes on the P side, leaving a zone at the junction with no free carriers at
+        all — the <b>depletion region</b> — and an internal electric field that opposes any further
+        diffusion. That field amounts to a potential barrier of about <b>0.7 V</b> in silicon. The familiar
+        0.7 is not a number anyone chose; it falls out of the material itself.</span></p>
+
+      <figure>
+        <div class="figure-box is-animated pn-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 300" role="img" width="720"
+               aria-label="A PN junction under forward bias, where carriers cross and current flows, and under reverse bias, where the depletion region widens and nothing moves">
+            <defs>
+              <clipPath id="clipP"><rect x="50" y="80" width="125" height="70"/></clipPath>
+              <clipPath id="clipN"><rect x="195" y="80" width="125" height="70"/></clipPath>
+              <marker id="ar13" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#fd5f00"/></marker>
+            </defs>
+
+            <text class="cap th" x="185" y="26" text-anchor="middle">ก. ไบแอสตรง (forward bias) — กระแสไหลได้</text>
+            <text class="cap en" x="185" y="26" text-anchor="middle">a. Forward bias — current flows</text>
+            <text class="cap th" x="545" y="26" text-anchor="middle">ข. ไบแอสกลับ (reverse bias) — กระแสไม่ไหล</text>
+            <text class="cap en" x="545" y="26" text-anchor="middle">b. Reverse bias — no current</text>
+
+            <!-- ============ panel A: forward ============ -->
+            <rect class="p-reg" x="50" y="80" width="125" height="70"/>
+            <rect class="dep"   x="175" y="80" width="20"  height="70"/>
+            <rect class="n-reg" x="195" y="80" width="125" height="70"/>
+            <text class="lbl" x="112" y="72" text-anchor="middle">P</text>
+            <text class="lbl" x="257" y="72" text-anchor="middle">N</text>
+
+            <g clip-path="url(#clipP)">
+              <g class="flow drift-r">
+                <circle class="hole" cx="18"  cy="100" r="6"/><circle class="hole" cx="50"  cy="100" r="6"/>
+                <circle class="hole" cx="82"  cy="100" r="6"/><circle class="hole" cx="114" cy="100" r="6"/>
+                <circle class="hole" cx="146" cy="100" r="6"/><circle class="hole" cx="178" cy="100" r="6"/>
+                <circle class="hole" cx="34"  cy="130" r="6"/><circle class="hole" cx="66"  cy="130" r="6"/>
+                <circle class="hole" cx="98"  cy="130" r="6"/><circle class="hole" cx="130" cy="130" r="6"/>
+                <circle class="hole" cx="162" cy="130" r="6"/><circle class="hole" cx="194" cy="130" r="6"/>
+              </g>
+            </g>
+            <g clip-path="url(#clipN)">
+              <g class="flow drift-l">
+                <circle class="elec" cx="196" cy="100" r="6"/><circle class="elec" cx="228" cy="100" r="6"/>
+                <circle class="elec" cx="260" cy="100" r="6"/><circle class="elec" cx="292" cy="100" r="6"/>
+                <circle class="elec" cx="324" cy="100" r="6"/><circle class="elec" cx="356" cy="100" r="6"/>
+                <circle class="elec" cx="212" cy="130" r="6"/><circle class="elec" cx="244" cy="130" r="6"/>
+                <circle class="elec" cx="276" cy="130" r="6"/><circle class="elec" cx="308" cy="130" r="6"/>
+                <circle class="elec" cx="340" cy="130" r="6"/>
+              </g>
+            </g>
+
+            <!-- external circuit, forward -->
+            <path class="wire" d="M50 115 H20 V225 H166"/>
+            <path class="wire" d="M320 115 H350 V225 H196"/>
+            <line x1="166" y1="209" x2="166" y2="241" stroke="#0d1128" stroke-width="3"/>
+            <line x1="178" y1="216" x2="178" y2="234" stroke="#0d1128" stroke-width="3"/>
+            <line x1="184" y1="209" x2="184" y2="241" stroke="#0d1128" stroke-width="3"/>
+            <line x1="196" y1="216" x2="196" y2="234" stroke="#0d1128" stroke-width="3"/>
+            <text class="lbl" x="152" y="203" text-anchor="middle">+</text>
+            <text class="lbl" x="210" y="203" text-anchor="middle">−</text>
+            <line x1="26" y1="115" x2="46" y2="115" stroke="#fd5f00" stroke-width="2.5" marker-end="url(#ar13)"/>
+            <text class="cap" x="34" y="106">I</text>
+
+            <text class="sub th" x="185" y="172" text-anchor="middle">แถบพร่องแคบลง</text>
+            <text class="sub en" x="185" y="172" text-anchor="middle">depletion narrows</text>
+            <text class="sub th" x="185" y="268" text-anchor="middle">ขั้วบวกผลักโฮล ขั้วลบผลักอิเล็กตรอน ทั้งคู่จึงวิ่งเข้าหากันที่รอยต่อ</text>
+            <text class="sub en" x="185" y="268" text-anchor="middle">the positive terminal pushes holes, the negative pushes electrons —</text>
+            <text class="sub th" x="185" y="284" text-anchor="middle">และรวมตัวกัน ทำให้มีกระแสไหลต่อเนื่อง</text>
+            <text class="sub en" x="185" y="284" text-anchor="middle">both move toward the junction, recombine, and the current keeps flowing</text>
+
+            <line x1="360" y1="20" x2="360" y2="290" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ============ panel B: reverse ============ -->
+            <rect class="p-reg" x="410" y="80" width="70"  height="70"/>
+            <rect class="dep"   x="480" y="80" width="130" height="70"/>
+            <rect class="n-reg" x="610" y="80" width="70"  height="70"/>
+            <text class="lbl" x="445" y="72" text-anchor="middle">P</text>
+            <text class="lbl" x="645" y="72" text-anchor="middle">N</text>
+
+            <g>
+              <circle class="hole" cx="422" cy="100" r="6"/><circle class="hole" cx="444" cy="100" r="6"/>
+              <circle class="hole" cx="466" cy="100" r="6"/><circle class="hole" cx="422" cy="130" r="6"/>
+              <circle class="hole" cx="444" cy="130" r="6"/><circle class="hole" cx="466" cy="130" r="6"/>
+              <circle class="elec" cx="624" cy="100" r="6"/><circle class="elec" cx="646" cy="100" r="6"/>
+              <circle class="elec" cx="668" cy="100" r="6"/><circle class="elec" cx="624" cy="130" r="6"/>
+              <circle class="elec" cx="646" cy="130" r="6"/><circle class="elec" cx="668" cy="130" r="6"/>
+            </g>
+            <text class="lbl" x="545" y="118" text-anchor="middle" fill="#d64545">✕</text>
+
+            <!-- external circuit, reverse -->
+            <path class="wire" d="M410 115 H380 V225 H526"/>
+            <path class="wire" d="M680 115 H710 V225 H556"/>
+            <line x1="526" y1="209" x2="526" y2="241" stroke="#0d1128" stroke-width="3"/>
+            <line x1="538" y1="216" x2="538" y2="234" stroke="#0d1128" stroke-width="3"/>
+            <line x1="544" y1="209" x2="544" y2="241" stroke="#0d1128" stroke-width="3"/>
+            <line x1="556" y1="216" x2="556" y2="234" stroke="#0d1128" stroke-width="3"/>
+            <text class="lbl" x="512" y="203" text-anchor="middle">−</text>
+            <text class="lbl" x="570" y="203" text-anchor="middle">+</text>
+
+            <text class="sub th" x="545" y="172" text-anchor="middle">แถบพร่องกว้างขึ้นมาก</text>
+            <text class="sub en" x="545" y="172" text-anchor="middle">the depletion region widens</text>
+            <text class="sub th" x="545" y="268" text-anchor="middle">ขั้วไฟดึงพาหะออกห่างจากรอยต่อ ไม่มีอะไรข้ามได้</text>
+            <text class="sub en" x="545" y="268" text-anchor="middle">the supply pulls the carriers away from the junction; nothing can cross,</text>
+            <text class="sub th" x="545" y="284" text-anchor="middle">เหลือเพียงกระแสรั่วระดับไมโครแอมแปร์ (ภาพจึงนิ่ง)</text>
+            <text class="sub en" x="545" y="284" text-anchor="middle">leaving only microamps of leakage — which is why this panel is still</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 13.1</span><span class="en">Figure 13.1</span></b>
+          <span class="th"> รอยต่อพีเอ็นภายใต้ไบแอสสองทิศทาง วงกลมสีแดงคือโฮลในฝั่ง P
+            วงกลมสีน้ำเงินคืออิเล็กตรอนอิสระในฝั่ง N
+            สังเกตว่าภาพซ้ายเคลื่อนไหวแต่ภาพขวานิ่งสนิท — ความต่างนี้เองคือคุณสมบัติที่มีค่าที่สุดของไดโอด
+            คือ <b>ยอมให้กระแสไหลทางเดียว</b> ซึ่งไม่มีตัวต้านทานตัวใดทำได้</span>
+          <span class="en"> A PN junction biased both ways. Red circles are holes in the P material, blue
+            circles free electrons in the N. Note that the left panel moves while the right is perfectly
+            still: that difference <i>is</i> the diode's most valuable property — it <b>passes current one
+            way only</b>, something no resistor can do.</span></figcaption>
+      </figure>
+
+      <div class="callout callout-info">
+        <div class="callout-title">ℹ️ <span class="th">ทำไมต้องรู้เรื่อง 0.7 โวลต์ให้ขึ้นใจ</span>
+          <span class="en">Why the 0.7 V is worth committing to memory</span></div>
+        <p class="mb-0"><span class="th">เพราะมันหายไปจากวงจรของเราเสมอ ไม่ว่าจะออกแบบอย่างไร
+          ในวงจรเรียงกระแสแบบบริดจ์ มีไดโอดนำกระแสพร้อมกันสองตัว จึงเสียแรงดันไป 1.4 V
+          ถ้าแหล่งจ่ายมีเพียง 5 V จะเหลือ 3.6 V ซึ่งอาจไม่พอเลี้ยงไมโครคอนโทรลเลอร์
+          สำหรับงานแรงดันต่ำจึงนิยมใช้ <b>ไดโอดชอตต์กี (Schottky)</b> ที่ตกคร่อมเพียง 0.3 V แทน</span>
+          <span class="en">Because it is always taken out of your circuit, whatever you do. A bridge
+          rectifier has two diodes conducting at once, so 1.4 V disappears. From a 5 V source that leaves
+          3.6 V, which may not be enough to run a microcontroller. For low-voltage work the answer is a
+          <b>Schottky diode</b>, which drops only about 0.3 V.</span></p>
+      </div>
+    </section>
+
+    <!-- =============================================== 13.2 -->
+    <section id="s2">
+      <h2><span class="num">13.2</span><span class="th">ไดโอดและการประยุกต์</span>
+          <span class="en">Diodes and their uses</span></h2>
+
+      <p><span class="th">รอยต่อพีเอ็นหนึ่งรอยต่อบรรจุในตัวถังพร้อมขาสองขา ก็คือ <b>ไดโอด</b>
+        ขาที่ต่อกับฝั่ง P เรียกว่า <b>แอโนด (anode)</b> และขาที่ต่อกับฝั่ง N เรียกว่า
+        <b>แคโทด (cathode)</b> ซึ่งบนตัวจริงจะมีแถบสีคาดไว้ให้สังเกตได้
+        ในแผนผังวงจร สัญลักษณ์ของไดโอดคือสามเหลี่ยมชี้ไปหาขีด — ทิศที่สามเหลี่ยมชี้คือทิศที่กระแสไหลได้</span>
+        <span class="en">One PN junction in a package with two leads is a <b>diode</b>. The lead on the P
+        side is the <b>anode</b>, the one on the N side the <b>cathode</b>, marked on the real component by
+        a painted band. On a schematic the symbol is a triangle pointing at a bar, and the direction the
+        triangle points is the direction current may flow.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 680 330" role="img" width="680"
+               aria-label="The current-voltage characteristic of a diode, forward and reverse">
+            <!-- axes -->
+            <line class="axis" x1="70" y1="190" x2="630" y2="190"/>
+            <line class="axis" x1="430" y1="310" x2="430" y2="40"/>
+            <polygon points="630,186 640,190 630,194" fill="#6c757d"/>
+            <polygon points="426,46 430,36 434,46" fill="#6c757d"/>
+            <text class="lbl" x="608" y="212">V</text>
+            <text class="lbl" x="446" y="48">I</text>
+
+            <!-- forward branch -->
+            <path d="M430 190 C 452 189, 466 182, 474 152 C 480 112, 490 70, 502 46"
+                  stroke="#fd5f00" stroke-width="3" fill="none"/>
+            <!-- reverse branch: leakage then breakdown -->
+            <path d="M430 190 L 152 196" stroke="#fd5f00" stroke-width="3" fill="none"/>
+            <path d="M152 196 C 144 210, 142 260, 140 306" stroke="#fd5f00" stroke-width="3" fill="none"/>
+
+            <!-- knee marker -->
+            <line x1="472" y1="190" x2="472" y2="152" stroke="#6c757d" stroke-width="1" stroke-dasharray="4 3"/>
+            <text class="cap" x="486" y="208">0.7 V</text>
+
+            <!-- region shading labels -->
+            <text class="cap th" x="540" y="96" text-anchor="middle">ไบแอสตรง</text>
+            <text class="cap en" x="540" y="96" text-anchor="middle">forward bias</text>
+            <text class="sub th" x="540" y="114" text-anchor="middle">กระแสพุ่งขึ้นชันมาก</text>
+            <text class="sub en" x="540" y="114" text-anchor="middle">the current climbs very steeply</text>
+            <text class="sub th" x="540" y="130" text-anchor="middle">แรงดันแทบไม่เปลี่ยนจาก 0.7 V</text>
+            <text class="sub en" x="540" y="130" text-anchor="middle">while the voltage barely moves from 0.7 V</text>
+
+            <text class="cap th" x="290" y="160" text-anchor="middle" fill="#2b6cb0">ไบแอสกลับ</text>
+            <text class="cap en" x="290" y="160" text-anchor="middle" fill="#2b6cb0">reverse bias</text>
+            <text class="sub th" x="290" y="178" text-anchor="middle">กระแสรั่วเพียงไม่กี่ไมโครแอมแปร์</text>
+            <text class="sub en" x="290" y="178" text-anchor="middle">only a few microamps of leakage</text>
+
+            <text class="cap th" x="140" y="326" text-anchor="middle" fill="#d64545">แรงดันพังทลาย</text>
+            <text class="cap en" x="140" y="326" text-anchor="middle" fill="#d64545">breakdown voltage</text>
+            <text class="sub th" x="188" y="276">ไดโอดทั่วไปจะเสียหาย</text>
+            <text class="sub en" x="188" y="276">an ordinary diode is destroyed here</text>
+            <text class="sub th" x="188" y="292">แต่ไดโอดซีเนอร์ออกแบบให้ทำงานที่จุดนี้</text>
+            <text class="sub en" x="188" y="292">but a Zener diode is designed to work here</text>
+
+            <!-- diode symbol inset -->
+            <path class="wire" d="M92 70 H120"/>
+            <polygon points="120,56 120,84 144,70" fill="#0d1128"/>
+            <line x1="144" y1="56" x2="144" y2="84" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M144 70 H172"/>
+            <text class="sub th" x="104" y="102" text-anchor="middle">แอโนด</text>
+            <text class="sub en" x="104" y="102" text-anchor="middle">anode</text>
+            <text class="sub th" x="162" y="102" text-anchor="middle">แคโทด</text>
+            <text class="sub en" x="162" y="102" text-anchor="middle">cathode</text>
+            <text class="sub th" x="132" y="44" text-anchor="middle">กระแสไหลทางนี้ →</text>
+            <text class="sub en" x="132" y="44" text-anchor="middle">current flows this way →</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 13.2</span><span class="en">Figure 13.2</span></b>
+          <span class="th"> เส้นโค้งลักษณะสมบัติของไดโอด เทียบกับเส้นตรงของตัวต้านทานในรูปที่ 3.3
+            จะเห็นความต่างทันที — ไดโอด <b>ไม่มีค่าความต้านทานเดียวที่ใช้ได้ตลอด</b>
+            ในทางปฏิบัติเราจึงไม่ใช้กฎของโอห์มกับไดโอด แต่ใช้แบบจำลองง่าย ๆ ว่า
+            “ถ้าไบแอสตรงให้ถือว่าตกคร่อม 0.7 V คงที่ ถ้าไบแอสกลับให้ถือว่าเปิดวงจร”
+            ซึ่งแม่นยำพอสำหรับงานออกแบบเกือบทั้งหมดในรายวิชานี้</span>
+          <span class="en"> The diode's characteristic. Set it against the straight line of the resistor in
+            Figure 3.3 and the difference is immediate: a diode has <b>no single resistance that holds
+            everywhere</b>. In practice we do not apply Ohm's law to it at all, but use a simple model —
+            "forward biased, assume a constant 0.7 V drop; reverse biased, treat it as an open circuit" —
+            which is accurate enough for almost all the design work in this course.</span></figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 13.1 ชนิดของไดโอดและการใช้งานในระบบฟาร์ม</span>
+            <span class="en">Table 13.1 Types of diode and where they appear on a farm</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">ชนิด</span><span class="en">Type</span></th>
+              <th class="num"><span class="th">แรงดันตกคร่อม</span><span class="en">Forward drop</span></th>
+              <th><span class="th">หน้าที่เด่น</span><span class="en">What it is for</span></th>
+              <th><span class="th">พบที่ไหนในฟาร์ม</span><span class="en">Where you meet it</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b><span class="th">เรียงกระแสทั่วไป</span><span class="en">Rectifier</span></b><br>
+                <span class="small muted">1N4001–1N4007</span></td>
+              <td class="num">0.7 V</td>
+              <td><span class="th">แปลงไฟสลับเป็นไฟตรง · ป้องกันการต่อขั้วกลับ</span>
+                  <span class="en">AC to DC · reverse-polarity protection</span></td>
+              <td><span class="th">แหล่งจ่ายไฟของตู้ควบคุม</span><span class="en">Control-cabinet power supplies</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">ชอตต์กี</span><span class="en">Schottky</span></b><br>
+                <span class="small muted">1N5819, SS34</span></td>
+              <td class="num">0.3 V</td>
+              <td><span class="th">สูญเสียต่ำ สวิตช์เร็ว</span><span class="en">Low loss, fast switching</span></td>
+              <td><span class="th">ไดโอดกันย้อนของแผงโซลาร์ · วงจรแปลงไฟ DC-DC</span>
+                  <span class="en">PV blocking diodes · DC-DC converters</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">ฟรีวีล / ฟลายแบ็ก</span><span class="en">Freewheeling / flyback</span></b></td>
+              <td class="num">0.7 V</td>
+              <td><span class="th">ระบายพลังงานจากขดลวดเมื่อตัดวงจร</span>
+                  <span class="en">Drains a coil's energy when the circuit opens</span></td>
+              <td><span class="th">คร่อมคอยล์วาล์วโซลินอยด์ รีเลย์ และคอนแทกเตอร์</span>
+                  <span class="en">Across solenoid valve, relay and contactor coils</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">ซีเนอร์</span><span class="en">Zener</span></b></td>
+              <td class="num"><span class="th">ทำงานที่ไบแอสกลับ</span><span class="en">works in reverse</span></td>
+              <td><span class="th">รักษาแรงดันให้คงที่ · จำกัดแรงดันเกิน</span>
+                  <span class="en">Holds a voltage steady · clamps overvoltage</span></td>
+              <td><span class="th">วงจรอ้างอิงแรงดัน · ป้องกันขาสัญญาณของเซนเซอร์</span>
+                  <span class="en">Voltage references · protecting sensor inputs</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">เปล่งแสง (LED)</span><span class="en">Light-emitting (LED)</span></b></td>
+              <td class="num">1.8–3.4 V</td>
+              <td><span class="th">เปลี่ยนไฟฟ้าเป็นแสง</span><span class="en">Turns electricity into light</span></td>
+              <td><span class="th">ไฟแสดงสถานะ · ไฟปลูกพืช (หัวข้อ 13.3)</span>
+                  <span class="en">Indicators · grow lights (Section 13.3)</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">รับแสง (photodiode)</span><span class="en">Photodiode</span></b></td>
+              <td class="num"><span class="th">ทำงานที่ไบแอสกลับ</span><span class="en">works in reverse</span></td>
+              <td><span class="th">เปลี่ยนแสงเป็นกระแส</span><span class="en">Turns light into current</span></td>
+              <td><span class="th">เซนเซอร์วัดความเข้มแสงในโรงเรือน</span>
+                  <span class="en">Light-level sensors in greenhouses</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3><span class="th">13.2.1 วงจรเรียงกระแสแบบบริดจ์</span>
+          <span class="en">13.2.1 The bridge rectifier</span></h3>
+      <p><span class="th">ตู้ควบคุมทุกตู้ในฟาร์มรับไฟสลับ 230 V เข้ามา แต่ไมโครคอนโทรลเลอร์ เซนเซอร์
+        และรีเลย์ ล้วนต้องการไฟตรง งานแปลงนี้เริ่มจากหม้อแปลงลดแรงดันลง แล้วส่งต่อให้
+        <b>วงจรเรียงกระแสแบบบริดจ์</b> ซึ่งใช้ไดโอดสี่ตัวจัดวางอย่างชาญฉลาด
+        เพื่อให้กระแสที่ออกไปหาโหลดไหลไปทางเดียวเสมอ ไม่ว่าขั้วของไฟสลับขาเข้าจะสลับไปทางใด</span>
+        <span class="en">Every control cabinet on a farm takes in 230 V AC, yet its microcontroller, sensors
+        and relays all want DC. The conversion begins with a transformer to step the voltage down, and then
+        a <b>bridge rectifier</b>: four diodes arranged so cleverly that the current reaching the load
+        always flows the same way, whichever way round the incoming AC happens to be.</span></p>
+
+      <figure>
+        <div class="figure-box is-animated br-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 470" role="img" width="720"
+               aria-label="A bridge rectifier with the two conducting diode pairs alternating between half-cycles">
+            <!-- bridge edges -->
+            <line class="wire" x1="200" y1="180" x2="280" y2="100"/>
+            <line class="wire" x1="360" y1="180" x2="280" y2="100"/>
+            <line class="wire" x1="280" y1="260" x2="200" y2="180"/>
+            <line class="wire" x1="280" y1="260" x2="360" y2="180"/>
+
+            <!-- conduction highlights, alternating -->
+            <g class="half half-a">
+              <line x1="200" y1="180" x2="280" y2="100" stroke="#fd5f00" stroke-width="7" stroke-linecap="round" opacity=".45"/>
+              <line x1="280" y1="260" x2="360" y2="180" stroke="#fd5f00" stroke-width="7" stroke-linecap="round" opacity=".45"/>
+            </g>
+            <g class="half half-b">
+              <line x1="360" y1="180" x2="280" y2="100" stroke="#2f855a" stroke-width="7" stroke-linecap="round" opacity=".45"/>
+              <line x1="280" y1="260" x2="200" y2="180" stroke="#2f855a" stroke-width="7" stroke-linecap="round" opacity=".45"/>
+            </g>
+
+            <!-- diode symbols, rotated along each edge -->
+            <g transform="translate(240,140) rotate(-45)">
+              <polygon points="-9,-9 -9,9 7,0" fill="#0d1128"/>
+              <line x1="7" y1="-10" x2="7" y2="10" stroke="#0d1128" stroke-width="3"/>
+            </g>
+            <text class="lbl" x="214" y="132">D₁</text>
+            <g transform="translate(320,140) rotate(-135)">
+              <polygon points="-9,-9 -9,9 7,0" fill="#0d1128"/>
+              <line x1="7" y1="-10" x2="7" y2="10" stroke="#0d1128" stroke-width="3"/>
+            </g>
+            <text class="lbl" x="336" y="132">D₂</text>
+            <g transform="translate(240,220) rotate(-135)">
+              <polygon points="-9,-9 -9,9 7,0" fill="#0d1128"/>
+              <line x1="7" y1="-10" x2="7" y2="10" stroke="#0d1128" stroke-width="3"/>
+            </g>
+            <text class="lbl" x="214" y="240">D₃</text>
+            <g transform="translate(320,220) rotate(-45)">
+              <polygon points="-9,-9 -9,9 7,0" fill="#0d1128"/>
+              <line x1="7" y1="-10" x2="7" y2="10" stroke="#0d1128" stroke-width="3"/>
+            </g>
+            <text class="lbl" x="336" y="240">D₄</text>
+
+            <!-- DC rails, load and smoothing capacitor -->
+            <path class="wire" d="M280 100 V60 H500"/>
+            <path class="wire" d="M280 260 V320 H500"/>
+            <path d="M280 100 V60 H500" stroke="#fd5f00" stroke-width="5" fill="none" opacity=".35"/>
+            <path d="M280 260 V320 H500" stroke="#fd5f00" stroke-width="5" fill="none" opacity=".35"/>
+            <circle class="node" cx="430" cy="60" r="5"/>
+            <circle class="node" cx="430" cy="320" r="5"/>
+            <path class="wire" d="M430 60 V178 M430 194 V320"/>
+            <line x1="408" y1="178" x2="452" y2="178" stroke="#0d1128" stroke-width="3"/>
+            <line x1="408" y1="194" x2="452" y2="194" stroke="#0d1128" stroke-width="3"/>
+            <text class="lbl" x="468" y="176">C</text>
+            <text class="sub th" x="430" y="350" text-anchor="middle">ตัวเก็บประจุกรอง</text>
+            <text class="sub en" x="430" y="350" text-anchor="middle">smoothing capacitor</text>
+            <path class="wire" d="M500 60 V170 M500 230 V320"/>
+            <rect class="sym" x="486" y="170" width="28" height="60"/>
+            <text class="lbl" x="540" y="196">R</text>
+            <text class="sub th" x="540" y="214">โหลด</text>
+            <text class="sub en" x="540" y="214">load</text>
+            <text class="cap" x="548" y="56">+</text>
+            <text class="cap" x="548" y="330">−</text>
+
+            <!-- AC side, with one hop where it crosses the negative rail -->
+            <path class="wire" d="M200 180 H120 V400 H240"/>
+            <path class="wire" d="M360 180 V312"/>
+            <path class="wire" d="M360 328 V400 H304"/>
+            <path class="wire" d="M360 312 a8 8 0 0 1 0 16"/>
+            <circle class="sym" cx="272" cy="400" r="24"/>
+            <path d="M260 400 q6 -9 12 0 q6 9 12 0" stroke="#0d1128" stroke-width="2" fill="none"/>
+            <text class="sub th" x="272" y="440" text-anchor="middle">ไฟสลับจากหม้อแปลง</text>
+            <text class="sub en" x="272" y="440" text-anchor="middle">AC from the transformer</text>
+
+            <!-- alternating captions -->
+            <g class="half half-a">
+              <text class="cap th" x="600" y="118" text-anchor="middle">ครึ่งคลื่นบวก</text>
+              <text class="cap en" x="600" y="118" text-anchor="middle">positive half-cycle</text>
+              <text class="sub th" x="600" y="138" text-anchor="middle">D₁ และ D₄ นำกระแส</text>
+              <text class="sub en" x="600" y="138" text-anchor="middle">D₁ and D₄ conduct</text>
+              <text class="sub th" x="600" y="154" text-anchor="middle">D₂ และ D₃ ถูกไบแอสกลับ</text>
+              <text class="sub en" x="600" y="154" text-anchor="middle">D₂ and D₃ are reverse biased</text>
+            </g>
+            <g class="half half-b">
+              <text class="cap th" x="600" y="246" text-anchor="middle" fill="#2f855a">ครึ่งคลื่นลบ</text>
+              <text class="cap en" x="600" y="246" text-anchor="middle" fill="#2f855a">negative half-cycle</text>
+              <text class="sub th" x="600" y="266" text-anchor="middle">D₂ และ D₃ นำกระแส</text>
+              <text class="sub en" x="600" y="266" text-anchor="middle">D₂ and D₃ conduct</text>
+              <text class="sub th" x="600" y="282" text-anchor="middle">D₁ และ D₄ ถูกไบแอสกลับ</text>
+              <text class="sub en" x="600" y="282" text-anchor="middle">D₁ and D₄ are reverse biased</text>
+            </g>
+
+            <text class="sub th" x="60" y="440">แต่ไม่ว่าจะครึ่งคลื่นใด กระแสในรางบนและรางล่างไหลทางเดิมเสมอ</text>
+            <text class="sub en" x="60" y="440">but on either half-cycle the current in the two rails flows the same way</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 13.3</span><span class="en">Figure 13.3</span></b>
+          <span class="th"> วงจรเรียงกระแสแบบบริดจ์ ในภาพเคลื่อนไหว เส้นหนาจะสลับไปมาระหว่างคู่ไดโอด
+            D₁–D₄ (สีส้ม) กับ D₂–D₃ (สีเขียว) ตามขั้วของไฟสลับที่เข้ามา
+            แต่ส่วนที่ไม่เคยเปลี่ยนเลยคือ <b>รางบนและรางล่าง</b> ซึ่งเป็นสีส้มจาง ๆ ตลอดเวลา
+            นั่นคือหัวใจของวงจรนี้ — กระแสสลับทิศที่ขาเข้า แต่ที่โหลดไหลทางเดียวเสมอ
+            <br>สังเกตสัญลักษณ์สายไขว้ที่จุดตัดของสายไฟสลับกับรางลบ ซึ่งเป็นสายที่ไม่ได้ต่อถึงกัน
+            ตามที่เรียนในบทที่ 2</span>
+          <span class="en"> The bridge rectifier. In the animation the heavy line alternates between the
+            pair D₁–D₄ (orange) and the pair D₂–D₃ (green), following the polarity of the incoming AC. What
+            never changes is the pale orange on <b>the two rails</b>: that is the whole point of the
+            circuit — the current reverses at the input but always flows one way through the load.
+            <br>Note the hop symbol where the AC wire crosses the negative rail, marking wires that are not
+            joined, as introduced in Chapter 2.</span></figcaption>
+      </figure>
+
+      <p><span class="th">ผลที่ได้คือแรงดันที่เป็นบวกตลอดเวลา แต่ยังกระเพื่อมขึ้นลงเป็นลูกคลื่นถี่ ๆ
+        ที่ความถี่สองเท่าของไฟขาเข้า คือ 100 Hz ต้องใส่ <b>ตัวเก็บประจุกรอง</b> คร่อมโหลด
+        ซึ่งทำหน้าที่เหมือนถังพักน้ำ — ประจุเต็มตอนยอดคลื่น แล้วจ่ายออกให้โหลดในช่วงที่แรงดันตกลง
+        นี่คือการใช้ความสามารถเก็บพลังงานของตัวเก็บประจุจากบทที่ 5 โดยตรง</span>
+        <span class="en">The result is a voltage that is always positive but still pulsing, at twice the
+        input frequency — 100 Hz. A <b>smoothing capacitor</b> across the load fixes this. It behaves like a
+        storage tank: it fills at each crest and supplies the load through the troughs, putting the
+        energy-storing property from Chapter 5 to direct use.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 700 340" role="img" width="700"
+               aria-label="Input sine wave, full-wave rectified output, and the smoothed output with ripple">
+            <line class="axis" x1="60" y1="180" x2="660" y2="180"/>
+            <polygon points="660,176 670,180 660,184" fill="#6c757d"/>
+            <text class="sub th" x="612" y="200">เวลา</text>
+            <text class="sub en" x="612" y="200">time</text>
+
+            <!-- input sine, dashed -->
+            <path d="M70 180 Q 120 0 170 180 Q 220 360 270 180 Q 320 0 370 180 Q 420 360 470 180 Q 520 0 570 180"
+                  stroke="#9aa3c4" stroke-width="2" fill="none" stroke-dasharray="6 4"/>
+            <!-- rectified, all humps positive -->
+            <path d="M70 180 Q 120 0 170 180 Q 220 0 270 180 Q 320 0 370 180 Q 420 0 470 180 Q 520 0 570 180"
+                  stroke="#fd5f00" stroke-width="2.5" fill="none"/>
+            <!-- smoothed -->
+            <path d="M120 90 L214 106 L220 90 L314 106 L320 90 L414 106 L420 90 L514 106 L520 90"
+                  stroke="#2f855a" stroke-width="3.5" fill="none"/>
+
+            <!-- peak and ripple markers -->
+            <line x1="60" y1="90" x2="600" y2="90" stroke="#e4e7ec" stroke-width="1"/>
+            <text class="sub" x="54" y="94" text-anchor="end">25.5 V</text>
+            <line x1="60" y1="106" x2="600" y2="106" stroke="#e4e7ec" stroke-width="1"/>
+            <text class="sub" x="54" y="110" text-anchor="end">24.4 V</text>
+            <line x1="600" y1="90" x2="600" y2="106" stroke="#2f855a" stroke-width="2"/>
+            <line x1="594" y1="90" x2="606" y2="90" stroke="#2f855a" stroke-width="2"/>
+            <line x1="594" y1="106" x2="606" y2="106" stroke="#2f855a" stroke-width="2"/>
+            <text class="cap" x="614" y="102" fill="#2f855a">ΔV</text>
+
+            <!-- half period marker -->
+            <line x1="120" y1="212" x2="220" y2="212" stroke="#0d1128" stroke-width="1.5"/>
+            <line x1="120" y1="206" x2="120" y2="218" stroke="#0d1128" stroke-width="1.5"/>
+            <line x1="220" y1="206" x2="220" y2="218" stroke="#0d1128" stroke-width="1.5"/>
+            <text class="sub" x="170" y="230" text-anchor="middle">10 ms</text>
+
+            <!-- legend -->
+            <line x1="70" y1="270" x2="106" y2="270" stroke="#9aa3c4" stroke-width="2" stroke-dasharray="6 4"/>
+            <text class="sub th" x="114" y="274">ไฟสลับขาเข้าจากหม้อแปลง (18 V rms)</text>
+            <text class="sub en" x="114" y="274">AC input from the transformer (18 V rms)</text>
+            <line x1="70" y1="292" x2="106" y2="292" stroke="#fd5f00" stroke-width="2.5"/>
+            <text class="sub th" x="114" y="296">หลังผ่านบริดจ์ — บวกตลอด แต่ยังกระเพื่อมเต็มที่</text>
+            <text class="sub en" x="114" y="296">after the bridge — always positive, but still pulsing fully</text>
+            <line x1="70" y1="314" x2="106" y2="314" stroke="#2f855a" stroke-width="3.5"/>
+            <text class="sub th" x="114" y="318">หลังใส่ตัวเก็บประจุ — เกือบเรียบ เหลือกระเพื่อมเล็กน้อย</text>
+            <text class="sub en" x="114" y="318">with the capacitor — nearly flat, with a little ripple left</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 13.4</span><span class="en">Figure 13.4</span></b>
+          <span class="th"> รูปคลื่นของวงจรในรูปที่ 13.3 สังเกตว่าลูกคลื่นหลังผ่านบริดจ์มีสองลูกต่อหนึ่งรอบของไฟขาเข้า
+            ความถี่ของการกระเพื่อมจึงเป็น 100 Hz และคาบของการคายประจุคือ 10 ms ซึ่งเป็นตัวเลขที่ใช้คำนวณในตัวอย่างที่ 13.1
+            <br><i>หมายเหตุ:</i> ขนาดของการกระเพื่อมในภาพถูกขยายให้เห็นชัด ของจริงในตัวอย่างข้างล่างคิดเป็นเพียง 4 %
+            ของแรงดันยอด</span>
+          <span class="en"> The waveforms of the circuit in Figure 13.3. Note that the bridge gives two
+            humps per cycle of the input, so the ripple frequency is 100 Hz and the capacitor discharges for
+            10 ms — the figure used in Example 13.1. <br><i>Note:</i> the ripple is drawn exaggerated; in the
+            example below it is only about 4 % of the peak.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 13.1</span><span class="en">Example 13.1</span></span>
+          <span class="th">ออกแบบแหล่งจ่ายไฟ 24 V ให้ตู้ควบคุมเซนเซอร์</span>
+          <span class="en">Designing a 24 V supply for a sensor cabinet</span></div>
+        <div class="example-body">
+          <p><span class="th">ตู้ควบคุมระบบให้น้ำต้องการไฟตรงประมาณ 24 V จ่ายกระแส 0.5 A
+            เพื่อเลี้ยงเซนเซอร์ วาล์วโซลินอยด์ และรีเลย์ ออกแบบโดยใช้หม้อแปลงที่ให้แรงดันด้านทุติยภูมิ
+            18 V rms ที่ 50 Hz ตามด้วยวงจรบริดจ์และตัวเก็บประจุกรอง จงหา
+            (ก) แรงดันยอดหลังผ่านบริดจ์ (ข) ขนาดตัวเก็บประจุเพื่อให้แรงดันกระเพื่อมไม่เกิน 1 V
+            (ค) พิกัดของไดโอดที่ต้องเลือก และ (ง) กำลังสูญเสียในไดโอด</span>
+            <span class="en">An irrigation control cabinet needs about 24 V DC at 0.5 A to run its sensors,
+            solenoid valves and relays. The design uses a transformer with an 18 V rms, 50 Hz secondary,
+            then a bridge and a smoothing capacitor. Find (a) the peak voltage after the bridge, (b) the
+            capacitor needed to keep the ripple within 1 V, (c) the diode ratings to specify, and (d) the
+            power lost in the diodes.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) แรงดันยอดของไฟสลับหาได้จากค่า rms (บทที่ 7) แล้วหักแรงดันตกคร่อมไดโอด
+              <b>สองตัว</b> เพราะบริดจ์นำกระแสครั้งละสองตัว</span>
+              <span class="en">(a) The peak follows from the rms value (Chapter 7); then subtract
+              <b>two</b> diode drops, because two conduct at a time in a bridge.</span></p>
+            \[ V_{\text{peak}} = \sqrt{2}\,V_{\text{rms}} = \sqrt{2}\,(18) = 25.5\ \text{V} \]
+            \[ V_{\text{DC,peak}} = 25.5 - 2(0.7) = 24.1\ \text{V} \]
+
+            <p><span class="th">(ข) ตัวเก็บประจุต้องจ่ายกระแสให้โหลดระหว่างยอดคลื่นสองลูก
+              ซึ่งห่างกัน 10 ms สำหรับการเรียงกระแสเต็มคลื่นที่ 50 Hz</span>
+              <span class="en">(b) The capacitor must carry the load between crests, 10 ms apart for
+              full-wave rectification at 50 Hz.</span></p>
+            \[ \Delta V = \frac{I}{f_{\text{ripple}}\,C}
+               \quad\Rightarrow\quad
+               C = \frac{I}{f_{\text{ripple}}\,\Delta V} = \frac{0.5}{(100)(1)} = 5000\ \mu\text{F} \]
+            <p><span class="th">ค่ามาตรฐานที่ใกล้ที่สุดคือ 4700 µF ตรวจดูว่าการกระเพื่อมที่ได้ยังรับได้หรือไม่</span>
+              <span class="en">The nearest standard value is 4700 µF; check the ripple it actually
+              gives.</span></p>
+            \[ \Delta V = \frac{0.5}{(100)(4700\times10^{-6})} = 1.06\ \text{V} \quad ✓ \]
+            <p><span class="th">แรงดันจึงแกว่งระหว่าง 24.1 V ลงไปถึง 23.0 V เฉลี่ยราว 23.6 V
+              ซึ่งเพียงพอสำหรับอุปกรณ์ 24 V ที่ยอมรับช่วง ±10 %</span>
+              <span class="en">The voltage therefore swings from 24.1 V down to 23.0 V, averaging about
+              23.6 V — enough for 24 V equipment that tolerates ±10 %.</span></p>
+
+            <p><span class="th">(ค) พิกัดไดโอด ต้องดูสองค่า คือ แรงดันย้อนกลับสูงสุดที่ทนได้ (PIV)
+              และกระแสเฉลี่ยที่ไหลผ่าน</span>
+              <span class="en">(c) Two diode ratings matter: the peak inverse voltage it must withstand, and
+              the average current through it.</span></p>
+            \[ \text{PIV} \ge V_{\text{peak}} = 25.5\ \text{V}
+               \qquad I_{\text{avg}} \ge 0.5\ \text{A} \]
+            <p><span class="th">เลือก <b>1N4007</b> ซึ่งทน 1000 V และ 1 A — เผื่อไว้มากเกินความจำเป็น
+              แต่ราคาเท่ากับรุ่นที่ทนน้อยกว่า จึงไม่มีเหตุผลที่จะเลือกตัวเล็กกว่า</span>
+              <span class="en">Specify a <b>1N4007</b>, rated 1000 V and 1 A — far more than required, but it
+              costs the same as the lower-rated parts, so there is no reason to choose anything
+              smaller.</span></p>
+
+            <p><span class="th">(ง) กำลังสูญเสีย — ไดโอดสองตัวนำกระแสพร้อมกันเสมอ</span>
+              <span class="en">(d) The losses — two diodes always conduct together.</span></p>
+            \[ P_{\text{diode}} = 2\,V_F\,I = 2\,(0.7)(0.5) = 0.70\ \text{W} \]
+
+            <div class="callout callout-agri mb-0">
+              <div class="callout-title">🌱 <span class="th">ข้อสังเกตที่ใช้ได้จริง</span>
+                <span class="en">Points that matter in practice</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">หม้อแปลง 18 V ให้ไฟตรงได้ 24 V — คนที่เลือกหม้อแปลง 24 V เพราะอยากได้ 24 V
+                  จะได้แรงดันจริงสูงถึง 33 V ซึ่งอาจทำให้อุปกรณ์เสียหาย
+                  <b>ต้องคิดจากค่ายอดเสมอ ไม่ใช่ค่า rms</b></span>
+                  <span class="en">An 18 V transformer yields 24 V DC. Anyone who picks a 24 V transformer
+                  because they want 24 V gets 33 V instead, which can destroy the equipment. <b>Always work
+                  from the peak, never the rms.</b></span></li>
+                <li><span class="th">กำลังสูญเสีย 0.70 W จากกำลังที่จ่าย 24 × 0.5 = 12 W คิดเป็น 5.8 %
+                  หายไปกับไดโอดเฉย ๆ ถ้าใช้ชอตต์กีแทนจะเหลือเพียง 2.5 %</span>
+                  <span class="en">The 0.70 W lost, against 24 × 0.5 = 12 W delivered, is 5.8 % thrown away in
+                  the diodes alone. Schottky diodes would cut that to 2.5 %.</span></li>
+                <li><span class="th">ตัวเก็บประจุ 4700 µF ต้องทนแรงดันอย่างน้อย 25.5 V จึงเลือกพิกัด 35 V
+                  และในตู้ที่ร้อนควรเลือกรุ่นอายุใช้งาน 105 °C ไม่ใช่ 85 °C</span>
+                  <span class="en">The 4700 µF capacitor must withstand 25.5 V, so specify a 35 V part — and
+                  in a hot cabinet choose the 105 °C grade rather than 85 °C.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h3><span class="th">13.2.2 ไดโอดฟลายแบ็ก: ไดโอดที่ช่วยชีวิตทรานซิสเตอร์</span>
+          <span class="en">13.2.2 The flyback diode: the one that saves the transistor</span></h3>
+
+      <p><span class="th">วาล์วโซลินอยด์ รีเลย์ และคอนแทกเตอร์ ล้วนเป็นขดลวด ซึ่งจากบทที่ 5 เรารู้ว่า
+        ตัวเหนี่ยวนำ <b>ต้านการเปลี่ยนแปลงของกระแส</b> ตามสมการ \(v = L\,di/dt\)
+        ตราบใดที่วงจรยังปิดอยู่ก็ไม่มีปัญหา แต่วินาทีที่เราตัดวงจร กระแสถูกบังคับให้ลดจากค่าปกติลงเหลือศูนย์
+        ในเวลาสั้นมาก \(di/dt\) จึงมีค่ามหาศาล และแรงดันที่เกิดขึ้นก็มหาศาลตามไปด้วย</span>
+        <span class="en">Solenoid valves, relays and contactors are all coils, and from Chapter 5 we know an
+        inductor <b>opposes any change of current</b>, following \(v = L\,di/dt\). While the circuit stays
+        closed there is no difficulty. But the instant it is broken, the current is forced from its normal
+        value to zero in a very short time; \(di/dt\) becomes enormous, and so does the voltage it
+        produces.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 340" role="img" width="720"
+               aria-label="A solenoid coil switched without a flyback diode, producing a large voltage spike, and with one, which clamps it">
+            <text class="cap th" x="175" y="28" text-anchor="middle">ก. ไม่มีไดโอด — เกิดแรงดันพุ่ง</text>
+            <text class="cap en" x="175" y="28" text-anchor="middle">a. Without the diode — a voltage spike</text>
+            <text class="cap th" x="545" y="28" text-anchor="middle">ข. มีไดโอดฟลายแบ็ก — แรงดันถูกจำกัด</text>
+            <text class="cap en" x="545" y="28" text-anchor="middle">b. With a flyback diode — the voltage is clamped</text>
+
+            <!-- ===== panel A ===== -->
+            <path class="wire" d="M70 80 V150"/>
+            <line x1="48" y1="150" x2="92" y2="150" stroke="#0d1128" stroke-width="3"/>
+            <line x1="59" y1="162" x2="81" y2="162" stroke="#0d1128" stroke-width="3"/>
+            <line x1="48" y1="174" x2="92" y2="174" stroke="#0d1128" stroke-width="3"/>
+            <line x1="59" y1="186" x2="81" y2="186" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M70 186 V270"/>
+            <text class="lbl" x="32" y="172" text-anchor="middle">24 V</text>
+
+            <path class="wire" d="M70 80 H250 V130"/>
+            <path d="M250 130 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18"
+                  stroke="#0d1128" stroke-width="2" fill="none"/>
+            <path class="wire" d="M250 202 V270"/>
+            <text class="lbl" x="288" y="160" text-anchor="middle">L</text>
+            <text class="sub th" x="292" y="180" text-anchor="middle">คอยล์วาล์ว</text>
+            <text class="sub en" x="292" y="180" text-anchor="middle">valve coil</text>
+
+            <path class="wire" d="M70 270 H170"/>
+            <path class="wire" d="M190 270 H250"/>
+            <circle class="node" cx="170" cy="270" r="4"/>
+            <circle class="node" cx="190" cy="270" r="4"/>
+            <line x1="170" y1="270" x2="198" y2="244" stroke="#0d1128" stroke-width="2"/>
+            <path d="M172 264 l6 -6 l-3 8 l7 -5 l-4 9 l8 -6"
+                  stroke="#d64545" stroke-width="2" fill="none"/>
+            <text class="sub th" x="180" y="296" text-anchor="middle">สวิตช์เปิดวงจร</text>
+            <text class="sub en" x="180" y="296" text-anchor="middle">the switch opens</text>
+
+            <text class="cap" x="300" y="234" fill="#d64545">4800 V !</text>
+            <text class="sub th" x="70" y="318">กระแสหยุดไม่ได้ทันที จึงดันแรงดันขึ้นจนเกิดอาร์กข้ามหน้าสัมผัส</text>
+            <text class="sub en" x="70" y="318">the current cannot stop at once, so it forces the voltage up until it arcs</text>
+
+            <line x1="360" y1="20" x2="360" y2="330" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== panel B ===== -->
+            <path class="wire" d="M430 80 V150"/>
+            <line x1="408" y1="150" x2="452" y2="150" stroke="#0d1128" stroke-width="3"/>
+            <line x1="419" y1="162" x2="441" y2="162" stroke="#0d1128" stroke-width="3"/>
+            <line x1="408" y1="174" x2="452" y2="174" stroke="#0d1128" stroke-width="3"/>
+            <line x1="419" y1="186" x2="441" y2="186" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M430 186 V270"/>
+            <text class="lbl" x="392" y="172" text-anchor="middle">24 V</text>
+
+            <path class="wire" d="M430 80 H600 V130"/>
+            <path d="M600 130 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18"
+                  stroke="#0d1128" stroke-width="2" fill="none"/>
+            <path class="wire" d="M600 202 V270"/>
+
+            <!-- flyback diode, cathode toward the positive rail -->
+            <circle class="node" cx="600" cy="130" r="4"/>
+            <circle class="node" cx="600" cy="202" r="4"/>
+            <path class="wire" d="M600 130 H664 V152"/>
+            <line x1="650" y1="152" x2="678" y2="152" stroke="#0d1128" stroke-width="3"/>
+            <polygon points="650,180 678,180 664,152" fill="#0d1128"/>
+            <path class="wire" d="M664 180 V202 H600"/>
+            <text class="lbl" x="700" y="172">D</text>
+
+            <path class="wire" d="M430 270 H540"/>
+            <path class="wire" d="M560 270 H600"/>
+            <circle class="node" cx="540" cy="270" r="4"/>
+            <circle class="node" cx="560" cy="270" r="4"/>
+            <line x1="540" y1="270" x2="568" y2="244" stroke="#0d1128" stroke-width="2"/>
+            <text class="sub th" x="550" y="296" text-anchor="middle">สวิตช์เปิดวงจร</text>
+            <text class="sub en" x="550" y="296" text-anchor="middle">the switch opens</text>
+
+            <!-- circulating current -->
+            <path d="M614 214 a46 46 0 1 0 56 -8" stroke="#2f855a" stroke-width="2.5"
+                  fill="none" stroke-dasharray="6 4"/>
+            <polygon points="668,196 678,210 662,210" fill="#2f855a"/>
+            <text class="cap" x="596" y="246" fill="#2f855a">24.7 V</text>
+            <text class="sub th" x="430" y="318">กระแสวนอยู่ในวงปิดคอยล์–ไดโอด จนพลังงานหมดไปเป็นความร้อน</text>
+            <text class="sub en" x="430" y="318">the current circulates in the coil-diode loop until its energy is spent as heat</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 13.5</span><span class="en">Figure 13.5</span></b>
+          <span class="th"> ไดโอดฟลายแบ็ก สังเกตทิศของไดโอด — แคโทด (ขีด) หันไปทางรางบวก
+            ในสภาวะทำงานปกติไดโอดจึงถูกไบแอสกลับและไม่มีผลใด ๆ ต่อวงจรเลย
+            แต่วินาทีที่สวิตช์เปิด ขั้วของแรงดันคร่อมคอยล์กลับทิศ ไดโอดจึงนำกระแสทันที
+            และเปิดทางให้กระแสวนต่อไปได้ <b>ต่อผิดทิศเพียงครั้งเดียว ไดโอดจะลัดวงจรแหล่งจ่ายและไหม้ทันที</b></span>
+          <span class="en"> The flyback diode. Note its direction: the cathode — the bar — faces the positive
+            rail, so in normal operation it is reverse biased and does nothing at all. The moment the switch
+            opens, the voltage across the coil reverses, the diode conducts immediately, and the current has
+            somewhere to go. <b>Fit it the wrong way round even once and it short-circuits the supply and
+            burns out instantly.</b></span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 13.2</span><span class="en">Example 13.2</span></span>
+          <span class="th">แรงดันพุ่งจากวาล์วโซลินอยด์ในระบบน้ำหยด</span>
+          <span class="en">The spike from a drip-irrigation solenoid valve</span></div>
+        <div class="example-body">
+          <p><span class="th">วาล์วโซลินอยด์ในระบบน้ำหยดใช้ไฟ 24 V คอยล์มีความเหนี่ยวนำ 120 mH
+            และความต้านทาน 60 Ω ถูกควบคุมด้วยทรานซิสเตอร์ที่ทนแรงดันได้ 40 V จงหา
+            (ก) กระแสที่ไหลขณะวาล์วเปิด (ข) พลังงานที่เก็บอยู่ในคอยล์
+            (ค) แรงดันที่เกิดขึ้นหากไม่มีไดโอดฟลายแบ็ก โดยสมมติว่ากระแสลดลงเหลือศูนย์ใน 10 µs
+            (ง) แรงดันสูงสุดเมื่อมีไดโอด และ (จ) เวลาที่วาล์วใช้ในการปิด</span>
+            <span class="en">A drip-irrigation solenoid valve runs on 24 V; its coil has an inductance of
+            120 mH and a resistance of 60 Ω, and it is switched by a transistor rated for 40 V. Find (a) the
+            current while the valve is open, (b) the energy stored in the coil, (c) the voltage that appears
+            with no flyback diode, assuming the current falls to zero in 10 µs, (d) the maximum voltage with
+            the diode fitted, and (e) how long the valve takes to close.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) ในสภาวะคงตัว ตัวเหนี่ยวนำมีพฤติกรรมเหมือนลวดธรรมดา กระแสจึงถูกกำหนดโดย
+              ความต้านทานของคอยล์เท่านั้น (บทที่ 5)</span>
+              <span class="en">(a) In the steady state an inductor behaves like plain wire, so the current is
+              set by the coil's resistance alone (Chapter 5).</span></p>
+            \[ I = \frac{V}{R} = \frac{24}{60} = 0.40\ \text{A} \]
+
+            <p><span class="th">(ข) พลังงานที่เก็บในสนามแม่เหล็ก</span>
+              <span class="en">(b) The energy held in the magnetic field</span></p>
+            \[ W = \tfrac{1}{2}L I^{2} = \tfrac{1}{2}(0.120)(0.40)^{2}
+               = 9.6\times10^{-3}\ \text{J} = 9.6\ \text{mJ} \]
+
+            <p><span class="th">(ค) ถ้าไม่มีทางให้กระแสไหลต่อ พลังงานก้อนนี้ต้องถูกระบายออกในเวลาอันสั้นมาก</span>
+              <span class="en">(c) With nowhere for the current to go, that energy must be dumped in a very
+              short time.</span></p>
+            \[ v = L\frac{di}{dt} = (0.120)\frac{0.40}{10\times10^{-6}}
+               = (0.120)(40\,000) = 4800\ \text{V} \]
+
+            <p><span class="th">(ง) เมื่อมีไดโอด แรงดันคร่อมคอยล์ถูกจำกัดไว้ที่แรงดันตกคร่อมไดโอด
+              ทรานซิสเตอร์จึงเห็นแรงดันเพียง</span>
+              <span class="en">(d) With the diode, the voltage across the coil is clamped to the diode's
+              forward drop, so the transistor sees only</span></p>
+            \[ V_{\text{switch}} = V_{\text{supply}} + V_F = 24 + 0.7 = 24.7\ \text{V} \]
+
+            <p><span class="th">(จ) กระแสที่วนอยู่จะสลายตัวแบบเอ็กซ์โพเนนเชียลด้วยค่าคงตัวเวลา (บทที่ 5)</span>
+              <span class="en">(e) The circulating current decays exponentially with the time constant of
+              Chapter 5.</span></p>
+            \[ \tau = \frac{L}{R} = \frac{0.120}{60} = 2\ \text{ms}
+               \qquad t_{\text{close}} \approx 5\tau = 10\ \text{ms} \]
+
+            <div class="callout callout-danger mb-0">
+              <div class="callout-title">⚠️ <span class="th">เปรียบเทียบตัวเลขให้เห็นภาพ</span>
+                <span class="en">Put the numbers side by side</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">4800 V เทียบกับทรานซิสเตอร์ที่ทนได้ 40 V — เกินไป <b>120 เท่า</b>
+                  ทรานซิสเตอร์จะพังในการเปิด–ปิดครั้งแรก ไม่ใช่ครั้งที่ร้อย
+                  และไดโอดที่ป้องกันมันราคาไม่ถึงสองบาท</span>
+                  <span class="en">4800 V against a transistor rated 40 V — <b>120 times over</b>. It fails on
+                  the first switching operation, not the hundredth. The diode that would have saved it costs
+                  a couple of baht.</span></li>
+                <li><span class="th">ข้อแลกเปลี่ยน: ไดโอดทำให้วาล์วปิดช้าลงเป็น 10 ms
+                  เพราะกระแสค่อย ๆ สลายไป ถ้างานต้องการปิดเร็วกว่านี้
+                  ให้ต่อซีเนอร์อนุกรมกับไดโอดฟลายแบ็ก ซึ่งจะบังคับให้พลังงานถูกระบายเร็วขึ้น
+                  แลกกับแรงดันที่สูงขึ้น (แต่ยังคุมได้)</span>
+                  <span class="en">The trade-off: the diode slows the valve's closing to 10 ms, because the
+                  current decays gently. Where faster closing matters, put a Zener in series with the flyback
+                  diode, which forces the energy out sooner at the cost of a higher — but still controlled —
+                  voltage.</span></li>
+                <li><span class="th">อาการที่พบบ่อยในฟาร์มจริง: ระบบทำงานดีตอนทดสอบบนโต๊ะ
+                  แต่พอติดตั้งจริงแล้วไมโครคอนโทรลเลอร์ค้างหรือรีเซ็ตเองเป็นระยะ
+                  สาเหตุอันดับหนึ่งคือลืมใส่ไดโอดฟลายแบ็กให้วาล์ว
+                  แรงดันพุ่งจึงรบกวนไปทั้งระบบผ่านสายไฟร่วม</span>
+                  <span class="en">A symptom you will meet on real farms: the system works perfectly on the
+                  bench, then once installed the microcontroller hangs or resets at intervals. The leading
+                  cause is a missing flyback diode on a valve, the spike coupling through the shared wiring
+                  into everything else.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 13.3 -->
+    <section id="s3">
+      <h2><span class="num">13.3</span><span class="th">แอลอีดีและอุปกรณ์รับแสง</span>
+          <span class="en">LEDs and light sensors</span></h2>
+
+      <p><span class="th">ในไดโอดธรรมดา เมื่ออิเล็กตรอนข้ามรอยต่อมารวมกับโฮล พลังงานส่วนเกินจะกลายเป็นความร้อน
+        แต่ถ้าเลือกวัสดุให้เหมาะสม เช่น แกลเลียมไนไตรด์หรืออะลูมิเนียมแกลเลียมอาร์เซไนด์
+        พลังงานส่วนเกินนั้นจะออกมาเป็น <b>โฟตอน</b> แทน นั่นคือแอลอีดี
+        และความยาวคลื่นของแสงที่ได้ถูกกำหนดโดยขนาดของช่องว่างพลังงานในวัสดุ
+        ซึ่งเป็นเหตุผลว่าทำไม LED แต่ละสีจึงมีแรงดันตกคร่อมไม่เท่ากัน —
+        <b>สีที่พลังงานโฟตอนสูงกว่า ย่อมต้องการแรงดันสูงกว่า</b></span>
+        <span class="en">In an ordinary diode, when an electron crosses the junction and fills a hole, the
+        surplus energy becomes heat. Choose the right material — gallium nitride, say, or aluminium gallium
+        arsenide — and that surplus comes out as a <b>photon</b> instead. That is an LED, and the wavelength
+        it emits is set by the size of the material's energy gap. This is why each colour has a different
+        forward voltage: <b>the colours whose photons carry more energy need more volts</b>.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 340" role="img" width="720"
+               aria-label="Forward voltage of LEDs by colour, and the photosynthesis action spectrum with the wavelengths horticultural LEDs emit">
+            <text class="cap th" x="185" y="26" text-anchor="middle">ก. แรงดันตกคร่อมของ LED แต่ละสี</text>
+            <text class="cap en" x="185" y="26" text-anchor="middle">a. Forward voltage by colour</text>
+            <text class="cap th" x="548" y="26" text-anchor="middle">ข. แสงที่พืชใช้ กับแสงที่ LED ให้</text>
+            <text class="cap en" x="548" y="26" text-anchor="middle">b. What the plant uses, and what the LED gives</text>
+
+            <!-- ===== panel A: bar chart ===== -->
+            <line class="axis" x1="60" y1="250" x2="330" y2="250"/>
+            <line class="axis" x1="60" y1="250" x2="60" y2="70"/>
+            <line x1="60" y1="204" x2="330" y2="204" stroke="#eef1f5" stroke-width="1"/>
+            <line x1="60" y1="159" x2="330" y2="159" stroke="#eef1f5" stroke-width="1"/>
+            <line x1="60" y1="113" x2="330" y2="113" stroke="#eef1f5" stroke-width="1"/>
+            <text class="sub" x="54" y="208" text-anchor="end">1 V</text>
+            <text class="sub" x="54" y="163" text-anchor="end">2 V</text>
+            <text class="sub" x="54" y="117" text-anchor="end">3 V</text>
+
+            <rect x="74"  y="168" width="36" height="82"  fill="#d64545"/>
+            <rect x="126" y="159" width="36" height="91"  fill="#e8a33d"/>
+            <rect x="178" y="113" width="36" height="137" fill="#2f855a"/>
+            <rect x="230" y="104" width="36" height="146" fill="#2b6cb0"/>
+            <rect x="282" y="113" width="36" height="137" fill="#b9c0d8"/>
+
+            <text class="sub" x="92"  y="164" text-anchor="middle">1.8</text>
+            <text class="sub" x="144" y="155" text-anchor="middle">2.0</text>
+            <text class="sub" x="196" y="109" text-anchor="middle">3.0</text>
+            <text class="sub" x="248" y="100" text-anchor="middle">3.2</text>
+            <text class="sub" x="300" y="109" text-anchor="middle">3.0</text>
+
+            <text class="sub th" x="92"  y="266" text-anchor="middle">แดง</text>
+            <text class="sub en" x="92"  y="266" text-anchor="middle">red</text>
+            <text class="sub th" x="144" y="266" text-anchor="middle">เหลือง</text>
+            <text class="sub en" x="144" y="266" text-anchor="middle">amber</text>
+            <text class="sub th" x="196" y="266" text-anchor="middle">เขียว</text>
+            <text class="sub en" x="196" y="266" text-anchor="middle">green</text>
+            <text class="sub th" x="248" y="266" text-anchor="middle">น้ำเงิน</text>
+            <text class="sub en" x="248" y="266" text-anchor="middle">blue</text>
+            <text class="sub th" x="300" y="266" text-anchor="middle">ขาว</text>
+            <text class="sub en" x="300" y="266" text-anchor="middle">white</text>
+
+            <text class="sub th" x="92"  y="282" text-anchor="middle">660 nm</text>
+            <text class="sub en" x="92"  y="282" text-anchor="middle">660 nm</text>
+            <text class="sub th" x="248" y="282" text-anchor="middle">450 nm</text>
+            <text class="sub en" x="248" y="282" text-anchor="middle">450 nm</text>
+
+            <text class="sub th" x="60" y="312">ยิ่งความยาวคลื่นสั้น พลังงานโฟตอนยิ่งสูง</text>
+            <text class="sub en" x="60" y="312">the shorter the wavelength, the more energy per photon</text>
+            <text class="sub th" x="60" y="328">แรงดันที่ต้องใช้จึงสูงตามไปด้วย</text>
+            <text class="sub en" x="60" y="328">and so the more forward voltage required</text>
+
+            <line x1="370" y1="20" x2="370" y2="330" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== panel B: action spectrum ===== -->
+            <line class="axis" x1="410" y1="250" x2="700" y2="250"/>
+            <line class="axis" x1="410" y1="250" x2="410" y2="70"/>
+            <text class="sub" x="410" y="266" text-anchor="middle">400</text>
+            <text class="sub" x="457" y="266" text-anchor="middle">450</text>
+            <text class="sub" x="550" y="266" text-anchor="middle">550</text>
+            <text class="sub" x="653" y="266" text-anchor="middle">660</text>
+            <text class="sub" x="690" y="266" text-anchor="middle">700</text>
+            <text class="sub th" x="556" y="284" text-anchor="middle">ความยาวคลื่น (nm)</text>
+            <text class="sub en" x="556" y="284" text-anchor="middle">wavelength (nm)</text>
+            <text class="sub th" x="392" y="160" text-anchor="middle" transform="rotate(-90 392 160)">การดูดกลืนของพืช</text>
+            <text class="sub en" x="392" y="160" text-anchor="middle" transform="rotate(-90 392 160)">plant absorption</text>
+
+            <!-- LED emission bands -->
+            <rect x="447" y="100" width="20" height="150" fill="#2b6cb0" opacity=".28"/>
+            <rect x="643" y="100" width="20" height="150" fill="#d64545" opacity=".28"/>
+
+            <!-- action spectrum -->
+            <path d="M410 214 Q 434 120 457 124 C 490 138, 520 194, 550 198
+                     C 590 190, 632 112, 653 104 C 668 116, 680 202, 692 242"
+                  stroke="#2f855a" stroke-width="3" fill="none"/>
+
+            <text class="sub" x="457" y="92" text-anchor="middle" fill="#2b6cb0">LED</text>
+            <text class="sub th" x="457" y="80" text-anchor="middle" fill="#2b6cb0">น้ำเงิน</text>
+            <text class="sub en" x="457" y="80" text-anchor="middle" fill="#2b6cb0">blue</text>
+            <text class="sub" x="653" y="92" text-anchor="middle" fill="#d64545">LED</text>
+            <text class="sub th" x="653" y="80" text-anchor="middle" fill="#d64545">แดง</text>
+            <text class="sub en" x="653" y="80" text-anchor="middle" fill="#d64545">red</text>
+            <text class="sub th" x="556" y="176" text-anchor="middle" fill="#2f855a">พืชสะท้อนสีเขียวทิ้ง</text>
+            <text class="sub en" x="556" y="176" text-anchor="middle" fill="#2f855a">green is reflected away</text>
+            <text class="sub th" x="556" y="192" text-anchor="middle" fill="#2f855a">จึงเห็นใบเป็นสีเขียว</text>
+            <text class="sub en" x="556" y="192" text-anchor="middle" fill="#2f855a">which is why leaves look green</text>
+
+            <text class="sub th" x="410" y="312">พืชดูดกลืนแสงน้ำเงินและแดงมากที่สุด LED ปลูกพืชจึงเลือกเปล่งเฉพาะสองช่วงนี้</text>
+            <text class="sub en" x="410" y="312">plants absorb blue and red most, so horticultural LEDs emit in just those two bands</text>
+            <text class="sub th" x="410" y="328">ไม่เปลืองพลังงานไปกับแสงที่พืชไม่ได้ใช้</text>
+            <text class="sub en" x="410" y="328">wasting no energy on light the crop cannot use</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 13.6</span><span class="en">Figure 13.6</span></b>
+          <span class="th"> ซ้าย: แรงดันตกคร่อมของ LED แต่ละสี ซึ่งเป็นค่าที่ต้องใช้ในการคำนวณวงจรขับ
+            ขวา: เส้นโค้งการดูดกลืนแสงของพืชเทียบกับช่วงคลื่นที่ LED ปลูกพืชเปล่งออกมา
+            นี่คือเหตุผลที่ไฟปลูกพืชรุ่นแรก ๆ เป็นสีชมพูม่วง — เพราะผสมแดงกับน้ำเงินตามที่พืชต้องการ
+            ส่วนรุ่นใหม่ที่ใช้ LED ขาวเพิ่มเข้ามา ให้แสงที่ตามนุษย์มองเห็นธรรมชาติกว่า
+            และช่วยให้ผู้ปลูกสังเกตอาการผิดปกติของใบได้ แลกกับประสิทธิภาพที่ลดลงเล็กน้อย</span>
+          <span class="en"> Left: the forward voltage of each colour, the number you need to design a driver.
+            Right: how strongly a plant absorbs each wavelength, against the bands horticultural LEDs emit.
+            This is why early grow lights were that distinctive pink-purple — red and blue mixed to suit the
+            crop. Newer fixtures add white LEDs, giving light that looks natural to the eye and lets a
+            grower spot trouble in the leaves, at a small cost in efficiency.</span></figcaption>
+      </figure>
+
+      <div class="callout callout-agri">
+        <div class="callout-title">🌱 <span class="th">หน่วยที่ต้องรู้จัก: วิศวกรไฟฟ้าพูดเป็นวัตต์ แต่พืชสนใจโฟตอน</span>
+          <span class="en">The units to know: engineers talk watts, plants count photons</span></div>
+        <ul class="mb-0">
+          <li><span class="th"><b>PPFD</b> (µmol/m²/s) — จำนวนโฟตอนในช่วงที่พืชใช้ได้ ที่ตกลงบนพื้นที่หนึ่งตารางเมตรในหนึ่งวินาที
+            เทียบได้กับ “ความเข้มแสง”</span>
+            <span class="en"><b>PPFD</b> (µmol/m²/s) — the number of usable photons landing on a square metre
+            each second; the "brightness" a plant experiences.</span></li>
+          <li><span class="th"><b>DLI</b> (mol/m²/day) — ปริมาณโฟตอนรวมตลอดทั้งวัน ซึ่งเป็นตัวที่กำหนดการเจริญเติบโตจริง
+            ผักสลัดต้องการราว 12–17 ส่วนมะเขือเทศต้องการ 20–30</span>
+            <span class="en"><b>DLI</b> (mol/m²/day) — the total photons over a whole day, which is what
+            actually drives growth. Lettuce wants roughly 12–17, tomatoes 20–30.</span></li>
+          <li><span class="th"><b>ประสิทธิผล (efficacy)</b> (µmol/J) — โฟตอนที่ได้ต่อพลังงานไฟฟ้าหนึ่งจูล
+            เทียบเท่ากับ “ลูเมนต่อวัตต์” ของไฟส่องสว่างทั่วไป LED ปลูกพืชที่ดีอยู่ที่ 2.5–3.0</span>
+            <span class="en"><b>Efficacy</b> (µmol/J) — photons delivered per joule of electricity, the
+            horticultural equivalent of lumens per watt. A good grow LED reaches 2.5–3.0.</span></li>
+        </ul>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 13.3</span><span class="en">Example 13.3</span></span>
+          <span class="th">ออกแบบไฟปลูกผักสลัดในโรงเรือนปิด</span>
+          <span class="en">Designing the lighting for an indoor lettuce crop</span></div>
+        <div class="example-body">
+          <p><span class="th">โรงปลูกผักสลัดระบบปิดต้องการค่า DLI 14 mol/m²/day โดยเปิดไฟวันละ 16 ชั่วโมง
+            ใช้ LED ขาวที่มีแรงดันตกคร่อม 3.0 V กระแส 350 mA และประสิทธิผล 2.5 µmol/J
+            จ่ายไฟจากระบบ 24 V DC จงหา (ก) ค่า PPFD ที่ต้องการ (ข) จำนวน LED ต่อสตริงและวิธีจำกัดกระแส
+            (ค) โฟตอนที่หนึ่งสตริงให้ได้ (ง) จำนวนสตริงต่อพื้นที่ 1 ตารางเมตร
+            และ (จ) กำลังไฟฟ้าที่ระบบต้องจ่าย เมื่อชุดขับมีประสิทธิภาพ 90 %</span>
+            <span class="en">An indoor lettuce room needs a DLI of 14 mol/m²/day with the lights on for
+            16 hours a day. It uses white LEDs of 3.0 V forward voltage at 350 mA, with an efficacy of
+            2.5 µmol/J, fed from a 24 V DC system. Find (a) the PPFD required, (b) how many LEDs per string
+            and how to limit the current, (c) the photon output of one string, (d) how many strings each
+            square metre needs, and (e) the electrical power the system must supply, given a driver
+            efficiency of 90 %.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) แปลง DLI เป็น PPFD โดยกระจายโฟตอนทั้งวันลงบนช่วงเวลาที่เปิดไฟ</span>
+              <span class="en">(a) Convert the DLI to PPFD by spreading the day's photons over the hours the
+              lights are on.</span></p>
+            \[ t = 16 \times 3600 = 57\,600\ \text{s} \]
+            \[ \text{PPFD} = \frac{14\ \text{mol/m}^2\text{/day}}{57\,600\ \text{s}} \times 10^{6}
+               = 243\ \mu\text{mol/m}^2\text{/s} \]
+
+            <p><span class="th">(ข) จำนวน LED ต่อสตริง — ต้องเหลือแรงดันให้อุปกรณ์จำกัดกระแสด้วย
+              ถ้าใช้ 8 ดวงจะได้ 24.0 V พอดีกับแหล่งจ่าย ไม่เหลือระยะควบคุมเลย จึงเลือก 7 ดวง</span>
+              <span class="en">(b) LEDs per string — some voltage must be left for whatever limits the
+              current. Eight LEDs would need 24.0 V, exactly the supply, leaving no control margin, so use
+              seven.</span></p>
+            \[ V_{\text{LED}} = 7 \times 3.0 = 21.0\ \text{V}
+               \qquad V_{\text{เหลือ}} = 24 - 21 = 3.0\ \text{V} \]
+            \[ R = \frac{3.0}{0.35} = 8.6\ \Omega \]
+            <p><span class="th">แต่ค่ามาตรฐานที่ใกล้ที่สุดคือ 8.2 Ω ซึ่งจะให้กระแส \(3.0/8.2 = 366\) mA
+              สูงเกินพิกัดไป 4.6 % และที่แย่กว่านั้นคือ แรงดันตกคร่อม LED เปลี่ยนไปตามอุณหภูมิ
+              พอไฟร้อนขึ้น \(V_F\) ลดลง แรงดันคร่อมตัวต้านทานจึงเพิ่ม กระแสก็เพิ่มตาม LED ยิ่งร้อน —
+              วนเป็นวงจรอุบาทว์จนไหม้ <b>งานจริงจึงใช้ชุดขับแบบกระแสคงที่ (constant-current driver)</b>
+              ซึ่งเป็นแหล่งจ่ายกระแสตามที่เรียนในบทที่ 2 ไม่ใช่ตัวต้านทาน</span>
+              <span class="en">But the nearest standard value, 8.2 Ω, gives \(3.0/8.2 = 366\) mA, 4.6 % over
+              the rating — and worse, an LED's forward voltage falls as it warms. More volts then appear
+              across the resistor, the current rises, the LED gets hotter still: a runaway that ends in
+              failure. <b>Real installations therefore use a constant-current driver</b>, the current source
+              met in Chapter 2, rather than a resistor.</span></p>
+
+            <p><span class="th">(ค) โฟตอนจากหนึ่งสตริง เมื่อชุดขับตรึงกระแสไว้ที่ 350 mA</span>
+              <span class="en">(c) The photons from one string, with the driver holding 350 mA</span></p>
+            \[ P_{\text{LED}} = 7 \times 3.0 \times 0.35 = 7.35\ \text{W} \]
+            \[ \Phi = 7.35\ \text{W} \times 2.5\ \tfrac{\mu\text{mol}}{\text{J}}
+               = 18.4\ \mu\text{mol/s} \]
+
+            <p><span class="th">(ง) จำนวนสตริงต่อตารางเมตร</span>
+              <span class="en">(d) Strings per square metre</span></p>
+            \[ n = \frac{243}{18.4} = 13.2 \quad\Rightarrow\quad 14\ \text{สตริง / strings} \]
+
+            <p><span class="th">(จ) กำลังไฟฟ้ารวม รวมการสูญเสียในชุดขับ</span>
+              <span class="en">(e) Total electrical power, including the driver's losses</span></p>
+            \[ P_{\text{LED,total}} = 14 \times 7.35 = 103\ \text{W} \]
+            \[ P_{\text{ระบบ}} = \frac{103}{0.90} = 114\ \text{W ต่อตารางเมตร / per square metre} \]
+
+            <div class="callout callout-agri mb-0">
+              <div class="callout-title">🌱 <span class="th">ตัวเลขนี้บอกอะไรกับผู้ปลูก</span>
+                <span class="en">What these numbers tell the grower</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">114 W ต่อตารางเมตร เปิดวันละ 16 ชั่วโมง คิดเป็น 1.83 kWh ต่อตารางเมตรต่อวัน
+                  ที่ค่าไฟหน่วยละ 4.20 บาท เท่ากับ <b>7.68 บาทต่อตารางเมตรต่อวัน</b>
+                  หรือราว 230 บาทต่อเดือน — นี่คือต้นทุนที่ต้องนำไปเทียบกับราคาผักที่ขายได้</span>
+                  <span class="en">114 W per square metre for 16 hours is 1.83 kWh per square metre per day.
+                  At 4.20 THB a unit that is <b>7.68 THB per square metre per day</b>, about 230 a month —
+                  the figure to set against what the crop sells for.</span></li>
+                <li><span class="th">ประสิทธิผลรวมทั้งระบบคือ \(243/114 = 2.13\) µmol/J ต่ำกว่าค่าของตัว LED เอง (2.5)
+                  เพราะสูญเสียไปในชุดขับ การเลือกชุดขับที่ประสิทธิภาพสูงขึ้นจึงคุ้มค่าเท่ากับการเลือก LED ที่ดีขึ้น</span>
+                  <span class="en">The system efficacy is \(243/114 = 2.13\) µmol/J, below the LED's own 2.5
+                  because of the driver. Choosing a better driver is worth as much as choosing a better
+                  LED.</span></li>
+                <li><span class="th">หากลดเวลาเปิดไฟเหลือ 12 ชั่วโมงแต่ยังต้องการ DLI เท่าเดิม
+                  ต้องเพิ่ม PPFD เป็น 324 µmol/m²/s และกำลังไฟฟ้าเป็น 152 W/m²
+                  <b>พลังงานรวมต่อวันเท่าเดิม แต่ค่าความต้องการกำลังไฟฟ้าสูงสุดเพิ่มขึ้น</b>
+                  ซึ่งมีผลต่อขนาดสายและค่าไฟแบบ TOU ในบทที่ 10</span>
+                  <span class="en">Cut the photoperiod to 12 hours for the same DLI and the PPFD must rise to
+                  324 µmol/m²/s, the power to 152 W/m². <b>The daily energy is unchanged, but the peak demand
+                  is not</b> — which affects cable sizing and time-of-use tariffs, from Chapter 10.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3><span class="th">13.3.1 ไดโอดที่ทำงานกลับทาง: อุปกรณ์รับแสง</span>
+          <span class="en">13.3.1 The diode run backwards: light sensors</span></h3>
+      <p><span class="th">ถ้าป้อนไฟให้รอยต่อพีเอ็นแล้วได้แสงออกมา การย้อนกลับก็เป็นจริงเช่นกัน —
+        ฉายแสงใส่รอยต่อที่ถูกไบแอสกลับ โฟตอนจะกระแทกอิเล็กตรอนให้หลุดออกมา เกิดกระแสรั่วที่
+        <b>แปรผันตรงกับความเข้มแสง</b> อุปกรณ์นี้เรียกว่า <b>โฟโตไดโอด</b>
+        และเมื่อรวมเข้ากับทรานซิสเตอร์เพื่อขยายสัญญาณก็กลายเป็น <b>โฟโตทรานซิสเตอร์</b>
+        ซึ่งเป็นหัวใจของเซนเซอร์วัดแสงในโรงเรือน เซนเซอร์นับผลผลิตบนสายพาน
+        และออปโตคัปเปลอร์ที่ใช้แยกวงจรควบคุมแรงดันต่ำออกจากวงจรกำลัง 230 V อย่างปลอดภัย</span>
+        <span class="en">If feeding current into a PN junction produces light, the reverse is also true:
+        shine light on a reverse-biased junction and the photons knock electrons loose, creating a leakage
+        current <b>proportional to the illumination</b>. That device is a <b>photodiode</b>; combine it with
+        a transistor to amplify the signal and you have a <b>phototransistor</b>. These are the heart of
+        greenhouse light sensors, of the counters that tally produce on a conveyor, and of the
+        opto-couplers that safely separate a low-voltage control circuit from 230 V power.</span></p>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">💡 <span class="th">เคล็ดลับที่ใช้ได้จริงในห้องปฏิบัติการ</span>
+          <span class="en">A trick that really works in the laboratory</span></div>
+        <p class="mb-0"><span class="th">LED ธรรมดาก็ทำหน้าที่เป็นเซนเซอร์วัดแสงได้ เพราะมันคือรอยต่อพีเอ็นเหมือนกัน
+          ลองต่อ LED สีแดงเข้ากับขาอนาล็อกของไมโครคอนโทรลเลอร์โดยไบแอสกลับ แล้ววัดค่า
+          จะพบว่าค่าเปลี่ยนตามความสว่างของห้อง ความไวไม่สูงเท่าโฟโตไดโอดจริง
+          แต่เพียงพอสำหรับงานอย่างการตรวจว่ากลางวันหรือกลางคืน โดยไม่ต้องซื้ออะไรเพิ่มเลย</span>
+          <span class="en">An ordinary LED will serve as a light sensor, because it is the same PN junction.
+          Connect a red LED to a microcontroller's analogue input, reverse biased, and the reading tracks
+          the brightness of the room. It is far less sensitive than a real photodiode, but quite enough to
+          tell day from night — and it costs nothing extra.</span></p>
+      </div>
+    </section>
+
+    <!-- =============================================== 13.4 -->
+    <section id="s4">
+      <h2><span class="num">13.4</span><span class="th">ทรานซิสเตอร์ BJT</span>
+          <span class="en">The bipolar junction transistor</span></h2>
+
+      <p><span class="th">นำรอยต่อพีเอ็นมาต่อกันสองรอยในแท่งเดียว เช่น N–P–N จะได้
+        <b>ทรานซิสเตอร์สองรอยต่อ (BJT)</b> ซึ่งมีสามขาคือ <b>เบส (B)</b> <b>คอลเลกเตอร์ (C)</b>
+        และ <b>อิมิตเตอร์ (E)</b> ความมหัศจรรย์ของมันคือ กระแสเล็ก ๆ ที่ป้อนเข้าขาเบส
+        จะควบคุมกระแสก้อนใหญ่กว่ามากที่ไหลจากคอลเลกเตอร์ไปอิมิตเตอร์ โดยมีอัตราขยาย
+        \(\beta\) หรือ \(h_{FE}\) ซึ่งมักอยู่ระหว่าง 50 ถึง 300</span>
+        <span class="en">Put two PN junctions back to back in one piece of silicon — N–P–N — and you have a
+        <b>bipolar junction transistor</b>, with three terminals: the <b>base</b>, the <b>collector</b> and
+        the <b>emitter</b>. Its magic is that a small current fed into the base controls a far larger one
+        flowing from collector to emitter, with a gain \(\beta\) (or \(h_{FE}\)) usually between 50 and
+        300:</span></p>
+
+      <div class="equation">
+        \[ I_C = \beta\,I_B \qquad\qquad I_E = I_C + I_B \]
+      </div>
+
+      <p><span class="th">แต่ในงานควบคุมของฟาร์ม เราแทบไม่เคยใช้ทรานซิสเตอร์เป็นตัวขยายสัญญาณเลย
+        เราใช้มันเป็น <b>สวิตช์</b> คือให้ทำงานที่ปลายสุดสองจุดเท่านั้น —
+        <b>คัตออฟ</b> (ไม่มีกระแสเบส ทรานซิสเตอร์เหมือนสวิตช์เปิด) และ
+        <b>อิ่มตัว</b> (ป้อนกระแสเบสมากเกินพอ ทรานซิสเตอร์เหมือนสวิตช์ปิดที่มีแรงดันตกคร่อมเพียง 0.2–0.3 V)
+        ส่วนย่านแอกทีฟตรงกลางที่ใช้ขยายสัญญาณนั้น เราจงใจ <b>วิ่งผ่านให้เร็วที่สุด</b>
+        เพราะเป็นย่านที่ทรานซิสเตอร์ร้อนที่สุด</span>
+        <span class="en">In farm control work, though, we almost never use a transistor as an amplifier. We
+        use it as a <b>switch</b>, operating only at the two extremes: <b>cut-off</b>, with no base current,
+        where it behaves like an open switch; and <b>saturation</b>, with generous base current, where it
+        behaves like a closed switch dropping only 0.2–0.3 V. The active region in between, the one used
+        for amplification, is deliberately <b>crossed as fast as possible</b>, because that is where the
+        transistor gets hottest.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 340" role="img" width="720"
+               aria-label="An NPN transistor driving a relay coil, and the transistor's output characteristics with its load line">
+            <text class="cap th" x="180" y="26" text-anchor="middle">ก. วงจรขับรีเลย์</text>
+            <text class="cap en" x="180" y="26" text-anchor="middle">a. A relay driver</text>
+            <text class="cap th" x="560" y="26" text-anchor="middle">ข. เส้นโค้งขาออกและเส้นโหลด</text>
+            <text class="cap en" x="560" y="26" text-anchor="middle">b. Output characteristics and the load line</text>
+
+            <!-- ===== panel A ===== -->
+            <path class="wire" d="M150 60 H300"/>
+            <text class="cap" x="140" y="64" text-anchor="end">+12 V</text>
+
+            <!-- relay coil -->
+            <path class="wire" d="M266 60 V96"/>
+            <path d="M266 96 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18"
+                  stroke="#0d1128" stroke-width="2" fill="none"/>
+            <path class="wire" d="M266 150 V186"/>
+            <text class="sub th" x="222" y="126" text-anchor="middle">คอยล์รีเลย์</text>
+            <text class="sub en" x="222" y="126" text-anchor="middle">relay coil</text>
+            <text class="sub" x="222" y="142" text-anchor="middle">12 V · 70 mA</text>
+
+            <!-- flyback diode -->
+            <circle class="node" cx="266" cy="96" r="4"/>
+            <circle class="node" cx="266" cy="150" r="4"/>
+            <path class="wire" d="M266 96 H322 V112"/>
+            <line x1="310" y1="112" x2="334" y2="112" stroke="#0d1128" stroke-width="3"/>
+            <polygon points="310,136 334,136 322,112" fill="#0d1128"/>
+            <path class="wire" d="M322 136 V150 H266"/>
+            <text class="sub th" x="352" y="118">ไดโอด</text>
+            <text class="sub en" x="352" y="118">flyback</text>
+            <text class="sub th" x="352" y="132">ฟลายแบ็ก</text>
+            <text class="sub en" x="352" y="132">diode</text>
+
+            <!-- NPN transistor -->
+            <line x1="240" y1="192" x2="240" y2="240" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M240 202 L266 186"/>
+            <path class="wire" d="M240 230 L266 246"/>
+            <polygon points="258,238 266,246 256,248" fill="#0d1128"/>
+            <path class="wire" d="M266 246 V292"/>
+            <path class="wire" d="M196 216 H240"/>
+            <text class="sub" x="282" y="196">C</text>
+            <text class="sub" x="282" y="252">E</text>
+            <text class="sub" x="228" y="208" text-anchor="end">B</text>
+
+            <!-- base resistor and MCU -->
+            <rect class="sym" x="140" y="204" width="56" height="24"/>
+            <text class="lbl" x="168" y="198" text-anchor="middle">R_B</text>
+            <path class="wire" d="M104 216 H140"/>
+            <rect x="46" y="190" width="58" height="52" rx="6" fill="#e9f2fb" stroke="#2b6cb0" stroke-width="2"/>
+            <text class="sub" x="75" y="212" text-anchor="middle">MCU</text>
+            <text class="sub" x="75" y="228" text-anchor="middle">3.3 V</text>
+
+            <!-- ground -->
+            <path class="wire" d="M75 242 V292 H266"/>
+            <path class="wire" d="M170 292 V308"/>
+            <line x1="154" y1="308" x2="186" y2="308" stroke="#0d1128" stroke-width="2.5"/>
+            <line x1="160" y1="315" x2="180" y2="315" stroke="#0d1128" stroke-width="2.5"/>
+            <line x1="166" y1="322" x2="174" y2="322" stroke="#0d1128" stroke-width="2.5"/>
+
+            <text class="cap" x="214" y="238">I_B</text>
+            <text class="cap" x="286" y="168">I_C</text>
+
+            <line x1="380" y1="20" x2="380" y2="330" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== panel B ===== -->
+            <line class="axis" x1="440" y1="270" x2="700" y2="270"/>
+            <line class="axis" x1="440" y1="270" x2="440" y2="80"/>
+            <text class="sub" x="672" y="288">V_CE (V)</text>
+            <text class="sub" x="424" y="90" text-anchor="end">I_C</text>
+            <text class="sub" x="440" y="288" text-anchor="middle">0</text>
+            <text class="sub" x="680" y="288" text-anchor="middle">12</text>
+
+            <!-- characteristic curves -->
+            <path d="M440 270 C 452 270, 462 238, 474 230 L 700 224"
+                  stroke="#9aa3c4" stroke-width="2" fill="none"/>
+            <path d="M440 270 C 452 270, 462 203, 474 195 L 700 189"
+                  stroke="#9aa3c4" stroke-width="2" fill="none"/>
+            <path d="M440 270 C 452 270, 462 168, 474 160 L 700 154"
+                  stroke="#9aa3c4" stroke-width="2" fill="none"/>
+            <path d="M440 270 C 452 270, 462 121, 474 113 L 700 107"
+                  stroke="#fd5f00" stroke-width="2.5" fill="none"/>
+            <text class="sub" x="706" y="228">I_B = 2 mA</text>
+            <text class="sub" x="706" y="193">4 mA</text>
+            <text class="sub" x="706" y="158">6 mA</text>
+            <text class="sub" x="706" y="111" fill="#fd5f00">8 mA</text>
+
+            <!-- load line -->
+            <line x1="440" y1="113" x2="680" y2="270" stroke="#2f855a" stroke-width="2.5" stroke-dasharray="7 4"/>
+            <text class="sub th" x="576" y="206" fill="#2f855a">เส้นโหลดของคอยล์รีเลย์</text>
+            <text class="sub en" x="576" y="206" fill="#2f855a">the relay coil's load line</text>
+
+            <!-- Q point -->
+            <circle cx="452" cy="113" r="6" fill="#0d1128"/>
+            <text class="cap" x="468" y="100">Q</text>
+
+            <!-- regions -->
+            <rect x="440" y="80" width="30" height="190" fill="#fff1e8" opacity=".7"/>
+            <text class="sub th" x="455" y="176" text-anchor="middle" transform="rotate(-90 455 176)">อิ่มตัว</text>
+            <text class="sub en" x="455" y="176" text-anchor="middle" transform="rotate(-90 455 176)">saturation</text>
+            <text class="sub th" x="580" y="128" text-anchor="middle">ย่านแอกทีฟ — ร้อนที่สุด ใช้ขยายสัญญาณ</text>
+            <text class="sub en" x="580" y="128" text-anchor="middle">active region — hottest, used for amplifying</text>
+            <text class="sub th" x="600" y="262" text-anchor="middle">คัตออฟ (I_B = 0)</text>
+            <text class="sub en" x="600" y="262" text-anchor="middle">cut-off (I_B = 0)</text>
+
+            <text class="sub th" x="440" y="316">ใช้เป็นสวิตช์ = อยู่ที่ Q หรือที่คัตออฟเท่านั้น</text>
+            <text class="sub en" x="440" y="316">used as a switch = only ever at Q, or at cut-off</text>
+            <text class="sub th" x="440" y="332">ไม่ค้างอยู่กลางเส้นโหลด</text>
+            <text class="sub en" x="440" y="332">never resting in the middle of the load line</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 13.7</span><span class="en">Figure 13.7</span></b>
+          <span class="th"> ซ้าย: วงจรขับรีเลย์ที่พบในตู้ควบคุมฟาร์มแทบทุกตู้
+            ไมโครคอนโทรลเลอร์จ่ายกระแสได้เพียงไม่กี่มิลลิแอมแปร์ จึงสั่งรีเลย์ 70 mA โดยตรงไม่ได้
+            ทรานซิสเตอร์จึงทำหน้าที่ขยายกำลังให้ และอย่าลืมไดโอดฟลายแบ็กตามหัวข้อ 13.2.2
+            <br>ขวา: จุดทำงาน Q อยู่ชิดแกนตั้ง หมายความว่า \(V_{CE}\) เหลือเพียง 0.2–0.3 V
+            กำลังที่ทรานซิสเตอร์ต้องทนจึงน้อยมาก ถ้าจุดทำงานเลื่อนไปกลางเส้นโหลดเมื่อใด
+            (เช่น ป้อนกระแสเบสไม่พอ) ทรานซิสเตอร์จะร้อนจัดทันที</span>
+          <span class="en"> Left: the relay driver found in almost every farm control cabinet. A
+            microcontroller can supply only a few milliamperes and cannot operate a 70 mA relay directly, so
+            the transistor provides the power gain — and do not forget the flyback diode of Section 13.2.2.
+            <br>Right: the operating point Q sits hard against the vertical axis, meaning \(V_{CE}\) is only
+            0.2–0.3 V and the transistor dissipates very little. Let Q drift into the middle of the load
+            line — by starving the base of current, for instance — and it overheats at once.</span>
+        </figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 13.4</span><span class="en">Example 13.4</span></span>
+          <span class="th">ออกแบบวงจรให้ไมโครคอนโทรลเลอร์สั่งรีเลย์ปั๊มน้ำ</span>
+          <span class="en">Letting a microcontroller operate the pump relay</span></div>
+        <div class="example-body">
+          <p><span class="th">ตัวควบคุมในตู้ระบบให้น้ำมีขาสัญญาณออก 3.3 V ต้องการสั่งงานรีเลย์ 12 V
+            ที่คอยล์กินกระแส 70 mA เพื่อไปตัดต่อคอนแทกเตอร์ของปั๊ม ใช้ทรานซิสเตอร์ NPN
+            ที่มี \(h_{FE}\) ต่ำสุด 75 จงหา (ก) ค่าตัวต้านทานเบส (ข) ตรวจว่าขาสัญญาณจ่ายกระแสไหวหรือไม่
+            (ค) กำลังที่ทรานซิสเตอร์ต้องทน และ (ง) อุปกรณ์อื่นที่ต้องมีในวงจรนี้</span>
+            <span class="en">The controller in an irrigation cabinet has a 3.3 V output pin and must operate
+            a 12 V relay whose coil draws 70 mA, which in turn switches the pump's contactor. Using an NPN
+            transistor with a minimum \(h_{FE}\) of 75, find (a) the base resistor, (b) whether the output
+            pin can supply the current, (c) the power the transistor must handle, and (d) what else the
+            circuit needs.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) ถ้าคำนวณจาก \(h_{FE}\) = 75 ตรง ๆ จะได้กระแสเบสเพียง
+              \(70/75 = 0.93\) mA ซึ่ง <b>ไม่พอ</b> เพราะจะทำให้ทรานซิสเตอร์อยู่ในย่านแอกทีฟพอดี
+              ไม่ได้อิ่มตัว ในการออกแบบสวิตช์เราจึงใช้ <b>อัตราขยายบังคับ (forced β)</b>
+              ประมาณ 10 คือป้อนกระแสเบสมากกว่าที่จำเป็นราวเจ็ดเท่า เพื่อให้อิ่มตัวอย่างแน่นอน
+              แม้ทรานซิสเตอร์ตัวที่ได้มาจะมี \(h_{FE}\) ต่ำกว่าสเปกก็ตาม</span>
+              <span class="en">(a) Working straight from \(h_{FE}\) = 75 gives a base current of only
+              \(70/75 = 0.93\) mA, which is <b>not enough</b>: it would leave the transistor just inside the
+              active region rather than saturated. Switch design instead uses a <b>forced β</b> of about 10,
+              supplying roughly seven times more base current than strictly needed, so that saturation is
+              certain even if the particular transistor falls short of its specification.</span></p>
+            \[ I_B = \frac{I_C}{\beta_{\text{forced}}} = \frac{70}{10} = 7\ \text{mA} \]
+            \[ R_B = \frac{V_{\text{pin}} - V_{BE}}{I_B} = \frac{3.3 - 0.7}{0.007} = 371\ \Omega \]
+            <p><span class="th">เลือกค่ามาตรฐาน 330 Ω ซึ่งให้กระแสเบสมากขึ้นเล็กน้อย จึงยิ่งอิ่มตัวแน่นขึ้น</span>
+              <span class="en">Choose the standard 330 Ω, which gives slightly more base current and so
+              saturates even harder:</span></p>
+            \[ I_B = \frac{2.6}{330} = 7.9\ \text{mA}
+               \qquad \beta_{\text{forced}} = \frac{70}{7.9} = 8.9 \quad ✓ \]
+
+            <p><span class="th">(ข) ขาสัญญาณต้องจ่ายกระแส 7.9 mA — ไมโครคอนโทรลเลอร์ส่วนใหญ่จ่ายได้
+              12–20 mA ต่อขา จึงผ่าน แต่ <b>ต้องตรวจคู่มือเสมอ</b> เพราะบางรุ่นจำกัดไว้เพียง 8 mA
+              และถ้าใช้หลายขาพร้อมกันยังมีข้อจำกัดกระแสรวมของทั้งชิปอีกชั้นหนึ่ง</span>
+              <span class="en">(b) The pin must source 7.9 mA. Most microcontrollers manage 12–20 mA per pin,
+              so this passes — but <b>always check the datasheet</b>, because some allow only 8 mA, and there
+              is usually a separate limit on the total current for the whole chip.</span></p>
+
+            <p><span class="th">(ค) กำลังที่ทรานซิสเตอร์ต้องทนขณะอิ่มตัว</span>
+              <span class="en">(c) The power the transistor dissipates while saturated</span></p>
+            \[ P = V_{CE(\text{sat})} \times I_C = (0.3)(0.070) = 21\ \text{mW} \]
+            <p><span class="th">น้อยมากจนไม่ต้องใช้แผ่นระบายความร้อนเลย ทรานซิสเตอร์ตัวถัง TO-92
+              อย่าง 2N2222 หรือ BC337 เพียงพอ</span>
+              <span class="en">So little that no heatsink is needed at all; a TO-92 part such as a 2N2222 or
+              BC337 is ample.</span></p>
+
+            <p><span class="th">(ง) สิ่งที่ขาดไม่ได้ในวงจรนี้</span>
+              <span class="en">(d) What the circuit must also include</span></p>
+            <ul class="mb-0">
+              <li><span class="th"><b>ไดโอดฟลายแบ็ก</b> คร่อมคอยล์รีเลย์ ตามเหตุผลในตัวอย่างที่ 13.2 —
+                คอยล์รีเลย์ก็เป็นตัวเหนี่ยวนำเช่นเดียวกับวาล์วโซลินอยด์</span>
+                <span class="en">A <b>flyback diode</b> across the relay coil, for the reason given in
+                Example 13.2 — a relay coil is just as inductive as a solenoid valve.</span></li>
+              <li><span class="th"><b>กราวด์ร่วม</b> ระหว่างวงจร 3.3 V กับวงจร 12 V
+                ถ้าลืมข้อนี้ กระแสเบสจะไม่มีทางไหลกลับ และวงจรจะไม่ทำงานเลย
+                ซึ่งเป็นข้อผิดพลาดที่หาสาเหตุยากที่สุดข้อหนึ่ง</span>
+                <span class="en">A <b>common ground</b> between the 3.3 V and 12 V circuits. Forget it and
+                the base current has no return path and nothing works at all — one of the hardest faults to
+                track down.</span></li>
+              <li><span class="th"><b>ตัวต้านทานดึงลง (pull-down)</b> ราว 10 kΩ ที่ขาเบส
+                เพื่อให้ทรานซิสเตอร์อยู่ที่คัตออฟแน่นอนในช่วงที่ไมโครคอนโทรลเลอร์กำลังบูต
+                ซึ่งขาสัญญาณยังลอยอยู่ ไม่เช่นนั้นปั๊มอาจทำงานเองตอนไฟกระพริบ</span>
+                <span class="en">A <b>pull-down resistor</b> of about 10 kΩ at the base, holding the
+                transistor firmly in cut-off while the microcontroller boots and its pins are still
+                floating. Without it the pump can start on its own after a power blink.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 13.5 -->
+    <section id="s5">
+      <h2><span class="num">13.5</span><span class="th">มอสเฟตและการควบคุมด้วย PWM</span>
+          <span class="en">MOSFETs and PWM control</span></h2>
+
+      <p><span class="th">มอสเฟตทำงานบนหลักการที่ต่างจาก BJT โดยสิ้นเชิง แทนที่จะป้อนกระแสเข้าไป
+        เราป้อน <b>แรงดัน</b> ที่ขาเกต (G) ซึ่งถูกกั้นจากตัวอุปกรณ์ด้วยชั้นฉนวนบาง ๆ
+        สนามไฟฟ้าจากเกตจะเหนี่ยวนำให้เกิดช่องทางนำไฟฟ้าระหว่างขาเดรน (D) กับซอร์ส (S)
+        เมื่อแรงดันเกตเกินค่าขีดเริ่ม \(V_{GS(th)}\) เพราะเกตเป็นฉนวน
+        <b>จึงแทบไม่กินกระแสเลยในสภาวะคงที่</b> ต่างจาก BJT ที่ต้องป้อนกระแสเบสตลอดเวลา</span>
+        <span class="en">A MOSFET works on an entirely different principle from a BJT. Instead of feeding in
+        a current we apply a <b>voltage</b> to the gate, which is separated from the device by a thin
+        insulating layer. The gate's electric field induces a conducting channel between drain and source
+        once the gate voltage passes the threshold \(V_{GS(th)}\). Because the gate is insulated, it
+        <b>draws essentially no steady current at all</b> — unlike a BJT, which needs base current the whole
+        time it conducts.</span></p>
+
+      <p><span class="th">เมื่อมอสเฟตนำกระแสเต็มที่ มันมีพฤติกรรมเหมือนตัวต้านทานค่าน้อยมาก เรียกว่า
+        \(R_{DS(on)}\) ซึ่งอาจต่ำเพียงไม่กี่สิบมิลลิโอห์ม กำลังสูญเสียจึงเป็น \(I^2R_{DS(on)}\)
+        ซึ่งเป็นข้อได้เปรียบชี้ขาดเหนือ BJT ที่ตกคร่อมคงที่ราว 0.6 V ไม่ว่ากระแสจะมากแค่ไหน</span>
+        <span class="en">When fully on, a MOSFET behaves like a very small resistance, its \(R_{DS(on)}\),
+        which may be only tens of milliohms. Its loss is therefore \(I^2R_{DS(on)}\) — the decisive
+        advantage over a BJT, which drops a fixed 0.6 V or so no matter how much current flows:</span></p>
+
+      <div class="equation">
+        \[ P_{\text{MOSFET}} = I^{2}R_{DS(on)}
+           \qquad\text{เทียบกับ / against}\qquad
+           P_{\text{BJT}} = V_{CE(\text{sat})}\,I \]
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 13.2 เปรียบเทียบ BJT กับมอสเฟตในการใช้เป็นสวิตช์</span>
+            <span class="en">Table 13.2 BJT and MOSFET compared as switches</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">หัวข้อ</span><span class="en">Aspect</span></th>
+              <th><span class="th">BJT</span><span class="en">BJT</span></th>
+              <th><span class="th">มอสเฟต</span><span class="en">MOSFET</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">ควบคุมด้วย</span><span class="en">Controlled by</span></td>
+              <td><span class="th">กระแสเบส ต้องจ่ายตลอดเวลา</span><span class="en">Base current, supplied continuously</span></td>
+              <td><span class="th">แรงดันเกต แทบไม่กินกระแส</span><span class="en">Gate voltage, drawing almost nothing</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">แรงดันตกขณะนำกระแส</span><span class="en">Drop when on</span></td>
+              <td><span class="th">คงที่ ~0.3–0.7 V</span><span class="en">Fixed, ~0.3–0.7 V</span></td>
+              <td><span class="th">\(I \times R_{DS(on)}\) — เล็กมากที่กระแสต่ำ</span><span class="en">\(I \times R_{DS(on)}\) — tiny at low current</span></td>
+            </tr>
+            <tr style="background:#eaf7ef">
+              <td><span class="th">เหมาะกับกระแสสูง</span><span class="en">Suits high current</span></td>
+              <td><span class="th">ไม่ดี — กำลังสูญเสียโตตามกระแสเป็นเส้นตรง</span><span class="en">Poorly — loss grows linearly with current</span></td>
+              <td><span class="th">ดีมาก — เลือก \(R_{DS(on)}\) ต่ำ ๆ ได้</span><span class="en">Excellently — just pick a low \(R_{DS(on)}\)</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">ความเร็วในการสวิตช์</span><span class="en">Switching speed</span></td>
+              <td><span class="th">ช้ากว่า เหมาะกับงานเปิด–ปิดธรรมดา</span><span class="en">Slower; fine for plain on/off</span></td>
+              <td><span class="th">เร็วมาก ใช้กับ PWM หลายสิบกิโลเฮิรตซ์ได้</span><span class="en">Very fast; handles PWM at tens of kHz</span></td>
+            </tr>
+            <tr style="background:#fff6e5">
+              <td><span class="th">ข้อควรระวัง</span><span class="en">The catch</span></td>
+              <td><span class="th">ต้องคำนวณกระแสเบสให้อิ่มตัวแน่นอน</span><span class="en">The base current must be enough to saturate it</span></td>
+              <td><span class="th">ต้องเลือกรุ่น <b>logic-level</b> จึงจะเปิดได้ด้วย 3.3 V</span><span class="en">Must be a <b>logic-level</b> type to turn on from 3.3 V</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">งานในฟาร์มที่เหมาะ</span><span class="en">Typical farm use</span></td>
+              <td><span class="th">ขับรีเลย์ · ไฟแสดงสถานะ · บัซเซอร์</span><span class="en">Relay drivers, indicators, buzzers</span></td>
+              <td><span class="th">หรี่ไฟปลูกพืช · ปรับรอบพัดลม DC · ขับปั๊มจิ๋ว</span><span class="en">Dimming grow lights, DC fan speed, small pumps</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3><span class="th">13.5.1 การควบคุมด้วย PWM</span>
+          <span class="en">13.5.1 Control by PWM</span></h3>
+      <p><span class="th">ถ้าอยากให้พัดลม 12 V หมุนครึ่งความเร็ว วิธีที่แย่ที่สุดคือต่อตัวต้านทานอนุกรม
+        เพราะพลังงานครึ่งหนึ่งจะกลายเป็นความร้อนทิ้งไปเปล่า ๆ วิธีที่ถูกต้องคือ
+        <b>การมอดูเลตความกว้างพัลส์ (PWM)</b> — เปิดและปิดสวิตช์สลับกันเร็วมาก
+        จนโหลดรู้สึกเหมือนได้รับแรงดันเฉลี่ย เพราะในจังหวะเปิดมอสเฟตตกคร่อมแทบเป็นศูนย์
+        และในจังหวะปิดไม่มีกระแสเลย <b>จึงแทบไม่มีพลังงานสูญเสียในตัวสวิตช์ทั้งสองจังหวะ</b></span>
+        <span class="en">If you want a 12 V fan at half speed, the worst way is a series resistor, which
+        simply turns half the energy into waste heat. The right way is <b>pulse-width modulation</b>:
+        switch on and off so rapidly that the load experiences only the average. While on, the MOSFET drops
+        almost nothing; while off, no current flows at all — <b>so almost no energy is lost in the switch in
+        either state</b>.</span></p>
+
+      <div class="equation">
+        \[ D = \frac{t_{\text{on}}}{T} \qquad\qquad V_{\text{avg}} = D \times V_{\text{supply}} \]
+      </div>
+
+      <figure>
+        <div class="figure-box is-animated pwm-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 430" role="img" width="720"
+               aria-label="A PWM pulse train whose duty cycle sweeps, with the average voltage following it, and the MOSFET circuit that produces it">
+            <text class="cap th" x="60" y="40">ก. สัญญาณ PWM ที่เกต และแรงดันเฉลี่ยที่โหลดได้รับ</text>
+            <text class="cap en" x="60" y="40">a. The PWM signal at the gate, and the average the load sees</text>
+
+            <!-- axes -->
+            <line class="axis" x1="80" y1="190" x2="570" y2="190"/>
+            <line class="axis" x1="80" y1="190" x2="80" y2="95"/>
+            <text class="sub" x="72" y="110" text-anchor="end">12 V</text>
+            <text class="sub" x="72" y="194" text-anchor="end">0 V</text>
+            <line x1="80" y1="105" x2="570" y2="105" stroke="#eef1f5" stroke-width="1"/>
+            <text class="sub th" x="325" y="212" text-anchor="middle">เวลา — หนึ่งคาบ T คงที่เสมอ เปลี่ยนเฉพาะความกว้างของพัลส์</text>
+            <text class="sub en" x="325" y="212" text-anchor="middle">time — the period T never changes, only the width of each pulse</text>
+
+            <!-- the pulse train -->
+            <rect class="pwm-pulse p1" x="90"  y="105" width="80" height="85" fill="#fd5f00" opacity=".85"/>
+            <rect class="pwm-pulse p2" x="180" y="105" width="80" height="85" fill="#fd5f00" opacity=".85"/>
+            <rect class="pwm-pulse p3" x="270" y="105" width="80" height="85" fill="#fd5f00" opacity=".85"/>
+            <rect class="pwm-pulse p4" x="360" y="105" width="80" height="85" fill="#fd5f00" opacity=".85"/>
+            <rect class="pwm-pulse p5" x="450" y="105" width="80" height="85" fill="#fd5f00" opacity=".85"/>
+
+            <!-- the average -->
+            <line class="pwm-avg" x1="90" y1="190" x2="540" y2="190"
+                  stroke="#2f855a" stroke-width="3.5" stroke-dasharray="9 5"/>
+            <text class="sub th" x="580" y="150" fill="#2f855a">แรงดันเฉลี่ย</text>
+            <text class="sub en" x="580" y="150" fill="#2f855a">average voltage</text>
+            <text class="sub th" x="580" y="166" fill="#2f855a">ที่พัดลมได้รับ</text>
+            <text class="sub en" x="580" y="166" fill="#2f855a">reaching the fan</text>
+
+            <!-- read-out bar -->
+            <line x1="626" y1="190" x2="654" y2="190" stroke="#6c757d" stroke-width="1.5"/>
+            <rect class="pwm-bar" x="632" y="105" width="16" height="85" fill="#2f855a" rx="2"/>
+            <text class="cap" x="640" y="96" text-anchor="middle">V</text>
+
+            <!-- period marker -->
+            <line x1="90" y1="228" x2="180" y2="228" stroke="#0d1128" stroke-width="1.5"/>
+            <line x1="90" y1="222" x2="90" y2="234" stroke="#0d1128" stroke-width="1.5"/>
+            <line x1="180" y1="222" x2="180" y2="234" stroke="#0d1128" stroke-width="1.5"/>
+            <text class="sub" x="135" y="246" text-anchor="middle">T = 50 µs (20 kHz)</text>
+
+            <line x1="40" y1="266" x2="680" y2="266" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== circuit ===== -->
+            <text class="cap th" x="60" y="292">ข. วงจรที่สร้างสัญญาณนี้</text>
+            <text class="cap en" x="60" y="292">b. The circuit that produces it</text>
+
+            <path class="wire" d="M140 316 H300"/>
+            <text class="cap" x="132" y="320" text-anchor="end">+12 V</text>
+
+            <path class="wire" d="M266 316 V332"/>
+            <circle class="sym" cx="266" cy="354" r="22"/>
+            <text class="lbl" x="266" y="359" text-anchor="middle">M</text>
+            <path class="wire" d="M266 376 V392"/>
+            <text class="sub th" x="214" y="350" text-anchor="middle">พัดลม DC</text>
+            <text class="sub en" x="214" y="350" text-anchor="middle">DC fan</text>
+            <text class="sub" x="214" y="366" text-anchor="middle">12 V · 2.5 A</text>
+
+            <!-- flyback diode -->
+            <circle class="node" cx="266" cy="332" r="4"/>
+            <circle class="node" cx="266" cy="376" r="4"/>
+            <path class="wire" d="M266 332 H332 V340"/>
+            <line x1="320" y1="340" x2="344" y2="340" stroke="#0d1128" stroke-width="3"/>
+            <polygon points="320,364 344,364 332,340" fill="#0d1128"/>
+            <path class="wire" d="M332 364 V376 H266"/>
+            <text class="sub th" x="362" y="356">ไดโอดฟลายแบ็ก</text>
+            <text class="sub en" x="362" y="356">flyback diode</text>
+
+            <!-- MOSFET -->
+            <line x1="228" y1="392" x2="228" y2="424" stroke="#0d1128" stroke-width="3"/>
+            <line x1="240" y1="392" x2="240" y2="424" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M240 396 H266 V392"/>
+            <path class="wire" d="M240 420 H266"/>
+            <path class="wire" d="M184 408 H228"/>
+            <text class="sub" x="256" y="390">D</text>
+            <text class="sub" x="256" y="416">S</text>
+            <text class="sub" x="216" y="402" text-anchor="end">G</text>
+
+            <rect class="sym" x="140" y="396" width="44" height="24"/>
+            <text class="sub" x="162" y="390" text-anchor="middle">R_G</text>
+            <path class="wire" d="M110 408 H140"/>
+            <rect x="52" y="388" width="58" height="40" rx="6" fill="#e9f2fb" stroke="#2b6cb0" stroke-width="2"/>
+            <text class="sub" x="81" y="404" text-anchor="middle">MCU</text>
+            <text class="sub" x="81" y="418" text-anchor="middle">PWM</text>
+
+            <path class="wire" d="M266 420 V428 H430"/>
+            <path class="wire" d="M81 428 H266"/>
+            <line x1="340" y1="428" x2="340" y2="428" stroke="#0d1128" stroke-width="2"/>
+            <text class="sub th" x="470" y="432">กราวด์ร่วมระหว่างวงจรควบคุมกับวงจรกำลัง</text>
+            <text class="sub en" x="470" y="432">the ground shared by the control and power circuits</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 13.8</span><span class="en">Figure 13.8</span></b>
+          <span class="th"> การควบคุมด้วย PWM ในภาพเคลื่อนไหว ความกว้างของพัลส์กวาดจากแคบไปกว้าง
+            พร้อมกับเส้นประสีเขียวซึ่งคือแรงดันเฉลี่ยที่พัดลมได้รับ และแท่งด้านขวาที่สูงขึ้นตามกัน
+            <b>สังเกตว่าคาบ T ไม่เปลี่ยนเลย</b> — เราไม่ได้เปลี่ยนความถี่ เปลี่ยนแค่สัดส่วนเวลาที่เปิด
+            ซึ่งต่างจากการควบคุมมอเตอร์เหนี่ยวนำด้วยอินเวอร์เตอร์ในบทที่ 12 ที่เปลี่ยนความถี่จริง ๆ</span>
+          <span class="en"> PWM control. In the animation the pulse width sweeps from narrow to wide, with
+            the green dashed line — the average voltage reaching the fan — and the bar at the right rising
+            with it. <b>Note that the period T never changes</b>: we are not altering the frequency, only
+            the fraction of time the switch is on. That is quite unlike the inverter of Chapter 12, which
+            genuinely changes the frequency.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 13.5</span><span class="en">Example 13.5</span></span>
+          <span class="th">ควบคุมรอบพัดลมหมุนเวียนอากาศในโรงเรือนด้วย PWM</span>
+          <span class="en">PWM speed control for a greenhouse circulation fan</span></div>
+        <div class="example-body">
+          <p><span class="th">พัดลมหมุนเวียนอากาศในโรงเรือนใช้ไฟ 12 V กินกระแส 2.5 A
+            ควบคุมด้วยสัญญาณ PWM 3.3 V จากไมโครคอนโทรลเลอร์ผ่านมอสเฟตชนิด logic-level
+            ที่มี \(R_{DS(on)} = 0.035\ \Omega\) เมื่อ \(V_{GS} = 3.3\) V จงหา
+            (ก) กำลังสูญเสียในมอสเฟตที่ดิวตี้เต็ม (ข) เปรียบเทียบกับการใช้ BJT ที่ตกคร่อม 0.6 V
+            (ค) แรงดันเฉลี่ยและกำลังที่พัดลมใช้เมื่อตั้งดิวตี้ 60 %
+            และ (ง) เหตุผลที่ต้องเลือกความถี่ PWM ที่ 20 kHz</span>
+            <span class="en">A greenhouse circulation fan runs on 12 V and draws 2.5 A, controlled by a 3.3 V
+            PWM signal from a microcontroller through a logic-level MOSFET with
+            \(R_{DS(on)} = 0.035\ \Omega\) at \(V_{GS} = 3.3\) V. Find (a) the MOSFET's loss at full duty,
+            (b) how that compares with a BJT dropping 0.6 V, (c) the average voltage and the fan's power at
+            60 % duty, and (d) why the PWM frequency should be 20 kHz.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) กำลังสูญเสียของมอสเฟต คิดที่ดิวตี้ 100 % ซึ่งเป็นกรณีเลวร้ายที่สุดสำหรับการเลือกอุปกรณ์</span>
+              <span class="en">(a) The MOSFET's loss, taken at 100 % duty — the worst case, and the one to
+              size the device on.</span></p>
+            \[ P_{\text{MOSFET}} = I^{2}R_{DS(on)} = (2.5)^{2}(0.035) = 0.22\ \text{W} \]
+
+            <p><span class="th">(ข) ถ้าใช้ BJT แทน</span><span class="en">(b) With a BJT instead</span></p>
+            \[ P_{\text{BJT}} = V_{CE(\text{sat})}\,I = (0.6)(2.5) = 1.5\ \text{W} \]
+            \[ \frac{P_{\text{BJT}}}{P_{\text{MOSFET}}} = \frac{1.5}{0.22} = 6.8 \]
+            <p><span class="th">BJT สูญเสียมากกว่าเกือบ 7 เท่า และที่ 1.5 W จำเป็นต้องมีแผ่นระบายความร้อน
+              ส่วนมอสเฟตที่ 0.22 W ไม่ต้องใช้เลย <b>นี่คือเหตุผลที่งานสวิตช์กระแสตรงในฟาร์มใช้มอสเฟตแทบทั้งหมด</b></span>
+              <span class="en">The BJT wastes nearly seven times as much, and at 1.5 W it needs a heatsink,
+              whereas the MOSFET at 0.22 W needs none. <b>This is why DC switching on a farm is done with
+              MOSFETs almost without exception.</b></span></p>
+
+            <p><span class="th">(ค) ที่ดิวตี้ 60 %</span><span class="en">(c) At 60 % duty</span></p>
+            \[ V_{\text{avg}} = D \times V = (0.60)(12) = 7.2\ \text{V} \]
+            <p><span class="th">ความเร็วพัดลมแปรผันกับแรงดันโดยประมาณ จึงเหลือราว 60 %
+              และจากกฎความคล้ายในบทที่ 12 กำลังแปรผันกับกำลังสามของความเร็ว</span>
+              <span class="en">Fan speed follows the voltage roughly, so it drops to about 60 %, and by the
+              affinity laws of Chapter 12 the power goes as the cube of speed:</span></p>
+            \[ P_{\text{เต็ม}} = (12)(2.5) = 30\ \text{W} \]
+            \[ P_{60\%} = 30 \times (0.60)^{3} = 30 \times 0.216 = 6.5\ \text{W} \]
+            <p><span class="th">ลดรอบลง 40 % ประหยัดพลังงานได้ถึง 78 % ซึ่งเป็นบทเรียนเดียวกับอินเวอร์เตอร์ในบทที่ 12
+              เพียงแต่ที่นี่ทำกับพัดลมกระแสตรงเล็ก ๆ ด้วยมอสเฟตตัวเดียวราคาไม่กี่สิบบาท</span>
+              <span class="en">A 40 % cut in speed saves 78 % of the energy — the same lesson as the inverter
+              in Chapter 12, achieved here on a small DC fan with a single MOSFET costing a few
+              baht.</span></p>
+
+            <p><span class="th">(ง) ความถี่ PWM ต้องอยู่เหนือย่านที่หูได้ยิน (ราว 20 kHz)
+              เพราะที่ความถี่ต่ำกว่านั้น ขดลวดของมอเตอร์จะสั่นตามจังหวะพัลส์และเกิดเสียงหวีดรบกวน
+              ซึ่งในโรงเรือนที่มีพัดลมหลายสิบตัวจะกลายเป็นปัญหาจริง
+              แต่ก็ไม่ควรสูงเกินไป เพราะการสวิตช์แต่ละครั้งมีกำลังสูญเสียของมันเอง
+              ยิ่งสวิตช์ถี่ยิ่งสูญเสียมาก 20–25 kHz จึงเป็นจุดที่ลงตัวพอดี</span>
+              <span class="en">(d) The PWM frequency must sit above the audible range, around 20 kHz. Below
+              that the motor windings vibrate in time with the pulses and whine audibly — a real nuisance in
+              a greenhouse with dozens of fans. But it should not go much higher either, because every
+              switching transition costs energy of its own, and the more often you switch the more you lose.
+              20–25 kHz is the sweet spot.</span></p>
+
+            <div class="callout callout-danger mb-0">
+              <div class="callout-title">⚠️ <span class="th">กับดักที่นักศึกษาเกือบทุกคนเจอครั้งแรก</span>
+                <span class="en">The trap nearly every student falls into once</span></div>
+              <p class="mb-0"><span class="th">มอสเฟตยอดนิยมอย่าง <b>IRF540</b> ระบุ \(V_{GS(th)}\) ไว้ที่ 2–4 V
+                ซึ่งดูเหมือนว่า 3.3 V น่าจะเปิดได้ แต่ค่านั้นคือแรงดันที่ <i>เริ่ม</i> นำกระแสเพียงเล็กน้อยเท่านั้น
+                การจะให้ \(R_{DS(on)}\) ลงไปถึงค่าที่ระบุในสเปกต้องใช้ \(V_{GS}\) ถึง <b>10 V</b>
+                ถ้าขับด้วย 3.3 V มอสเฟตจะนำกระแสแบบครึ่ง ๆ กลาง ๆ \(R_{DS(on)}\) สูงเป็นสิบเท่า
+                ร้อนจัดและไหม้ในที่สุด — อาการคือ “วงจรทำงานได้สองสามนาทีแล้วดับ”
+                <b>ทางแก้คือเลือกรุ่นที่ระบุว่า logic-level</b> เช่น IRLZ44N หรือ IRL540
+                สังเกตตัว <b>L</b> ที่เพิ่มเข้ามาในรหัสรุ่น</span>
+                <span class="en">A popular MOSFET such as the <b>IRF540</b> quotes \(V_{GS(th)}\) as 2–4 V,
+                which makes 3.3 V look sufficient. But that threshold is only where it <i>begins</i> to
+                conduct at all. To reach the \(R_{DS(on)}\) on the datasheet it needs <b>10 V</b> on the
+                gate. Driven from 3.3 V it conducts only partially, its resistance is ten times higher, and
+                it overheats and fails — the classic symptom being "it worked for a few minutes and then
+                died". <b>The cure is to specify a logic-level part</b> such as an IRLZ44N or IRL540; note
+                the added <b>L</b> in the part number.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 13.3 เลือกอุปกรณ์สวิตช์ให้เหมาะกับโหลดในฟาร์ม</span>
+            <span class="en">Table 13.3 Choosing the right switching device for a farm load</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">โหลด</span><span class="en">Load</span></th>
+              <th><span class="th">เลือกใช้</span><span class="en">Use</span></th>
+              <th><span class="th">เหตุผล</span><span class="en">Why</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">LED แสดงสถานะ (20 mA)</span><span class="en">Status LED (20 mA)</span></td>
+              <td><span class="th">ต่อตรงกับขา MCU</span><span class="en">Straight from the MCU pin</span></td>
+              <td><span class="th">กระแสน้อยพอที่ขาจะจ่ายได้เอง ใส่แค่ตัวต้านทานจำกัดกระแส</span>
+                  <span class="en">Small enough for the pin itself; just add the limiting resistor</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">รีเลย์ 12 V (70 mA)</span><span class="en">12 V relay (70 mA)</span></td>
+              <td><span class="th">BJT + ไดโอดฟลายแบ็ก</span><span class="en">BJT with a flyback diode</span></td>
+              <td><span class="th">เปิด–ปิดไม่บ่อย กระแสไม่สูง ราคาถูกที่สุด</span>
+                  <span class="en">Switched rarely, modest current, cheapest solution</span></td>
+            </tr>
+            <tr style="background:#eaf7ef">
+              <td><span class="th">พัดลม DC · แถบไฟปลูกพืช (1–10 A)</span><span class="en">DC fan, LED strip (1–10 A)</span></td>
+              <td><span class="th">มอสเฟต logic-level + PWM</span><span class="en">Logic-level MOSFET with PWM</span></td>
+              <td><span class="th">กระแสสูงและต้องปรับระดับได้ สูญเสียต่ำที่สุด</span>
+                  <span class="en">High current and needs dimming; lowest loss by far</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">วาล์วโซลินอยด์ 24 V</span><span class="en">24 V solenoid valve</span></td>
+              <td><span class="th">มอสเฟต + ไดโอดฟลายแบ็ก</span><span class="en">MOSFET with a flyback diode</span></td>
+              <td><span class="th">โหลดเหนี่ยวนำ ต้องมีทางระบายพลังงานเสมอ</span>
+                  <span class="en">An inductive load always needs somewhere for its energy to go</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">โหลด 230 V AC เล็ก ๆ</span><span class="en">Small 230 V AC load</span></td>
+              <td><span class="th">โซลิดสเตตรีเลย์ (SSR)</span><span class="en">Solid-state relay</span></td>
+              <td><span class="th">แยกวงจรด้วยออปโตคัปเปลอร์ ไม่มีหน้าสัมผัสให้สึก</span>
+                  <span class="en">Opto-isolated, with no contacts to wear</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">มอเตอร์ปั๊ม 230/400 V</span><span class="en">230/400 V pump motor</span></td>
+              <td><span class="th">รีเลย์ → คอนแทกเตอร์ (บทที่ 2 และ 12)</span><span class="en">Relay driving a contactor (Chapters 2 and 12)</span></td>
+              <td><span class="th">กระแสสตาร์ตสูงมาก ต้องใช้หน้าสัมผัสที่ออกแบบมาเพื่อการนี้</span>
+                  <span class="en">The starting surge demands contacts built for it</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =============================================== Summary -->
+    <section id="summary">
+      <h2><span class="num">📌</span><span class="th">สรุปบทเรียน</span><span class="en">Chapter summary</span></h2>
+      <div class="card">
+        <ul class="mb-0">
+          <li><span class="th">รอยต่อพีเอ็นเกิดแถบพร่องที่มีกำแพงศักย์ราว 0.7 V สำหรับซิลิคอน
+            ทำให้ไดโอดนำกระแสได้ทางเดียว ซึ่งเป็นคุณสมบัติที่ตัวต้านทานไม่มี</span>
+            <span class="en">A PN junction forms a depletion region with a barrier of about 0.7 V in
+            silicon, giving the diode its one-way conduction — something no resistor offers.</span></li>
+          <li><span class="th">วงจรบริดจ์ใช้ไดโอดสี่ตัว นำกระแสครั้งละสองตัว เสียแรงดัน 1.4 V
+            และต้องมีตัวเก็บประจุกรองที่คำนวณจาก \(\Delta V = I/(f_{\text{ripple}}C)\)
+            โดยที่ \(f_{\text{ripple}}\) เป็นสองเท่าของความถี่ขาเข้า</span>
+            <span class="en">A bridge uses four diodes, two conducting at a time, costing 1.4 V, and needs a
+            smoothing capacitor sized from \(\Delta V = I/(f_{\text{ripple}}C)\), where the ripple frequency
+            is twice the input frequency.</span></li>
+          <li><span class="th">โหลดเหนี่ยวนำทุกชนิด — วาล์ว รีเลย์ คอนแทกเตอร์ — ต้องมีไดโอดฟลายแบ็ก
+            มิฉะนั้นจะเกิดแรงดันหลายพันโวลต์ตาม \(v = L\,di/dt\) เมื่อตัดวงจร</span>
+            <span class="en">Every inductive load — valve, relay, contactor — needs a flyback diode, or
+            thousands of volts appear from \(v = L\,di/dt\) the moment it is switched off.</span></li>
+          <li><span class="th">LED ต้องควบคุมด้วยกระแส ไม่ใช่แรงดัน และในงานปลูกพืชต้องแปลงจากวัตต์เป็น
+            PPFD และ DLI จึงจะรู้ว่าพืชได้แสงพอหรือไม่</span>
+            <span class="en">LEDs must be driven by current, not voltage; and in horticulture the watts must
+            be converted into PPFD and DLI before you can say whether the crop has enough light.</span></li>
+          <li><span class="th">ใช้ทรานซิสเตอร์เป็นสวิตช์ ต้องอยู่ที่คัตออฟหรืออิ่มตัวเท่านั้น
+            BJT ต้องป้อนกระแสเบสด้วยอัตราขยายบังคับราว 10 ส่วนมอสเฟตต้องเลือกรุ่น logic-level
+            หากขับด้วย 3.3 V</span>
+            <span class="en">Used as a switch, a transistor must sit only at cut-off or in saturation. A BJT
+            needs base current at a forced β of about 10; a MOSFET driven from 3.3 V must be a logic-level
+            part.</span></li>
+          <li><span class="th">PWM ควบคุมกำลังโดยแทบไม่สูญเสียในตัวสวิตช์ เพราะเปิดแล้วแรงดันตกเป็นศูนย์
+            ปิดแล้วกระแสเป็นศูนย์ \(V_{\text{avg}} = D \times V_{\text{supply}}\)</span>
+            <span class="en">PWM controls power with almost no loss in the switch — zero volts across it when
+            on, zero current through it when off — with
+            \(V_{\text{avg}} = D \times V_{\text{supply}}\).</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Activity -->
+    <section id="activity">
+      <h2><span class="num">🧭</span><span class="th">กิจกรรมในชั้นเรียน</span>
+          <span class="en">Class activity</span></h2>
+
+      <div class="activity">
+        <div class="activity-head">
+          <h3><span class="th">กิจกรรมที่ 13.1 — ออกแบบวงจรเชื่อมต่อระหว่างตัวควบคุมกับโหลดสามชนิด</span>
+              <span class="en">Activity 13.1 — Interfacing one controller to three different loads</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">45 นาที</span><span class="en">45 minutes</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO2, CLO5</span><span class="en">CLO2, CLO5</span></span>
+          </div>
+        </div>
+        <div class="activity-body">
+          <p><span class="th"><b>สถานการณ์:</b> ตู้ควบคุมโรงเรือนใช้ไมโครคอนโทรลเลอร์ที่มีขาสัญญาณออก 3.3 V
+            จ่ายกระแสได้สูงสุด 12 mA ต่อขา ต้องสั่งงานโหลดสามชนิดที่ต่างกันโดยสิ้นเชิง
+            แต่ละกลุ่มต้องออกแบบวงจรเชื่อมต่อของทั้งสามชนิด</span>
+            <span class="en"><b>Scenario:</b> A greenhouse control cabinet uses a microcontroller whose
+            output pins give 3.3 V and can source at most 12 mA each. It must operate three quite different
+            loads, and each group must design the interface for all three.</span></p>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ใบงานกิจกรรมที่ 13.1</span>
+                <span class="en">Activity 13.1 worksheet</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">โหลด</span><span class="en">Load</span></th>
+                  <th><span class="th">อุปกรณ์สวิตช์ที่เลือก</span><span class="en">Switching device chosen</span></th>
+                  <th><span class="th">ค่าตัวต้านทานและการคำนวณ</span><span class="en">Resistor value and working</span></th>
+                  <th><span class="th">อุปกรณ์ป้องกันที่ต้องมี</span><span class="en">Protection required</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>A.</b> <span class="th">วาล์วโซลินอยด์ 24 V · 0.4 A · L = 120 mH</span>
+                    <span class="en">24 V solenoid valve, 0.4 A, L = 120 mH</span></td>
+                  <td><input type="text" aria-label="a1"></td><td><input type="text" aria-label="a2"></td><td><input type="text" aria-label="a3"></td>
+                </tr>
+                <tr>
+                  <td><b>B.</b> <span class="th">แถบไฟ LED ปลูกพืช 12 V · 3 A · ต้องหรี่ได้</span>
+                    <span class="en">12 V LED grow strip, 3 A, must be dimmable</span></td>
+                  <td><input type="text" aria-label="b1"></td><td><input type="text" aria-label="b2"></td><td><input type="text" aria-label="b3"></td>
+                </tr>
+                <tr>
+                  <td><b>C.</b> <span class="th">คอนแทกเตอร์ปั๊ม 230 V AC · คอยล์ 24 V DC · 90 mA</span>
+                    <span class="en">Pump contactor on 230 V AC, 24 V DC coil, 90 mA</span></td>
+                  <td><input type="text" aria-label="c1"></td><td><input type="text" aria-label="c2"></td><td><input type="text" aria-label="c3"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol class="steps">
+            <li><span class="th"><b>เลือกอุปกรณ์</b> — ใช้ตารางที่ 13.3 เป็นจุดตั้งต้น
+              แล้วให้เหตุผลว่าทำไมโหลด B จึงเลือกต่างจากโหลด A และ C</span>
+              <span class="en"><b>Choose the devices</b> — start from Table 13.3, then justify why load B
+              calls for a different choice from A and C.</span></li>
+            <li><span class="th"><b>คำนวณ</b> — หาค่าตัวต้านทานเบสหรือตัวต้านทานเกตของแต่ละวงจร
+              พร้อมตรวจว่ากระแสที่ขา MCU ต้องจ่ายไม่เกิน 12 mA</span>
+              <span class="en"><b>Calculate</b> — find the base or gate resistor for each, and check that no
+              pin is asked for more than 12 mA.</span></li>
+            <li><span class="th"><b>ป้องกัน</b> — ระบุว่าโหลดใดต้องมีไดโอดฟลายแบ็ก และคำนวณแรงดันที่จะเกิดขึ้นถ้าไม่มี
+              สำหรับโหลด A โดยสมมติว่ากระแสลดลงเป็นศูนย์ใน 15 µs</span>
+              <span class="en"><b>Protect</b> — say which loads need a flyback diode, and for load A compute
+              the voltage that would appear without one, taking the current to fall to zero in
+              15 µs.</span></li>
+            <li><span class="th"><b>กำลังสูญเสีย</b> — สำหรับโหลด B จงเปรียบเทียบกำลังสูญเสียระหว่างมอสเฟต
+              \(R_{DS(on)} = 0.04\ \Omega\) กับ BJT ที่ตกคร่อม 0.7 V แล้วบอกว่าตัวใดต้องใช้แผ่นระบายความร้อน</span>
+              <span class="en"><b>Losses</b> — for load B, compare a MOSFET with
+              \(R_{DS(on)} = 0.04\ \Omega\) against a BJT dropping 0.7 V, and say which needs a
+              heatsink.</span></li>
+            <li><span class="th"><b>วาดแผนผัง</b> — เขียนแผนผังวงจรของทั้งสามโหลดบนกระดาษแผ่นเดียว
+              ด้วยสัญลักษณ์มาตรฐานจากบทที่ 2 โดยแสดงกราวด์ร่วมให้ชัดเจน</span>
+              <span class="en"><b>Draw</b> — put all three on one sheet in the standard symbols of
+              Chapter 2, showing the common ground clearly.</span></li>
+            <li><span class="th"><b>อภิปราย</b> — โหลด C ใช้ไฟ 230 V ซึ่งอันตรายถึงชีวิต (บทที่ 1)
+              จงเสนอวิธีแยกวงจรควบคุมออกจากวงจรกำลังอย่างปลอดภัย เตรียมนำเสนอ 3 นาที</span>
+              <span class="en"><b>Discuss</b> — load C involves 230 V, which can kill (Chapter 1). Propose a
+              safe way to separate the control circuit from the power circuit. Present in three
+              minutes.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">✅ <span class="th">เกณฑ์การประเมิน (10 คะแนน)</span>
+              <span class="en">Marking guide (10 marks)</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">เลือกอุปกรณ์เหมาะสมทั้งสามโหลดพร้อมเหตุผล — 3 คะแนน</span>
+                  <span class="en">Appropriate device for all three loads, with reasons — 3 marks</span></li>
+              <li><span class="th">คำนวณตัวต้านทานและกำลังสูญเสียถูกต้องพร้อมหน่วย — 4 คะแนน</span>
+                  <span class="en">Correct resistor and loss calculations with units — 4 marks</span></li>
+              <li><span class="th">ระบุอุปกรณ์ป้องกันครบ และเสนอการแยกวงจร 230 V ได้อย่างปลอดภัย — 3 คะแนน</span>
+                  <span class="en">Complete protection, and a safe means of isolating the 230 V side — 3 marks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Laboratory -->
+    <section id="lab">
+      <h2><span class="num">🧪</span><span class="th">ปฏิบัติการที่ 13</span>
+          <span class="en">Laboratory 13</span></h2>
+
+      <div class="lab">
+        <div class="lab-head">
+          <h3><span class="th">ปฏิบัติการที่ 13 — วงจรเรียงกระแสและวงจรขับโหลดด้วยทรานซิสเตอร์</span>
+              <span class="en">Laboratory 13 — Rectifiers and transistor load drivers</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">2 ชั่วโมง</span><span class="en">2 hours</span></span>
+            <span>👥 <span class="th">กลุ่มละ 2–3 คน</span><span class="en">Groups of 2–3</span></span>
+            <span>🎯 <span class="th">CLO2, CLO5, CLO6</span><span class="en">CLO2, CLO5, CLO6</span></span>
+          </div>
+        </div>
+        <div class="lab-body">
+
+          <h4 class="mt-0"><span class="th">วัตถุประสงค์</span><span class="en">Objectives</span></h4>
+          <ol>
+            <li><span class="th">วัดเส้นโค้งลักษณะสมบัติของไดโอด และยืนยันแรงดันตกคร่อมประมาณ 0.7 V</span>
+                <span class="en">Measure a diode's characteristic and confirm the forward drop of about
+                0.7 V.</span></li>
+            <li><span class="th">สร้างวงจรบริดจ์และวัดแรงดันกระเพื่อมก่อนและหลังใส่ตัวเก็บประจุ</span>
+                <span class="en">Build a bridge rectifier and measure the ripple with and without the
+                smoothing capacitor.</span></li>
+            <li><span class="th">สังเกตแรงดันพุ่งจากโหลดเหนี่ยวนำ และผลของไดโอดฟลายแบ็กด้วยออสซิลโลสโคป</span>
+                <span class="en">Observe the spike from an inductive load, and what the flyback diode does
+                about it, on the oscilloscope.</span></li>
+            <li><span class="th">ออกแบบและทดสอบวงจรขับรีเลย์ด้วย BJT และวงจรหรี่ไฟด้วยมอสเฟตและ PWM</span>
+                <span class="en">Design and test a BJT relay driver and a MOSFET PWM dimmer.</span></li>
+          </ol>
+
+          <h4><span class="th">อุปกรณ์</span><span class="en">Equipment</span></h4>
+          <ul>
+            <li><span class="th">แหล่งจ่ายไฟ DC ปรับค่าได้ · หม้อแปลง 18 V · มัลติมิเตอร์ 2 เครื่อง · ออสซิลโลสโคป</span>
+                <span class="en">Variable DC supply, an 18 V transformer, two multimeters, an
+                oscilloscope</span></li>
+            <li><span class="th">ไดโอด 1N4007 จำนวน 5 ตัว · ตัวเก็บประจุ 470 µF และ 4700 µF (35 V)</span>
+                <span class="en">Five 1N4007 diodes; 470 µF and 4700 µF capacitors (35 V)</span></li>
+            <li><span class="th">ทรานซิสเตอร์ 2N2222 · มอสเฟต IRLZ44N · รีเลย์ 12 V · พัดลม DC 12 V</span>
+                <span class="en">A 2N2222 transistor, an IRLZ44N MOSFET, a 12 V relay, a 12 V DC fan</span></li>
+            <li><span class="th">ตัวต้านทาน 330 Ω, 470 Ω, 1 kΩ, 100 Ω และ 10 kΩ · LED สีแดงและน้ำเงิน</span>
+                <span class="en">Resistors of 330 Ω, 470 Ω, 1 kΩ, 100 Ω and 10 kΩ; red and blue LEDs</span></li>
+            <li><span class="th">บอร์ดไมโครคอนโทรลเลอร์ที่สร้างสัญญาณ PWM ได้ · โพรโทบอร์ด</span>
+                <span class="en">A microcontroller board able to generate PWM, and a breadboard</span></li>
+          </ul>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">⚠️ <span class="th">ข้อควรระวัง</span>
+              <span class="en">Safety precautions</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">ตัวเก็บประจุ 4700 µF เก็บประจุไว้หลังปิดเครื่อง <b>ต้องคายประจุด้วยตัวต้านทาน 1 kΩ
+                ก่อนแตะขาทุกครั้ง</b> ห้ามลัดวงจรด้วยไขควง เพราะจะเกิดประกายไฟรุนแรง</span>
+                  <span class="en">The 4700 µF capacitor holds its charge after switch-off. <b>Always
+                  discharge it through a 1 kΩ resistor before touching the leads</b> — never short it with a
+                  screwdriver, which produces a violent spark.</span></li>
+              <li><span class="th">ตรวจขั้วของตัวเก็บประจุอิเล็กโทรไลต์ก่อนจ่ายไฟทุกครั้ง ต่อกลับขั้วจะระเบิด</span>
+                  <span class="en">Check the polarity of every electrolytic capacitor before switching on;
+                  reversed, they burst.</span></li>
+              <li><span class="th">ด้านปฐมภูมิของหม้อแปลงเป็นไฟ 230 V ห้ามเปิดฝาครอบหรือแตะขั้วเด็ดขาด</span>
+                  <span class="en">The transformer's primary is at 230 V — never open its cover or touch its
+                  terminals.</span></li>
+            </ul>
+          </div>
+
+          <h4><span class="th">ขั้นตอนการทดลอง</span><span class="en">Procedure</span></h4>
+
+          <p><b><span class="th">ตอนที่ 1: เส้นโค้งลักษณะสมบัติของไดโอด</span>
+            <span class="en">Part 1: The diode characteristic</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อไดโอด 1N4007 อนุกรมกับตัวต้านทาน 1 kΩ เข้ากับแหล่งจ่าย DC
+              วัดแรงดันคร่อมไดโอดและกระแสที่แรงดันแหล่งจ่าย 0.5, 1, 2, 5 และ 10 V</span>
+                <span class="en">Connect a 1N4007 in series with 1 kΩ to the DC supply, and measure the
+                voltage across the diode and the current at supply settings of 0.5, 1, 2, 5 and
+                10 V.</span></li>
+            <li><span class="th">กลับขั้วไดโอดแล้ววัดซ้ำ บันทึกกระแสที่อ่านได้ (ควรใกล้ศูนย์)</span>
+                <span class="en">Reverse the diode and repeat, recording the current, which should be near
+                zero.</span></li>
+            <li><span class="th">เขียนกราฟ I เทียบกับ V แล้วเปรียบเทียบรูปร่างกับรูปที่ 13.2
+              แรงดันคร่อมเปลี่ยนไปมากน้อยเพียงใดเมื่อกระแสเพิ่มจาก 0.3 mA เป็น 9 mA</span>
+                <span class="en">Plot I against V and compare the shape with Figure 13.2. How much does the
+                forward voltage move as the current rises from 0.3 mA to 9 mA?</span></li>
+            <li><span class="th">ทำซ้ำกับ LED สีแดงและสีน้ำเงิน เปรียบเทียบแรงดันตกคร่อมกับรูปที่ 13.6</span>
+                <span class="en">Repeat with the red and blue LEDs, comparing their forward voltages with
+                Figure 13.6.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 2: วงจรเรียงกระแสแบบบริดจ์</span>
+            <span class="en">Part 2: The bridge rectifier</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อไดโอดสี่ตัวเป็นวงจรบริดจ์ตามรูปที่ 13.3 รับไฟจากหม้อแปลง 18 V
+              ต่อตัวต้านทาน 1 kΩ เป็นโหลด <b>ยังไม่ใส่ตัวเก็บประจุ</b></span>
+                <span class="en">Wire four diodes into the bridge of Figure 13.3, fed from the 18 V
+                transformer, with 1 kΩ as the load. <b>Leave the capacitor out for now.</b></span></li>
+            <li><span class="th">ใช้ออสซิลโลสโคปดูรูปคลื่นขาออก วัดแรงดันยอดและนับจำนวนลูกคลื่นต่อวินาที
+              ตรงกับ 100 Hz ตามที่คาดไว้หรือไม่</span>
+                <span class="en">Look at the output on the oscilloscope, measure the peak and count the humps
+                per second. Is it the 100 Hz predicted?</span></li>
+            <li><span class="th">ใส่ตัวเก็บประจุ 470 µF คร่อมโหลด วัดแรงดันกระเพื่อมยอดถึงยอด</span>
+                <span class="en">Fit the 470 µF capacitor across the load and measure the peak-to-peak
+                ripple.</span></li>
+            <li><span class="th">เปลี่ยนเป็น 4700 µF แล้ววัดซ้ำ เปรียบเทียบกับค่าที่คำนวณจาก
+              \(\Delta V = I/(f_{\text{ripple}}C)\)</span>
+                <span class="en">Swap to 4700 µF and repeat, comparing with
+                \(\Delta V = I/(f_{\text{ripple}}C)\).</span></li>
+            <li><span class="th">เปลี่ยนโหลดเป็น 220 Ω (กระแสมากขึ้น) แล้ววัดกระเพื่อมอีกครั้ง
+              ผลเป็นไปตามสมการหรือไม่</span>
+                <span class="en">Change the load to 220 Ω, drawing more current, and measure again. Does the
+                equation hold?</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 3: แรงดันพุ่งจากโหลดเหนี่ยวนำ</span>
+            <span class="en">Part 3: The spike from an inductive load</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อคอยล์รีเลย์ 12 V กับสวิตช์และแหล่งจ่าย ต่อโพรบออสซิลโลสโคปคร่อมสวิตช์
+              ตั้งโหมดจับสัญญาณครั้งเดียว (single shot)</span>
+                <span class="en">Connect the 12 V relay coil through a switch to the supply, put the
+                oscilloscope probe across the switch and set it to single-shot capture.</span></li>
+            <li><span class="th">เปิดแล้วปิดสวิตช์ บันทึกแรงดันสูงสุดที่จับได้ <b>โดยยังไม่มีไดโอด</b></span>
+                <span class="en">Switch on then off, and record the peak voltage captured, <b>with no diode
+                fitted</b>.</span></li>
+            <li><span class="th">ต่อไดโอด 1N4007 คร่อมคอยล์ให้ถูกทิศ แล้วทำซ้ำ บันทึกแรงดันสูงสุด</span>
+                <span class="en">Fit a 1N4007 across the coil the right way round, repeat, and record the
+                peak.</span></li>
+            <li><span class="th">เปรียบเทียบสองค่า แล้วคำนวณว่าทรานซิสเตอร์ 2N2222 ที่ทน 40 V
+              จะรอดหรือไม่ในกรณีแรก</span>
+                <span class="en">Compare the two, and work out whether a 2N2222 rated at 40 V would have
+                survived the first case.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 4: วงจรขับรีเลย์และการหรี่ด้วย PWM</span>
+            <span class="en">Part 4: The relay driver and PWM dimming</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อวงจรขับรีเลย์ด้วย 2N2222 ตามตัวอย่างที่ 13.4 โดยใช้ตัวต้านทานเบส 330 Ω
+              วัด \(I_B\), \(I_C\) และ \(V_{CE}\) ขณะรีเลย์ทำงาน</span>
+                <span class="en">Build the 2N2222 relay driver of Example 13.4 with a 330 Ω base resistor,
+                and measure \(I_B\), \(I_C\) and \(V_{CE}\) with the relay energised.</span></li>
+            <li><span class="th">คำนวณอัตราขยายบังคับที่ได้จริง และตรวจว่าทรานซิสเตอร์อิ่มตัวหรือไม่
+              (\(V_{CE}\) ควรต่ำกว่า 0.4 V)</span>
+                <span class="en">Compute the forced β actually achieved and check for saturation —
+                \(V_{CE}\) should be below 0.4 V.</span></li>
+            <li><span class="th">เปลี่ยนตัวต้านทานเบสเป็น 10 kΩ แล้ววัด \(V_{CE}\) ซ้ำ
+              รีเลย์ยังทำงานหรือไม่ และทรานซิสเตอร์ร้อนขึ้นหรือไม่ อธิบายด้วยรูปที่ 13.7 ข</span>
+                <span class="en">Change the base resistor to 10 kΩ and measure \(V_{CE}\) again. Does the
+                relay still pull in, and does the transistor warm up? Explain using Figure 13.7 b.</span></li>
+            <li><span class="th">ต่อวงจรมอสเฟตกับพัดลม 12 V ตามรูปที่ 13.8 ป้อน PWM ที่ดิวตี้ 25 %, 50 %,
+              75 % และ 100 % วัดแรงดันเฉลี่ยที่พัดลม กระแส และสังเกตความเร็วกับเสียง</span>
+                <span class="en">Build the MOSFET fan circuit of Figure 13.8, drive it at 25 %, 50 %, 75 %
+                and 100 % duty, and measure the average voltage and current, noting the speed and the
+                noise.</span></li>
+            <li><span class="th">แตะตัวถังมอสเฟตเบา ๆ (หลังตัดไฟแล้ว) เทียบกับตัวถังทรานซิสเตอร์ในข้อ 1
+              ตัวใดร้อนกว่า และสอดคล้องกับการคำนวณในตัวอย่างที่ 13.5 หรือไม่</span>
+                <span class="en">With the power off, feel the MOSFET's case against the transistor's from
+                step 1. Which is warmer, and does that match the calculation in Example 13.5?</span></li>
+          </ol>
+
+          <h4><span class="th">ตารางบันทึกผล</span><span class="en">Results tables</span></h4>
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 1 — วงจรเรียงกระแสและแรงดันกระเพื่อม (ตอนที่ 2)</span>
+                <span class="en">Table 1 — Rectifier and ripple (Part 2)</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">สภาพวงจร</span><span class="en">Condition</span></th>
+                  <th class="num"><span class="th">แรงดันยอด (V)</span><span class="en">Peak (V)</span></th>
+                  <th class="num"><span class="th">กระเพื่อมที่วัดได้ (V)</span><span class="en">Measured ripple (V)</span></th>
+                  <th class="num"><span class="th">กระเพื่อมที่คำนวณ (V)</span><span class="en">Calculated ripple (V)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="th">ไม่มีตัวเก็บประจุ · โหลด 1 kΩ</span><span class="en">No capacitor, 1 kΩ load</span></td>
+                  <td><input type="text" aria-label="r1"></td><td><input type="text" aria-label="r2"></td><td><input type="text" aria-label="r3"></td></tr>
+                <tr><td>470 µF · <span class="th">โหลด 1 kΩ</span><span class="en">1 kΩ load</span></td>
+                  <td><input type="text" aria-label="r4"></td><td><input type="text" aria-label="r5"></td><td><input type="text" aria-label="r6"></td></tr>
+                <tr><td>4700 µF · <span class="th">โหลด 1 kΩ</span><span class="en">1 kΩ load</span></td>
+                  <td><input type="text" aria-label="r7"></td><td><input type="text" aria-label="r8"></td><td><input type="text" aria-label="r9"></td></tr>
+                <tr><td>4700 µF · <span class="th">โหลด 220 Ω</span><span class="en">220 Ω load</span></td>
+                  <td><input type="text" aria-label="r10"></td><td><input type="text" aria-label="r11"></td><td><input type="text" aria-label="r12"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 2 — วงจรขับโหลด (ตอนที่ 3–4)</span>
+                <span class="en">Table 2 — Load drivers (Parts 3–4)</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">รายการที่วัด</span><span class="en">Measurement</span></th>
+                  <th class="num"><span class="th">ค่าที่คำนวณ</span><span class="en">Predicted</span></th>
+                  <th class="num"><span class="th">ค่าที่วัดได้</span><span class="en">Measured</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="th">แรงดันพุ่ง ไม่มีไดโอด (V)</span><span class="en">Spike without the diode (V)</span></td>
+                  <td><input type="text" aria-label="s1"></td><td><input type="text" aria-label="s2"></td></tr>
+                <tr><td><span class="th">แรงดันพุ่ง มีไดโอด (V)</span><span class="en">Spike with the diode (V)</span></td>
+                  <td><input type="text" aria-label="s3"></td><td><input type="text" aria-label="s4"></td></tr>
+                <tr><td>I_B <span class="th">ที่ R_B = 330 Ω (mA)</span><span class="en">at R_B = 330 Ω (mA)</span></td>
+                  <td><input type="text" aria-label="s5"></td><td><input type="text" aria-label="s6"></td></tr>
+                <tr><td>I_C (mA)</td><td><input type="text" aria-label="s7"></td><td><input type="text" aria-label="s8"></td></tr>
+                <tr><td>V_CE <span class="th">ที่ R_B = 330 Ω (V)</span><span class="en">at R_B = 330 Ω (V)</span></td>
+                  <td><input type="text" aria-label="s9"></td><td><input type="text" aria-label="s10"></td></tr>
+                <tr><td>V_CE <span class="th">ที่ R_B = 10 kΩ (V)</span><span class="en">at R_B = 10 kΩ (V)</span></td>
+                  <td><input type="text" aria-label="s11"></td><td><input type="text" aria-label="s12"></td></tr>
+                <tr><td><span class="th">แรงดันเฉลี่ยที่พัดลม ดิวตี้ 50 % (V)</span><span class="en">Fan average voltage at 50 % duty (V)</span></td>
+                  <td><input type="text" aria-label="s13"></td><td><input type="text" aria-label="s14"></td></tr>
+                <tr><td><span class="th">กระแสพัดลม ดิวตี้ 50 % (A)</span><span class="en">Fan current at 50 % duty (A)</span></td>
+                  <td><input type="text" aria-label="s15"></td><td><input type="text" aria-label="s16"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span class="th">คำถามท้ายปฏิบัติการ</span><span class="en">Questions</span></h4>
+          <ol>
+            <li><span class="th">แรงดันตกคร่อมไดโอดเปลี่ยนไปเพียงเล็กน้อยแม้กระแสเพิ่มขึ้นหลายสิบเท่า
+              ข้อเท็จจริงนี้สนับสนุนการใช้แบบจำลอง “ตกคร่อมคงที่ 0.7 V” อย่างไร</span>
+              <span class="en">The forward voltage barely moves even when the current rises by a factor of
+              tens. How does that justify the "constant 0.7 V" model?</span></li>
+            <li><span class="th">เมื่อเปลี่ยนโหลดจาก 1 kΩ เป็น 220 Ω โดยใช้ตัวเก็บประจุตัวเดิม
+              แรงดันกระเพื่อมเปลี่ยนไปในทิศทางใดและเป็นกี่เท่า อธิบายด้วยสมการ</span>
+              <span class="en">With the same capacitor, how did the ripple change when the load went from
+              1 kΩ to 220 Ω, and by what factor? Explain with the equation.</span></li>
+            <li><span class="th">แรงดันพุ่งที่วัดได้ในตอนที่ 3 น้อยกว่าค่าที่คำนวณตามทฤษฎีมาก
+              ให้เหตุผลอย่างน้อยสองข้อ (พิจารณาความจุแฝงของวงจร อาร์กที่หน้าสัมผัส
+              และแบนด์วิดท์ของโพรบออสซิลโลสโคป)</span>
+              <span class="en">The measured spike in Part 3 was far below the theoretical figure. Give at
+              least two reasons, considering the circuit's stray capacitance, arcing at the contacts, and
+              the bandwidth of the oscilloscope probe.</span></li>
+            <li><span class="th">เมื่อเปลี่ยนตัวต้านทานเบสเป็น 10 kΩ ค่า \(V_{CE}\) เปลี่ยนไปอย่างไร
+              และจุดทำงานเลื่อนไปอยู่ตรงไหนบนรูปที่ 13.7 ข ทรานซิสเตอร์ต้องทนกำลังเท่าใดในสภาพนั้น</span>
+              <span class="en">How did \(V_{CE}\) change with the 10 kΩ base resistor, where did the
+              operating point move to on Figure 13.7 b, and how much power was the transistor then
+              dissipating?</span></li>
+            <li><span class="th">ออกแบบ: ต้องการหรี่แถบไฟปลูกพืช 12 V 5 A ด้วย PWM
+              จงเลือกมอสเฟตโดยระบุ \(R_{DS(on)}\) ที่ยอมรับได้ เพื่อให้กำลังสูญเสียไม่เกิน 1 W
+              และอธิบายว่าทำไมจึงต้องเลือกรุ่น logic-level</span>
+              <span class="en">Design: to dim a 12 V, 5 A grow strip by PWM, specify the largest acceptable
+              \(R_{DS(on)}\) that keeps the loss under 1 W, and explain why it must be a logic-level
+              part.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">📄 <span class="th">การส่งรายงาน (20 คะแนน)</span>
+              <span class="en">Report submission (20 marks)</span></div>
+            <p class="mb-0"><span class="th">ส่งรายงานความยาวไม่เกิน 6 หน้า ประกอบด้วย วัตถุประสงค์
+              กราฟ I–V ของไดโอดและ LED ทั้งสามชนิดบนแกนเดียวกัน ภาพรูปคลื่นจากออสซิลโลสโคป
+              (ก่อนและหลังใส่ตัวเก็บประจุ และแรงดันพุ่งก่อนและหลังใส่ไดโอด)
+              ตารางผลทั้งสองตารางที่กรอกครบพร้อมหน่วย ตัวอย่างการคำนวณอย่างละเอียด 1 ชุด
+              คำตอบของคำถามท้ายปฏิบัติการ และข้อสรุป ภายในสัปดาห์ถัดไป</span>
+              <span class="en">Submit a report of no more than six pages — objectives; the I–V curves of the
+              diode and both LEDs on one set of axes; oscilloscope traces (before and after the capacitor,
+              and the spike before and after the diode); both completed tables with units; one fully worked
+              calculation; answers to the questions; and a conclusion — by the following week.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Post-test -->
+    <section id="posttest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบหลังเรียน</span>
+          <span class="en">Post-test</span></h2>
+      <p class="muted"><span class="th">ทำหลังอ่านเนื้อหาและทำปฏิบัติการแล้ว ควรได้อย่างน้อย 6 จาก 8 ข้อ</span>
+        <span class="en">Take this after the notes and the laboratory; aim for at least 6 out of 8.</span></p>
+
+      <section class="quiz" id="posttest-q" data-quiz="post" data-chapter="ch13">
+        <div class="quiz-head">
+          <h3><span class="th">หลังเรียน: บทที่ 13</span><span class="en">Post-test: Chapter 13</span></h3>
+          <p><span class="th">8 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">8 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="b"
+               data-explain-th="แรงดันยอด = √2 × 12 = 16.97 V แล้วหักแรงดันตกคร่อมไดโอดสองตัวในบริดจ์ 2 × 0.7 = 1.4 V เหลือ 15.6 V"
+               data-explain-en="Peak = √2 × 12 = 16.97 V, less two diode drops in the bridge (1.4 V), leaving 15.6 V.">
+            <div class="q-text"><span class="th">หม้อแปลงให้แรงดัน 12 V rms ต่อเข้าวงจรบริดจ์ แรงดันยอดที่ได้หลังผ่านไดโอดเป็นเท่าใด</span>
+              <span class="en">A transformer gives 12 V rms into a bridge rectifier. What is the peak output after the diodes?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>12.0 V</span></label>
+              <label class="opt" data-opt="b"><span>15.6 V</span></label>
+              <label class="opt" data-opt="c"><span>17.0 V</span></label>
+              <label class="opt" data-opt="d"><span>10.6 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="C = I/(f_ripple × ΔV) = 0.5/(100 × 2) = 2500 µF โดย f_ripple = 100 Hz เพราะเป็นการเรียงกระแสเต็มคลื่นจากไฟ 50 Hz"
+               data-explain-en="C = I/(f_ripple × ΔV) = 0.5/(100 × 2) = 2500 µF, with f_ripple = 100 Hz for full-wave rectification of a 50 Hz supply.">
+            <div class="q-text"><span class="th">วงจรบริดจ์จ่ายกระแส 0.5 A ต้องใช้ตัวเก็บประจุเท่าใดจึงจะมีแรงดันกระเพื่อมไม่เกิน 2 V (ไฟ 50 Hz)</span>
+              <span class="en">A bridge supplies 0.5 A. What capacitance keeps the ripple within 2 V on a 50 Hz supply?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>250 µF</span></label>
+              <label class="opt" data-opt="b"><span>1000 µF</span></label>
+              <label class="opt" data-opt="c"><span>2500 µF</span></label>
+              <label class="opt" data-opt="d"><span>5000 µF</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="v = L·di/dt = 0.050 × (0.5/20×10⁻⁶) = 0.050 × 25000 = 1250 V ซึ่งทำลายทรานซิสเตอร์ที่ทนเพียงไม่กี่สิบโวลต์"
+               data-explain-en="v = L·di/dt = 0.050 × (0.5/20×10⁻⁶) = 1250 V, which destroys a transistor rated for only tens of volts.">
+            <div class="q-text"><span class="th">คอยล์ 50 mH มีกระแส 0.5 A ไหลอยู่ เมื่อตัดวงจรและกระแสลดเป็นศูนย์ใน 20 µs จะเกิดแรงดันเท่าใด</span>
+              <span class="en">A 50 mH coil carries 0.5 A. If the circuit opens and the current falls to zero in 20 µs, what voltage appears?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>25 V</span></label>
+              <label class="opt" data-opt="b"><span>125 V</span></label>
+              <label class="opt" data-opt="c"><span>500 V</span></label>
+              <label class="opt" data-opt="d"><span>1250 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="R = (V_supply − V_f)/I = (12 − 3.2)/0.020 = 8.8/0.020 = 440 Ω"
+               data-explain-en="R = (V_supply − V_f)/I = (12 − 3.2)/0.020 = 440 Ω.">
+            <div class="q-text"><span class="th">LED สีน้ำเงินตกคร่อม 3.2 V ต้องการกระแส 20 mA ต่อกับแหล่งจ่าย 12 V ต้องใช้ตัวต้านทานเท่าใด</span>
+              <span class="en">A blue LED drops 3.2 V and needs 20 mA from a 12 V supply. What series resistor is required?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>440 Ω</span></label>
+              <label class="opt" data-opt="b"><span>600 Ω</span></label>
+              <label class="opt" data-opt="c"><span>160 Ω</span></label>
+              <label class="opt" data-opt="d"><span>760 Ω</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="DLI = PPFD × เวลา × 10⁻⁶ = 200 × (14 × 3600) × 10⁻⁶ = 200 × 50400 × 10⁻⁶ = 10.1 mol/m²/day"
+               data-explain-en="DLI = PPFD × time × 10⁻⁶ = 200 × (14 × 3600) × 10⁻⁶ = 10.1 mol/m²/day.">
+            <div class="q-text"><span class="th">ไฟปลูกพืชให้ PPFD 200 µmol/m²/s เปิดวันละ 14 ชั่วโมง ได้ค่า DLI เท่าใด</span>
+              <span class="en">A grow light gives a PPFD of 200 µmol/m²/s for 14 hours a day. What is the DLI?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>2.8 mol/m²/day</span></label>
+              <label class="opt" data-opt="b"><span>10.1 mol/m²/day</span></label>
+              <label class="opt" data-opt="c"><span>28 mol/m²/day</span></label>
+              <label class="opt" data-opt="d"><span>168 mol/m²/day</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="ใช้อัตราขยายบังคับ 10 จึงได้ I_B = 100/10 = 10 mA แล้ว R_B = (5 − 0.7)/0.010 = 430 Ω"
+               data-explain-en="With a forced β of 10, I_B = 100/10 = 10 mA, so R_B = (5 − 0.7)/0.010 = 430 Ω.">
+            <div class="q-text"><span class="th">ขับรีเลย์ที่กินกระแส 100 mA ด้วยสัญญาณ 5 V ใช้อัตราขยายบังคับ 10 ต้องใช้ตัวต้านทานเบสเท่าใด</span>
+              <span class="en">Driving a 100 mA relay from a 5 V signal with a forced β of 10, what base resistor is needed?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>50 Ω</span></label>
+              <label class="opt" data-opt="b"><span>500 Ω</span></label>
+              <label class="opt" data-opt="c"><span>430 Ω</span></label>
+              <label class="opt" data-opt="d"><span>4.3 kΩ</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="P = I²R_DS(on) = 5² × 0.02 = 25 × 0.02 = 0.5 W ส่วน BJT ที่ตกคร่อม 0.7 V จะสูญเสีย 0.7 × 5 = 3.5 W คือมากกว่าเจ็ดเท่า"
+               data-explain-en="P = I²R_DS(on) = 25 × 0.02 = 0.5 W. A BJT dropping 0.7 V would lose 0.7 × 5 = 3.5 W, seven times more.">
+            <div class="q-text"><span class="th">มอสเฟตที่มี R_DS(on) = 0.02 Ω นำกระแส 5 A มีกำลังสูญเสียเท่าใด</span>
+              <span class="en">A MOSFET with R_DS(on) = 0.02 Ω carries 5 A. What power does it dissipate?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>0.5 W</span></label>
+              <label class="opt" data-opt="b"><span>0.1 W</span></label>
+              <label class="opt" data-opt="c"><span>3.5 W</span></label>
+              <label class="opt" data-opt="d"><span>5.0 W</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="มอสเฟตทั่วไปต้องการ V_GS ราว 10 V จึงจะนำกระแสเต็มที่ ถ้าขับด้วย 3.3 V จะนำกระแสได้เพียงบางส่วน R_DS(on) สูงกว่าสเปกมาก จึงร้อนจัดและไหม้ ต้องเลือกรุ่น logic-level เท่านั้น"
+               data-explain-en="An ordinary MOSFET needs about 10 V on the gate to turn on fully. Driven from 3.3 V it conducts only partially, its R_DS(on) is far above specification, and it overheats and fails — a logic-level part is essential.">
+            <div class="q-text"><span class="th">เหตุใดจึงห้ามใช้มอสเฟต IRF540 ทั่วไปกับสัญญาณ PWM 3.3 V จากไมโครคอนโทรลเลอร์</span>
+              <span class="en">Why must an ordinary IRF540 MOSFET not be driven by a 3.3 V PWM signal from a microcontroller?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เพราะมันสวิตช์เร็วเกินไป</span><span class="en">Because it switches too fast</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เพราะขาเกตจะดึงกระแสจากไมโครคอนโทรลเลอร์มากเกินไป</span><span class="en">Because its gate draws too much current from the microcontroller</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เพราะมันใช้ได้กับไฟสลับเท่านั้น</span><span class="en">Because it works only on AC</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เพราะ 3.3 V ไม่พอให้นำกระแสเต็มที่ R_DS(on) จึงสูงมากและมอสเฟตจะร้อนจนไหม้</span><span class="en">Because 3.3 V cannot turn it fully on, so its R_DS(on) stays high and it overheats and fails</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== References -->
+    <section id="refs">
+      <h2><span class="num">📚</span><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></h2>
+      <ol class="references">
+        <li>Boylestad, R. L., &amp; Nashelsky, L. (2013). <i>Electronic Devices and Circuit Theory</i>
+          (11th ed.), Ch. 1–5. Pearson.</li>
+        <li>Sedra, A. S., &amp; Smith, K. C. (2020). <i>Microelectronic Circuits</i> (8th ed.), Ch. 3–5.
+          Oxford University Press.</li>
+        <li>Horowitz, P., &amp; Hill, W. (2015). <i>The Art of Electronics</i> (3rd ed.), Ch. 1–3.
+          Cambridge University Press.
+          <span class="small muted">— <span class="th">เน้นการออกแบบใช้งานจริงมากกว่าทฤษฎี เหมาะกับงานฟาร์ม</span>
+          <span class="en">practice ahead of theory — the most useful of these for farm work</span></span></li>
+        <li>Neamen, D. A. (2011). <i>Semiconductor Physics and Devices</i> (4th ed.), Ch. 7–8.
+          McGraw-Hill.</li>
+        <li>Hughes, E., Hiley, J., Brown, K., &amp; Smith, I. M. (2016).
+          <i>Hughes Electrical and Electronic Technology</i> (12th ed.), Ch. 17–20. Pearson.</li>
+        <li>International Electrotechnical Commission. (2017).
+          <i>IEC 60747: Semiconductor devices — Discrete devices</i>. IEC.</li>
+        <li>Both, A. J., Bugbee, B., Kubota, C., Lopez, R. G., Mitchell, C., Runkle, E. S., &amp;
+          Wallace, C. (2017). Proposed product label for electric lamps used in the plant sciences.
+          <i>HortTechnology, 27</i>(4), 544–549.
+          <span class="small muted">— <span class="th">ที่มาของหน่วย PPFD, DLI และ µmol/J ในหัวข้อ 13.3</span>
+          <span class="en">the source of the PPFD, DLI and µmol/J units in Section 13.3</span></span></li>
+        <li>DesignLights Consortium. (2023).
+          <i>Horticultural Lighting Technical Requirements, Version 3.0</i>. DLC.</li>
+        <li>Infineon Technologies. (2020).
+          <i>Application Note AN-944: Use of Power MOSFETs in Switching Applications</i>. Infineon.
+          <span class="small muted">— <span class="th">เหตุผลของการเลือกมอสเฟตแบบ logic-level</span>
+          <span class="en">why logic-level gate drive matters</span></span></li>
+        <li>American Society of Agricultural and Biological Engineers. (2021).
+          <i>ANSI/ASABE S640: Quantities and Units of Electromagnetic Radiation for Plants</i>. ASABE.</li>
+      </ol>
+    </section>
+
+    <!-- =============================================== Chapter nav -->
+    <nav class="chapter-nav">
+      <a href="ch12.html">
+        <div class="dir">← <span class="th">บทก่อนหน้า</span><span class="en">Previous</span></div>
+        <div class="ttl"><span class="th">บทที่ 12 · เครื่องจักรกลไฟฟ้า</span>
+          <span class="en">Chapter 12 · Electrical Machines</span></div>
+      </a>
+      <a href="ch14.html" class="next">
+        <div class="dir"><span class="th">บทถัดไป</span><span class="en">Next chapter</span> →</div>
+        <div class="ttl"><span class="th">บทที่ 14 · ระบบเซลล์แสงอาทิตย์</span>
+          <span class="en">Chapter 14 · Basic PV Systems</span></div>
+      </a>
+    </nav>
+
+  </main>
+</div>
+</div>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span><span class="th">บทที่ 13 — อุปกรณ์อิเล็กทรอนิกส์พื้นฐาน</span>
+        <span class="en">Chapter 13 — Basic Electronic Devices</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>
