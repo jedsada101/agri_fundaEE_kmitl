@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ 4 กฎของเคอร์ชอฟฟ์และการวิเคราะห์แบบโนด | Fundamental of Electrical Engineering</title>
+<meta name="description" content="Chapter 4 — Kirchhoff's current and voltage laws, the branch-current method, and nodal analysis, applied to farm power circuits.">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+<script src="../assets/js/mathjax-config.js"></script>
+<script defer src="../assets/vendor/mathjax/tex-svg.js"></script>
+<style>
+  .sys-fig text { font-family: var(--font-sans); }
+  .sys-fig .lbl { font-size: 12px; font-weight: 600; fill: #0d1128; }
+  .sys-fig .sub { font-size: 10.5px; fill: #6c757d; }
+  .sys-fig .cap { font-size: 11px; font-weight: 700; fill: #fd5f00; }
+  .sys-fig .wire { stroke: #0d1128; stroke-width: 2; fill: none; }
+  .sys-fig .sym  { stroke: #0d1128; stroke-width: 2; fill: #fff; }
+  .sys-fig .axis { stroke: #6c757d; stroke-width: 1.5; }
+  .sys-fig .node { fill: #fd5f00; }
+  .sys-fig .elec { fill: #fd5f00; }
+
+  /* --- KCL: each branch's dots pass at a rate set by its current.
+         Fast train = large current. Paused, the labels still say it all. --- */
+  .kcl-fig .flow { transform-box: view-box; }
+  @keyframes kcl-flow { from { transform: translateX(0); } to { transform: translateX(36px); } }
+  .kcl-fig .flow { animation: kcl-flow linear infinite; }
+  .kcl-fig .i1 { animation-duration: 1.00s; }   /* 8 A in  */
+  .kcl-fig .i2 { animation-duration: 1.60s; }   /* 5 A in  */
+  .kcl-fig .i3 { animation-duration: 1.33s; }   /* 6 A out */
+  .kcl-fig .i4 { animation-duration: 2.00s; }   /* 4 A out */
+  .kcl-fig .i5 { animation-duration: 2.67s; }   /* 3 A out */
+
+  /* --- KVL: a marker walks the loop while a second dot traces the
+         potential it is standing at. Both run on one timeline, so the
+         steps down the staircase line up with the resistors.          --- */
+  .kvl-fig .walk, .kvl-fig .gdot { transform-box: view-box; }
+  @keyframes kvl-walk {
+      0%    { transform: translate(0, 0); }
+      37.9% { transform: translate(440px, 0); }
+      50%   { transform: translate(440px, 140px); }
+      87.9% { transform: translate(0, 140px); }
+      100%  { transform: translate(0, 0); }
+  }
+  @keyframes kvl-graph {
+      0%    { transform: translate(0, 0); }
+      37.9% { transform: translate(125px, 38px); }
+      50%   { transform: translate(250px, 68px); }
+      87.9% { transform: translate(375px, 90px); }
+      100%  { transform: translate(500px, 0); }
+  }
+  .kvl-fig .walk { animation: kvl-walk  7s linear infinite; }
+  .kvl-fig .gdot { animation: kvl-graph 7s linear infinite; }
+</style>
+</head>
+<body data-chapter="ch04">
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="../index.html#chapters"><span class="th">บทเรียนทั้งหมด</span><span class="en">All chapters</span></a></li>
+      <li><a href="#pretest"><span class="th">Pre-test</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการ</span><span class="en">Laboratory</span></a></li>
+      <li><a href="ch05.html" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">บทถัดไป</span><span class="en">Next</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a> ·
+      <a href="../index.html#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a> ·
+      <span class="th">บทที่ 4</span><span class="en">Chapter 4</span>
+    </div>
+    <span class="eyebrow"><span class="th">สัปดาห์ที่ 4 · บทที่ 4</span><span class="en">Week 4 · Chapter 4</span></span>
+    <h1><span class="th">กฎของเคอร์ชอฟฟ์<br>และการวิเคราะห์แบบโนด</span>
+        <span class="en">Kirchhoff's Laws<br>and Nodal Analysis</span></h1>
+    <p class="lead">
+      <span class="th">กฎของโอห์มในบทที่ 3 แก้วงจรที่ยุบเป็นอนุกรม–ขนานได้เท่านั้น
+        แต่วงจรจริงในฟาร์มมักมี <b>แหล่งจ่ายมากกว่าหนึ่งตัว</b> เช่น แผงโซลาร์ที่จ่ายไฟพร้อมกับแบตเตอรี่
+        ซึ่งยุบด้วยวิธีเดิมไม่ได้เลย บทนี้ให้เครื่องมือสองชิ้นที่แก้วงจรได้ทุกวงจรไม่ว่าซับซ้อนเพียงใด
+        และเครื่องมือทั้งสองมาจากกฎอนุรักษ์ที่เรียบง่ายที่สุดในฟิสิกส์ — ประจุไม่หายไปไหน และพลังงานก็เช่นกัน</span>
+      <span class="en">Ohm's law in Chapter 3 solves only circuits that collapse into series and parallel
+        groups. Real farm circuits often have <b>more than one source</b> — a solar array feeding a load
+        alongside a battery — and those will not collapse at all. This chapter provides two tools that
+        solve any circuit however tangled, and both come from the simplest conservation laws in physics:
+        charge does not vanish, and neither does energy.</span>
+    </p>
+    <div class="hero-meta">
+      <span>⏱ <strong>2+2</strong> <span class="th">ชั่วโมง</span><span class="en">hours</span></span>
+      <span>📘 <span class="th">หัวข้อหลัก</span><span class="en">Main topics</span> <strong>4</strong></span>
+      <span>🧪 <span class="th">ปฏิบัติการที่ 4</span><span class="en">Laboratory 4</span></span>
+      <span>📝 <span class="th">Pre / Post-test</span><span class="en">Pre / post-test</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+<div class="chapter-layout">
+
+  <!-- ============================================================= TOC -->
+  <aside class="toc">
+    <div class="toc-title"><span class="th">สารบัญบทเรียน</span><span class="en">On this page</span></div>
+    <ul>
+      <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
+      <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#s1"><span class="th">4.1 กฎกระแส (KCL)</span><span class="en">4.1 The current law</span></a></li>
+      <li><a href="#s2"><span class="th">4.2 กฎแรงดัน (KVL)</span><span class="en">4.2 The voltage law</span></a></li>
+      <li><a href="#s3"><span class="th">4.3 การประยุกต์: วิธีกระแสกิ่ง</span><span class="en">4.3 The branch-current method</span></a></li>
+      <li><a href="#s4"><span class="th">4.4 การวิเคราะห์แบบโนด</span><span class="en">4.4 Nodal analysis</span></a></li>
+      <li><a href="#summary"><span class="th">สรุปบทเรียน</span><span class="en">Summary</span></a></li>
+      <li><a href="#activity"><span class="th">กิจกรรมในชั้นเรียน</span><span class="en">Class activity</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการที่ 4</span><span class="en">Laboratory 4</span></a></li>
+      <li><a href="#posttest"><span class="th">แบบทดสอบหลังเรียน</span><span class="en">Post-test</span></a></li>
+      <li><a href="#refs"><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ==================================================== CHAPTER BODY -->
+  <main class="chapter-body">
+
+    <!-- ---------------------------------------------------- Objectives -->
+    <section id="objectives">
+      <div class="callout callout-objective">
+        <div class="callout-title">🎯 <span class="th">จุดประสงค์การเรียนรู้</span>
+          <span class="en">Learning objectives</span></div>
+        <p><span class="th">เมื่อเรียนจบบทนี้ นักศึกษาจะสามารถ</span>
+           <span class="en">After this chapter you will be able to:</span></p>
+        <ol>
+          <li><span class="th">เขียนสมการกฎกระแสของเคอร์ชอฟฟ์ที่โนดใด ๆ และอธิบายว่าเหตุใดจึงเป็นผลมาจาก
+            การอนุรักษ์ประจุ</span>
+            <span class="en">write Kirchhoff's current law at any node, and explain why it follows from the
+            conservation of charge;</span></li>
+          <li><span class="th">เขียนสมการกฎแรงดันของเคอร์ชอฟฟ์รอบลูปใด ๆ พร้อมกำหนดเครื่องหมายได้ถูกต้อง</span>
+            <span class="en">write Kirchhoff's voltage law around any loop, with the signs assigned
+            correctly;</span></li>
+          <li><span class="th">แก้วงจรที่มีแหล่งจ่ายสองตัวด้วยวิธีกระแสกิ่ง และตีความหมายของกระแสที่ได้ค่าติดลบ</span>
+            <span class="en">solve a two-source circuit by the branch-current method, and interpret a
+            current that comes out negative;</span></li>
+          <li><span class="th">แก้วงจรเดียวกันด้วยการวิเคราะห์แบบโนด และอธิบายว่าเหตุใดจึงใช้สมการน้อยกว่า</span>
+            <span class="en">solve the same circuit by nodal analysis, and explain why it needs fewer
+            equations;</span></li>
+          <li><span class="th">ใช้การวิเคราะห์แบบโนดหาแรงดันที่ปลายสายของระบบจ่ายไฟในโรงเรือน
+            และตรวจสอบกับเกณฑ์แรงดันตกในบทที่ 2</span>
+            <span class="en">use nodal analysis to find the voltage at the far end of a greenhouse
+            distribution run, and check it against the voltage-drop limit of Chapter 2;</span></li>
+          <li><span class="th">ตรวจสอบความถูกต้องของคำตอบด้วยการแทนค่ากลับเข้า KCL และ KVL</span>
+            <span class="en">verify an answer by substituting it back into KCL and KVL.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ Pre-test -->
+    <section id="pretest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบก่อนเรียน</span>
+          <span class="en">Pre-test</span></h2>
+      <p class="muted"><span class="th">ทำก่อนเริ่มอ่านเนื้อหา เพื่อสำรวจความรู้เดิมของตนเอง</span>
+        <span class="en">Take this before reading, to see what you already know.</span></p>
+
+      <section class="quiz" id="pretest-q" data-quiz="pre" data-chapter="ch04">
+        <div class="quiz-head">
+          <h3><span class="th">ก่อนเรียน: บทที่ 4</span><span class="en">Pre-test: Chapter 4</span></h3>
+          <p><span class="th">5 ข้อ · ปรนัย · ตรวจคำตอบได้ทันที</span>
+             <span class="en">5 multiple-choice questions · marked instantly</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="b"
+               data-explain-th="กฎกระแสของเคอร์ชอฟฟ์มาจากการอนุรักษ์ประจุ — ประจุไม่สามารถสะสมอยู่ที่โนดได้ ผลรวมกระแสที่ไหลเข้าจึงต้องเท่ากับผลรวมที่ไหลออกเสมอ (หัวข้อ 4.1)"
+               data-explain-en="KCL follows from the conservation of charge: charge cannot accumulate at a node, so the currents entering must always sum to those leaving (Section 4.1).">
+            <div class="q-text"><span class="th">กฎกระแสของเคอร์ชอฟฟ์ (KCL) กล่าวว่าอย่างไร</span>
+              <span class="en">What does Kirchhoff's current law state?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">กระแสในทุกกิ่งของวงจรต้องเท่ากัน</span><span class="en">The current is the same in every branch</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ผลรวมกระแสที่ไหลเข้าโนดเท่ากับผลรวมที่ไหลออก</span><span class="en">The currents entering a node equal those leaving it</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ผลรวมแรงดันรอบลูปปิดเท่ากับศูนย์</span><span class="en">The voltages around a closed loop sum to zero</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">กระแสแปรผกผันกับความต้านทานเสมอ</span><span class="en">Current is always inversely proportional to resistance</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="ที่โนดนี้ กระแสเข้า 12 A ออก 5 A และ 4 A รวม 9 A จึงเหลือกระแสที่ต้องไหลออกทางกิ่งที่เหลือ 12 − 9 = 3 A (หัวข้อ 4.1)"
+               data-explain-en="Twelve amperes enter; 5 A and 4 A leave, making 9 A, so the remaining branch must carry 12 − 9 = 3 A out (Section 4.1).">
+            <div class="q-text"><span class="th">ที่โนดหนึ่งมีกระแสไหลเข้า 12 A และไหลออกทางสองกิ่งคือ 5 A กับ 4 A กิ่งที่สามมีกระแสเท่าใด</span>
+              <span class="en">Twelve amperes enter a node and 5 A and 4 A leave by two branches. What flows in the third?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>21 A</span></label>
+              <label class="opt" data-opt="b"><span>9 A</span></label>
+              <label class="opt" data-opt="c"><span>3 A</span></label>
+              <label class="opt" data-opt="d"><span>12 A</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="กฎแรงดันของเคอร์ชอฟฟ์มาจากการอนุรักษ์พลังงาน — เมื่อเดินครบรอบกลับมาที่จุดเดิม ศักย์ไฟฟ้าต้องกลับมาเท่าเดิม ผลรวมของแรงดันที่เพิ่มและที่ตกจึงเป็นศูนย์ (หัวข้อ 4.2)"
+               data-explain-en="KVL follows from the conservation of energy: go all the way round and back to the same point and the potential must be the same, so the rises and drops sum to zero (Section 4.2).">
+            <div class="q-text"><span class="th">กฎแรงดันของเคอร์ชอฟฟ์ (KVL) กล่าวว่าอย่างไร</span>
+              <span class="en">What does Kirchhoff's voltage law state?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ผลรวมของแรงดันรอบลูปปิดใด ๆ เท่ากับศูนย์</span><span class="en">The voltages around any closed loop sum to zero</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">แรงดันคร่อมทุกอุปกรณ์ต้องเท่ากัน</span><span class="en">The voltage across every element is the same</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ผลรวมกระแสรอบลูปเท่ากับศูนย์</span><span class="en">The currents around a loop sum to zero</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">แรงดันของแหล่งจ่ายเท่ากับผลคูณของกระแสกับความต้านทานรวม</span><span class="en">The source voltage equals current times total resistance</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="เครื่องหมายลบหมายความเพียงว่ากระแสไหลสวนทางกับที่เราสมมติไว้ตอนแรก ขนาดของกระแสยังถูกต้อง ไม่ต้องคำนวณใหม่ เพียงกลับหัวลูกศรในแผนผัง (หัวข้อ 4.3)"
+               data-explain-en="A negative sign means only that the current runs opposite to the direction you assumed. The magnitude is still right — reverse the arrow on the diagram and carry on (Section 4.3).">
+            <div class="q-text"><span class="th">ถ้าแก้สมการแล้วได้กระแสเป็นค่าติดลบ หมายความว่าอย่างไร</span>
+              <span class="en">If solving the equations gives a negative current, what does that mean?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">คำนวณผิด ต้องทำใหม่</span><span class="en">A mistake was made; start again</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">วงจรลัดวงจร</span><span class="en">The circuit is short-circuited</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">กระแสมีค่าเป็นศูนย์จริง ๆ</span><span class="en">The current is genuinely zero</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">กระแสไหลสวนทางกับที่สมมติไว้ ขนาดยังถูกต้อง</span><span class="en">It flows opposite to the assumed direction; the magnitude is correct</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="การวิเคราะห์แบบโนดใช้ 'แรงดันที่โนด' เป็นตัวแปรที่ไม่รู้ค่า แล้วเขียนสมการ KCL ที่แต่ละโนด เมื่อได้แรงดันโนดแล้วจึงหากระแสทุกกิ่งจากกฎของโอห์มภายหลัง (หัวข้อ 4.4)"
+               data-explain-en="Nodal analysis takes the node voltages as the unknowns and writes KCL at each node; once they are known, every branch current follows from Ohm's law (Section 4.4).">
+            <div class="q-text"><span class="th">การวิเคราะห์แบบโนดใช้อะไรเป็นตัวแปรที่ไม่รู้ค่า</span>
+              <span class="en">What does nodal analysis use as its unknowns?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">กระแสในทุกกิ่ง</span><span class="en">The current in every branch</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">แรงดันที่โนดแต่ละจุด</span><span class="en">The voltage at each node</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ความต้านทานของแต่ละกิ่ง</span><span class="en">The resistance of each branch</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">กำลังไฟฟ้าของแต่ละอุปกรณ์</span><span class="en">The power in each element</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== 4.1 -->
+    <section id="s1">
+      <h2><span class="num">4.1</span><span class="th">กฎกระแสของเคอร์ชอฟฟ์</span>
+          <span class="en">Kirchhoff's current law</span></h2>
+
+      <p><span class="th">ลองนึกถึงสามแยกของท่อส่งน้ำในระบบให้น้ำ ถ้าน้ำไหลเข้ามา 12 ลิตรต่อวินาที
+        และไหลออกไปสองทางรวม 9 ลิตรต่อวินาที น้ำอีก 3 ลิตรต่อวินาทีหายไปไหน
+        คำตอบคือมันไม่ได้หายไปไหนเลย — มันต้องไหลออกทางที่สามหรือไม่ก็ท่อกำลังจะระเบิด
+        วงจรไฟฟ้าก็เหมือนกัน แต่เข้มงวดกว่า เพราะ <b>ประจุไฟฟ้าสะสมอยู่ที่จุดต่อไม่ได้เลย</b>
+        ผลรวมของกระแสที่ไหลเข้าโนดจึงต้องเท่ากับผลรวมที่ไหลออกทุกขณะ</span>
+        <span class="en">Think of a tee in an irrigation pipe. If 12 litres a second flow in and 9 leave by
+        two ways, where have the other 3 gone? Nowhere: they must leave by a third route, or the pipe is
+        about to burst. A circuit behaves the same way, only more strictly, because <b>charge simply cannot
+        pile up at a junction</b>. The currents entering a node must therefore equal those leaving it, at
+        every instant.</span></p>
+
+      <div class="equation">
+        \[ \sum I_{\text{เข้า}} = \sum I_{\text{ออก}}
+           \qquad\text{หรือ / or}\qquad \sum_{k=1}^{n} I_k = 0 \]
+      </div>
+      <p class="eq-note"><span class="th">เมื่อกำหนดให้กระแสที่ไหลเข้าเป็นบวกและไหลออกเป็นลบ</span>
+        <span class="en">taking currents entering as positive and those leaving as negative</span></p>
+
+      <figure>
+        <div class="figure-box is-animated kcl-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 330" role="img" width="720"
+               aria-label="Five branches meeting at a busbar, with the dots on each branch passing at a rate set by its current">
+            <defs>
+              <clipPath id="c1"><rect x="90" y="100" width="270" height="20"/></clipPath>
+              <clipPath id="c2"><rect x="90" y="200" width="270" height="20"/></clipPath>
+              <clipPath id="c3"><rect x="360" y="80"  width="270" height="20"/></clipPath>
+              <clipPath id="c4"><rect x="360" y="150" width="270" height="20"/></clipPath>
+              <clipPath id="c5"><rect x="360" y="220" width="270" height="20"/></clipPath>
+            </defs>
+
+            <!-- the node: a whole busbar, not just a dot -->
+            <rect x="352" y="72" width="16" height="176" rx="6" fill="#fd5f00"/>
+            <text class="cap th" x="360" y="62" text-anchor="middle">บัสบาร์ = โนดเดียว</text>
+            <text class="cap en" x="360" y="62" text-anchor="middle">the busbar is one node</text>
+
+            <!-- incoming branches -->
+            <path class="wire" d="M90 110 H352"/>
+            <g clip-path="url(#c1)"><g class="flow i1">
+              <circle class="elec" cx="74"  cy="110" r="6"/><circle class="elec" cx="110" cy="110" r="6"/>
+              <circle class="elec" cx="146" cy="110" r="6"/><circle class="elec" cx="182" cy="110" r="6"/>
+              <circle class="elec" cx="218" cy="110" r="6"/><circle class="elec" cx="254" cy="110" r="6"/>
+              <circle class="elec" cx="290" cy="110" r="6"/><circle class="elec" cx="326" cy="110" r="6"/>
+              <circle class="elec" cx="362" cy="110" r="6"/>
+            </g></g>
+            <text class="lbl" x="82" y="102" text-anchor="end">I₁ = 8 A</text>
+            <text class="sub th" x="82" y="118" text-anchor="end">จากหม้อแปลง</text>
+            <text class="sub en" x="82" y="118" text-anchor="end">from the transformer</text>
+
+            <path class="wire" d="M90 210 H352"/>
+            <g clip-path="url(#c2)"><g class="flow i2">
+              <circle class="elec" cx="74"  cy="210" r="6"/><circle class="elec" cx="110" cy="210" r="6"/>
+              <circle class="elec" cx="146" cy="210" r="6"/><circle class="elec" cx="182" cy="210" r="6"/>
+              <circle class="elec" cx="218" cy="210" r="6"/><circle class="elec" cx="254" cy="210" r="6"/>
+              <circle class="elec" cx="290" cy="210" r="6"/><circle class="elec" cx="326" cy="210" r="6"/>
+              <circle class="elec" cx="362" cy="210" r="6"/>
+            </g></g>
+            <text class="lbl" x="82" y="202" text-anchor="end">I₂ = 5 A</text>
+            <text class="sub th" x="82" y="218" text-anchor="end">จากอินเวอร์เตอร์โซลาร์</text>
+            <text class="sub en" x="82" y="218" text-anchor="end">from the solar inverter</text>
+
+            <!-- outgoing branches -->
+            <path class="wire" d="M368 90 H630"/>
+            <g clip-path="url(#c3)"><g class="flow i3">
+              <circle class="elec" cx="352" cy="90" r="6"/><circle class="elec" cx="388" cy="90" r="6"/>
+              <circle class="elec" cx="424" cy="90" r="6"/><circle class="elec" cx="460" cy="90" r="6"/>
+              <circle class="elec" cx="496" cy="90" r="6"/><circle class="elec" cx="532" cy="90" r="6"/>
+              <circle class="elec" cx="568" cy="90" r="6"/><circle class="elec" cx="604" cy="90" r="6"/>
+              <circle class="elec" cx="640" cy="90" r="6"/>
+            </g></g>
+            <text class="lbl" x="638" y="82">I₃ = 6 A</text>
+            <text class="sub th" x="638" y="98">ปั๊มน้ำ</text>
+            <text class="sub en" x="638" y="98">pump</text>
+
+            <path class="wire" d="M368 160 H630"/>
+            <g clip-path="url(#c4)"><g class="flow i4">
+              <circle class="elec" cx="352" cy="160" r="6"/><circle class="elec" cx="388" cy="160" r="6"/>
+              <circle class="elec" cx="424" cy="160" r="6"/><circle class="elec" cx="460" cy="160" r="6"/>
+              <circle class="elec" cx="496" cy="160" r="6"/><circle class="elec" cx="532" cy="160" r="6"/>
+              <circle class="elec" cx="568" cy="160" r="6"/><circle class="elec" cx="604" cy="160" r="6"/>
+              <circle class="elec" cx="640" cy="160" r="6"/>
+            </g></g>
+            <text class="lbl" x="638" y="152">I₄ = 4 A</text>
+            <text class="sub th" x="638" y="168">พัดลมระบายอากาศ</text>
+            <text class="sub en" x="638" y="168">ventilation fans</text>
+
+            <path class="wire" d="M368 230 H630"/>
+            <g clip-path="url(#c5)"><g class="flow i5">
+              <circle class="elec" cx="352" cy="230" r="6"/><circle class="elec" cx="388" cy="230" r="6"/>
+              <circle class="elec" cx="424" cy="230" r="6"/><circle class="elec" cx="460" cy="230" r="6"/>
+              <circle class="elec" cx="496" cy="230" r="6"/><circle class="elec" cx="532" cy="230" r="6"/>
+              <circle class="elec" cx="568" cy="230" r="6"/><circle class="elec" cx="604" cy="230" r="6"/>
+              <circle class="elec" cx="640" cy="230" r="6"/>
+            </g></g>
+            <text class="lbl" x="638" y="222">I₅ = 3 A</text>
+            <text class="sub th" x="638" y="238">ไฟปลูกพืช</text>
+            <text class="sub en" x="638" y="238">grow lights</text>
+
+            <!-- the accounting -->
+            <rect x="196" y="272" width="328" height="44" rx="8" fill="#eaf7ef" stroke="#2f855a" stroke-width="1.5"/>
+            <text class="lbl" x="360" y="292" text-anchor="middle" fill="#2f855a">8 + 5  =  6 + 4 + 3  =  13 A</text>
+            <text class="sub th" x="360" y="308" text-anchor="middle" fill="#2f855a">เข้าเท่ากับออก — ไม่มีประจุค้างอยู่ที่บัสบาร์</text>
+            <text class="sub en" x="360" y="308" text-anchor="middle" fill="#2f855a">in equals out — nothing accumulates on the bar</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 4.1</span><span class="en">Figure 4.1</span></b>
+          <span class="th"> บัสบาร์ในแผงจ่ายไฟของฟาร์ม ซึ่งเป็น <b>โนดเดียว</b> ทั้งแท่ง
+            ตามนิยามในบทที่ 2 ที่ว่าสายที่ต่อถึงกันโดยไม่มีอุปกรณ์คั่นคือโนดเดียวกัน
+            ในภาพเคลื่อนไหว <b>ความถี่ของจุดที่ผ่านคือขนาดของกระแส</b> —
+            กิ่ง 8 A มีจุดผ่านถี่ที่สุด ส่วนกิ่ง 3 A ถี่น้อยที่สุด
+            ลองจ้องที่บัสบาร์แล้วนับดู จำนวนจุดที่เข้าและที่ออกต่อวินาทีเท่ากันพอดีเสมอ
+            ซึ่งก็คือกฎกระแสของเคอร์ชอฟฟ์</span>
+          <span class="en"> The busbar in a farm's distribution board — a <b>single node</b> along its whole
+            length, by the Chapter 2 definition that any stretch of wire with no element in it is one node.
+            In the animation <b>the rate at which dots pass is the current</b>: the 8 A branch passes them
+            most often, the 3 A branch least. Watch the bar and count: the dots arriving and the dots
+            leaving per second always match exactly. That is Kirchhoff's current law.</span></figcaption>
+      </figure>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">💡 <span class="th">เราเคยใช้ KCL มาแล้วโดยไม่รู้ตัว</span>
+          <span class="en">We have used KCL already without naming it</span></div>
+        <p class="mb-0"><span class="th">ในตัวอย่างที่ 3.4 เราตรวจคำตอบด้วยการบวกกระแสสองกิ่ง
+          \(31.0 + 20.7 = 51.7\) mA แล้วพบว่าตรงกับกระแสรวม — นั่นคือ KCL
+          และในบทที่ 2 เราอธิบายว่าเครื่องตัดไฟรั่ว (RCD) ทำงานโดยเปรียบเทียบกระแสไหลเข้ากับไหลออก
+          ถ้าไม่เท่ากันแสดงว่ามีกระแสรั่วออกไปทางอื่น — นั่นก็คือ RCD ใช้ KCL เป็นหลักการทำงานโดยตรง
+          <b>กฎข้อนี้ไม่ใช่เรื่องใหม่ เพียงแต่ตอนนี้เราจะใช้มันเป็นเครื่องมือแก้สมการ</b></span>
+          <span class="en">In Example 3.4 we checked the answer by adding two branch currents,
+          \(31.0 + 20.7 = 51.7\) mA, and finding they matched the total — that was KCL. And in Chapter 2 we
+          said an RCD works by comparing the current going out with the current coming back, tripping if
+          they differ because the difference must be leaking away somewhere: an RCD is a direct application
+          of KCL. <b>The law is not new; what is new is using it to solve equations.</b></span></p>
+      </div>
+    </section>
+
+    <!-- =============================================== 4.2 -->
+    <section id="s2">
+      <h2><span class="num">4.2</span><span class="th">กฎแรงดันของเคอร์ชอฟฟ์</span>
+          <span class="en">Kirchhoff's voltage law</span></h2>
+
+      <p><span class="th">ถ้า KCL มาจากการอนุรักษ์ประจุ KVL ก็มาจากการอนุรักษ์พลังงาน
+        ลองนึกถึงการเดินขึ้นลงเนินรอบหมู่บ้านแล้วกลับมาที่จุดเริ่มต้น
+        ไม่ว่าระหว่างทางจะขึ้นเนินและลงเนินกี่ครั้ง ความสูงสุทธิที่เปลี่ยนไปต้องเป็นศูนย์
+        เพราะกลับมาที่เดิม ศักย์ไฟฟ้าก็เหมือนความสูง — <b>เดินครบรอบแล้วต้องกลับมาที่ศักย์เดิมเสมอ</b>
+        ผลรวมของแรงดันที่เพิ่มขึ้น (ที่แหล่งจ่าย) กับแรงดันที่ตกลง (ที่โหลด) รอบลูปปิดใด ๆ จึงเท่ากับศูนย์</span>
+        <span class="en">If KCL comes from the conservation of charge, KVL comes from the conservation of
+        energy. Imagine walking a circuit of hills around a village and returning to where you began:
+        however many times you climbed and descended, the net change in height must be zero, because you
+        are back at the same place. Electric potential behaves exactly like height — <b>go all the way
+        round and you must return to the same potential</b>. So the rises at the sources and the drops
+        across the loads sum to zero around any closed loop.</span></p>
+
+      <div class="equation">
+        \[ \sum_{k=1}^{n} V_k = 0
+           \qquad\text{หรือ / or}\qquad
+           \sum V_{\text{เพิ่ม}} = \sum V_{\text{ตก}} \]
+      </div>
+
+      <figure>
+        <div class="figure-box is-animated kvl-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 400" role="img" width="720"
+               aria-label="A marker walking around a single loop while a second dot traces the electric potential it stands at, returning to the same value">
+            <text class="cap th" x="40" y="34">ก. เดินรอบลูปหนึ่งรอบ</text>
+            <text class="cap en" x="40" y="34">a. One walk around the loop</text>
+
+            <!-- the loop -->
+            <path class="wire" d="M120 80 H560 V220 H120 Z"/>
+
+            <!-- source on the left edge -->
+            <line x1="98"  y1="132" x2="142" y2="132" stroke="#0d1128" stroke-width="3"/>
+            <line x1="109" y1="144" x2="131" y2="144" stroke="#0d1128" stroke-width="3"/>
+            <line x1="98"  y1="156" x2="142" y2="156" stroke="#0d1128" stroke-width="3"/>
+            <line x1="109" y1="168" x2="131" y2="168" stroke="#0d1128" stroke-width="3"/>
+            <rect x="96" y="120" width="48" height="60" fill="#fff" opacity="0"/>
+            <text class="lbl" x="72" y="150" text-anchor="middle">24 V</text>
+            <text class="sub th" x="72" y="166" text-anchor="middle">แหล่งจ่าย</text>
+            <text class="sub en" x="72" y="166" text-anchor="middle">source</text>
+
+            <!-- resistors -->
+            <rect class="sym" x="280" y="68" width="60" height="24"/>
+            <text class="lbl" x="310" y="60" text-anchor="middle">R₁</text>
+            <text class="sub" x="310" y="108" text-anchor="middle">−10 V</text>
+            <rect class="sym" x="548" y="120" width="24" height="60"/>
+            <text class="lbl" x="600" y="146" text-anchor="middle">R₂</text>
+            <text class="sub" x="600" y="162" text-anchor="middle">−8 V</text>
+            <rect class="sym" x="310" y="208" width="60" height="24"/>
+            <text class="lbl" x="340" y="252" text-anchor="middle">R₃</text>
+            <text class="sub" x="392" y="252" text-anchor="middle">−6 V</text>
+
+            <!-- corner labels -->
+            <circle class="node" cx="120" cy="80"  r="5"/><text class="cap" x="108" y="72">A</text>
+            <circle class="node" cx="560" cy="80"  r="5"/><text class="cap" x="570" y="72">B</text>
+            <circle class="node" cx="560" cy="220" r="5"/><text class="cap" x="570" y="236">C</text>
+            <circle class="node" cx="120" cy="220" r="5"/><text class="cap" x="106" y="236">D</text>
+
+            <!-- the walker -->
+            <circle class="walk" cx="120" cy="80" r="9" fill="#2f855a"/>
+
+            <text class="sub th" x="180" y="266">เดินตามเข็มนาฬิกา A → B → C → D → A</text>
+            <text class="sub en" x="180" y="266">walking clockwise A → B → C → D → A</text>
+
+            <line x1="40" y1="286" x2="680" y2="286" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== potential profile ===== -->
+            <text class="cap th" x="40" y="308">ข. ศักย์ไฟฟ้าที่จุดที่กำลังยืนอยู่</text>
+            <text class="cap en" x="40" y="308">b. The potential where the walker is standing</text>
+
+            <line class="axis" x1="120" y1="370" x2="650" y2="370"/>
+            <line class="axis" x1="120" y1="370" x2="120" y2="322"/>
+            <text class="sub" x="112" y="374" text-anchor="end">0 V</text>
+            <text class="sub" x="112" y="284" text-anchor="end">24 V</text>
+            <line x1="120" y1="280" x2="650" y2="280" stroke="#eef1f5" stroke-width="1"/>
+
+            <path d="M120 280 L245 318 L370 348 L495 370 L510 280 L620 280"
+                  stroke="#fd5f00" stroke-width="3" fill="none"/>
+            <circle class="gdot" cx="120" cy="280" r="7" fill="#2f855a"/>
+
+            <text class="sub" x="120" y="390" text-anchor="middle">A</text>
+            <text class="sub" x="245" y="390" text-anchor="middle">B</text>
+            <text class="sub" x="370" y="390" text-anchor="middle">C</text>
+            <text class="sub" x="495" y="390" text-anchor="middle">D</text>
+            <text class="sub" x="620" y="390" text-anchor="middle">A</text>
+
+            <text class="sub th" x="664" y="286">กลับมาที่</text>
+            <text class="sub en" x="664" y="286">back to</text>
+            <text class="sub th" x="664" y="300">24 V เท่าเดิม</text>
+            <text class="sub en" x="664" y="300">the same 24 V</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 4.2</span><span class="en">Figure 4.2</span></b>
+          <span class="th"> ภาพบนคือจุดสีเขียวที่เดินรอบลูป ภาพล่างคือศักย์ไฟฟ้าของจุดที่มันยืนอยู่ในขณะนั้น
+            ทั้งสองเคลื่อนที่พร้อมกัน ทุกครั้งที่ผ่านตัวต้านทาน เส้นกราฟจะลาดลง (แรงดันตก)
+            และเมื่อผ่านแหล่งจ่าย เส้นกราฟจะกระโดดขึ้น (แรงดันเพิ่ม)
+            พอเดินครบรอบ จุดกลับมาอยู่ที่ระดับเดิมพอดี — และนั่นคือความหมายทั้งหมดของ KVL
+            <br>ตรวจดูตัวเลข: \(-10 - 8 - 6 + 24 = 0\) ✓</span>
+          <span class="en"> Above, a green marker walks the loop; below, the potential at the point where it
+            stands. The two move together. Each time it crosses a resistor the trace slopes down — a voltage
+            drop — and at the source it leaps up — a rise. Complete the circuit and the marker is back
+            exactly where it started, which is the whole of KVL.
+            <br>Check the numbers: \(-10 - 8 - 6 + 24 = 0\) ✓</span></figcaption>
+      </figure>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">✍️ <span class="th">ข้อตกลงเรื่องเครื่องหมาย — จุดที่ผิดกันมากที่สุด</span>
+          <span class="en">The sign convention — where most mistakes happen</span></div>
+        <p><span class="th">ก่อนเขียนสมการ KVL ต้องทำสองอย่างนี้ให้เสร็จก่อนเสมอ
+          และเมื่อเลือกแล้วห้ามเปลี่ยนกลางคัน</span>
+          <span class="en">Before writing a KVL equation, settle these two things, and having settled them
+          never change your mind halfway:</span></p>
+        <ol class="mb-0">
+          <li><span class="th"><b>เลือกทิศเดินรอบลูป</b> จะตามเข็มหรือทวนเข็มก็ได้ ผลลัพธ์เหมือนกัน</span>
+            <span class="en"><b>Choose a direction to walk the loop</b> — clockwise or anticlockwise, it
+            makes no difference to the answer.</span></li>
+          <li><span class="th"><b>กำหนดเครื่องหมายตามสิ่งที่พบเมื่อเดินถึง</b> —
+            ถ้าเดินเข้าทางขั้วลบของแหล่งจ่ายแล้วออกทางขั้วบวก ถือว่า <b>แรงดันเพิ่ม (+)</b>
+            ถ้าเดินผ่านตัวต้านทาน <b>ไปในทิศเดียวกับกระแส</b> ถือว่า <b>แรงดันตก (−)</b>
+            แต่ถ้าเดินสวนทางกระแส ถือว่าเป็นบวก</span>
+            <span class="en"><b>Assign signs by what you meet as you arrive.</b> Enter a source at its
+            negative terminal and leave at its positive, and that is a <b>rise (+)</b>. Cross a resistor
+            <b>in the same direction as its current</b> and that is a <b>drop (−)</b>; cross it against the
+            current and it counts as positive.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- =============================================== 4.3 -->
+    <section id="s3">
+      <h2><span class="num">4.3</span><span class="th">การประยุกต์: วิธีกระแสกิ่ง</span>
+          <span class="en">Putting them to work: the branch-current method</span></h2>
+
+      <p><span class="th">ถึงตรงนี้เรามีกฎสองข้อแล้ว วิธีใช้งานที่ตรงไปตรงมาที่สุดเรียกว่า
+        <b>วิธีกระแสกิ่ง</b> คือสมมติกระแสในทุกกิ่งเป็นตัวแปร แล้วเขียนสมการจาก KCL และ KVL
+        ให้ได้จำนวนสมการเท่ากับจำนวนตัวแปร จากนั้นก็แก้ระบบสมการตามปกติ</span>
+        <span class="en">We now have both laws. The most direct way to use them is the <b>branch-current
+        method</b>: make the current in every branch an unknown, write as many equations from KCL and KVL as
+        there are unknowns, and solve the system in the ordinary way.</span></p>
+
+      <div class="callout callout-info">
+        <div class="callout-title">📋 <span class="th">ขั้นตอนของวิธีกระแสกิ่ง</span>
+          <span class="en">The branch-current procedure</span></div>
+        <ol class="mb-0">
+          <li><span class="th">สมมติทิศทางกระแสในแต่ละกิ่ง <b>ตามใจชอบ</b> แล้วเขียนลูกศรกำกับไว้</span>
+            <span class="en">Assume a direction for each branch current — <b>any direction will do</b> — and
+            draw an arrow for it.</span></li>
+          <li><span class="th">เขียนสมการ KCL ที่โนดสำคัญ ให้ได้ \(n - 1\) สมการ เมื่อ \(n\) คือจำนวนโนดสำคัญ</span>
+            <span class="en">Write KCL at the essential nodes, giving \(n - 1\) equations for \(n\)
+            nodes.</span></li>
+          <li><span class="th">เขียนสมการ KVL รอบเมชให้ครบ \(b - n + 1\) สมการ ตามสูตรนับลูปในบทที่ 2</span>
+            <span class="en">Write KVL around the meshes, giving the \(b - n + 1\) equations counted by the
+            formula in Chapter 2.</span></li>
+          <li><span class="th">แก้ระบบสมการ แล้ว <b>ตรวจคำตอบด้วยการแทนกลับ</b> เข้า KCL และ KVL</span>
+            <span class="en">Solve the system, then <b>check the answer by substituting back</b> into KCL and
+            KVL.</span></li>
+          <li><span class="th">ถ้าได้กระแสติดลบ ไม่ต้องแก้อะไร เพียงกลับหัวลูกศรในแผนผัง ขนาดยังถูกต้อง</span>
+            <span class="en">A negative current needs no correction: reverse the arrow on the diagram; the
+            magnitude stands.</span></li>
+        </ol>
+      </div>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 350" role="img" width="720"
+               aria-label="The same solar-plus-battery circuit labelled two ways: with three branch currents and two loops, and with a single unknown node voltage">
+            <text class="cap th" x="180" y="28" text-anchor="middle">ก. มองแบบกระแสกิ่ง — ตัวแปร 3 ตัว</text>
+            <text class="cap en" x="180" y="28" text-anchor="middle">a. As branch currents — three unknowns</text>
+            <text class="cap th" x="540" y="28" text-anchor="middle">ข. มองแบบโนด — ตัวแปรตัวเดียว</text>
+            <text class="cap en" x="540" y="28" text-anchor="middle">b. As a node voltage — one unknown</text>
+
+            <!-- ===================== panel A ===================== -->
+            <path class="wire" d="M70 80 H290"/>
+            <path class="wire" d="M70 250 H290"/>
+
+            <!-- branch 1: PV array -->
+            <path class="wire" d="M80 80 V108"/>
+            <line x1="62" y1="108" x2="98" y2="108" stroke="#0d1128" stroke-width="3"/>
+            <line x1="71" y1="118" x2="89" y2="118" stroke="#0d1128" stroke-width="3"/>
+            <line x1="62" y1="128" x2="98" y2="128" stroke="#0d1128" stroke-width="3"/>
+            <line x1="71" y1="138" x2="89" y2="138" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M80 138 V170"/>
+            <rect class="sym" x="66" y="170" width="28" height="44"/>
+            <path class="wire" d="M80 214 V250"/>
+            <text class="sub" x="56" y="124" text-anchor="end">20 V</text>
+            <text class="sub" x="56" y="196" text-anchor="end">2 Ω</text>
+            <text class="cap" x="96" y="98">I₁</text>
+
+            <!-- branch 2: battery -->
+            <path class="wire" d="M180 80 V108"/>
+            <line x1="162" y1="108" x2="198" y2="108" stroke="#0d1128" stroke-width="3"/>
+            <line x1="171" y1="118" x2="189" y2="118" stroke="#0d1128" stroke-width="3"/>
+            <line x1="162" y1="128" x2="198" y2="128" stroke="#0d1128" stroke-width="3"/>
+            <line x1="171" y1="138" x2="189" y2="138" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M180 138 V170"/>
+            <rect class="sym" x="166" y="170" width="28" height="44"/>
+            <path class="wire" d="M180 214 V250"/>
+            <text class="sub" x="156" y="124" text-anchor="end">12.6 V</text>
+            <text class="sub" x="156" y="196" text-anchor="end">0.5 Ω</text>
+            <text class="cap" x="196" y="98">I₂</text>
+
+            <!-- branch 3: load -->
+            <path class="wire" d="M280 80 V150"/>
+            <rect class="sym" x="266" y="150" width="28" height="50"/>
+            <path class="wire" d="M280 200 V250"/>
+            <text class="sub" x="302" y="180">6 Ω</text>
+            <text class="cap" x="296" y="98">I₃</text>
+
+            <!-- loop markers -->
+            <text class="cap" x="130" y="176" text-anchor="middle">ลูป 1</text>
+            <text class="cap en" x="130" y="176" text-anchor="middle">loop 1</text>
+            <text class="cap" x="230" y="176" text-anchor="middle">ลูป 2</text>
+            <text class="cap en" x="230" y="176" text-anchor="middle">loop 2</text>
+
+            <circle class="node" cx="180" cy="80" r="5"/>
+            <circle class="node" cx="180" cy="250" r="5"/>
+            <text class="cap" x="180" y="70" text-anchor="middle">A</text>
+            <text class="cap" x="180" y="268" text-anchor="middle">B</text>
+
+            <text class="sub th" x="180" y="296" text-anchor="middle">ต้องเขียน 3 สมการ: KCL หนึ่ง + KVL สอง</text>
+            <text class="sub en" x="180" y="296" text-anchor="middle">three equations needed: one KCL and two KVL</text>
+            <text class="sub th" x="180" y="314" text-anchor="middle">แล้วแก้ระบบสมการสามตัวแปร</text>
+            <text class="sub en" x="180" y="314" text-anchor="middle">then solve a three-variable system</text>
+
+            <line x1="360" y1="20" x2="360" y2="340" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===================== panel B ===================== -->
+            <path class="wire" d="M430 80 H650"/>
+            <path class="wire" d="M430 250 H650"/>
+
+            <path class="wire" d="M440 80 V108"/>
+            <line x1="422" y1="108" x2="458" y2="108" stroke="#0d1128" stroke-width="3"/>
+            <line x1="431" y1="118" x2="449" y2="118" stroke="#0d1128" stroke-width="3"/>
+            <line x1="422" y1="128" x2="458" y2="128" stroke="#0d1128" stroke-width="3"/>
+            <line x1="431" y1="138" x2="449" y2="138" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M440 138 V170"/>
+            <rect class="sym" x="426" y="170" width="28" height="44"/>
+            <path class="wire" d="M440 214 V250"/>
+            <text class="sub" x="416" y="124" text-anchor="end">20 V</text>
+            <text class="sub" x="416" y="196" text-anchor="end">2 Ω</text>
+
+            <path class="wire" d="M540 80 V108"/>
+            <line x1="522" y1="108" x2="558" y2="108" stroke="#0d1128" stroke-width="3"/>
+            <line x1="531" y1="118" x2="549" y2="118" stroke="#0d1128" stroke-width="3"/>
+            <line x1="522" y1="128" x2="558" y2="128" stroke="#0d1128" stroke-width="3"/>
+            <line x1="531" y1="138" x2="549" y2="138" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M540 138 V170"/>
+            <rect class="sym" x="526" y="170" width="28" height="44"/>
+            <path class="wire" d="M540 214 V250"/>
+            <text class="sub" x="516" y="124" text-anchor="end">12.6 V</text>
+            <text class="sub" x="516" y="196" text-anchor="end">0.5 Ω</text>
+
+            <path class="wire" d="M640 80 V150"/>
+            <rect class="sym" x="626" y="150" width="28" height="50"/>
+            <path class="wire" d="M640 200 V250"/>
+            <text class="sub" x="662" y="180">6 Ω</text>
+
+            <!-- the single unknown -->
+            <circle cx="540" cy="80" r="9" fill="#fd5f00"/>
+            <text class="cap" x="540" y="66" text-anchor="middle">V = ?</text>
+
+            <!-- reference node -->
+            <path class="wire" d="M540 250 V276"/>
+            <line x1="522" y1="276" x2="558" y2="276" stroke="#0d1128" stroke-width="2.5"/>
+            <line x1="528" y1="283" x2="552" y2="283" stroke="#0d1128" stroke-width="2.5"/>
+            <line x1="534" y1="290" x2="546" y2="290" stroke="#0d1128" stroke-width="2.5"/>
+            <text class="sub th" x="580" y="284">โนดอ้างอิง = 0 V</text>
+            <text class="sub en" x="580" y="284">reference node = 0 V</text>
+
+            <text class="sub th" x="540" y="316" text-anchor="middle">เขียนสมการเดียว แล้วหากระแสทุกกิ่งทีหลัง</text>
+            <text class="sub en" x="540" y="316" text-anchor="middle">one equation, then every current follows</text>
+            <text class="sub th" x="540" y="334" text-anchor="middle">จากกฎของโอห์ม</text>
+            <text class="sub en" x="540" y="334" text-anchor="middle">from Ohm's law</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 4.3</span><span class="en">Figure 4.3</span></b>
+          <span class="th"> วงจรเดียวกันมองสองแบบ — แผงโซลาร์ (20 V ต่ออนุกรมกับความต้านทานภายใน 2 Ω)
+            และแบตเตอรี่ (12.6 V กับ 0.5 Ω) จ่ายไฟให้โหลด 6 Ω พร้อมกัน
+            ทั้งสองแหล่งจ่ายใช้แบบจำลองแหล่งจ่ายจริงจากรูปที่ 1.3 โดยตรง
+            <br><b>สังเกตว่าวงจรนี้ยุบเป็นอนุกรม–ขนานไม่ได้เลย</b> เพราะมีแหล่งจ่ายสองตัว
+            กฎของโอห์มอย่างเดียวจึงแก้ไม่ได้ ต้องใช้กฎของเคอร์ชอฟฟ์
+            เราจะแก้ด้วยวิธีซ้ายในตัวอย่างที่ 4.1 แล้วแก้ด้วยวิธีขวาในตัวอย่างที่ 4.2
+            เพื่อเปรียบเทียบให้เห็นว่าได้คำตอบเดียวกัน</span>
+          <span class="en"> One circuit seen two ways: a solar array (20 V behind an internal resistance of
+            2 Ω) and a battery (12.6 V behind 0.5 Ω) feeding a 6 Ω load together. Both sources use the
+            real-source model of Figure 1.3 directly. <br><b>Note that this circuit will not collapse into
+            series and parallel groups at all</b>, because it has two sources; Ohm's law alone cannot touch
+            it. We solve it the left-hand way in Example 4.1 and the right-hand way in Example 4.2, to see
+            that the answers agree.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 4.1</span><span class="en">Example 4.1</span></span>
+          <span class="th">แผงโซลาร์และแบตเตอรี่จ่ายโหลดพร้อมกัน</span>
+          <span class="en">A solar array and a battery feeding a load together</span></div>
+        <div class="example-body">
+          <p><span class="th">จากวงจรในรูปที่ 4.3 จงหากระแสในทุกกิ่งด้วยวิธีกระแสกิ่ง
+            แล้วอธิบายความหมายทางกายภาพของผลที่ได้</span>
+            <span class="en">For the circuit of Figure 4.3, find every branch current by the branch-current
+            method, and say what the result means physically.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th"><b>ขั้นที่ 1–2</b> สมมติให้ \(I_1\) และ \(I_2\) ไหลขึ้นเข้าสู่โนด A
+              และ \(I_3\) ไหลลงผ่านโหลด เขียน KCL ที่โนด A (มีโนดสำคัญ 2 โนด จึงได้ 1 สมการ)</span>
+              <span class="en"><b>Steps 1–2</b> — assume \(I_1\) and \(I_2\) flow up into node A and
+              \(I_3\) down through the load. KCL at node A gives one equation, since there are two essential
+              nodes:</span></p>
+            \[ I_1 + I_2 = I_3 \qquad (1) \]
+
+            <p><span class="th"><b>ขั้นที่ 3</b> เขียน KVL สองลูป
+              (\(b = 3\), \(n = 2\) จึงได้ \(3 - 2 + 1 = 2\) ลูปอิสระ ตามบทที่ 2)</span>
+              <span class="en"><b>Step 3</b> — two KVL equations, since \(b = 3\) and \(n = 2\) give
+              \(3 - 2 + 1 = 2\) independent loops, by Chapter 2:</span></p>
+            \[ \text{ลูป 1 / loop 1:}\quad 20 = 2 I_1 + 6 I_3 \qquad (2) \]
+            \[ \text{ลูป 2 / loop 2:}\quad 12.6 = 0.5 I_2 + 6 I_3 \qquad (3) \]
+
+            <p><span class="th"><b>ขั้นที่ 4</b> แก้ระบบสมการ จาก (1) ได้ \(I_2 = I_3 - I_1\)
+              และจาก (2) ได้ \(I_1 = 10 - 3I_3\) แทนทั้งสองลงใน (3)</span>
+              <span class="en"><b>Step 4</b> — solve. From (1), \(I_2 = I_3 - I_1\); from (2),
+              \(I_1 = 10 - 3I_3\). Substituting both into (3):</span></p>
+            \[ 12.6 = 0.5\,(I_3 - 10 + 3I_3) + 6 I_3 = 0.5\,(4I_3 - 10) + 6I_3 = 8 I_3 - 5 \]
+            \[ 8 I_3 = 17.6 \quad\Rightarrow\quad I_3 = 2.20\ \text{A} \]
+            \[ I_1 = 10 - 3(2.20) = 3.40\ \text{A} \]
+            \[ I_2 = I_3 - I_1 = 2.20 - 3.40 = -1.20\ \text{A} \]
+
+            <p><span class="th"><b>ขั้นที่ 5</b> ตรวจคำตอบ — หาแรงดันคร่อมโหลดจากทั้งสามกิ่ง
+              ถ้าถูกต้องต้องได้ค่าเดียวกันทุกทาง</span>
+              <span class="en"><b>Step 5</b> — check by finding the load voltage three different ways; if
+              the answer is right they must all agree:</span></p>
+            \[ \text{จากโหลด / from the load:}\quad V = 6 \times 2.20 = 13.2\ \text{V} \]
+            \[ \text{จากแผง / from the array:}\quad V = 20 - 2(3.40) = 13.2\ \text{V} \quad ✓ \]
+            \[ \text{จากแบตเตอรี่ / from the battery:}\quad V = 12.6 + 0.5(1.20) = 13.2\ \text{V} \quad ✓ \]
+
+            <div class="callout callout-agri mb-0">
+              <div class="callout-title">🌱 <span class="th">เครื่องหมายลบบอกอะไรเรา</span>
+                <span class="en">What the minus sign is telling us</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">\(I_2 = -1.20\) A หมายความว่ากระแสไหล <b>สวนทาง</b> กับที่สมมติไว้ คือไหล
+                  <i>เข้า</i> แบตเตอรี่ ไม่ใช่ออกจากแบตเตอรี่ — <b>แบตเตอรี่กำลังถูกประจุอยู่</b>
+                  ไม่ได้จ่ายไฟให้โหลดเลย</span>
+                  <span class="en">\(I_2 = -1.20\) A means the current runs <b>opposite</b> to the assumed
+                  direction — <i>into</i> the battery rather than out of it. <b>The battery is being
+                  charged</b>, not supplying the load at all.</span></li>
+                <li><span class="th">ภาพรวมจึงเป็น: แผงจ่าย 3.40 A ออกมา โดย 2.20 A ไปเลี้ยงโหลด
+                  และอีก 1.20 A ไหลเข้าไปเก็บในแบตเตอรี่ ซึ่งเป็นพฤติกรรมที่ถูกต้องของระบบโซลาร์ในเวลากลางวัน
+                  คณิตศาสตร์บอกเราตรง ๆ โดยที่เราไม่ต้องเดาเลย</span>
+                  <span class="en">The whole picture: the array delivers 3.40 A, of which 2.20 A goes to the
+                  load and 1.20 A into the battery — exactly what a solar system should do in daylight. The
+                  mathematics told us so directly, with no guessing.</span></li>
+                <li><span class="th">สังเกตว่าแรงดันที่ขั้วแบตเตอรี่ (13.2 V) <b>สูงกว่า</b> แรงเคลื่อนไฟฟ้าของมัน
+                  (12.6 V) ซึ่งเป็นลายเซ็นของการประจุเสมอ ตรงข้ามกับตอนจ่ายไฟที่แรงดันขั้วจะต่ำกว่า e.m.f.
+                  ตามที่เรียนในบทที่ 1</span>
+                  <span class="en">Note that the battery's terminal voltage, 13.2 V, is <b>above</b> its
+                  e.m.f. of 12.6 V — always the signature of charging, the opposite of the discharge case in
+                  Chapter 1 where the terminal voltage sits below the e.m.f.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 4.4 -->
+    <section id="s4">
+      <h2><span class="num">4.4</span><span class="th">การวิเคราะห์แบบโนด</span>
+          <span class="en">Nodal analysis</span></h2>
+
+      <p><span class="th">วิธีกระแสกิ่งใช้ได้เสมอ แต่จำนวนสมการโตเร็วมากเมื่อวงจรใหญ่ขึ้น
+        วงจรที่มี 8 กิ่งต้องเขียน 8 สมการ ซึ่งแก้ด้วยมือแทบไม่ไหว
+        <b>การวิเคราะห์แบบโนด</b> แก้ปัญหานี้ด้วยการเปลี่ยนตัวแปรที่ไม่รู้ค่า —
+        แทนที่จะถามหากระแสทุกกิ่ง เราถามหา <b>แรงดันที่โนด</b> แทน
+        ซึ่งมีจำนวนน้อยกว่ามาก และเมื่อรู้แรงดันโนดแล้ว กระแสทุกกิ่งหาได้ทันทีจากกฎของโอห์ม</span>
+        <span class="en">The branch-current method always works, but the number of equations grows fast: a
+        circuit with eight branches needs eight equations, which is more than anyone wants to solve by
+        hand. <b>Nodal analysis</b> fixes this by changing the unknowns. Instead of asking for every branch
+        current, it asks for the <b>node voltages</b>, of which there are far fewer — and once those are
+        known, every branch current follows at once from Ohm's law.</span></p>
+
+      <div class="callout callout-info">
+        <div class="callout-title">📋 <span class="th">ขั้นตอนของการวิเคราะห์แบบโนด</span>
+          <span class="en">The nodal procedure</span></div>
+        <ol class="mb-0">
+          <li><span class="th">เลือก <b>โนดอ้างอิง</b> (กราวด์) หนึ่งจุด กำหนดให้มีศักย์เป็นศูนย์
+            โดยปกติเลือกโนดที่มีกิ่งต่ออยู่มากที่สุด</span>
+            <span class="en">Choose one <b>reference node</b>, the ground, and call its potential zero —
+            usually the node with the most branches attached.</span></li>
+          <li><span class="th">ตั้งชื่อแรงดันของโนดที่เหลือเป็น \(V_1, V_2, \ldots\)
+            จะได้ตัวแปรทั้งหมด \(n - 1\) ตัว</span>
+            <span class="en">Name the remaining node voltages \(V_1, V_2, \ldots\), giving \(n - 1\)
+            unknowns.</span></li>
+          <li><span class="th">เขียน KCL ที่แต่ละโนด โดยเขียนกระแสของทุกกิ่ง <b>ในรูปของแรงดันโนด</b>
+            ด้วยกฎของโอห์ม กระแสที่ไหลออกจากโนดผ่านความต้านทานคือ
+            (แรงดันโนดนี้ − แรงดันปลายอีกด้าน) ÷ ความต้านทาน</span>
+            <span class="en">Write KCL at each node, expressing every branch current <b>in terms of node
+            voltages</b> by Ohm's law: the current leaving a node through a resistance is (this node's
+            voltage − the far end's) ÷ resistance.</span></li>
+          <li><span class="th">แก้ระบบสมการหาแรงดันโนด แล้วย้อนกลับไปหากระแสทุกกิ่งที่ต้องการ</span>
+            <span class="en">Solve for the node voltages, then work back to whichever branch currents you
+            want.</span></li>
+        </ol>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 4.2</span><span class="en">Example 4.2</span></span>
+          <span class="th">วงจรเดิม แก้ใหม่ด้วยการวิเคราะห์แบบโนด</span>
+          <span class="en">The same circuit again, by nodal analysis</span></div>
+        <div class="example-body">
+          <p><span class="th">แก้วงจรในรูปที่ 4.3 ข ด้วยการวิเคราะห์แบบโนด
+            แล้วเปรียบเทียบปริมาณงานกับตัวอย่างที่ 4.1</span>
+            <span class="en">Solve the circuit of Figure 4.3 b by nodal analysis, and compare the effort with
+            Example 4.1.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">เลือกโนด B เป็นโนดอ้างอิง (0 V) เหลือโนดเดียวที่ไม่รู้ค่าคือโนด A
+              เรียกแรงดันของมันว่า \(V\) <b>จึงมีตัวแปรเพียงตัวเดียว</b></span>
+              <span class="en">Take node B as the reference at 0 V. That leaves only node A unknown; call its
+              voltage \(V\). <b>There is just one variable.</b></span></p>
+
+            <p><span class="th">เขียน KCL ที่โนด A โดยให้กระแสที่ไหล <b>ออกจาก</b> โนดเป็นบวก
+              แต่ละกิ่งเขียนด้วยกฎของโอห์ม ระวังว่ากิ่งที่มีแหล่งจ่ายต้องหักแรงเคลื่อนไฟฟ้าออกก่อน</span>
+              <span class="en">Write KCL at node A, counting currents <b>leaving</b> the node as positive and
+              expressing each by Ohm's law. In a branch containing a source, subtract its e.m.f.
+              first:</span></p>
+            \[ \underbrace{\frac{V - 20}{2}}_{\text{ไปยังแผง / to the array}}
+               + \underbrace{\frac{V - 12.6}{0.5}}_{\text{ไปยังแบตเตอรี่ / to the battery}}
+               + \underbrace{\frac{V - 0}{6}}_{\text{ไปยังโหลด / to the load}} = 0 \]
+
+            <p><span class="th">คูณทั้งสมการด้วย 6 เพื่อกำจัดเศษส่วน</span>
+              <span class="en">Multiply through by 6 to clear the fractions:</span></p>
+            \[ 3(V - 20) + 12(V - 12.6) + V = 0 \]
+            \[ 3V - 60 + 12V - 151.2 + V = 0 \]
+            \[ 16V = 211.2 \quad\Rightarrow\quad V = 13.2\ \text{V} \]
+
+            <p><span class="th">ได้แรงดันโนดแล้ว กระแสทุกกิ่งหาได้ทันทีจากกฎของโอห์ม</span>
+              <span class="en">With the node voltage known, every current follows immediately:</span></p>
+            \[ I_1 = \frac{20 - 13.2}{2} = 3.40\ \text{A} \qquad
+               I_2 = \frac{12.6 - 13.2}{0.5} = -1.20\ \text{A} \qquad
+               I_3 = \frac{13.2}{6} = 2.20\ \text{A} \]
+
+            <div class="callout callout-tip mb-0">
+              <div class="callout-title">💡 <span class="th">เปรียบเทียบงานสองวิธี</span>
+                <span class="en">The two methods compared</span></div>
+              <p class="mb-0"><span class="th">คำตอบเหมือนกันทุกตัว แต่ตัวอย่างที่ 4.1 ต้องเขียน
+                <b>3 สมการ 3 ตัวแปร</b> และแทนค่าไปมาหลายขั้น ส่วนวิธีโนดใช้ <b>1 สมการ 1 ตัวแปร</b>
+                และแก้ได้ในสามบรรทัด ความได้เปรียบนี้จะยิ่งชัดเมื่อวงจรใหญ่ขึ้น —
+                วงจรที่มี 6 กิ่งแต่มีเพียง 2 โนดที่ไม่รู้ค่า จะใช้ 6 สมการกับวิธีกระแสกิ่ง
+                แต่ใช้เพียง 2 สมการกับวิธีโนด
+                <br><b>หลักการเลือกวิธี:</b> นับจำนวนโนดที่ไม่รู้ค่าเทียบกับจำนวนลูปอิสระ แล้วเลือกข้างที่น้อยกว่า
+                ในวงจรไฟฟ้าของฟาร์มที่มักมีบัสบาร์เดียวและโหลดหลายตัวต่อขนานกัน
+                จำนวนโนดมักน้อยกว่ามาก วิธีโนดจึงเป็นตัวเลือกหลักเสมอ</span>
+                <span class="en">The answers are identical, but Example 4.1 needed <b>three equations in
+                three unknowns</b> and several rounds of substitution, while the nodal method used <b>one
+                equation in one unknown</b> and finished in three lines. The advantage grows with the
+                circuit: six branches with only two unknown nodes means six equations by branch currents but
+                just two by nodal analysis. <br><b>How to choose:</b> count the unknown nodes against the
+                independent loops and take whichever is smaller. On a farm, where a single busbar usually
+                feeds many parallel loads, the nodes are far fewer — so nodal analysis is almost always the
+                one to reach for.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h3><span class="th">4.4.1 วงจรที่มีมากกว่าหนึ่งโนด</span>
+          <span class="en">4.4.1 Circuits with more than one node</span></h3>
+      <p><span class="th">พลังที่แท้จริงของวิธีโนดปรากฏเมื่อวงจรมีหลายโนด
+        กรณีที่พบบ่อยที่สุดในงานเกษตรคือ <b>สายไฟเส้นเดียวที่จ่ายโหลดหลายจุดตามระยะทาง</b>
+        เช่น สายที่เดินจากตู้ควบคุมไปตามความยาวโรงเรือน แล้วแยกจ่ายพัดลมกลางทางและวาล์วที่ปลายสุด
+        โหลดแต่ละจุดทำให้เกิดแรงดันตกสะสมกันไปเรื่อย ๆ จุดที่อยู่ไกลที่สุดจึงได้แรงดันต่ำที่สุดเสมอ</span>
+        <span class="en">The real power of the nodal method shows when there is more than one node. The
+        commonest case in agriculture is <b>one cable feeding several loads along its length</b> — a run
+        going down a greenhouse, tapping off to fans midway and to valves at the far end. Each tap adds its
+        own share of voltage drop, so the furthest point always receives the least.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 300" role="img" width="720"
+               aria-label="A 24 volt supply feeding two loads along a cable run, with a node at each tapping point">
+            <!-- rails -->
+            <path class="wire" d="M80 90 H150"/>
+            <path class="wire" d="M215 90 H360"/>
+            <path class="wire" d="M425 90 H520"/>
+            <path class="wire" d="M80 230 H520"/>
+
+            <!-- source -->
+            <path class="wire" d="M80 90 V140"/>
+            <line x1="58" y1="140" x2="102" y2="140" stroke="#0d1128" stroke-width="3"/>
+            <line x1="69" y1="152" x2="91"  y2="152" stroke="#0d1128" stroke-width="3"/>
+            <line x1="58" y1="164" x2="102" y2="164" stroke="#0d1128" stroke-width="3"/>
+            <line x1="69" y1="176" x2="91"  y2="176" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M80 176 V230"/>
+            <text class="lbl" x="42" y="160" text-anchor="middle">24 V</text>
+            <text class="sub th" x="42" y="178" text-anchor="middle">ตู้ควบคุม</text>
+            <text class="sub en" x="42" y="178" text-anchor="middle">cabinet</text>
+
+            <!-- cable segment 1 -->
+            <rect class="sym" x="150" y="78" width="65" height="24"/>
+            <text class="lbl" x="182" y="70" text-anchor="middle">0.4 Ω</text>
+            <text class="sub th" x="182" y="118" text-anchor="middle">สาย ช่วงที่ 1</text>
+            <text class="sub en" x="182" y="118" text-anchor="middle">cable, first run</text>
+
+            <!-- node 1 and load 1 -->
+            <circle class="node" cx="290" cy="90" r="6"/>
+            <text class="cap" x="290" y="76" text-anchor="middle">V₁</text>
+            <path class="wire" d="M290 90 V140"/>
+            <rect class="sym" x="276" y="140" width="28" height="50"/>
+            <path class="wire" d="M290 190 V230"/>
+            <text class="lbl" x="318" y="170">12 Ω</text>
+            <text class="sub th" x="318" y="186">พัดลม</text>
+            <text class="sub en" x="318" y="186">fans</text>
+
+            <!-- cable segment 2 -->
+            <rect class="sym" x="360" y="78" width="65" height="24"/>
+            <text class="lbl" x="392" y="70" text-anchor="middle">0.6 Ω</text>
+            <text class="sub th" x="392" y="118" text-anchor="middle">สาย ช่วงที่ 2</text>
+            <text class="sub en" x="392" y="118" text-anchor="middle">cable, second run</text>
+
+            <!-- node 2 and load 2 -->
+            <circle class="node" cx="520" cy="90" r="6"/>
+            <text class="cap" x="520" y="76" text-anchor="middle">V₂</text>
+            <path class="wire" d="M520 90 V140"/>
+            <rect class="sym" x="506" y="140" width="28" height="50"/>
+            <path class="wire" d="M520 190 V230"/>
+            <text class="lbl" x="548" y="170">8 Ω</text>
+            <text class="sub th" x="548" y="186">วาล์วและตัวควบคุม</text>
+            <text class="sub en" x="548" y="186">valves and controller</text>
+
+            <!-- reference -->
+            <path class="wire" d="M300 230 V256"/>
+            <line x1="282" y1="256" x2="318" y2="256" stroke="#0d1128" stroke-width="2.5"/>
+            <line x1="288" y1="263" x2="312" y2="263" stroke="#0d1128" stroke-width="2.5"/>
+            <line x1="294" y1="270" x2="306" y2="270" stroke="#0d1128" stroke-width="2.5"/>
+            <text class="sub th" x="338" y="262">โนดอ้างอิง 0 V</text>
+            <text class="sub en" x="338" y="262">reference node, 0 V</text>
+
+            <text class="sub th" x="590" y="230">ยิ่งไกล</text>
+            <text class="sub en" x="590" y="230">the further</text>
+            <text class="sub th" x="590" y="246">ยิ่งแรงดันต่ำ</text>
+            <text class="sub en" x="590" y="246">the lower</text>
+
+            <text class="sub th" x="40" y="292">ความต้านทานที่แสดงเป็นค่ารวมไป–กลับของสายแต่ละช่วง ตามวิธีคิดในบทที่ 2 โดยรวบไว้ที่ตัวนำเส้นบนเพื่อให้อ่านง่าย</text>
+            <text class="sub en" x="40" y="292">the resistances shown are each run's go-and-return total from Chapter 2, lumped into the upper conductor for clarity</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 4.4</span><span class="en">Figure 4.4</span></b>
+          <span class="th"> ระบบจ่ายไฟ 24 V ในโรงเรือน มีโนดที่ไม่รู้ค่าสองจุดคือ V₁ และ V₂
+            ถ้าใช้วิธีกระแสกิ่งจะต้องเขียน 5 สมการ (มี 5 กิ่ง) แต่วิธีโนดใช้เพียง 2 สมการ
+            <b>และที่สำคัญกว่านั้นคือ วิธีโนดให้คำตอบเป็นแรงดัน ซึ่งเป็นสิ่งที่เราอยากรู้โดยตรง</b>
+            เพราะคำถามที่แท้จริงของวิศวกรคือ “อุปกรณ์ที่ปลายสายได้แรงดันพอหรือไม่”</span>
+          <span class="en"> A 24 V greenhouse distribution run with two unknown nodes, V₁ and V₂. The
+            branch-current method would need five equations, one per branch; the nodal method needs two.
+            <b>More importantly, the nodal method gives its answer as a voltage, which is the thing we
+            actually want to know</b> — because the engineer's real question is whether the equipment at the
+            far end receives enough.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 4.3</span><span class="en">Example 4.3</span></span>
+          <span class="th">แรงดันที่ปลายสายในโรงเรือนพอหรือไม่</span>
+          <span class="en">Does the far end of the greenhouse run get enough?</span></div>
+        <div class="example-body">
+          <p><span class="th">จากวงจรในรูปที่ 4.4 จงหาแรงดันที่โนดทั้งสอง กระแสในทุกกิ่ง
+            และตรวจสอบว่าแรงดันที่วาล์วปลายสายผ่านเกณฑ์แรงดันตก 5 % ตามบทที่ 2 หรือไม่</span>
+            <span class="en">For the circuit of Figure 4.4, find both node voltages and every branch current,
+            then check whether the valves at the far end meet the 5 % voltage-drop limit of
+            Chapter 2.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">เขียน KCL ที่โนด 1 — กระแสที่ไหลออกจากโนดมีสามทาง
+              คือย้อนกลับไปทางแหล่งจ่าย ลงโหลด 12 Ω และไปต่อยังโนด 2</span>
+              <span class="en">KCL at node 1: three currents leave it — back toward the source, down through
+              the 12 Ω load, and onward to node 2:</span></p>
+            \[ \frac{V_1 - 24}{0.4} + \frac{V_1}{12} + \frac{V_1 - V_2}{0.6} = 0 \qquad (1) \]
+
+            <p><span class="th">และที่โนด 2 มีสองทาง</span>
+              <span class="en">And at node 2, two currents leave:</span></p>
+            \[ \frac{V_2 - V_1}{0.6} + \frac{V_2}{8} = 0 \qquad (2) \]
+
+            <p><span class="th">คูณสมการ (1) ด้วย 12 และสมการ (2) ด้วย 24 เพื่อกำจัดเศษส่วน</span>
+              <span class="en">Multiply (1) by 12 and (2) by 24 to clear the fractions:</span></p>
+            \[ 30(V_1 - 24) + V_1 + 20(V_1 - V_2) = 0
+               \quad\Rightarrow\quad 51 V_1 - 20 V_2 = 720 \]
+            \[ 40(V_2 - V_1) + 3 V_2 = 0
+               \quad\Rightarrow\quad 43 V_2 = 40 V_1
+               \quad\Rightarrow\quad V_2 = 0.9302\,V_1 \]
+
+            <p><span class="th">แทนค่ากลับ</span><span class="en">Substituting back:</span></p>
+            \[ 51 V_1 - 20(0.9302\,V_1) = 720
+               \quad\Rightarrow\quad 32.40\,V_1 = 720
+               \quad\Rightarrow\quad V_1 = 22.2\ \text{V} \]
+            \[ V_2 = 0.9302 \times 22.2 = 20.7\ \text{V} \]
+
+            <p><span class="th">กระแสทุกกิ่งหาได้จากกฎของโอห์ม</span>
+              <span class="en">Every branch current now follows from Ohm's law:</span></p>
+            \[ I_{\text{แหล่งจ่าย}} = \frac{24 - 22.2}{0.4} = 4.44\ \text{A} \qquad
+               I_{12\Omega} = \frac{22.2}{12} = 1.85\ \text{A} \]
+            \[ I_{\text{สายช่วง 2}} = \frac{22.2 - 20.7}{0.6} = 2.59\ \text{A} \qquad
+               I_{8\Omega} = \frac{20.7}{8} = 2.59\ \text{A} \quad ✓ \]
+            <p><span class="th">ตรวจ KCL ที่โนด 1: \(4.44 = 1.85 + 2.59 = 4.44\) ✓</span>
+              <span class="en">Check KCL at node 1: \(4.44 = 1.85 + 2.59 = 4.44\) ✓</span></p>
+
+            <p><span class="th">ตรวจเกณฑ์แรงดันตกที่ปลายสาย</span>
+              <span class="en">Now check the drop at the far end:</span></p>
+            \[ \%V_{\text{drop}} = \frac{24 - 20.7}{24}\times100 = 13.8\ \% \]
+
+            <div class="callout callout-danger mb-0">
+              <div class="callout-title">⚠️ <span class="th">ไม่ผ่านเกณฑ์อย่างชัดเจน</span>
+                <span class="en">It fails, and not narrowly</span></div>
+              <p class="mb-0"><span class="th">แรงดันตก 13.8 % เกินเกณฑ์ 5 % ของ วสท. เกือบสามเท่า
+                วาล์วโซลินอยด์ที่ออกแบบมาสำหรับ 24 V จะได้รับเพียง 20.7 V
+                ซึ่งแรงดึงของคอยล์จะอ่อนลงมากจนวาล์วอาจเปิดไม่สุด และอาการจะแย่ลงอีกเมื่อพัดลมทำงานพร้อมกัน
+                <br><b>ข้อสังเกตที่สำคัญ:</b> ถ้าคำนวณแรงดันตกแบบบทที่ 2 คือคิดทีละสายโดยไม่สนใจว่าโหลดต่ออยู่ตรงไหน
+                จะได้คำตอบที่ผิด เพราะกระแสในสายช่วงที่ 1 (4.44 A) ไม่เท่ากับในช่วงที่ 2 (2.59 A)
+                <b>การวิเคราะห์แบบโนดจัดการเรื่องนี้ให้เองโดยอัตโนมัติ</b>
+                ซึ่งเป็นเหตุผลที่ต้องใช้มันกับวงจรที่มีโหลดหลายจุดตามระยะทาง</span>
+                <span class="en">A 13.8 % drop is nearly three times the EIT's 5 % limit. Solenoid valves
+                built for 24 V receive only 20.7 V, so the coils pull far more weakly and may not open
+                fully — and it gets worse whenever the fans run at the same time. <br><b>A point worth
+                noting:</b> computing the drop the Chapter 2 way, cable by cable without regard to where the
+                loads tap off, gives the wrong answer, because the current in the first run (4.44 A) is not
+                the current in the second (2.59 A). <b>Nodal analysis handles that automatically</b>, which
+                is exactly why it is the right tool for a run with several loads along it.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 4.4</span><span class="en">Example 4.4</span></span>
+          <span class="th">แก้ปัญหาแรงดันตก — ต้องเพิ่มขนาดสายเท่าใด</span>
+          <span class="en">Fixing the drop — how much bigger must the cable be?</span></div>
+        <div class="example-body">
+          <p><span class="th">จากผลในตัวอย่างที่ 4.3 ช่างเสนอให้เพิ่มขนาดสายขึ้นหนึ่งเบอร์
+            ซึ่งจะทำให้ความต้านทานของสายทั้งสองช่วงลดลงครึ่งหนึ่ง เป็น 0.2 Ω และ 0.3 Ω
+            จงตรวจว่าเพียงพอหรือไม่ และถ้าไม่พอ ต้องลดความต้านทานลงเท่าใดจึงจะผ่านเกณฑ์</span>
+            <span class="en">Following Example 4.3, the electrician proposes going up one cable size, halving
+            both runs' resistance to 0.2 Ω and 0.3 Ω. Check whether that is enough, and if not, how far the
+            resistance must come down to pass.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th"><b>(ก) เพิ่มขนาดสายหนึ่งเบอร์</b> — เขียนสมการชุดเดิม เปลี่ยนเฉพาะค่าความต้านทาน</span>
+              <span class="en"><b>(a) One size up</b> — the same pair of equations with new
+              resistances:</span></p>
+            \[ \frac{V_1 - 24}{0.2} + \frac{V_1}{12} + \frac{V_1 - V_2}{0.3} = 0
+               \qquad \frac{V_2 - V_1}{0.3} + \frac{V_2}{8} = 0 \]
+            \[ 101 V_1 - 40 V_2 = 1440 \qquad 83 V_2 = 80 V_1 \]
+            \[ V_1 = 23.06\ \text{V} \qquad V_2 = 22.23\ \text{V} \]
+            \[ \%V_{\text{drop}} = \frac{24 - 22.23}{24}\times100 = 7.4\ \% \]
+            <p><span class="th">ดีขึ้นมากจาก 13.8 % เหลือ 7.4 % แต่ <b>ยังไม่ผ่านเกณฑ์ 5 %</b></span>
+              <span class="en">A large improvement, from 13.8 % to 7.4 % — but <b>it still fails the
+              5 % limit</b>.</span></p>
+
+            <p><span class="th"><b>(ข) เพิ่มอีกหนึ่งเบอร์</b> ทำให้ความต้านทานเหลือหนึ่งในสี่ของเดิม
+              คือ 0.1 Ω และ 0.15 Ω</span>
+              <span class="en"><b>(b) One size up again</b>, bringing the resistances to a quarter of the
+              original, 0.1 Ω and 0.15 Ω:</span></p>
+            \[ 201 V_1 - 80 V_2 = 2880 \qquad 163 V_2 = 160 V_1 \]
+            \[ V_1 = 23.5\ \text{V} \qquad V_2 = 23.1\ \text{V} \]
+            \[ \%V_{\text{drop}} = \frac{24 - 23.1}{24}\times100 = 3.8\ \% \quad ✓ \]
+
+            <div class="callout callout-agri mb-0">
+              <div class="callout-title">🌱 <span class="th">การตัดสินใจของวิศวกร</span>
+                <span class="en">The engineer's decision</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">ต้องเพิ่มขนาดสายถึง <b>สองเบอร์</b> จึงจะผ่าน ซึ่งค่าสายทองแดงจะแพงขึ้นราวสี่เท่า
+                  ก่อนจะสั่งซื้อควรถามก่อนว่ามีทางอื่นที่ถูกกว่าหรือไม่</span>
+                  <span class="en">Two sizes up are needed, and copper costs roughly four times as much. Before
+                  ordering, ask whether there is a cheaper route.</span></li>
+                <li><span class="th"><b>ทางเลือกที่มักถูกกว่า:</b> ย้ายตู้ควบคุมไปไว้กลางโรงเรือนแทนที่จะอยู่ปลายด้านหนึ่ง
+                  ซึ่งจะแบ่งระยะทางออกเป็นสองครึ่ง ทำให้แรงดันตกลดลงอย่างมากโดยไม่ต้องเปลี่ยนสายเลย
+                  หรือใช้ระบบ 48 V แทน 24 V ซึ่งที่กำลังเท่ากันจะใช้กระแสครึ่งเดียว
+                  แรงดันตกจึงเหลือหนึ่งในสี่เมื่อคิดเป็นเปอร์เซ็นต์</span>
+                  <span class="en"><b>Often cheaper alternatives:</b> move the cabinet to the middle of the
+                  greenhouse rather than one end, halving both distances and cutting the drop sharply with no
+                  new cable at all; or run the system at 48 V instead of 24 V, which for the same power halves
+                  the current and so quarters the percentage drop.</span></li>
+                <li><span class="th">สังเกตว่า <b>วิธีโนดทำให้การลองทางเลือกเป็นเรื่องง่าย</b> —
+                  เปลี่ยนตัวเลขในสมการสองบรรทัดแล้วแก้ใหม่ ใช้เวลาไม่กี่นาที
+                  นี่คือเหตุผลที่วิศวกรต้องแก้สมการเป็น ไม่ใช่เปิดตารางอย่างเดียว</span>
+                  <span class="en">Note how <b>the nodal method makes trying options cheap</b>: change two
+                  numbers, solve again, done in minutes. This is why an engineer needs to be able to set up
+                  the equations rather than only look things up in a table.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Summary -->
+    <section id="summary">
+      <h2><span class="num">📌</span><span class="th">สรุปบทเรียน</span><span class="en">Chapter summary</span></h2>
+      <div class="card">
+        <ul class="mb-0">
+          <li><span class="th"><b>KCL</b> มาจากการอนุรักษ์ประจุ: ที่โนดใด ๆ ผลรวมกระแสเข้าเท่ากับผลรวมกระแสออก
+            \(\sum I = 0\) และ RCD ในบทที่ 2 ก็ทำงานด้วยหลักการนี้โดยตรง</span>
+            <span class="en"><b>KCL</b> comes from the conservation of charge: at any node the currents in
+            equal the currents out, \(\sum I = 0\) — the very principle the RCD of Chapter 2 works
+            by.</span></li>
+          <li><span class="th"><b>KVL</b> มาจากการอนุรักษ์พลังงาน: ผลรวมแรงดันรอบลูปปิดเท่ากับศูนย์
+            \(\sum V = 0\) เพราะเดินครบรอบแล้วต้องกลับมาที่ศักย์เดิม</span>
+            <span class="en"><b>KVL</b> comes from the conservation of energy: the voltages around a closed
+            loop sum to zero, \(\sum V = 0\), because a complete circuit returns to the same
+            potential.</span></li>
+          <li><span class="th">เขียน KVL ต้อง <b>เลือกทิศเดินก่อน</b> แล้วกำหนดเครื่องหมายให้สม่ำเสมอตลอดทั้งลูป
+            ห้ามเปลี่ยนกลางคัน</span>
+            <span class="en">To write KVL, <b>choose a direction first</b> and keep the sign convention
+            consistent all the way round; never change it halfway.</span></li>
+          <li><span class="th">วิธีกระแสกิ่งใช้ตัวแปรเท่าจำนวนกิ่ง ส่วนวิธีโนดใช้เท่าจำนวนโนดลบหนึ่ง
+            ให้เลือกวิธีที่มีตัวแปรน้อยกว่า ซึ่งในงานฟาร์มมักเป็นวิธีโนด</span>
+            <span class="en">The branch-current method has as many unknowns as branches, the nodal method as
+            many as nodes minus one. Pick whichever is smaller — on a farm, usually the nodal
+            one.</span></li>
+          <li><span class="th">กระแสที่ออกมาติดลบไม่ใช่ความผิดพลาด แต่บอกว่ากระแสไหลสวนทางกับที่สมมติไว้
+            ซึ่งอาจมีความหมายทางกายภาพสำคัญ เช่น แบตเตอรี่กำลังถูกประจุแทนที่จะจ่ายไฟ</span>
+            <span class="en">A negative current is not an error but a statement that the current runs the
+            other way — and that can carry real meaning, such as a battery being charged rather than
+            discharged.</span></li>
+          <li><span class="th">สำหรับสายที่จ่ายโหลดหลายจุดตามระยะทาง <b>ต้องใช้วิธีโนด</b>
+            เพราะกระแสในสายแต่ละช่วงไม่เท่ากัน การคิดแรงดันตกแบบสายเส้นเดียวจะให้คำตอบที่ผิด</span>
+            <span class="en">For a cable feeding several loads along its length, <b>use the nodal method</b>:
+            the current differs in each section, and treating it as one run gives the wrong
+            answer.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Activity -->
+    <section id="activity">
+      <h2><span class="num">🧭</span><span class="th">กิจกรรมในชั้นเรียน</span>
+          <span class="en">Class activity</span></h2>
+
+      <div class="activity">
+        <div class="activity-head">
+          <h3><span class="th">กิจกรรมที่ 4.1 — ควรวางตู้ควบคุมไว้ตรงไหนของโรงเรือน</span>
+              <span class="en">Activity 4.1 — Where in the greenhouse should the cabinet go?</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">45 นาที</span><span class="en">45 minutes</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO2, CLO4</span><span class="en">CLO2, CLO4</span></span>
+          </div>
+        </div>
+        <div class="activity-body">
+          <p><span class="th"><b>สถานการณ์:</b> โรงเรือนยาว 60 เมตร มีโหลดสองจุด —
+            พัดลมที่ระยะ 20 เมตร (โหลดเทียบเท่า 12 Ω) และชุดวาล์วกับตัวควบคุมที่ปลายสุด 60 เมตร
+            (โหลดเทียบเท่า 8 Ω) ใช้ระบบ 24 V DC สายที่มีอยู่ให้ความต้านทานไป–กลับ
+            <b>0.02 Ω ต่อเมตร</b> ทีมออกแบบเถียงกันว่าจะวางตู้ควบคุมไว้ที่ปลายด้านหนึ่ง
+            หรือย้ายไปไว้กลางโรงเรือนดี แต่ละกลุ่มต้องตอบด้วยตัวเลข ไม่ใช่ความรู้สึก</span>
+            <span class="en"><b>Scenario:</b> A greenhouse 60 m long has two loads — fans at 20 m
+            (equivalent to 12 Ω) and the valves and controller at the far end, 60 m (equivalent to 8 Ω) —
+            on a 24 V DC system. The available cable gives a go-and-return resistance of <b>0.02 Ω per
+            metre</b>. The design team is arguing whether to put the cabinet at one end or in the middle.
+            Each group must settle it with numbers rather than opinions.</span></p>
+
+          <ol class="steps">
+            <li><span class="th"><b>กรณีที่ 1 — ตู้อยู่ปลายด้านหนึ่ง</b> คำนวณความต้านทานของสายแต่ละช่วง
+              (ช่วงแรก 20 เมตร ช่วงที่สอง 40 เมตร) แล้วเขียนสมการโนดสองสมการตามแบบตัวอย่างที่ 4.3</span>
+              <span class="en"><b>Case 1 — cabinet at one end.</b> Work out each run's resistance (20 m then
+              40 m) and write the two nodal equations as in Example 4.3.</span></li>
+            <li><span class="th"><b>แก้สมการ</b> หา \(V_1\) และ \(V_2\) แล้วคำนวณเปอร์เซ็นต์แรงดันตกที่โหลดปลายสาย</span>
+              <span class="en"><b>Solve</b> for \(V_1\) and \(V_2\), then find the percentage drop at the
+              far load.</span></li>
+            <li><span class="th"><b>กรณีที่ 2 — ตู้อยู่กลางโรงเรือน</b> ที่ระยะ 30 เมตร
+              ตอนนี้สายแยกออกเป็นสองทางจากตู้ คือไปทางพัดลม 10 เมตร และไปทางวาล์ว 30 เมตร
+              <b>ข้อควรคิด:</b> โครงสร้างวงจรเปลี่ยนไปอย่างไร และยังมีโนดที่ไม่รู้ค่าสองจุดอยู่หรือไม่</span>
+              <span class="en"><b>Case 2 — cabinet in the middle</b>, at 30 m, with the cable now branching
+              two ways: 10 m to the fans and 30 m to the valves. <b>Think first:</b> how has the topology
+              changed, and are there still two unknown nodes?</span></li>
+            <li><span class="th"><b>เปรียบเทียบ</b> กรอกผลทั้งสองกรณีลงตาราง แล้วตอบว่ากรณีใดผ่านเกณฑ์ 5 %</span>
+              <span class="en"><b>Compare</b> both cases in the table, and say which meets the 5 %
+              limit.</span></li>
+            <li><span class="th"><b>คิดต้นทุน</b> กรณีที่ 2 ใช้สายรวมกี่เมตร เทียบกับกรณีที่ 1
+              และถ้าต้องเลือกระหว่าง “ย้ายตู้” กับ “เพิ่มขนาดสายสองเบอร์” อย่างไหนคุ้มกว่า</span>
+              <span class="en"><b>Count the cost:</b> how many metres of cable does each case need, and if
+              the choice is between moving the cabinet and going up two cable sizes, which is
+              better?</span></li>
+            <li><span class="th"><b>อภิปราย</b> มีเหตุผลอะไรบ้างที่อาจทำให้ <i>ไม่</i> ย้ายตู้ไปกลางโรงเรือน
+              แม้ตัวเลขจะดีกว่า เตรียมนำเสนอ 3 นาที</span>
+              <span class="en"><b>Discuss</b> what reasons might argue <i>against</i> putting the cabinet in
+              the middle even when the numbers favour it. Present in three minutes.</span></li>
+          </ol>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ใบงานกิจกรรมที่ 4.1</span>
+                <span class="en">Activity 4.1 worksheet</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">รายการ</span><span class="en">Quantity</span></th>
+                  <th><span class="th">กรณีที่ 1 — ตู้อยู่ปลาย</span><span class="en">Case 1 — cabinet at the end</span></th>
+                  <th><span class="th">กรณีที่ 2 — ตู้อยู่กลาง</span><span class="en">Case 2 — cabinet in the middle</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="th">ความต้านทานสายช่วงที่ 1 (Ω)</span><span class="en">First run resistance (Ω)</span></td>
+                  <td><input type="text" aria-label="a1"></td><td><input type="text" aria-label="b1"></td></tr>
+                <tr><td><span class="th">ความต้านทานสายช่วงที่ 2 (Ω)</span><span class="en">Second run resistance (Ω)</span></td>
+                  <td><input type="text" aria-label="a2"></td><td><input type="text" aria-label="b2"></td></tr>
+                <tr><td>V₁ (V)</td><td><input type="text" aria-label="a3"></td><td><input type="text" aria-label="b3"></td></tr>
+                <tr><td>V₂ (V)</td><td><input type="text" aria-label="a4"></td><td><input type="text" aria-label="b4"></td></tr>
+                <tr><td><span class="th">แรงดันตกที่โหลดปลายสาย (%)</span><span class="en">Drop at the far load (%)</span></td>
+                  <td><input type="text" aria-label="a5"></td><td><input type="text" aria-label="b5"></td></tr>
+                <tr><td><span class="th">ผ่านเกณฑ์ 5 % หรือไม่</span><span class="en">Meets the 5 % limit?</span></td>
+                  <td><input type="text" aria-label="a6"></td><td><input type="text" aria-label="b6"></td></tr>
+                <tr><td><span class="th">ความยาวสายที่ใช้ทั้งหมด (m)</span><span class="en">Total cable used (m)</span></td>
+                  <td><input type="text" aria-label="a7"></td><td><input type="text" aria-label="b7"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">✅ <span class="th">เกณฑ์การประเมิน (10 คะแนน)</span>
+              <span class="en">Marking guide (10 marks)</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">เขียนและแก้สมการโนดถูกต้องทั้งสองกรณี — 5 คะแนน</span>
+                  <span class="en">Correct nodal equations and solutions for both cases — 5 marks</span></li>
+              <li><span class="th">เปรียบเทียบแรงดันตกและความยาวสายได้ถูกต้องพร้อมหน่วย — 2 คะแนน</span>
+                  <span class="en">Correct comparison of drop and cable length, with units — 2 marks</span></li>
+              <li><span class="th">อภิปรายข้อจำกัดในทางปฏิบัติของการย้ายตู้ได้อย่างสมเหตุสมผล — 3 คะแนน</span>
+                  <span class="en">A sound discussion of the practical objections to moving the cabinet — 3 marks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Laboratory -->
+    <section id="lab">
+      <h2><span class="num">🧪</span><span class="th">ปฏิบัติการที่ 4</span>
+          <span class="en">Laboratory 4</span></h2>
+
+      <div class="lab">
+        <div class="lab-head">
+          <h3><span class="th">ปฏิบัติการที่ 4 — ตรวจสอบ KCL และ KVL ในวงจรสองแหล่งจ่าย</span>
+              <span class="en">Laboratory 4 — Verifying KCL and KVL in a two-source circuit</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">2 ชั่วโมง</span><span class="en">2 hours</span></span>
+            <span>👥 <span class="th">กลุ่มละ 2–3 คน</span><span class="en">Groups of 2–3</span></span>
+            <span>🎯 <span class="th">CLO2, CLO6</span><span class="en">CLO2, CLO6</span></span>
+          </div>
+        </div>
+        <div class="lab-body">
+
+          <h4 class="mt-0"><span class="th">วัตถุประสงค์</span><span class="en">Objectives</span></h4>
+          <ol>
+            <li><span class="th">ยืนยันกฎกระแสของเคอร์ชอฟฟ์ด้วยการวัดกระแสทุกกิ่งที่โนดเดียวกัน</span>
+                <span class="en">Confirm Kirchhoff's current law by measuring every branch current at one
+                node.</span></li>
+            <li><span class="th">ยืนยันกฎแรงดันของเคอร์ชอฟฟ์ด้วยการวัดแรงดันรอบลูปปิด</span>
+                <span class="en">Confirm Kirchhoff's voltage law by measuring the voltages around a closed
+                loop.</span></li>
+            <li><span class="th">ทำนายผลด้วยการวิเคราะห์แบบโนดก่อนลงมือวัด แล้วเทียบกับค่าที่วัดได้จริง</span>
+                <span class="en">Predict the result by nodal analysis before measuring, then compare with
+                what is measured.</span></li>
+            <li><span class="th">สังเกตกระแสที่ไหลสวนทางกับที่สมมติไว้ และเชื่อมโยงกับเครื่องหมายลบในการคำนวณ</span>
+                <span class="en">Observe a current running against the assumed direction, and connect it to
+                the negative sign in the calculation.</span></li>
+          </ol>
+
+          <h4><span class="th">อุปกรณ์</span><span class="en">Equipment</span></h4>
+          <ul>
+            <li><span class="th">แหล่งจ่ายไฟกระแสตรงปรับค่าได้ <b>สองเครื่อง</b> (หรือเครื่องที่มีสองช่องแยกกัน)</span>
+                <span class="en">Two variable DC supplies, or one with two independent outputs</span></li>
+            <li><span class="th">มัลติมิเตอร์ 2 เครื่องต่อกลุ่ม</span>
+                <span class="en">Two multimeters per group</span></li>
+            <li><span class="th">ตัวต้านทาน 100 Ω, 220 Ω, 330 Ω, 470 Ω (1/2 W) อย่างละสองตัว</span>
+                <span class="en">Two each of 100 Ω, 220 Ω, 330 Ω and 470 Ω resistors (½ W)</span></li>
+            <li><span class="th">โพรโทบอร์ดและสายต่อวงจร</span>
+                <span class="en">Breadboard and connecting leads</span></li>
+          </ul>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">⚠️ <span class="th">ข้อควรระวัง</span>
+              <span class="en">Safety precautions</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">เมื่อใช้แหล่งจ่ายสองเครื่อง <b>ต้องต่อขั้วลบของทั้งสองเข้าด้วยกัน</b>
+                ให้เป็นกราวด์ร่วม มิฉะนั้นวงจรจะไม่ครบและค่าที่วัดได้จะไม่มีความหมาย</span>
+                  <span class="en">With two supplies, <b>tie their negative terminals together</b> as a
+                  common ground; otherwise the circuit is not complete and the readings mean
+                  nothing.</span></li>
+              <li><span class="th">ตรวจพิกัดกำลังก่อนจ่ายไฟ ตัวต้านทาน 100 Ω ที่ 20 V จะกิน 4 W และไหม้ทันที</span>
+                  <span class="en">Check the power ratings first: 100 Ω at 20 V dissipates 4 W and burns out
+                  at once.</span></li>
+              <li><span class="th">ตั้งแรงดันทั้งสองเครื่องเป็นศูนย์ก่อนต่อหรือแก้วงจรทุกครั้ง</span>
+                  <span class="en">Set both supplies to zero before making or changing any
+                  connection.</span></li>
+            </ul>
+          </div>
+
+          <h4><span class="th">ขั้นตอนการทดลอง</span><span class="en">Procedure</span></h4>
+
+          <p><b><span class="th">ตอนที่ 1: ทำนายก่อนวัด</span>
+            <span class="en">Part 1: Predict before you measure</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อวงจรตามรูปที่ 4.3 โดยใช้ \(E_1 = 15\) V อนุกรมกับ 220 Ω,
+              \(E_2 = 9\) V อนุกรมกับ 100 Ω และโหลด 470 Ω ทั้งสามกิ่งขนานกันระหว่างโนด A กับโนด B
+              <b>แต่ยังไม่ต้องจ่ายไฟ</b></span>
+                <span class="en">Wire the circuit of Figure 4.3 with \(E_1 = 15\) V in series with 220 Ω,
+                \(E_2 = 9\) V in series with 100 Ω, and a 470 Ω load, all three in parallel between nodes A
+                and B — <b>but do not switch on yet</b>.</span></li>
+            <li><span class="th">เขียนสมการโนดหนึ่งสมการตามแบบตัวอย่างที่ 4.2 แล้วแก้หาแรงดันโนด
+              จากนั้นคำนวณกระแสทั้งสามกิ่ง บันทึกไว้เป็น <b>ค่าที่ทำนาย</b></span>
+                <span class="en">Write the single nodal equation as in Example 4.2, solve for the node
+                voltage, then compute all three branch currents. Record these as your
+                <b>predictions</b>.</span></li>
+            <li><span class="th">สังเกตว่ามีกิ่งใดที่ทำนายได้กระแสติดลบหรือไม่ และเขียนไว้ว่าคาดว่ากระแสจะไหลทิศใด</span>
+                <span class="en">Note whether any branch is predicted to carry a negative current, and write
+                down which way you expect it to flow.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 2: ตรวจสอบ KCL</span>
+            <span class="en">Part 2: Verifying KCL</span></b></p>
+          <ol class="steps">
+            <li><span class="th">จ่ายไฟทั้งสองเครื่องตามค่าที่กำหนด แล้ววัดแรงดันที่โนด A เทียบกับโนด B
+              เปรียบเทียบกับค่าที่ทำนายไว้</span>
+                <span class="en">Set both supplies and measure the voltage of node A with respect to node B,
+                comparing with your prediction.</span></li>
+            <li><span class="th">วัดกระแสในแต่ละกิ่งทีละกิ่ง โดยตัดวงจรแล้วต่อแอมมิเตอร์อนุกรม
+              (ทบทวนวิธีต่อจากรูปที่ 2.4) <b>บันทึกทั้งขนาดและทิศทาง</b> โดยดูจากเครื่องหมายบนหน้าจอ</span>
+                <span class="en">Measure each branch current in turn by breaking the branch and inserting the
+                ammeter in series, as in Figure 2.4. <b>Record both magnitude and direction</b>, taking the
+                sign from the display.</span></li>
+            <li><span class="th">ตรวจว่าผลรวมกระแสเข้าเท่ากับผลรวมกระแสออกที่โนด A หรือไม่
+              ผลต่างที่เหลือคิดเป็นกี่เปอร์เซ็นต์ของกระแสรวม</span>
+                <span class="en">Check whether the currents in and out of node A balance, and express any
+                residual as a percentage of the total.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 3: ตรวจสอบ KVL</span>
+            <span class="en">Part 3: Verifying KVL</span></b></p>
+          <ol class="steps">
+            <li><span class="th">เลือกลูปที่ประกอบด้วยแหล่งจ่าย \(E_1\) ตัวต้านทาน 220 Ω และโหลด 470 Ω
+              วัดแรงดันคร่อมอุปกรณ์ทุกตัวในลูปนั้น โดยใช้ขั้วอ้างอิงเดียวกันตลอด</span>
+                <span class="en">Take the loop containing \(E_1\), the 220 Ω resistor and the 470 Ω load, and
+                measure the voltage across every element in it, keeping the same reference polarity
+                throughout.</span></li>
+            <li><span class="th">รวมแรงดันตามทิศเดินรอบลูป ผลรวมควรได้ใกล้ศูนย์ บันทึกว่าเหลือเท่าใด</span>
+                <span class="en">Sum them in the direction you walk the loop; the total should be near zero.
+                Record what is left over.</span></li>
+            <li><span class="th">ทำซ้ำกับลูปที่สอง (ผ่าน \(E_2\) และ 100 Ω)</span>
+                <span class="en">Repeat for the second loop, through \(E_2\) and the 100 Ω.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 4: ทำให้เครื่องหมายลบเป็นเรื่องจับต้องได้</span>
+            <span class="en">Part 4: Making the minus sign real</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ค่อย ๆ ลด \(E_2\) ลงทีละ 1 V จาก 9 V ลงไปถึง 3 V
+              ที่แต่ละค่าให้วัดกระแสในกิ่งที่สอง บันทึกทั้งขนาดและทิศ</span>
+                <span class="en">Lower \(E_2\) a volt at a time from 9 V down to 3 V, measuring the current
+                in the second branch at each step and recording magnitude and direction.</span></li>
+            <li><span class="th">หาค่า \(E_2\) ที่ทำให้กระแสในกิ่งที่สองเป็น <b>ศูนย์พอดี</b>
+              แล้วอธิบายว่าที่จุดนั้นแรงดันโนดมีค่าเท่าใด</span>
+                <span class="en">Find the value of \(E_2\) at which that current is <b>exactly zero</b>, and
+                say what the node voltage must be at that point.</span></li>
+            <li><span class="th">ลดต่อไปอีก แล้วสังเกตว่ากระแสกลับทิศหรือไม่
+              เชื่อมโยงสิ่งที่เห็นกับเครื่องหมายลบในตัวอย่างที่ 4.1</span>
+                <span class="en">Go lower still and see whether the current reverses, relating what you
+                observe to the negative sign in Example 4.1.</span></li>
+          </ol>
+
+          <h4><span class="th">ตารางบันทึกผล</span><span class="en">Results tables</span></h4>
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 1 — ทำนายเทียบกับวัดจริง (ตอนที่ 1–3)</span>
+                <span class="en">Table 1 — Prediction against measurement (Parts 1–3)</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">รายการ</span><span class="en">Quantity</span></th>
+                  <th class="num"><span class="th">ทำนาย</span><span class="en">Predicted</span></th>
+                  <th class="num"><span class="th">วัดได้</span><span class="en">Measured</span></th>
+                  <th class="num"><span class="th">คลาดเคลื่อน (%)</span><span class="en">Deviation (%)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="th">แรงดันโนด V (V)</span><span class="en">Node voltage V (V)</span></td>
+                  <td><input type="text" aria-label="p1"></td><td><input type="text" aria-label="m1"></td><td><input type="text" aria-label="d1"></td></tr>
+                <tr><td>I₁ <span class="th">กิ่งแหล่งจ่าย 15 V (mA)</span><span class="en">15 V branch (mA)</span></td>
+                  <td><input type="text" aria-label="p2"></td><td><input type="text" aria-label="m2"></td><td><input type="text" aria-label="d2"></td></tr>
+                <tr><td>I₂ <span class="th">กิ่งแหล่งจ่าย 9 V (mA)</span><span class="en">9 V branch (mA)</span></td>
+                  <td><input type="text" aria-label="p3"></td><td><input type="text" aria-label="m3"></td><td><input type="text" aria-label="d3"></td></tr>
+                <tr><td>I₃ <span class="th">กิ่งโหลด 470 Ω (mA)</span><span class="en">470 Ω load branch (mA)</span></td>
+                  <td><input type="text" aria-label="p4"></td><td><input type="text" aria-label="m4"></td><td><input type="text" aria-label="d4"></td></tr>
+                <tr><td><span class="th">ผลรวม KCL ที่โนด A (mA)</span><span class="en">KCL residual at node A (mA)</span></td>
+                  <td class="num">0</td><td><input type="text" aria-label="m5"></td><td><input type="text" aria-label="d5"></td></tr>
+                <tr><td><span class="th">ผลรวม KVL ลูป 1 (V)</span><span class="en">KVL residual, loop 1 (V)</span></td>
+                  <td class="num">0</td><td><input type="text" aria-label="m6"></td><td><input type="text" aria-label="d6"></td></tr>
+                <tr><td><span class="th">ผลรวม KVL ลูป 2 (V)</span><span class="en">KVL residual, loop 2 (V)</span></td>
+                  <td class="num">0</td><td><input type="text" aria-label="m7"></td><td><input type="text" aria-label="d7"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 2 — กระแสกลับทิศ (ตอนที่ 4)</span>
+                <span class="en">Table 2 — The current reverses (Part 4)</span></caption>
+              <thead>
+                <tr>
+                  <th class="num">E₂ (V)</th><th class="num">9</th><th class="num">8</th><th class="num">7</th>
+                  <th class="num">6</th><th class="num">5</th><th class="num">4</th><th class="num">3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>I₂ (mA)</td>
+                  <td><input type="text" aria-label="e1"></td><td><input type="text" aria-label="e2"></td>
+                  <td><input type="text" aria-label="e3"></td><td><input type="text" aria-label="e4"></td>
+                  <td><input type="text" aria-label="e5"></td><td><input type="text" aria-label="e6"></td>
+                  <td><input type="text" aria-label="e7"></td></tr>
+                <tr><td><span class="th">ทิศทาง (เข้า/ออก)</span><span class="en">Direction (in/out)</span></td>
+                  <td><input type="text" aria-label="f1"></td><td><input type="text" aria-label="f2"></td>
+                  <td><input type="text" aria-label="f3"></td><td><input type="text" aria-label="f4"></td>
+                  <td><input type="text" aria-label="f5"></td><td><input type="text" aria-label="f6"></td>
+                  <td><input type="text" aria-label="f7"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span class="th">คำถามท้ายปฏิบัติการ</span><span class="en">Questions</span></h4>
+          <ol>
+            <li><span class="th">ผลรวมกระแสที่โนด A ไม่เป็นศูนย์พอดี เหลือเศษอยู่เท่าใด
+              และเศษนั้นมาจากอะไรบ้าง ให้ระบุอย่างน้อยสามข้อ (พิจารณาความคลาดเคลื่อนของมัลติมิเตอร์
+              ความต้านทานภายในของแอมมิเตอร์ และค่าความคลาดเคลื่อนของตัวต้านทานตามบทที่ 3)</span>
+              <span class="en">The currents at node A did not sum to exactly zero. How large was the residual
+              and where does it come from? Give at least three sources, considering meter accuracy, the
+              ammeter's own resistance, and resistor tolerance from Chapter 3.</span></li>
+            <li><span class="th">ในตอนที่ 4 กระแสในกิ่งที่สองเป็นศูนย์ที่ \(E_2\) เท่าใด
+              และค่านั้นสัมพันธ์กับแรงดันโนดอย่างไร อธิบายด้วยสมการของกิ่งนั้น</span>
+              <span class="en">At what value of \(E_2\) did the second branch carry no current, and how does
+              that relate to the node voltage? Explain with that branch's equation.</span></li>
+            <li><span class="th">เมื่อ \(E_2\) ต่ำกว่าค่าในข้อ 2 กระแสไหลไปทางใด และแหล่งจ่ายที่สอง
+              กำลังทำหน้าที่เป็นแหล่งจ่ายหรือเป็นโหลด เชื่อมโยงกับกรณีแบตเตอรี่ถูกประจุในตัวอย่างที่ 4.1</span>
+              <span class="en">Below that value, which way does the current flow, and is the second supply
+              then acting as a source or as a load? Relate it to the battery being charged in Example
+              4.1.</span></li>
+            <li><span class="th">ถ้าต้องแก้วงจรนี้ด้วยวิธีกระแสกิ่งแทน ต้องเขียนกี่สมการ
+              และใช้เวลามากกว่าวิธีโนดกี่เท่าโดยประมาณจากประสบการณ์ของกลุ่ม</span>
+              <span class="en">How many equations would the branch-current method have needed here, and from
+              your group's experience roughly how much longer would it have taken?</span></li>
+            <li><span class="th">ออกแบบ: ถ้าต้องการให้กระแสในกิ่งโหลดเป็น 30 mA พอดี
+              โดยคงค่าตัวต้านทานทุกตัวไว้เหมือนเดิม ต้องตั้ง \(E_1\) และ \(E_2\) เป็นเท่าใดได้บ้าง
+              (มีคำตอบได้หลายชุด ให้เสนอมาหนึ่งชุดพร้อมวิธีคิด)</span>
+              <span class="en">Design: to make the load branch carry exactly 30 mA with all the resistors
+              unchanged, what could \(E_1\) and \(E_2\) be? More than one answer exists — give one, with
+              your reasoning.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">📄 <span class="th">การส่งรายงาน (20 คะแนน)</span>
+              <span class="en">Report submission (20 marks)</span></div>
+            <p class="mb-0"><span class="th">ส่งรายงานความยาวไม่เกิน 5 หน้า ประกอบด้วย วัตถุประสงค์
+              แผนผังวงจรที่ต่อจริงพร้อมลูกศรทิศกระแสที่สมมติไว้ สมการโนดและการแก้สมการอย่างละเอียด
+              ตารางผลทั้งสองตารางที่กรอกครบพร้อมหน่วย กราฟ \(I_2\) เทียบกับ \(E_2\) ที่แสดงจุดตัดศูนย์
+              คำตอบของคำถามท้ายปฏิบัติการ และข้อสรุป ภายในสัปดาห์ถัดไป</span>
+              <span class="en">Submit a report of no more than five pages — objectives; a schematic of the
+              circuit as built with your assumed current arrows; the nodal equation and its full solution;
+              both completed tables with units; a graph of \(I_2\) against \(E_2\) showing the zero
+              crossing; answers to the questions; and a conclusion — by the following week.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Post-test -->
+    <section id="posttest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบหลังเรียน</span>
+          <span class="en">Post-test</span></h2>
+      <p class="muted"><span class="th">ทำหลังอ่านเนื้อหาและทำปฏิบัติการแล้ว ควรได้อย่างน้อย 6 จาก 8 ข้อ</span>
+        <span class="en">Take this after the notes and the laboratory; aim for at least 6 out of 8.</span></p>
+
+      <section class="quiz" id="posttest-q" data-quiz="post" data-chapter="ch04">
+        <div class="quiz-head">
+          <h3><span class="th">หลังเรียน: บทที่ 4</span><span class="en">Post-test: Chapter 4</span></h3>
+          <p><span class="th">8 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">8 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="b"
+               data-explain-th="กระแสเข้ารวม 9 + 2 = 11 A ออกไปแล้ว 6 A จึงต้องออกทางกิ่งที่เหลือ 11 − 6 = 5 A"
+               data-explain-en="The currents in total 9 + 2 = 11 A; 6 A has left, so the remaining branch must carry 11 − 6 = 5 A out.">
+            <div class="q-text"><span class="th">ที่โนดหนึ่งมีกระแสไหลเข้า 9 A และ 2 A ไหลออก 6 A ทางกิ่งหนึ่ง กิ่งที่เหลือมีกระแสเท่าใดและไหลทิศใด</span>
+              <span class="en">Currents of 9 A and 2 A enter a node and 6 A leaves by one branch. What does the remaining branch carry, and which way?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>3 A <span class="th">ไหลออก</span><span class="en">out</span></span></label>
+              <label class="opt" data-opt="b"><span>5 A <span class="th">ไหลออก</span><span class="en">out</span></span></label>
+              <label class="opt" data-opt="c"><span>5 A <span class="th">ไหลเข้า</span><span class="en">in</span></span></label>
+              <label class="opt" data-opt="d"><span>17 A <span class="th">ไหลออก</span><span class="en">out</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="KVL: ผลรวมแรงดันรอบลูปเป็นศูนย์ แรงดันเพิ่ม 12 V ต้องเท่ากับผลรวมแรงดันตก 5 + 4 + x = 12 จึงได้ x = 3 V"
+               data-explain-en="By KVL the rises equal the drops: 12 = 5 + 4 + x, so x = 3 V.">
+            <div class="q-text"><span class="th">ในลูปปิดหนึ่งมีแหล่งจ่าย 12 V และมีแรงดันตกคร่อมตัวต้านทานสองตัวคือ 5 V และ 4 V แรงดันตกคร่อมตัวที่สามเป็นเท่าใด</span>
+              <span class="en">A closed loop has a 12 V source and drops of 5 V and 4 V across two resistors. What is the drop across the third?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>21 V</span></label>
+              <label class="opt" data-opt="b"><span>9 V</span></label>
+              <label class="opt" data-opt="c"><span>3 V</span></label>
+              <label class="opt" data-opt="d"><span>12 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="สมการโนดใช้จำนวนเท่ากับ (จำนวนโนดสำคัญ − 1) เพราะหนึ่งโนดถูกเลือกเป็นโนดอ้างอิงที่มีศักย์เป็นศูนย์ ดังนั้น 4 − 1 = 3 สมการ"
+               data-explain-en="Nodal analysis needs one equation fewer than the number of essential nodes, since one is chosen as the reference at zero: 4 − 1 = 3.">
+            <div class="q-text"><span class="th">วงจรหนึ่งมีโนดสำคัญ 4 โนด ต้องเขียนสมการโนดกี่สมการ</span>
+              <span class="en">A circuit has four essential nodes. How many nodal equations are needed?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>3</span></label>
+              <label class="opt" data-opt="b"><span>4</span></label>
+              <label class="opt" data-opt="c"><span>5</span></label>
+              <label class="opt" data-opt="d"><span>1</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="กระแสที่ไหลออกจากโนดผ่านความต้านทานคือ (แรงดันโนดนี้ − แรงดันปลายอีกด้าน) ÷ ความต้านทาน จึงเป็น (V₁ − 24)/0.5"
+               data-explain-en="The current leaving a node through a resistance is (this node's voltage − the far end's) ÷ resistance, giving (V₁ − 24)/0.5.">
+            <div class="q-text"><span class="th">โนด V₁ ต่อผ่านความต้านทาน 0.5 Ω ไปยังแหล่งจ่าย 24 V กระแสที่ไหลออกจากโนดทางกิ่งนี้เขียนได้อย่างไร</span>
+              <span class="en">Node V₁ connects through 0.5 Ω to a 24 V source. How is the current leaving the node by that branch written?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>(24 − V₁) × 0.5</span></label>
+              <label class="opt" data-opt="b"><span>V₁ / 0.5</span></label>
+              <label class="opt" data-opt="c"><span>(24 − V₁) / 0.5</span></label>
+              <label class="opt" data-opt="d"><span>(V₁ − 24) / 0.5</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="KCL ที่โนด: (V − 12)/3 + V/6 = 0 คูณ 6 ได้ 2(V − 12) + V = 0 → 3V = 24 → V = 8 V (ตรวจได้ด้วยวงจรแบ่งแรงดัน 12 × 6/9 = 8 V)"
+               data-explain-en="KCL at the node: (V − 12)/3 + V/6 = 0. Multiplying by 6 gives 2(V − 12) + V = 0, so 3V = 24 and V = 8 V — which the divider rule confirms: 12 × 6/9 = 8 V.">
+            <div class="q-text"><span class="th">แหล่งจ่าย 12 V ต่อผ่านความต้านทาน 3 Ω ไปยังโนด แล้วจากโนดลงกราวด์ผ่าน 6 Ω แรงดันที่โนดเป็นเท่าใด</span>
+              <span class="en">A 12 V source feeds a node through 3 Ω, and the node connects to ground through 6 Ω. What is the node voltage?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>4 V</span></label>
+              <label class="opt" data-opt="b"><span>8 V</span></label>
+              <label class="opt" data-opt="c"><span>6 V</span></label>
+              <label class="opt" data-opt="d"><span>12 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="เครื่องหมายลบบอกว่ากระแสไหลสวนทางกับที่สมมติไว้เท่านั้น ในกรณีแบตเตอรี่หมายความว่ากระแสไหลเข้าแบตเตอรี่ คือแบตเตอรี่กำลังถูกประจุ ไม่ได้จ่ายไฟ (ตัวอย่างที่ 4.1)"
+               data-explain-en="The minus sign says only that the current runs opposite to the assumption; for a battery it means current flowing in — the battery is being charged, not discharging (Example 4.1).">
+            <div class="q-text"><span class="th">คำนวณแล้วได้กระแสในกิ่งของแบตเตอรี่เป็น −1.2 A หมายความว่าอย่างไร</span>
+              <span class="en">A calculation gives −1.2 A in a battery's branch. What does that mean?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">แบตเตอรี่เสีย</span><span class="en">The battery is faulty</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">คำนวณผิด ต้องเริ่มใหม่</span><span class="en">The working is wrong and must be redone</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">กระแสไหลเข้าแบตเตอรี่ — แบตเตอรี่กำลังถูกประจุ</span><span class="en">Current flows into the battery — it is being charged</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">แบตเตอรี่จ่ายกระแส 1.2 A ตามปกติ</span><span class="en">The battery is supplying 1.2 A normally</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="เมื่อมีโหลดแยกออกกลางทาง กระแสในสายช่วงหลังจะน้อยกว่าช่วงหน้า เพราะส่วนหนึ่งถูกดึงไปใช้ที่โหลดกลางทางแล้ว การคิดแรงดันตกเสมือนสายเส้นเดียวที่มีกระแสเท่ากันตลอดจึงผิด (ตัวอย่างที่ 4.3)"
+               data-explain-en="With a load tapped off midway, the later section carries less current than the first, since part has already been drawn off. Treating the run as one cable with a single current is therefore wrong (Example 4.3).">
+            <div class="q-text"><span class="th">เหตุใดจึงคิดแรงดันตกของสายที่จ่ายโหลดหลายจุดแบบสายเส้นเดียวไม่ได้</span>
+              <span class="en">Why can a cable feeding several loads along its length not be treated as a single run?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เพราะกระแสในสายแต่ละช่วงไม่เท่ากัน</span><span class="en">Because the current differs in each section</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เพราะความต้านทานของสายเปลี่ยนตามความยาว</span><span class="en">Because the cable's resistivity changes along its length</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เพราะแรงดันของแหล่งจ่ายไม่คงที่</span><span class="en">Because the source voltage is not constant</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เพราะกฎของโอห์มใช้กับสายไฟไม่ได้</span><span class="en">Because Ohm's law does not apply to cables</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="โนดอ้างอิงเลือกได้ตามใจ ผลลัพธ์ของกระแสและแรงดันคร่อมอุปกรณ์จะเหมือนกันเสมอ แต่นิยมเลือกโนดที่มีกิ่งต่ออยู่มากที่สุดเพราะทำให้สมการง่ายที่สุด"
+               data-explain-en="The reference node may be chosen freely — the branch currents and element voltages come out the same either way — but the node with the most branches is usually picked because it makes the equations simplest.">
+            <div class="q-text"><span class="th">การเลือกโนดอ้างอิงในการวิเคราะห์แบบโนดมีหลักอย่างไร</span>
+              <span class="en">How should the reference node be chosen in nodal analysis?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ต้องเลือกโนดที่มีแรงดันสูงที่สุดเสมอ</span><span class="en">It must be the node at the highest potential</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ต้องเลือกโนดที่อยู่ซ้ายสุดของแผนผัง</span><span class="en">It must be the leftmost node on the diagram</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เลือกไม่ได้ ต้องเป็นโนดที่ต่อกับแหล่งจ่ายเท่านั้น</span><span class="en">There is no choice; it must be a node touching a source</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เลือกได้ตามใจ ผลลัพธ์เหมือนกัน แต่นิยมเลือกโนดที่มีกิ่งต่อมากที่สุด</span><span class="en">Any node will do and the answers agree, but the one with the most branches is preferred</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== References -->
+    <section id="refs">
+      <h2><span class="num">📚</span><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></h2>
+      <ol class="references">
+        <li>Irwin, J. D., &amp; Nelms, R. M. (2021). <i>Basic Engineering Circuit Analysis</i>
+          (12th ed.), Ch. 3. Wiley.</li>
+        <li>Alexander, C. K., &amp; Sadiku, M. N. O. (2020). <i>Fundamentals of Electric Circuits</i>
+          (7th ed.), Ch. 3. McGraw-Hill.
+          <span class="small muted">— <span class="th">มีตัวอย่างการวิเคราะห์แบบโนดเรียงจากง่ายไปยากจำนวนมาก</span>
+          <span class="en">a long graded series of nodal examples</span></span></li>
+        <li>Nilsson, J. W., &amp; Riedel, S. A. (2019). <i>Electric Circuits</i> (11th ed.), Ch. 4.
+          Pearson.</li>
+        <li>Boylestad, R. L. (2016). <i>Introductory Circuit Analysis</i> (13th ed.), Ch. 8.
+          Pearson.</li>
+        <li>Hayt, W. H., Kemmerly, J. E., &amp; Durbin, S. M. (2018).
+          <i>Engineering Circuit Analysis</i> (9th ed.), Ch. 4. McGraw-Hill.</li>
+        <li>Hughes, E., Hiley, J., Brown, K., &amp; Smith, I. M. (2016).
+          <i>Hughes Electrical and Electronic Technology</i> (12th ed.), Ch. 3. Pearson.</li>
+        <li>Kirchhoff, G. (1845). Ueber den Durchgang eines elektrischen Stromes durch eine Ebene,
+          insbesondere durch eine kreisförmige. <i>Annalen der Physik, 140</i>(4), 497–514.
+          <span class="small muted">— <span class="th">บทความต้นฉบับที่เคอร์ชอฟฟ์เสนอกฎทั้งสองขณะอายุ 21 ปี</span>
+          <span class="en">the original paper, written when Kirchhoff was twenty-one</span></span></li>
+        <li>International Electrotechnical Commission. (2009).
+          <i>IEC 60364-5-52: Low-voltage electrical installations — Selection and erection of wiring
+          systems</i>. IEC.
+          <span class="small muted">— <span class="th">หลักการคำนวณแรงดันตกสำหรับวงจรที่มีโหลดหลายจุด</span>
+          <span class="en">how voltage drop is computed for runs with several loads</span></span></li>
+        <li><span class="th">วิศวกรรมสถานแห่งประเทศไทย ในพระบรมราชูปถัมภ์ (วสท.). (2565).
+          <i>มาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย</i> (ฉบับปรับปรุงครั้งที่ 2), บทที่ 5.
+          กรุงเทพฯ: วสท.</span>
+          <span class="en">Engineering Institute of Thailand. (2022).
+          <i>Thailand Electrical Installation Standard</i> (2nd rev. ed.), Ch. 5. Bangkok: EIT.</span></li>
+        <li>American Society of Agricultural and Biological Engineers. (2017).
+          <i>ASABE EP364.5: Installation and Maintenance of Farm Standby Electric Power</i>. ASABE.</li>
+      </ol>
+    </section>
+
+    <!-- =============================================== Chapter nav -->
+    <nav class="chapter-nav">
+      <a href="ch03.html">
+        <div class="dir">← <span class="th">บทก่อนหน้า</span><span class="en">Previous</span></div>
+        <div class="ttl"><span class="th">บทที่ 3 · R L C และกฎของโอห์ม</span>
+          <span class="en">Chapter 3 · R L C and Ohm's Law</span></div>
+      </a>
+      <a href="ch05.html" class="next">
+        <div class="dir"><span class="th">บทถัดไป</span><span class="en">Next chapter</span> →</div>
+        <div class="ttl"><span class="th">บทที่ 5 · ตัวเก็บประจุและตัวเหนี่ยวนำ</span>
+          <span class="en">Chapter 5 · Capacitance and Inductance</span></div>
+      </a>
+    </nav>
+
+  </main>
+</div>
+</div>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span><span class="th">บทที่ 4 — กฎของเคอร์ชอฟฟ์และการวิเคราะห์แบบโนด</span>
+        <span class="en">Chapter 4 — Kirchhoff's Laws and Nodal Analysis</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>
