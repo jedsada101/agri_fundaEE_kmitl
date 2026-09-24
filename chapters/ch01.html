@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ 1 บทนำ หน่วยวัด และความปลอดภัยทางไฟฟ้า | Fundamental of Electrical Engineering</title>
+<meta name="description" content="Chapter 1 — Introduction to electricity in agriculture, the electrical system, units and prefixes, basic electrical quantities and electrical safety.">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+<script src="../assets/js/mathjax-config.js"></script>
+<script defer src="../assets/vendor/mathjax/tex-svg.js"></script>
+<style>
+  /* Figure styling local to this chapter */
+  .sys-fig text { font-family: var(--font-sans); }
+  .sys-fig .lbl { font-size: 12px; font-weight: 600; fill: #0d1128; }
+  .sys-fig .sub { font-size: 10.5px; fill: #6c757d; }
+  .sys-fig .cap { font-size: 11px; font-weight: 700; fill: #fd5f00; }
+  .sys-fig .wire { stroke: #0d1128; stroke-width: 2; fill: none; }
+  .sys-fig .sym  { stroke: #0d1128; stroke-width: 2; fill: #fff; }
+  .sys-fig .node { fill: #fd5f00; }
+
+  /* Marching dashes show which way energy travels. Paused or with motion
+     disabled the line is still a plain orange arrow, so nothing is lost. */
+  @keyframes fee-march { to { stroke-dashoffset: -32; } }
+  .sys-fig .flow-path {
+    stroke: #fd5f00;
+    stroke-width: 5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 10 22;
+    animation: fee-march 1.1s linear infinite;
+  }
+</style>
+</head>
+<body data-chapter="ch01">
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="../index.html#chapters"><span class="th">บทเรียนทั้งหมด</span><span class="en">All chapters</span></a></li>
+      <li><a href="#pretest"><span class="th">Pre-test</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการ</span><span class="en">Laboratory</span></a></li>
+      <li><a href="ch02.html" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">บทถัดไป</span><span class="en">Next</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a> ·
+      <a href="../index.html#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a> ·
+      <span class="th">บทที่ 1</span><span class="en">Chapter 1</span>
+    </div>
+    <span class="eyebrow"><span class="th">สัปดาห์ที่ 1 · บทที่ 1</span><span class="en">Week 1 · Chapter 1</span></span>
+    <h1><span class="th">บทนำ หน่วยวัด และความปลอดภัยทางไฟฟ้า</span>
+        <span class="en">Introduction, Units and Electrical Safety</span></h1>
+    <p class="lead">
+      <span class="th">ไฟฟ้าเข้ามาในงานเกษตรสองทาง — เป็น <b>แหล่งพลังงาน</b> ที่ขับปั๊มและพัดลม
+        และเป็น <b>พาหะของข้อมูล</b> ที่ทำให้เซนเซอร์บอกสภาพของแปลงได้ บทนี้ปูพื้นทั้งสองทาง
+        ตั้งแต่ระบบไฟฟ้าของประเทศ หน่วยวัด ปริมาณพื้นฐาน จนถึงกฎความปลอดภัยที่ต้องใช้ทุกครั้งที่จับอุปกรณ์</span>
+      <span class="en">Electricity enters agriculture along two paths — as a <b>power source</b> that drives
+        pumps and fans, and as a <b>carrier of data</b> that lets sensors report the state of a field.
+        This chapter lays the groundwork for both: the national electrical system, the units, the basic
+        quantities, and the safety rules that apply every time you touch equipment.</span>
+    </p>
+    <div class="hero-meta">
+      <span>⏱ <strong>2+2</strong> <span class="th">ชั่วโมง</span><span class="en">hours</span></span>
+      <span>📘 <span class="th">หัวข้อหลัก</span><span class="en">Main topics</span> <strong>5</strong></span>
+      <span>🧪 <span class="th">ปฏิบัติการที่ 1</span><span class="en">Laboratory 1</span></span>
+      <span>📝 <span class="th">Pre / Post-test</span><span class="en">Pre / post-test</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+<div class="chapter-layout">
+
+  <!-- ============================================================= TOC -->
+  <aside class="toc">
+    <div class="toc-title"><span class="th">สารบัญบทเรียน</span><span class="en">On this page</span></div>
+    <ul>
+      <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
+      <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#s1"><span class="th">1.1 ไฟฟ้ากับงานเกษตร</span><span class="en">1.1 Electricity in agriculture</span></a></li>
+      <li><a href="#s2"><span class="th">1.2 ระบบไฟฟ้า</span><span class="en">1.2 The electrical system</span></a></li>
+      <li><a href="#s3"><span class="th">1.3 หน่วยและคำอุปสรรค</span><span class="en">1.3 Units and prefixes</span></a></li>
+      <li><a href="#s4"><span class="th">1.4 ปริมาณทางไฟฟ้าพื้นฐาน</span><span class="en">1.4 Basic quantities</span></a></li>
+      <li><a href="#s5"><span class="th">1.5 ความปลอดภัยทางไฟฟ้า</span><span class="en">1.5 Electrical safety</span></a></li>
+      <li><a href="#summary"><span class="th">สรุปบทเรียน</span><span class="en">Summary</span></a></li>
+      <li><a href="#activity"><span class="th">กิจกรรมในชั้นเรียน</span><span class="en">Class activity</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการที่ 1</span><span class="en">Laboratory 1</span></a></li>
+      <li><a href="#posttest"><span class="th">แบบทดสอบหลังเรียน</span><span class="en">Post-test</span></a></li>
+      <li><a href="#refs"><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ==================================================== CHAPTER BODY -->
+  <main class="chapter-body">
+
+    <!-- ---------------------------------------------------- Objectives -->
+    <section id="objectives">
+      <div class="callout callout-objective">
+        <div class="callout-title">🎯 <span class="th">จุดประสงค์การเรียนรู้</span>
+          <span class="en">Learning objectives</span></div>
+        <p><span class="th">เมื่อเรียนจบบทนี้ นักศึกษาจะสามารถ</span>
+           <span class="en">After this chapter you will be able to:</span></p>
+        <ol>
+          <li><span class="th">อธิบายบทบาทของไฟฟ้าในงานเกษตร ทั้งการใช้ทางตรง (แหล่งพลังงาน)
+            และทางอ้อม (แหล่งข้อมูล) พร้อมยกตัวอย่างอุปกรณ์ในฟาร์ม</span>
+            <span class="en">explain the role of electricity in agriculture, both direct (as a power
+            source) and indirect (as a data source), with examples of farm equipment;</span></li>
+          <li><span class="th">เขียนผังระบบไฟฟ้าตั้งแต่การผลิต ส่งจ่าย จำหน่าย จนถึงการใช้งาน
+            พร้อมระบุระดับแรงดันที่ใช้ในประเทศไทย</span>
+            <span class="en">draw the electrical system from generation through transmission and
+            distribution to utilisation, and state the voltage levels used in Thailand;</span></li>
+          <li><span class="th">แปลงหน่วยด้วยคำอุปสรรค SI ได้อย่างถูกต้อง และเขียนผลลัพธ์ด้วยเลขนัยสำคัญที่เหมาะสม</span>
+            <span class="en">convert between SI prefixes correctly and report results to an appropriate
+            number of significant figures;</span></li>
+          <li><span class="th">นิยามและคำนวณประจุไฟฟ้า แรงเคลื่อนไฟฟ้า กระแส แรงดัน กำลัง และพลังงานไฟฟ้า</span>
+            <span class="en">define and compute charge, e.m.f., current, voltage, power and energy;</span></li>
+          <li><span class="th">ระบุอันตรายทางไฟฟ้าในฟาร์ม อธิบายผลของกระแสต่อร่างกาย
+            และเลือกมาตรการป้องกันที่เหมาะสม</span>
+            <span class="en">identify electrical hazards on a farm, describe the effect of current on the
+            human body, and choose appropriate protective measures.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ Pre-test -->
+    <section id="pretest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบก่อนเรียน</span>
+          <span class="en">Pre-test</span></h2>
+      <p class="muted"><span class="th">ทำก่อนเริ่มอ่านเนื้อหา เพื่อสำรวจความรู้เดิมของตนเอง
+        ไม่ต้องกังวลหากตอบผิด — คำอธิบายจะบอกว่าต้องอ่านหัวข้อใด</span>
+        <span class="en">Take this before reading, to see what you already know. Wrong answers are fine —
+        the explanation tells you which section to read.</span></p>
+
+      <section class="quiz" id="pretest-q" data-quiz="pre" data-chapter="ch01">
+        <div class="quiz-head">
+          <h3><span class="th">ก่อนเรียน: บทที่ 1</span><span class="en">Pre-test: Chapter 1</span></h3>
+          <p><span class="th">5 ข้อ · ปรนัย · ตรวจคำตอบได้ทันที</span>
+             <span class="en">5 multiple-choice questions · marked instantly</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="การใช้ไฟฟ้าทางอ้อมคือการใช้ไฟฟ้าเป็น 'พาหะของข้อมูล' เช่น สัญญาณจากเซนเซอร์วัดความชื้นดิน ส่วนอีกสามข้อเป็นการใช้ไฟฟ้าเป็นแหล่งพลังงานโดยตรง (หัวข้อ 1.1)"
+               data-explain-en="Indirect use means electricity carries information, as in the signal from a soil-moisture sensor. The other three use electricity directly as energy (Section 1.1).">
+            <div class="q-text"><span class="th">ข้อใดคือการใช้ไฟฟ้า <b>ทางอ้อม</b> (indirect) ในงานเกษตร</span>
+              <span class="en">Which is an <b>indirect</b> use of electricity in agriculture?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ปั๊มน้ำสูบน้ำเข้าแปลง</span><span class="en">A pump moving water into a field</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">พัดลมระบายอากาศในโรงเรือน</span><span class="en">A greenhouse ventilation fan</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เซนเซอร์วัดความชื้นดินส่งค่าไปยังตัวควบคุม</span><span class="en">A soil-moisture sensor reporting to a controller</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ฮีตเตอร์อบเมล็ดพันธุ์</span><span class="en">A heater drying seed</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="ระบบส่งจ่าย (transmission) ใช้แรงดันสูงมากเพื่อลดกระแสในสายและลดกำลังสูญเสีย I²R ในประเทศไทย กฟผ. ใช้ 500, 230 และ 115 kV (หัวข้อ 1.2)"
+               data-explain-en="Transmission uses very high voltage to reduce line current and therefore the I²R loss. In Thailand EGAT uses 500, 230 and 115 kV (Section 1.2).">
+            <div class="q-text"><span class="th">เหตุใดระบบส่งจ่ายกำลังไฟฟ้าจึงใช้แรงดันสูงมาก</span>
+              <span class="en">Why does the transmission system use very high voltage?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เพื่อให้ผู้ใช้ได้แรงดันสูงขึ้น</span><span class="en">So that consumers receive a higher voltage</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เพื่อลดกระแสในสาย ทำให้กำลังสูญเสีย I²R ลดลง</span><span class="en">To reduce line current and hence the I²R loss</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เพื่อให้ความถี่คงที่ที่ 50 Hz</span><span class="en">To keep the frequency at 50 Hz</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เพื่อให้สายไฟมีขนาดใหญ่ขึ้น</span><span class="en">To allow larger conductors</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="1 mA = 10⁻³ A และ 1 µA = 10⁻⁶ A ดังนั้น 250 µA = 0.25 mA (หัวข้อ 1.3)"
+               data-explain-en="1 mA = 10⁻³ A and 1 µA = 10⁻⁶ A, so 250 µA = 0.25 mA (Section 1.3).">
+            <div class="q-text"><span class="th">กระแส 250 µA มีค่าเท่ากับกี่มิลลิแอมแปร์</span>
+              <span class="en">A current of 250 µA equals how many milliamperes?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>0.25 mA</span></label>
+              <label class="opt" data-opt="b"><span>2.5 mA</span></label>
+              <label class="opt" data-opt="c"><span>25 mA</span></label>
+              <label class="opt" data-opt="d"><span>250 000 mA</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="พลังงาน = กำลัง × เวลา = 0.75 kW × 4 h = 3 kWh (หัวข้อ 1.4)"
+               data-explain-en="Energy = power × time = 0.75 kW × 4 h = 3 kWh (Section 1.4).">
+            <div class="q-text"><span class="th">ปั๊มน้ำ 750 W ทำงาน 4 ชั่วโมง ใช้พลังงานไฟฟ้ากี่หน่วย (kWh)</span>
+              <span class="en">A 750 W pump runs for 4 hours. How much energy does it use, in kWh?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>0.19 kWh</span></label>
+              <label class="opt" data-opt="b"><span>0.75 kWh</span></label>
+              <label class="opt" data-opt="c"><span>1.5 kWh</span></label>
+              <label class="opt" data-opt="d"><span>3 kWh</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="เครื่องตัดไฟรั่ว (RCD) พิกัด 30 mA ตัดวงจรเมื่อกระแสไหลเข้าและออกต่างกันเกิน 30 mA ซึ่งเป็นระดับที่ป้องกันการเกิดภาวะหัวใจห้องล่างสั่นพลิ้วได้ (หัวข้อ 1.5)"
+               data-explain-en="A 30 mA RCD trips when the currents in and out differ by more than 30 mA — the level chosen to protect against ventricular fibrillation (Section 1.5).">
+            <div class="q-text"><span class="th">เครื่องตัดไฟรั่ว (RCD) ขนาด 30 mA ทำหน้าที่อะไร</span>
+              <span class="en">What does a 30 mA residual-current device (RCD) do?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ตัดวงจรเมื่อกระแสโหลดเกิน 30 mA</span><span class="en">Trips when the load current exceeds 30 mA</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ตัดวงจรเมื่อกระแสไหลเข้ากับไหลออกต่างกันเกิน 30 mA</span><span class="en">Trips when the currents in and out differ by more than 30 mA</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ลดแรงดันไฟฟ้าลงเหลือ 30 V</span><span class="en">Reduces the voltage to 30 V</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ป้องกันฟ้าผ่าเข้าสู่ระบบ</span><span class="en">Protects the system from lightning</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== 1.1 -->
+    <section id="s1">
+      <h2><span class="num">1.1</span><span class="th">ไฟฟ้ากับงานเกษตร: ทำไมจึงสำคัญ</span>
+          <span class="en">Electricity in agriculture: why it matters</span></h2>
+
+      <p><span class="th">เกษตรกรรมแบบดั้งเดิมพึ่งพาแรงงานคน แรงสัตว์ และเครื่องยนต์สันดาปภายใน
+        การเปลี่ยนมาใช้ไฟฟ้าทำให้เกิดสิ่งที่พลังงานรูปอื่นทำได้ยาก คือ
+        <b>การควบคุมที่แม่นยำและทำซ้ำได้</b> เราสั่งให้ปั๊มทำงาน 17 นาทีทุกเช้าเวลา 06:00
+        หรือสั่งให้พัดลมเร่งรอบขึ้นเมื่ออุณหภูมิเกิน 32 °C ได้ด้วยต้นทุนที่ต่ำมาก
+        นี่คือรากฐานของคำว่า “เกษตรอัจฉริยะ”</span>
+        <span class="en">Traditional agriculture runs on human labour, animal power and internal-combustion
+        engines. Moving to electricity brings something the other forms of energy struggle to provide:
+        <b>precise, repeatable control</b>. A pump can be told to run for exactly 17 minutes at 06:00 every
+        morning, or a fan told to speed up whenever the temperature passes 32 °C, and the cost of issuing
+        those instructions is almost nothing. That is the foundation of what we call smart
+        agriculture.</span></p>
+
+      <h3><span class="th">1.1.1 การใช้ทางตรง — ไฟฟ้าในฐานะแหล่งพลังงาน</span>
+          <span class="en">1.1.1 Direct use — electricity as a power source</span></h3>
+      <p><span class="th">การใช้ทางตรงคือการเปลี่ยนพลังงานไฟฟ้าไปเป็นพลังงานรูปอื่นที่ทำงานให้เราได้
+        ซึ่งมีอยู่ไม่กี่รูปแบบและจำง่าย</span>
+        <span class="en">Direct use means converting electrical energy into another form that does work for
+        us. There are only a handful of such conversions, and they are easy to remember.</span></p>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 1.1 การแปลงพลังงานไฟฟ้าไปเป็นรูปอื่นในงานเกษตร</span>
+            <span class="en">Table 1.1 Conversions of electrical energy in agricultural work</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">เปลี่ยนเป็น</span><span class="en">Converted to</span></th>
+              <th><span class="th">อุปกรณ์</span><span class="en">Device</span></th>
+              <th><span class="th">ตัวอย่างในฟาร์ม</span><span class="en">Example on the farm</span></th>
+              <th><span class="th">กำลังโดยประมาณ</span><span class="en">Typical power</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">พลังงานกล</span><span class="en">Mechanical</span></td>
+              <td><span class="th">มอเตอร์</span><span class="en">Motor</span></td>
+              <td><span class="th">ปั๊มน้ำ พัดลมระบายอากาศ สายพานลำเลียง เครื่องสีข้าว</span>
+                  <span class="en">Water pump, ventilation fan, conveyor, rice mill</span></td>
+              <td class="num">0.37–15 kW</td>
+            </tr>
+            <tr>
+              <td><span class="th">ความร้อน</span><span class="en">Heat</span></td>
+              <td><span class="th">ขดลวดความร้อน</span><span class="en">Heating element</span></td>
+              <td><span class="th">เครื่องอบเมล็ดพันธุ์ ตู้ฟักไข่ เครื่องรีดยาง</span>
+                  <span class="en">Seed dryer, egg incubator, rubber roller</span></td>
+              <td class="num">1–30 kW</td>
+            </tr>
+            <tr>
+              <td><span class="th">แสง</span><span class="en">Light</span></td>
+              <td><span class="th">หลอด LED</span><span class="en">LED lamp</span></td>
+              <td><span class="th">ไฟปลูกพืชในโรงเรือน ไฟล่อแมลง ไฟเร่งการออกดอก</span>
+                  <span class="en">Grow lights, insect traps, photoperiod lighting</span></td>
+              <td class="num">10–600 W</td>
+            </tr>
+            <tr>
+              <td><span class="th">เคมี</span><span class="en">Chemical</span></td>
+              <td><span class="th">เซลล์ไฟฟ้าเคมี</span><span class="en">Electrochemical cell</span></td>
+              <td><span class="th">การชาร์จแบตเตอรี่ การผลิตน้ำอิเล็กโทรไลต์ฆ่าเชื้อ</span>
+                  <span class="en">Battery charging, electrolysed sanitising water</span></td>
+              <td class="num">50 W–5 kW</td>
+            </tr>
+            <tr>
+              <td><span class="th">สนามไฟฟ้า/แม่เหล็ก</span><span class="en">Electric/magnetic field</span></td>
+              <td><span class="th">รั้วไฟฟ้า เครื่องแยกแม่เหล็ก</span><span class="en">Electric fence, magnetic separator</span></td>
+              <td><span class="th">รั้วกันสัตว์ การคัดแยกเศษโลหะออกจากผลผลิต</span>
+                  <span class="en">Livestock fencing, removing metal fragments from produce</span></td>
+              <td class="num">5–20 W</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3><span class="th">1.1.2 การใช้ทางอ้อม — ไฟฟ้าในฐานะพาหะของข้อมูล</span>
+          <span class="en">1.1.2 Indirect use — electricity as a carrier of data</span></h3>
+      <p><span class="th">ในการใช้ทางอ้อม เราไม่ได้ต้องการพลังงานจากไฟฟ้า แต่ต้องการ <b>รูปร่างของสัญญาณ</b>
+        เซนเซอร์วัดความชื้นดินกินกระแสเพียงไม่กี่มิลลิแอมแปร์ แต่ค่าแรงดัน 1.8 V ที่มันส่งออกมา
+        มีความหมายว่า “ดินชื้น 42 %” ซึ่งมีมูลค่าต่อการตัดสินใจมากกว่าพลังงานที่มันใช้หลายเท่า</span>
+        <span class="en">In indirect use we do not want the energy at all — we want the <b>shape of the
+        signal</b>. A soil-moisture sensor draws only a few milliamperes, but the 1.8 V it puts out means
+        "the soil is at 42 % moisture", and that piece of information is worth far more than the energy
+        the sensor consumed.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 760 250" role="img" width="760"
+               aria-label="Direct and indirect use of electricity in a farm">
+            <!-- Direct branch -->
+            <rect x="8" y="16" width="360" height="218" rx="12" fill="#fff1e8" stroke="#ffd9c2"/>
+            <text class="cap th" x="26" y="42">การใช้ทางตรง — แหล่งพลังงาน (Direct)</text>
+            <text class="cap en" x="26" y="42">Direct use — power source</text>
+
+            <rect x="28" y="60" width="98" height="46" rx="8" fill="#fff" stroke="#fd5f00"/>
+            <text class="lbl th" x="77" y="80" text-anchor="middle">แหล่งจ่ายไฟ</text>
+            <text class="lbl en" x="77" y="80" text-anchor="middle">Supply</text>
+            <text class="sub" x="77" y="96" text-anchor="middle">230 V, 50 Hz</text>
+
+            <line x1="126" y1="83" x2="166" y2="83" stroke="#fd5f00" stroke-width="2" marker-end="url(#ar1)"/>
+
+            <rect x="168" y="60" width="86" height="46" rx="8" fill="#fff" stroke="#fd5f00"/>
+            <text class="lbl th" x="211" y="80" text-anchor="middle">มอเตอร์</text>
+            <text class="lbl en" x="211" y="80" text-anchor="middle">Motor</text>
+            <text class="sub" x="211" y="96" text-anchor="middle">1.5 kW</text>
+
+            <line x1="254" y1="83" x2="294" y2="83" stroke="#fd5f00" stroke-width="2" marker-end="url(#ar1)"/>
+
+            <rect x="296" y="60" width="60" height="46" rx="8" fill="#fff" stroke="#fd5f00"/>
+            <text class="lbl th" x="326" y="80" text-anchor="middle">ปั๊ม</text>
+            <text class="lbl en" x="326" y="80" text-anchor="middle">Pump</text>
+            <text class="sub" x="326" y="96" text-anchor="middle">m³/h</text>
+
+            <text class="sub th" x="28" y="136">พลังงานไหลจากซ้ายไปขวา ปริมาณมาก วัดเป็นกิโลวัตต์</text>
+            <text class="sub en" x="28" y="136">Energy flows left to right — large, measured in kilowatts.</text>
+            <text class="sub th" x="28" y="154">สิ่งที่เราต้องการคือ “งาน” เช่น น้ำที่สูบได้ต่อชั่วโมง</text>
+            <text class="sub en" x="28" y="154">What we want is work: cubic metres of water per hour.</text>
+            <text class="sub th" x="28" y="180">ตัวอย่าง: ปั๊ม พัดลม ฮีตเตอร์ ไฟปลูกพืช</text>
+            <text class="sub en" x="28" y="180">Examples: pumps, fans, heaters, grow lights.</text>
+            <text class="sub th" x="28" y="198">ถ้าไฟดับ งานหยุดทันที</text>
+            <text class="sub en" x="28" y="198">If the supply fails, the work stops at once.</text>
+
+            <!-- Indirect branch -->
+            <rect x="392" y="16" width="360" height="218" rx="12" fill="#e9f2fb" stroke="#cfe1f5"/>
+            <text class="cap th" x="410" y="42" fill="#2b6cb0">การใช้ทางอ้อม — แหล่งข้อมูล (Indirect)</text>
+            <text class="cap en" x="410" y="42" fill="#2b6cb0">Indirect use — data source</text>
+
+            <rect x="412" y="60" width="92" height="46" rx="8" fill="#fff" stroke="#2b6cb0"/>
+            <text class="lbl th" x="458" y="80" text-anchor="middle">เซนเซอร์</text>
+            <text class="lbl en" x="458" y="80" text-anchor="middle">Sensor</text>
+            <text class="sub" x="458" y="96" text-anchor="middle">0–3.3 V</text>
+
+            <line x1="504" y1="83" x2="544" y2="83" stroke="#2b6cb0" stroke-width="2" marker-end="url(#ar2)"/>
+
+            <rect x="546" y="60" width="92" height="46" rx="8" fill="#fff" stroke="#2b6cb0"/>
+            <text class="lbl th" x="592" y="80" text-anchor="middle">ตัวควบคุม</text>
+            <text class="lbl en" x="592" y="80" text-anchor="middle">Controller</text>
+            <text class="sub" x="592" y="96" text-anchor="middle">MCU / PLC</text>
+
+            <line x1="638" y1="83" x2="676" y2="83" stroke="#2b6cb0" stroke-width="2" marker-end="url(#ar2)"/>
+            <rect x="678" y="60" width="58" height="46" rx="8" fill="#fff" stroke="#2b6cb0"/>
+            <text class="lbl th" x="707" y="86" text-anchor="middle">คำสั่ง</text>
+            <text class="lbl en" x="707" y="86" text-anchor="middle">Action</text>
+
+            <text class="sub th" x="412" y="136">สารสนเทศไหลจากซ้ายไปขวา พลังงานน้อยมาก ระดับมิลลิวัตต์</text>
+            <text class="sub en" x="412" y="136">Information flows left to right — milliwatts of energy.</text>
+            <text class="sub th" x="412" y="154">สิ่งที่เราต้องการคือ “ค่าที่ถูกต้อง” ไม่ใช่พลังงาน</text>
+            <text class="sub en" x="412" y="154">What we want is an accurate value, not energy.</text>
+            <text class="sub th" x="412" y="180">ตัวอย่าง: วัดความชื้นดิน อุณหภูมิ EC ของน้ำ กล้อง NDVI</text>
+            <text class="sub en" x="412" y="180">Examples: soil moisture, temperature, water EC, NDVI camera.</text>
+            <text class="sub th" x="412" y="198">สัญญาณรบกวนเพียงเล็กน้อยก็ทำให้ตัดสินใจผิดได้</text>
+            <text class="sub en" x="412" y="198">A little noise is enough to cause a wrong decision.</text>
+
+            <defs>
+              <marker id="ar1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="#fd5f00"/></marker>
+              <marker id="ar2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="#2b6cb0"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 1.1</span><span class="en">Figure 1.1</span></b>
+          <span class="th"> การใช้ไฟฟ้าสองทางในฟาร์ม — ทางตรงสนใจ “ปริมาณพลังงาน”
+            ส่วนทางอ้อมสนใจ “ความถูกต้องของสัญญาณ” วิศวกรเกษตรอัจฉริยะต้องออกแบบทั้งสองฝั่งให้อยู่ร่วมกันได้
+            โดยไม่รบกวนกัน</span>
+          <span class="en"> The two paths electricity takes on a farm. The direct path cares about the
+            quantity of energy; the indirect path cares about the fidelity of a signal. An
+            agri-intelligence engineer has to make both live together without one disturbing the
+            other.</span></figcaption>
+      </figure>
+
+      <div class="callout callout-agri">
+        <div class="callout-title">🌱 <span class="th">ทำไมสองทางนี้จึงต้องเรียนพร้อมกัน</span>
+          <span class="en">Why the two paths must be studied together</span></div>
+        <p class="mb-0"><span class="th">เมื่อมอเตอร์ปั๊ม 1.5 kW เริ่มหมุน มันกินกระแสพุ่งสูงถึง 6–8 เท่าของกระแสปกติ
+          ชั่วขณะ แรงดันในสายจะตกลงและเกิดสัญญาณรบกวนทางแม่เหล็กไฟฟ้า
+          หากสายสัญญาณของเซนเซอร์ความชื้นดินเดินคู่ขนานไปกับสายมอเตอร์ในท่อเดียวกัน
+          ค่าที่อ่านได้อาจกระโดดจนระบบสั่งรดน้ำผิดเวลา นี่คือปัญหาที่พบบ่อยที่สุดในฟาร์มอัจฉริยะจริง
+          และเป็นเหตุผลว่าทำไมบทนี้จึงเริ่มจากภาพรวมทั้งระบบก่อนลงรายละเอียด</span>
+          <span class="en">When a 1.5 kW pump motor starts, it draws six to eight times its normal current
+          for a moment; the line voltage dips and electromagnetic noise is generated. If the
+          soil-moisture sensor's signal cable runs alongside the motor cable in the same conduit, the
+          reading can jump enough to trigger irrigation at the wrong time. This is the single most
+          common fault in real smart farms, and it is why this chapter starts with the whole system
+          before going into detail.</span></p>
+      </div>
+    </section>
+
+    <!-- =============================================== 1.2 -->
+    <section id="s2">
+      <h2><span class="num">1.2</span><span class="th">ระบบไฟฟ้ากำลัง: ผลิต ส่ง จำหน่าย และใช้งาน</span>
+          <span class="en">The power system: generation, transmission, distribution, utilisation</span></h2>
+
+      <p><span class="th">ไฟฟ้าที่ไหลเข้าเต้ารับในฟาร์มเดินทางมาไกลกว่าที่คิด
+        และผ่านการเปลี่ยนระดับแรงดันหลายครั้ง เข้าใจเส้นทางนี้แล้วจะเข้าใจว่าทำไมบิลค่าไฟจึงมีหลายองค์ประกอบ
+        และทำไมแรงดันที่ปลายสายในแปลงจึงมักต่ำกว่าที่หน้าหม้อแปลง</span>
+        <span class="en">The electricity arriving at a socket on the farm has travelled further than you
+        might think, changing voltage level several times on the way. Understanding that journey explains
+        why an electricity bill has several components, and why the voltage at the far end of a field is
+        usually lower than at the transformer.</span></p>
+
+      <figure>
+        <div class="figure-box is-animated" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 900 292" role="img" width="900"
+               aria-label="Generation, transmission, distribution and utilisation chain">
+            <!-- chain line -->
+            <line x1="40" y1="96" x2="862" y2="96" stroke="#e4e7ec" stroke-width="3"/>
+
+            <!-- 1 Generation -->
+            <rect x="24" y="56" width="150" height="80" rx="10" fill="#fff" stroke="#fd5f00" stroke-width="2"/>
+            <text class="cap" x="99" y="46" text-anchor="middle">1</text>
+            <text class="lbl th" x="99" y="82" text-anchor="middle">การผลิต</text>
+            <text class="lbl en" x="99" y="82" text-anchor="middle">Generation</text>
+            <text class="sub th" x="99" y="100" text-anchor="middle">โรงไฟฟ้า / โซลาร์ฟาร์ม</text>
+            <text class="sub en" x="99" y="100" text-anchor="middle">Power plant / solar farm</text>
+            <text class="sub" x="99" y="118" text-anchor="middle">11–25 kV</text>
+
+            <!-- step-up -->
+            <circle cx="196" cy="96" r="12" fill="#0d1128"/>
+            <text x="196" y="100" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">↑</text>
+            <text class="sub th" x="196" y="140" text-anchor="middle">แปลงขึ้น</text>
+            <text class="sub en" x="196" y="140" text-anchor="middle">Step-up</text>
+
+            <!-- 2 Transmission -->
+            <rect x="220" y="56" width="170" height="80" rx="10" fill="#fff" stroke="#fd5f00" stroke-width="2"/>
+            <text class="cap" x="305" y="46" text-anchor="middle">2</text>
+            <text class="lbl th" x="305" y="82" text-anchor="middle">ระบบส่ง</text>
+            <text class="lbl en" x="305" y="82" text-anchor="middle">Transmission</text>
+            <text class="sub th" x="305" y="100" text-anchor="middle">สายส่งแรงสูง ระยะไกล</text>
+            <text class="sub en" x="305" y="100" text-anchor="middle">High-voltage lines, long distance</text>
+            <text class="sub" x="305" y="118" text-anchor="middle">500 / 230 / 115 kV</text>
+
+            <!-- step-down -->
+            <circle cx="412" cy="96" r="12" fill="#0d1128"/>
+            <text x="412" y="100" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">↓</text>
+            <text class="sub th" x="412" y="140" text-anchor="middle">แปลงลง</text>
+            <text class="sub en" x="412" y="140" text-anchor="middle">Step-down</text>
+
+            <!-- 3 Distribution -->
+            <rect x="436" y="56" width="180" height="80" rx="10" fill="#fff" stroke="#fd5f00" stroke-width="2"/>
+            <text class="cap" x="526" y="46" text-anchor="middle">3</text>
+            <text class="lbl th" x="526" y="82" text-anchor="middle">ระบบจำหน่าย</text>
+            <text class="lbl en" x="526" y="82" text-anchor="middle">Distribution</text>
+            <text class="sub th" x="526" y="100" text-anchor="middle">สายจำหน่ายในพื้นที่</text>
+            <text class="sub en" x="526" y="100" text-anchor="middle">Local feeders</text>
+            <text class="sub" x="526" y="118" text-anchor="middle">33 / 22 kV (PEA)</text>
+
+            <!-- distribution transformer -->
+            <circle cx="638" cy="96" r="12" fill="#0d1128"/>
+            <text x="638" y="100" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">↓</text>
+            <text class="sub th" x="638" y="140" text-anchor="middle">หม้อแปลงจำหน่าย</text>
+            <text class="sub en" x="638" y="140" text-anchor="middle">Distribution Tx</text>
+
+            <!-- 4 Utilization -->
+            <rect x="662" y="56" width="200" height="80" rx="10" fill="#fff1e8" stroke="#fd5f00" stroke-width="2"/>
+            <text class="cap" x="762" y="46" text-anchor="middle">4</text>
+            <text class="lbl th" x="762" y="82" text-anchor="middle">การใช้งาน</text>
+            <text class="lbl en" x="762" y="82" text-anchor="middle">Utilisation</text>
+            <text class="sub th" x="762" y="100" text-anchor="middle">ฟาร์ม โรงเรือน บ้านพัก</text>
+            <text class="sub en" x="762" y="100" text-anchor="middle">Farm, greenhouse, dwelling</text>
+            <text class="sub" x="762" y="118" text-anchor="middle">400 V (3φ) / 230 V (1φ)</text>
+
+            <!-- ownership band -->
+            <line x1="24" y1="176" x2="616" y2="176" stroke="#6c757d" stroke-dasharray="5 4"/>
+            <text class="sub th" x="320" y="194" text-anchor="middle">ความรับผิดชอบของการไฟฟ้า (กฟผ. / กฟภ. / กฟน.)</text>
+            <text class="sub en" x="320" y="194" text-anchor="middle">Utility's responsibility (EGAT / PEA / MEA)</text>
+            <line x1="640" y1="176" x2="862" y2="176" stroke="#fd5f00" stroke-dasharray="5 4"/>
+            <text class="sub th" x="751" y="194" text-anchor="middle" fill="#fd5f00">ความรับผิดชอบของผู้ใช้ไฟ</text>
+            <text class="sub en" x="751" y="194" text-anchor="middle" fill="#fd5f00">Consumer's responsibility</text>
+
+            <text class="sub th" x="640" y="222">จุดแบ่งคือหลังมิเตอร์ — ตั้งแต่จุดนี้เข้าไปเราคือผู้ออกแบบและดูแล</text>
+            <text class="sub en" x="600" y="222">The boundary is the meter — from here in, the design is ours.</text>
+
+            <!-- energy flow, marching left to right -->
+            <path class="flow-path" d="M40 254 H846"/>
+            <polygon points="846,246 866,254 846,262" fill="#fd5f00"/>
+            <text class="sub th" x="448" y="282" text-anchor="middle">พลังงานไหลทางเดียวจากซ้ายไปขวา — ทุกขั้นมีการสูญเสียเป็นความร้อนเสมอ จึงไม่มีระบบใดมีประสิทธิภาพ 100 %</text>
+            <text class="sub en" x="448" y="282" text-anchor="middle">energy travels one way, left to right — every stage loses some as heat, so no system is ever 100 % efficient</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 1.2</span><span class="en">Figure 1.2</span></b>
+          <span class="th"> เส้นทางของไฟฟ้าจากโรงไฟฟ้าถึงเต้ารับในโรงเรือน ระดับแรงดันเป็นค่าที่ใช้จริงในประเทศไทย
+            ความถี่ของระบบคือ 50 Hz</span>
+          <span class="en"> The path of electricity from the power station to a socket in the greenhouse.
+            The voltage levels are those actually used in Thailand; the system frequency is 50 Hz.</span>
+        </figcaption>
+      </figure>
+
+      <h3><span class="th">1.2.1 การผลิต (Generation)</span><span class="en">1.2.1 Generation</span></h3>
+      <p><span class="th">โรงไฟฟ้าเปลี่ยนพลังงานต้นทาง — ก๊าซธรรมชาติ ถ่านหิน น้ำ ลม หรือแสงอาทิตย์ —
+        ให้เป็นพลังงานไฟฟ้า เครื่องกำเนิดไฟฟ้าแบบซิงโครนัสผลิตแรงดันที่ 11–25 kV
+        ซึ่งยังต่ำเกินกว่าจะส่งไปไกลได้อย่างมีประสิทธิภาพ
+        ปัจจุบันฟาร์มขนาดกลางหลายแห่งเองก็เป็นผู้ผลิตด้วย ผ่านระบบเซลล์แสงอาทิตย์บนหลังคาโรงเรือน
+        (ดูบทที่ 14)</span>
+        <span class="en">A power station converts a primary source — natural gas, coal, water, wind or
+        sunlight — into electrical energy. A synchronous generator produces 11–25 kV, still too low to be
+        sent any distance efficiently. Many medium-sized farms are now generators in their own right,
+        through rooftop photovoltaics on their greenhouses (see Chapter 14).</span></p>
+
+      <h3><span class="th">1.2.2 ระบบส่ง (Transmission) และเหตุผลของแรงดันสูง</span>
+          <span class="en">1.2.2 Transmission, and the reason for high voltage</span></h3>
+      <p><span class="th">กำลังไฟฟ้าที่ส่งได้เท่ากับผลคูณของแรงดันกับกระแส ดังนั้นกำลังเท่าเดิมส่งได้สองแบบ
+        คือ “แรงดันต่ำ–กระแสสูง” หรือ “แรงดันสูง–กระแสต่ำ” แต่กำลังที่สูญเสียไปเป็นความร้อนในสายขึ้นกับ
+        <b>กำลังสองของกระแส</b></span>
+        <span class="en">The power delivered is the product of voltage and current, so the same power can
+        travel either as low voltage with high current, or as high voltage with low current. But the power
+        lost as heat in the conductors depends on the <b>square</b> of the current:</span></p>
+
+      <div class="equation">
+        \[ P_{\text{loss}} = I^2 R_{\text{line}} \qquad \text{where} \quad I = \frac{P}{V} \]
+        \[ \Rightarrow\; P_{\text{loss}} = \left(\frac{P}{V}\right)^{2} R_{\text{line}} \propto \frac{1}{V^{2}} \]
+      </div>
+
+      <p><span class="th">นั่นคือ ถ้าเพิ่มแรงดันขึ้น 10 เท่า กำลังสูญเสียจะลดลง 100 เท่า
+        นี่คือเหตุผลเดียวที่ทำให้เรายอมลงทุนสร้างเสาสูงและหม้อแปลงราคาแพง</span>
+        <span class="en">Raise the voltage tenfold and the loss falls by a factor of one hundred. That single
+        fact is the entire justification for tall pylons and expensive transformers.</span></p>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 1.1</span><span class="en">Example 1.1</span></span>
+          <span class="th">กำลังสูญเสียในสายส่ง</span><span class="en">Loss in a transmission line</span></div>
+        <div class="example-body">
+          <p><span class="th">ต้องการส่งกำลังไฟฟ้า 100 kW ไปตามสายที่มีความต้านทานรวม 2 Ω
+            จงเปรียบเทียบกำลังสูญเสียเมื่อส่งที่ 400 V กับที่ 22 kV</span>
+            <span class="en">100 kW is to be sent along a line of total resistance 2 Ω. Compare the loss
+            when it is sent at 400 V with the loss when it is sent at 22 kV.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th">ที่แรงดัน 400 V:</span><span class="en">At 400 V:</span></p>
+            \[ I = \frac{100\,000}{400} = 250\ \text{A}, \qquad
+               P_{\text{loss}} = (250)^2 (2) = 125\,000\ \text{W} = 125\ \text{kW} \]
+            <p><span class="th">กำลังสูญเสียมากกว่ากำลังที่ต้องการส่งเสียอีก — ส่งแบบนี้ไม่ได้เลย</span>
+               <span class="en">The loss exceeds the power we wanted to send — this is simply
+               impossible.</span></p>
+            <p><span class="th">ที่แรงดัน 22 kV:</span><span class="en">At 22 kV:</span></p>
+            \[ I = \frac{100\,000}{22\,000} = 4.55\ \text{A}, \qquad
+               P_{\text{loss}} = (4.55)^2 (2) = 41.3\ \text{W} \]
+            <p class="mb-0"><span class="th">กำลังสูญเสียเหลือเพียง 0.04 % ของกำลังที่ส่ง
+              เพราะแรงดันเพิ่มขึ้น 55 เท่า กำลังสูญเสียจึงลดลงประมาณ 55² ≈ 3 000 เท่า</span>
+              <span class="en">The loss is now 0.04 % of the power sent. The voltage went up by a factor
+              of 55, so the loss came down by roughly 55² ≈ 3 000.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <h3><span class="th">1.2.3 ระบบจำหน่าย (Distribution)</span><span class="en">1.2.3 Distribution</span></h3>
+      <p><span class="th">สถานีไฟฟ้าย่อยลดแรงดันจากระดับส่งลงมาเป็นระดับจำหน่าย ในพื้นที่ต่างจังหวัด
+        การไฟฟ้าส่วนภูมิภาค (กฟภ.) ใช้ 22 kV และ 33 kV ส่วนในเขตนครหลวง การไฟฟ้านครหลวง (กฟน.)
+        ใช้ 12 kV และ 24 kV สายจำหน่ายนี้เองที่พาดผ่านหน้าฟาร์มของเรา
+        แล้วมีหม้อแปลงจำหน่ายลดลงเหลือแรงดันต่ำ</span>
+        <span class="en">A substation steps the voltage down from transmission to distribution level. In the
+        provinces the Provincial Electricity Authority (PEA) uses 22 kV and 33 kV; in the capital the
+        Metropolitan Electricity Authority (MEA) uses 12 kV and 24 kV. It is this distribution line that
+        runs past the farm gate, with a distribution transformer bringing it down to low voltage.</span></p>
+
+      <h3><span class="th">1.2.4 การใช้งาน (Utilisation)</span><span class="en">1.2.4 Utilisation</span></h3>
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 1.2 ระดับแรงดันต่ำมาตรฐานในประเทศไทย (50 Hz)</span>
+            <span class="en">Table 1.2 Standard low-voltage levels in Thailand (50 Hz)</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">ระบบ</span><span class="en">System</span></th>
+              <th><span class="th">แรงดัน</span><span class="en">Voltage</span></th>
+              <th><span class="th">ใช้กับ</span><span class="en">Used for</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">หนึ่งเฟส 2 สาย</span><span class="en">Single-phase, 2-wire</span></td>
+              <td>230 V</td>
+              <td><span class="th">บ้านพัก โรงเรือนขนาดเล็ก โหลดไม่เกินราว 5 kW</span>
+                  <span class="en">Dwellings, small greenhouses, loads up to about 5 kW</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">สามเฟส 4 สาย</span><span class="en">Three-phase, 4-wire</span></td>
+              <td>400/230 V</td>
+              <td><span class="th">ฟาร์มที่มีมอเตอร์ตั้งแต่ 2 kW ขึ้นไป โรงสี ห้องเย็น</span>
+                  <span class="en">Farms with motors of 2 kW and above, mills, cold rooms</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">กระแสตรงแรงดันต่ำพิเศษ</span><span class="en">Extra-low-voltage DC</span></td>
+              <td>12 / 24 V</td>
+              <td><span class="th">เซนเซอร์ วาล์วโซลินอยด์ ระบบควบคุม อุปกรณ์ IoT</span>
+                  <span class="en">Sensors, solenoid valves, controllers, IoT devices</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =============================================== 1.3 -->
+    <section id="s3">
+      <h2><span class="num">1.3</span><span class="th">หน่วยและคำอุปสรรค</span>
+          <span class="en">Units and prefixes</span></h2>
+
+      <p><span class="th">วิศวกรรมไฟฟ้าใช้ระบบหน่วยระหว่างประเทศ (SI) ซึ่งสร้างจากหน่วยฐาน 7 หน่วย
+        หน่วยที่เกี่ยวข้องกับเรามากที่สุดคือ แอมแปร์ (A) สำหรับกระแสไฟฟ้า ร่วมกับเมตร กิโลกรัม
+        วินาที และเคลวิน</span>
+        <span class="en">Electrical engineering uses the International System of Units (SI), built on seven
+        base units. The one that concerns us most is the ampere (A) for electric current, alongside the
+        metre, kilogram, second and kelvin.</span></p>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 1.3 ปริมาณและหน่วยที่ใช้บ่อยในรายวิชานี้</span>
+            <span class="en">Table 1.3 Quantities and units used throughout this course</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">ปริมาณ</span><span class="en">Quantity</span></th>
+              <th><span class="th">สัญลักษณ์</span><span class="en">Symbol</span></th>
+              <th><span class="th">หน่วย</span><span class="en">Unit</span></th>
+              <th><span class="th">ย่อ</span><span class="en">Abbr.</span></th>
+              <th><span class="th">หน่วยฐาน</span><span class="en">In base units</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="th">ประจุไฟฟ้า</span><span class="en">Charge</span></td><td>\(Q,\,q\)</td><td><span class="th">คูลอมบ์</span><span class="en">coulomb</span></td><td>C</td><td>A·s</td></tr>
+            <tr><td><span class="th">กระแสไฟฟ้า</span><span class="en">Current</span></td><td>\(I,\,i\)</td><td><span class="th">แอมแปร์</span><span class="en">ampere</span></td><td>A</td><td><span class="th">หน่วยฐาน</span><span class="en">base unit</span></td></tr>
+            <tr><td><span class="th">แรงดันไฟฟ้า</span><span class="en">Voltage</span></td><td>\(V,\,v\)</td><td><span class="th">โวลต์</span><span class="en">volt</span></td><td>V</td><td>J/C = W/A</td></tr>
+            <tr><td><span class="th">ความต้านทาน</span><span class="en">Resistance</span></td><td>\(R\)</td><td><span class="th">โอห์ม</span><span class="en">ohm</span></td><td>Ω</td><td>V/A</td></tr>
+            <tr><td><span class="th">ความจุไฟฟ้า</span><span class="en">Capacitance</span></td><td>\(C\)</td><td><span class="th">ฟารัด</span><span class="en">farad</span></td><td>F</td><td>C/V</td></tr>
+            <tr><td><span class="th">ความเหนี่ยวนำ</span><span class="en">Inductance</span></td><td>\(L\)</td><td><span class="th">เฮนรี</span><span class="en">henry</span></td><td>H</td><td>Wb/A</td></tr>
+            <tr><td><span class="th">กำลังไฟฟ้า</span><span class="en">Power</span></td><td>\(P\)</td><td><span class="th">วัตต์</span><span class="en">watt</span></td><td>W</td><td>J/s</td></tr>
+            <tr><td><span class="th">พลังงานไฟฟ้า</span><span class="en">Energy</span></td><td>\(W,\,E\)</td><td><span class="th">จูล</span><span class="en">joule</span></td><td>J</td><td>W·s</td></tr>
+            <tr><td><span class="th">ความถี่</span><span class="en">Frequency</span></td><td>\(f\)</td><td><span class="th">เฮิรตซ์</span><span class="en">hertz</span></td><td>Hz</td><td>1/s</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3><span class="th">1.3.1 คำอุปสรรค (Prefixes)</span><span class="en">1.3.1 Prefixes</span></h3>
+      <p><span class="th">ปริมาณทางไฟฟ้ามีช่วงค่ากว้างมาก — จากกระแสรั่วระดับไมโครแอมแปร์
+        ไปจนถึงกำลังผลิตระดับกิกะวัตต์ คำอุปสรรคช่วยให้เขียนตัวเลขได้สั้นและอ่านง่าย
+        <b>ข้อควรระวัง: ตัวพิมพ์ใหญ่–เล็กมีความหมายต่างกัน</b> — m คือมิลลิ (10⁻³)
+        ส่วน M คือเมกะ (10⁶) ต่างกันถึงหนึ่งพันล้านเท่า</span>
+        <span class="en">Electrical quantities span an enormous range — from microampere leakage currents to
+        gigawatt generating capacity. Prefixes keep the numbers short and readable.
+        <b>Beware of capitalisation</b>: m is milli (10⁻³) while M is mega (10⁶), a difference of a
+        thousand million.</span></p>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 1.4 คำอุปสรรค SI ที่ใช้บ่อยในงานไฟฟ้า</span>
+            <span class="en">Table 1.4 SI prefixes commonly met in electrical work</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">คำอุปสรรค</span><span class="en">Prefix</span></th>
+              <th><span class="th">สัญลักษณ์</span><span class="en">Symbol</span></th>
+              <th><span class="th">ตัวคูณ</span><span class="en">Multiplier</span></th>
+              <th><span class="th">ตัวอย่างในฟาร์ม</span><span class="en">Farm example</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>giga</td><td>G</td><td>\(10^{9}\)</td><td><span class="th">กำลังผลิตรวมของประเทศ ~50 GW</span><span class="en">National capacity ≈ 50 GW</span></td></tr>
+            <tr><td>mega</td><td>M</td><td>\(10^{6}\)</td><td><span class="th">ความต้านทานฉนวนสาย 20 MΩ</span><span class="en">Cable insulation resistance 20 MΩ</span></td></tr>
+            <tr><td>kilo</td><td>k</td><td>\(10^{3}\)</td><td><span class="th">มอเตอร์ปั๊ม 1.5 kW · แรงดันจำหน่าย 22 kV</span><span class="en">Pump motor 1.5 kW · distribution 22 kV</span></td></tr>
+            <tr><td>—</td><td>—</td><td>\(10^{0}\)</td><td><span class="th">กระแสมอเตอร์ 7 A · แรงดัน 230 V</span><span class="en">Motor current 7 A · voltage 230 V</span></td></tr>
+            <tr><td>milli</td><td>m</td><td>\(10^{-3}\)</td><td><span class="th">พิกัดเครื่องตัดไฟรั่ว 30 mA</span><span class="en">RCD rating 30 mA</span></td></tr>
+            <tr><td>micro</td><td>µ</td><td>\(10^{-6}\)</td><td><span class="th">ตัวเก็บประจุสตาร์ตมอเตอร์ 25 µF</span><span class="en">Motor start capacitor 25 µF</span></td></tr>
+            <tr><td>nano</td><td>n</td><td>\(10^{-9}\)</td><td><span class="th">ตัวเก็บประจุกรองสัญญาณเซนเซอร์ 100 nF</span><span class="en">Sensor filter capacitor 100 nF</span></td></tr>
+            <tr><td>pico</td><td>p</td><td>\(10^{-12}\)</td><td><span class="th">ค่าคาปาซิแตนซ์แฝงในสายสัญญาณ 80 pF/m</span><span class="en">Stray cable capacitance 80 pF/m</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 1.2</span><span class="en">Example 1.2</span></span>
+          <span class="th">การแปลงหน่วย</span><span class="en">Converting units</span></div>
+        <div class="example-body">
+          <p><span class="th">จงแปลงค่าต่อไปนี้ (ก) 0.047 µF เป็น nF และ pF
+            (ข) 2 500 000 Ω เป็น MΩ (ค) 0.85 kW เป็น W และ mW</span>
+            <span class="en">Convert: (a) 0.047 µF to nF and pF; (b) 2 500 000 Ω to MΩ;
+            (c) 0.85 kW to W and mW.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            \[ \text{(a)}\; 0.047\ \mu\text{F} = 0.047\times10^{-6}\ \text{F}
+               = 47\times10^{-9}\ \text{F} = 47\ \text{nF} = 47\,000\ \text{pF} \]
+            \[ \text{(b)}\; 2\,500\,000\ \Omega = 2.5\times10^{6}\ \Omega = 2.5\ \text{M}\Omega \]
+            \[ \text{(c)}\; 0.85\ \text{kW} = 850\ \text{W} = 850\,000\ \text{mW} \]
+            <p class="mb-0"><span class="th">เทคนิค: เขียนเป็นเลขยกกำลังของ 10 ก่อนเสมอ
+              แล้วจึงจับกลุ่มเป็นขั้นละ 10³ จะไม่หลงทศนิยม</span>
+              <span class="en">Technique: always write the number as a power of ten first, then regroup in
+              steps of 10³. You will never lose a decimal point that way.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">💡 <span class="th">การเขียนผลลัพธ์ทางวิศวกรรม</span>
+          <span class="en">Reporting engineering results</span></div>
+        <ul class="mb-0">
+          <li><span class="th">เว้นวรรคระหว่างตัวเลขกับหน่วยเสมอ: เขียน <code>230 V</code> ไม่ใช่ <code>230V</code></span>
+              <span class="en">Always put a space between the number and the unit: <code>230 V</code>,
+              not <code>230V</code>.</span></li>
+          <li><span class="th">ใช้เลขนัยสำคัญ 3 ตำแหน่งเป็นค่าเริ่มต้นสำหรับงานวิศวกรรม เช่น 4.55 A ไม่ใช่ 4.545454 A</span>
+              <span class="en">Three significant figures is the engineering default: 4.55 A, not
+              4.545454 A.</span></li>
+          <li><span class="th">ระบุหน่วยทุกครั้ง คำตอบที่ไม่มีหน่วยถือว่าผิด</span>
+              <span class="en">State the unit every time — an answer without a unit is wrong.</span></li>
+          <li><span class="th">เลือกคำอุปสรรคให้ตัวเลขอยู่ระหว่าง 0.1 ถึง 1000 เช่น เขียน 47 nF แทน 0.000000047 F</span>
+              <span class="en">Choose the prefix that puts the number between 0.1 and 1000: write 47 nF,
+              not 0.000000047 F.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== 1.4 -->
+    <section id="s4">
+      <h2><span class="num">1.4</span><span class="th">ปริมาณทางไฟฟ้าพื้นฐาน</span>
+          <span class="en">Basic electrical quantities</span></h2>
+
+      <h3><span class="th">1.4.1 ประจุไฟฟ้า (Electric charge)</span><span class="en">1.4.1 Electric charge</span></h3>
+      <p><span class="th">ประจุไฟฟ้าคือสมบัติพื้นฐานของสสารที่ทำให้เกิดแรงทางไฟฟ้า มีสองชนิดคือบวกและลบ
+        หน่วยของประจุคือคูลอมบ์ (C) ประจุมีลักษณะเป็นก้อน ๆ (quantised) โดยค่าที่เล็กที่สุดคือประจุของอิเล็กตรอน</span>
+        <span class="en">Electric charge is the property of matter that gives rise to electric force. It comes
+        in two kinds, positive and negative, and is measured in coulombs (C). Charge is quantised: the
+        smallest amount is the charge on one electron.</span></p>
+
+      <div class="equation">
+        \[ e = 1.602\,176\,634 \times 10^{-19}\ \text{C} \qquad\qquad Q = n\,e \]
+      </div>
+      <p class="eq-note"><span class="th">โดย \(n\) คือจำนวนอิเล็กตรอน (ตัวเลขจำนวนเต็ม)</span>
+        <span class="en">where \(n\) is the number of electrons (an integer)</span></p>
+
+      <p><span class="th">ประจุ 1 คูลอมบ์จึงเท่ากับอิเล็กตรอนประมาณ \(6.24 \times 10^{18}\) ตัว
+        ซึ่งเป็นจำนวนที่มหาศาล — และนั่นบอกเราว่าในสายไฟจริง อิเล็กตรอนแต่ละตัวเคลื่อนที่ช้ามาก
+        (ระดับมิลลิเมตรต่อวินาที) แต่ผลของมันเดินทางด้วยความเร็วเกือบเท่าแสง เหมือนน้ำในท่อที่เต็มอยู่แล้ว
+        พอเปิดวาล์วปลายทางน้ำก็ไหลออกทันที ไม่ต้องรอน้ำจากต้นทางเดินทางมาถึง</span>
+        <span class="en">One coulomb is about \(6.24 \times 10^{18}\) electrons — an enormous number, and it
+        tells us something surprising: in a real wire each electron drifts very slowly, a few millimetres
+        per second, yet the <i>effect</i> travels at nearly the speed of light. It is like a pipe already
+        full of water: open the tap at the far end and water comes out immediately, without waiting for
+        water from the source to arrive.</span></p>
+
+      <h3><span class="th">1.4.2 กระแสไฟฟ้า (Current)</span><span class="en">1.4.2 Current</span></h3>
+      <p><span class="th">กระแสไฟฟ้าคืออัตราการไหลของประจุผ่านพื้นที่หน้าตัดของตัวนำ</span>
+        <span class="en">Current is the rate at which charge flows through a cross-section of a
+        conductor:</span></p>
+
+      <div class="equation">
+        \[ i(t) = \frac{dq}{dt} \qquad\qquad I = \frac{Q}{t} \]
+      </div>
+      <p class="eq-note"><span class="th">สมการขวาใช้ได้เมื่อกระแสคงที่ตลอดช่วงเวลา \(t\)</span>
+        <span class="en">the right-hand form applies when the current is constant over the time \(t\)</span></p>
+
+      <p><span class="th">กระแส 1 แอมแปร์ คือประจุ 1 คูลอมบ์ไหลผ่านในเวลา 1 วินาที
+        ข้อตกลงสำคัญ: <b>ทิศทางของกระแสตามแบบแผน (conventional current)</b>
+        กำหนดให้เป็นทิศการไหลของประจุบวก ซึ่งตรงข้ามกับทิศการเคลื่อนที่จริงของอิเล็กตรอนในโลหะ
+        วิศวกรทั้งโลกใช้ข้อตกลงนี้ ดังนั้นในวิชานี้เราจะใช้ตามนี้เสมอ</span>
+        <span class="en">A current of one ampere is one coulomb passing in one second. An important
+        convention: <b>conventional current</b> is taken as the direction in which positive charge would
+        flow, which is opposite to the actual motion of electrons in a metal. Engineers everywhere use this
+        convention, and so will we throughout this course.</span></p>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 1.3</span><span class="en">Example 1.3</span></span>
+          <span class="th">ประจุที่ไหลผ่านวาล์วโซลินอยด์</span><span class="en">Charge through a solenoid valve</span></div>
+        <div class="example-body">
+          <p><span class="th">วาล์วโซลินอยด์ในระบบให้น้ำหยดกินกระแสคงที่ 250 mA ขณะเปิด
+            หากวาล์วเปิดนาน 15 นาที จงหาประจุไฟฟ้าที่ไหลผ่าน และจำนวนอิเล็กตรอนที่เกี่ยวข้อง</span>
+            <span class="en">A solenoid valve in a drip-irrigation system draws a steady 250 mA while open.
+            If it stays open for 15 minutes, find the charge that passes and the number of electrons
+            involved.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            \[ t = 15 \times 60 = 900\ \text{s}, \qquad I = 250\ \text{mA} = 0.250\ \text{A} \]
+            \[ Q = I\,t = (0.250)(900) = 225\ \text{C} \]
+            \[ n = \frac{Q}{e} = \frac{225}{1.602\times10^{-19}} = 1.40\times10^{21}\ \text{electrons} \]
+            <p class="mb-0"><span class="th">ตอบ ประจุ 225 C คิดเป็นอิเล็กตรอนราว \(1.40\times10^{21}\) ตัว</span>
+              <span class="en">Answer: 225 C, about \(1.40\times10^{21}\) electrons.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <h3><span class="th">1.4.3 แรงเคลื่อนไฟฟ้า (e.m.f.) และแรงดันไฟฟ้า (Voltage)</span>
+          <span class="en">1.4.3 Electromotive force (e.m.f.) and voltage</span></h3>
+      <p><span class="th">แรงดันไฟฟ้าระหว่างสองจุด คือพลังงานที่ใช้ในการเคลื่อนย้ายประจุหนึ่งหน่วยระหว่างจุดทั้งสอง</span>
+        <span class="en">The voltage between two points is the energy needed to move a unit of charge from
+        one point to the other:</span></p>
+
+      <div class="equation">
+        \[ V_{AB} = \frac{dw}{dq} \qquad\qquad V = \frac{W}{Q}\ \ [\text{J/C} = \text{V}] \]
+      </div>
+
+      <p><span class="th">คำว่า <b>แรงเคลื่อนไฟฟ้า (electromotive force, e.m.f.)</b> ใช้เรียกแรงดันที่
+        <i>แหล่งกำเนิด</i> สร้างขึ้นจากการเปลี่ยนพลังงานรูปอื่นมาเป็นพลังงานไฟฟ้า เช่น ปฏิกิริยาเคมีในแบตเตอรี่
+        หรือการเหนี่ยวนำในเครื่องกำเนิดไฟฟ้า ส่วนคำว่า <b>แรงดันตกคร่อม (potential difference, p.d.)</b>
+        ใช้เรียกแรงดันที่ตกคร่อมโหลดซึ่งใช้พลังงานไป ทั้งสองมีหน่วยเป็นโวลต์เหมือนกัน
+        แต่บอกทิศทางของการถ่ายเทพลังงานต่างกัน</span>
+        <span class="en">The term <b>electromotive force (e.m.f.)</b> is reserved for the voltage a
+        <i>source</i> creates by converting some other form of energy into electrical energy — the chemical
+        reaction in a battery, or induction in a generator. <b>Potential difference (p.d.)</b> is the
+        voltage across a load, which consumes energy. Both are measured in volts, but they describe
+        opposite directions of energy transfer.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 640 250" role="img" width="640"
+               aria-label="Equivalent circuit of a real source: an ideal e.m.f. in series with an internal resistance">
+            <defs>
+              <marker id="arS" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#fd5f00"/></marker>
+            </defs>
+
+            <!-- the real source, boxed -->
+            <rect x="52" y="42" width="240" height="160" rx="10" fill="#fff1e8"
+                  stroke="#fd5f00" stroke-dasharray="6 4"/>
+            <text class="cap th" x="172" y="30" text-anchor="middle">แหล่งจ่ายจริง</text>
+            <text class="cap en" x="172" y="30" text-anchor="middle">a real source</text>
+
+            <path class="wire" d="M100 70 V100"/>
+            <line x1="78" y1="100" x2="122" y2="100" stroke="#0d1128" stroke-width="3"/>
+            <line x1="89" y1="112" x2="111" y2="112" stroke="#0d1128" stroke-width="3"/>
+            <line x1="78" y1="124" x2="122" y2="124" stroke="#0d1128" stroke-width="3"/>
+            <line x1="89" y1="136" x2="111" y2="136" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M100 136 V180"/>
+            <text class="lbl" x="58" y="122" text-anchor="middle">E</text>
+            <text class="sub th" x="100" y="196" text-anchor="middle">แรงเคลื่อนไฟฟ้า</text>
+            <text class="sub en" x="100" y="196" text-anchor="middle">e.m.f.</text>
+
+            <path class="wire" d="M100 70 H180"/>
+            <rect class="sym" x="180" y="58" width="62" height="24"/>
+            <text class="lbl" x="211" y="50" text-anchor="middle">r</text>
+            <text class="sub th" x="211" y="102" text-anchor="middle">ความต้านทานภายใน</text>
+            <text class="sub en" x="211" y="102" text-anchor="middle">internal resistance</text>
+            <path class="wire" d="M242 70 H380"/>
+            <path class="wire" d="M100 180 H380"/>
+
+            <!-- current -->
+            <line x1="300" y1="70" x2="344" y2="70" stroke="#fd5f00" stroke-width="2.5" marker-end="url(#arS)"/>
+            <text class="cap" x="322" y="60" text-anchor="middle">I</text>
+
+            <!-- terminals -->
+            <circle class="node" cx="380" cy="70" r="5"/>
+            <circle class="node" cx="380" cy="180" r="5"/>
+            <line x1="398" y1="82" x2="398" y2="168" stroke="#fd5f00" stroke-width="2" marker-end="url(#arS)"/>
+            <text class="cap" x="424" y="122">V</text>
+            <text class="sub" x="436" y="125">terminal</text>
+            <text class="sub th" x="380" y="216" text-anchor="middle">ขั้วที่เราวัดได้</text>
+            <text class="sub en" x="380" y="216" text-anchor="middle">the terminals we can measure</text>
+
+            <!-- load -->
+            <path class="wire" d="M380 70 H560"/>
+            <rect class="sym" x="546" y="100" width="28" height="50"/>
+            <path class="wire" d="M560 100 V70 M560 150 V180"/>
+            <path class="wire" d="M380 180 H560"/>
+            <text class="lbl" x="596" y="130" text-anchor="middle">R</text>
+            <text class="sub th" x="590" y="196" text-anchor="middle">โหลด</text>
+            <text class="sub en" x="590" y="196" text-anchor="middle">load</text>
+
+            <text class="sub th" x="320" y="240" text-anchor="middle">ยิ่งจ่ายกระแสมาก แรงดันที่ตกคร่อม r ยิ่งมาก แรงดันที่เหลือให้โหลดจึงยิ่งน้อย</text>
+            <text class="sub en" x="320" y="240" text-anchor="middle">the more current it supplies, the more is dropped across r, and the less is left for the load</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 1.3</span><span class="en">Figure 1.3</span></b>
+          <span class="th"> วงจรสมมูลของแหล่งจ่ายจริง เราไม่มีทางแยกวัด \(E\) กับ \(r\) ออกจากกันได้โดยตรง
+            เพราะทั้งคู่อยู่ในกล่องเดียวกัน สิ่งที่วัดได้จากภายนอกคือ \(V_{\text{terminal}}\) เท่านั้น
+            แต่แบบจำลองสองชิ้นนี้อธิบายพฤติกรรมของแบตเตอรี่ เครื่องปั่นไฟ และหม้อแปลง ได้ครบทุกกรณี
+            เราจะใช้แบบจำลองนี้ซ้ำอีกหลายครั้งตลอดรายวิชา</span>
+          <span class="en"> The equivalent circuit of a real source. We cannot measure \(E\) and \(r\)
+            separately from outside, because both live inside the same casing; all that is accessible is
+            \(V_{\text{terminal}}\). Yet these two elements account for the behaviour of batteries,
+            generators and transformers alike, and we return to this model repeatedly through the
+            course.</span></figcaption>
+      </figure>
+
+      <div class="callout callout-info">
+        <div class="callout-title">ℹ️ <span class="th">แรงเคลื่อนไฟฟ้ากับแรงดันที่ขั้ว</span>
+          <span class="en">E.m.f. versus terminal voltage</span></div>
+        <p class="mb-0"><span class="th">แบตเตอรี่จริงมีความต้านทานภายใน \(r\) อยู่ด้วย
+          เมื่อจ่ายกระแส \(I\) แรงดันที่วัดได้ที่ขั้วจะต่ำกว่า e.m.f. ตามสมการ
+          \(V_{\text{terminal}} = E - I r\) นี่คือเหตุผลที่แบตเตอรี่ 12 V ในระบบโซลาร์
+          อาจวัดได้เพียง 11.4 V ขณะจ่ายโหลดหนัก แต่กลับขึ้นเป็น 12.6 V เมื่อปลดโหลด</span>
+          <span class="en">A real battery has an internal resistance \(r\). When it supplies a current
+          \(I\), the voltage measured at its terminals is lower than its e.m.f.:
+          \(V_{\text{terminal}} = E - I r\). That is why a 12 V battery in a solar system may read only
+          11.4 V under heavy load, yet rise to 12.6 V the moment the load is removed.</span></p>
+      </div>
+
+      <h3><span class="th">1.4.4 กำลังไฟฟ้า (Power)</span><span class="en">1.4.4 Electrical power</span></h3>
+      <p><span class="th">กำลังไฟฟ้าคืออัตราการถ่ายเทพลังงาน หน่วยเป็นวัตต์ (W) ซึ่งเท่ากับจูลต่อวินาที</span>
+        <span class="en">Power is the rate of energy transfer, measured in watts (W), that is, joules per
+        second:</span></p>
+
+      <div class="equation">
+        \[ p(t) = \frac{dw}{dt} = \frac{dw}{dq}\cdot\frac{dq}{dt} = v\,i
+           \qquad\Longrightarrow\qquad P = VI \]
+      </div>
+
+      <p><span class="th">เมื่อรวมกับกฎของโอห์ม \(V = IR\) (ซึ่งจะเรียนละเอียดในบทที่ 3)
+        จะได้รูปแบบที่ใช้บ่อยอีกสองรูป</span>
+        <span class="en">Combining this with Ohm's law \(V = IR\) (studied in detail in Chapter 3) gives two
+        further forms in constant use:</span></p>
+
+      <div class="equation">
+        \[ P = VI = I^{2}R = \frac{V^{2}}{R} \]
+      </div>
+
+      <h3><span class="th">1.4.5 พลังงานไฟฟ้า (Energy) และหน่วยที่เราจ่ายเงิน</span>
+          <span class="en">1.4.5 Energy — and the unit we actually pay for</span></h3>
+      <p><span class="th">พลังงานคือกำลังคูณด้วยเวลา หน่วยในระบบ SI คือจูล (J) แต่จูลเป็นหน่วยที่เล็กเกินไป
+        สำหรับงานจริง การไฟฟ้าจึงคิดค่าไฟเป็น <b>กิโลวัตต์–ชั่วโมง (kWh)</b> หรือที่เรียกกันว่า “หน่วย”</span>
+        <span class="en">Energy is power multiplied by time. The SI unit is the joule (J), but the joule is
+        far too small for practical work, so electricity is billed in <b>kilowatt-hours (kWh)</b>, commonly
+        just called "units".</span></p>
+
+      <div class="equation">
+        \[ W = P\,t \qquad\qquad 1\ \text{kWh} = 1000\ \text{W} \times 3600\ \text{s}
+           = 3.6\times10^{6}\ \text{J} = 3.6\ \text{MJ} \]
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 1.4</span><span class="en">Example 1.4</span></span>
+          <span class="th">ค่าไฟฟ้าของระบบสูบน้ำในแปลง</span><span class="en">Running cost of a field pumping system</span></div>
+        <div class="example-body">
+          <p><span class="th">ปั๊มน้ำขนาด 1.5 kW ทำงานวันละ 3 ชั่วโมง เป็นเวลา 30 วัน
+            ร่วมกับพัดลมระบายอากาศในโรงเรือน 2 ตัว ตัวละ 250 W ทำงานวันละ 8 ชั่วโมง
+            หากค่าไฟเฉลี่ยหน่วยละ 4.20 บาท จงหาค่าไฟฟ้ารวมต่อเดือน</span>
+            <span class="en">A 1.5 kW pump runs 3 hours a day for 30 days, together with two 250 W greenhouse
+            fans running 8 hours a day. If electricity averages 4.20 THB per unit, find the total monthly
+            cost.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th">พลังงานของปั๊ม:</span><span class="en">Pump energy:</span></p>
+            \[ W_{\text{pump}} = 1.5\ \text{kW} \times 3\ \tfrac{\text{h}}{\text{d}} \times 30\ \text{d}
+               = 135\ \text{kWh} \]
+            <p><span class="th">พลังงานของพัดลมทั้งสองตัว:</span><span class="en">Energy of both fans:</span></p>
+            \[ W_{\text{fans}} = 2 \times 0.25\ \text{kW} \times 8\ \tfrac{\text{h}}{\text{d}} \times 30\ \text{d}
+               = 120\ \text{kWh} \]
+            \[ W_{\text{total}} = 135 + 120 = 255\ \text{kWh} \]
+            \[ \text{Cost} = 255 \times 4.20 = 1071\ \text{THB} \]
+            <p class="mb-0"><span class="th">ตอบ ประมาณ 1 071 บาทต่อเดือน สังเกตว่าพัดลมที่ดู “เล็ก”
+              กลับกินพลังงานเกือบเท่าปั๊ม เพราะทำงานนานกว่าเกือบสามเท่า — <b>พลังงานขึ้นกับทั้งกำลังและเวลา</b>
+              จะคำนวณค่าไฟจากอัตราค่าไฟจริงของ กฟภ. อย่างละเอียดในบทที่ 10</span>
+              <span class="en">Answer: about 1 071 THB per month. Notice that the "small" fans consume
+              nearly as much as the pump, because they run almost three times longer —
+              <b>energy depends on both power and time</b>. Chapter 10 works through a real PEA tariff in
+              detail.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 1.5 -->
+    <section id="s5">
+      <h2><span class="num">1.5</span><span class="th">ความปลอดภัยทางไฟฟ้า</span>
+          <span class="en">Electrical safety</span></h2>
+
+      <div class="callout callout-danger">
+        <div class="callout-title">⚠️ <span class="th">ข้อเท็จจริงที่ต้องจำให้ขึ้นใจ</span>
+          <span class="en">The fact to remember above all others</span></div>
+        <p class="mb-0"><span class="th"><b>กระแส</b>คือสิ่งที่ฆ่าคน ไม่ใช่แรงดัน
+          แรงดันเป็นเพียงตัวผลักให้กระแสไหลผ่านร่างกาย กระแสเพียง 50 mA
+          ซึ่งน้อยกว่าที่หลอด LED ดวงเล็กใช้ ก็เพียงพอที่จะทำให้หัวใจหยุดเต้นได้
+          และงานเกษตรยิ่งอันตรายกว่างานทั่วไป เพราะมีน้ำ ความชื้น ดินเปียก และมือเปียกอยู่ตลอดเวลา</span>
+          <span class="en"><b>Current</b> kills, not voltage. Voltage merely pushes the current through the
+          body. As little as 50 mA — less than a small LED lamp draws — can stop the heart. Agricultural
+          work is more dangerous than most, because water, damp soil and wet hands are always
+          present.</span></p>
+      </div>
+
+      <h3><span class="th">1.5.1 ผลของกระแสไฟฟ้าต่อร่างกาย</span>
+          <span class="en">1.5.1 The effect of current on the human body</span></h3>
+      <p><span class="th">กระแสที่ไหลผ่านร่างกายหาได้จากกฎของโอห์ม โดยความต้านทานของร่างกายขึ้นกับสภาพผิว</span>
+        <span class="en">The current through the body follows Ohm's law, with the body's resistance depending
+        on the condition of the skin:</span></p>
+
+      <div class="equation">
+        \[ I_{\text{body}} = \frac{V}{R_{\text{body}}} \]
+      </div>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 680 310" role="img" width="680"
+               aria-label="Equivalent circuit of a person receiving an electric shock, and where the RCD sits">
+            <defs>
+              <marker id="arE" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#d64545"/></marker>
+            </defs>
+
+            <!-- supply -->
+            <path class="wire" d="M60 54 V130"/>
+            <circle class="sym" cx="60" cy="152" r="22"/>
+            <path d="M49 152 q5.5 -8 11 0 q5.5 8 11 0" stroke="#0d1128" stroke-width="2" fill="none"/>
+            <path class="wire" d="M60 174 V250"/>
+            <text class="lbl" x="22" y="150" text-anchor="middle">230 V</text>
+            <text class="sub th" x="26" y="170" text-anchor="middle">หม้อแปลง</text>
+            <text class="sub en" x="26" y="170" text-anchor="middle">transformer</text>
+
+            <!-- line conductor with the RCD in it -->
+            <path class="wire" d="M60 54 H150"/>
+            <rect x="150" y="32" width="112" height="44" rx="6" fill="#fdecec" stroke="#d64545" stroke-width="2"/>
+            <text class="lbl" x="206" y="52" text-anchor="middle">RCD</text>
+            <text class="sub" x="206" y="68" text-anchor="middle">30 mA</text>
+            <path class="wire" d="M262 54 H460"/>
+            <line x1="330" y1="54" x2="380" y2="54" stroke="#d64545" stroke-width="2.5" marker-end="url(#arE)"/>
+            <text class="cap" x="355" y="44" text-anchor="middle" fill="#d64545">I_body</text>
+
+            <!-- the person, as three resistances in series -->
+            <rect x="416" y="76" width="200" height="152" rx="10" fill="#fff1e8"
+                  stroke="#fd5f00" stroke-dasharray="6 4"/>
+            <text class="cap th" x="516" y="96" text-anchor="middle">ร่างกายมนุษย์</text>
+            <text class="cap en" x="516" y="96" text-anchor="middle">the human body</text>
+
+            <path class="wire" d="M460 54 V106"/>
+            <rect class="sym" x="446" y="106" width="28" height="34"/>
+            <text class="sub th" x="556" y="120" text-anchor="middle">ผิวหนังที่มือสัมผัส</text>
+            <text class="sub en" x="556" y="120" text-anchor="middle">skin at the hand</text>
+            <text class="sub th" x="556" y="134" text-anchor="middle">แห้ง ~5 kΩ · เปียก ~200 Ω</text>
+            <text class="sub en" x="556" y="134" text-anchor="middle">dry ~5 kΩ · wet ~200 Ω</text>
+
+            <path class="wire" d="M460 140 V150"/>
+            <rect class="sym" x="446" y="150" width="28" height="34"/>
+            <text class="sub th" x="556" y="164" text-anchor="middle">เนื้อเยื่อภายใน ~500 Ω</text>
+            <text class="sub en" x="556" y="164" text-anchor="middle">internal tissue ~500 Ω</text>
+            <text class="sub th" x="556" y="178" text-anchor="middle">ทางนี้ผ่านหัวใจ</text>
+            <text class="sub en" x="556" y="178" text-anchor="middle">this path crosses the heart</text>
+
+            <path class="wire" d="M460 184 V194"/>
+            <rect class="sym" x="446" y="194" width="28" height="34"/>
+            <text class="sub th" x="556" y="208" text-anchor="middle">รองเท้าและพื้น</text>
+            <text class="sub en" x="556" y="208" text-anchor="middle">footwear and floor</text>
+            <text class="sub th" x="556" y="222" text-anchor="middle">ยางแห้งสูงมาก · ดินเปียกเกือบศูนย์</text>
+            <text class="sub en" x="556" y="222" text-anchor="middle">dry rubber huge · wet soil almost nil</text>
+
+            <path class="wire" d="M460 228 V250"/>
+            <path class="wire" d="M60 250 H460"/>
+
+            <!-- earth -->
+            <path class="wire" d="M260 250 V268"/>
+            <line x1="240" y1="268" x2="280" y2="268" stroke="#0d1128" stroke-width="2.5"/>
+            <line x1="248" y1="276" x2="272" y2="276" stroke="#0d1128" stroke-width="2.5"/>
+            <line x1="255" y1="284" x2="265" y2="284" stroke="#0d1128" stroke-width="2.5"/>
+            <text class="sub th" x="260" y="300" text-anchor="middle">ดินคือตัวนำที่ปิดวงจรให้ครบ</text>
+            <text class="sub en" x="260" y="300" text-anchor="middle">the earth is the conductor that closes the loop</text>
+
+            <text class="sub th" x="70" y="300">R รวมของเส้นทาง = ผลบวกของทั้งสามส่วน</text>
+            <text class="sub en" x="70" y="300">total R of the path = the three in series</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 1.4</span><span class="en">Figure 1.4</span></b>
+          <span class="th"> วงจรสมมูลของการถูกไฟดูด — ร่างกายกลายเป็นตัวต้านทานสามตัวต่ออนุกรมกัน
+            และวงจรจะครบได้ก็ต่อเมื่อมี <b>ทางกลับผ่านดิน</b>
+            นี่คือเหตุผลที่นกเกาะสายไฟแล้วไม่เป็นไร เพราะไม่มีทางกลับ
+            สังเกตด้วยว่าค่าที่แปรผันมากที่สุดคือผิวหนังและรองเท้า ซึ่งลดลงหลายสิบเท่าเมื่อเปียก
+            ส่วน RCD ทำหน้าที่ตรวจว่ากระแสที่ออกไปกับที่ไหลกลับตามสายไม่เท่ากัน
+            แล้วตัดวงจรก่อนที่กระแสในเส้นทางนี้จะทำอันตราย</span>
+          <span class="en"> The equivalent circuit of an electric shock: the body becomes three resistances
+            in series, and the circuit is only complete because there is a <b>return path through the
+            earth</b>. That is why a bird on a wire is unharmed — it has no return path. Note too that the
+            two most variable terms are the skin and the footwear, each of which can fall by a factor of
+            tens when wet. The RCD watches for the current leaving and returning along the cable being
+            unequal, and disconnects before the current in this path can do harm.</span></figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 1.5 ผลของกระแสสลับ 50 Hz ที่ไหลผ่านร่างกาย (ค่าโดยประมาณ อ้างอิงแนวทาง IEC 60479-1)</span>
+            <span class="en">Table 1.5 Effects of a 50 Hz alternating current through the body (approximate, following IEC 60479-1)</span></caption>
+          <thead>
+            <tr>
+              <th class="num"><span class="th">กระแส</span><span class="en">Current</span></th>
+              <th><span class="th">ผลต่อร่างกาย</span><span class="en">Effect</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="num">&lt; 0.5 mA</td><td><span class="th">ไม่รู้สึก</span><span class="en">No sensation</span></td></tr>
+            <tr><td class="num">0.5–2 mA</td><td><span class="th">เริ่มรู้สึกเสียว (threshold of perception)</span><span class="en">Threshold of perception — a slight tingle</span></td></tr>
+            <tr><td class="num">2–10 mA</td><td><span class="th">เจ็บ กล้ามเนื้อเกร็ง แต่ยังสะบัดมือออกได้</span><span class="en">Painful; muscles contract but the hand can still be pulled away</span></td></tr>
+            <tr style="background:#fff6e5"><td class="num">10–30 mA</td><td><span class="th">กล้ามเนื้อเกร็งค้าง <b>ปล่อยมือไม่ได้ (let-go threshold)</b> หายใจลำบาก</span><span class="en">Sustained contraction — <b>cannot let go</b>; breathing becomes difficult</span></td></tr>
+            <tr style="background:#fdecec"><td class="num">30–50 mA</td><td><span class="th">หายใจติดขัดรุนแรง หมดสติหากสัมผัสนาน</span><span class="en">Severe respiratory difficulty; unconsciousness if contact persists</span></td></tr>
+            <tr style="background:#fdecec"><td class="num">&gt; 50 mA</td><td><span class="th"><b>หัวใจห้องล่างสั่นพลิ้ว (ventricular fibrillation)</b> — อันตรายถึงชีวิต</span><span class="en"><b>Ventricular fibrillation</b> — potentially fatal</span></td></tr>
+            <tr style="background:#fdecec"><td class="num">&gt; 1 A</td><td><span class="th">หัวใจหยุดเต้น เนื้อเยื่อไหม้อย่างรุนแรง</span><span class="en">Cardiac arrest and severe burns</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 1.5</span><span class="en">Example 1.5</span></span>
+          <span class="th">ทำไมมือเปียกจึงอันตรายกว่าหลายเท่า</span><span class="en">Why wet hands are so much more dangerous</span></div>
+        <div class="example-body">
+          <p><span class="th">ผู้ปฏิบัติงานสัมผัสตัวนำที่มีแรงดัน 230 V เทียบกับดิน
+            จงหากระแสที่ไหลผ่านร่างกายเมื่อ (ก) มือแห้ง \(R_{\text{body}} \approx 10\ \text{k}\Omega\)
+            และ (ข) มือเปียกและยืนบนดินชื้น \(R_{\text{body}} \approx 1\ \text{k}\Omega\)</span>
+            <span class="en">A worker touches a conductor at 230 V with respect to earth. Find the body
+            current when (a) the hands are dry, \(R_{\text{body}} \approx 10\ \text{k}\Omega\), and
+            (b) the hands are wet and the worker stands on damp soil,
+            \(R_{\text{body}} \approx 1\ \text{k}\Omega\).</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            \[ \text{(a)}\quad I = \frac{230}{10\,000} = 23\times10^{-3}\ \text{A} = 23\ \text{mA} \]
+            \[ \text{(b)}\quad I = \frac{230}{1\,000} = 230\times10^{-3}\ \text{A} = 230\ \text{mA} \]
+            <p class="mb-0"><span class="th">กรณี (ก) อยู่ในช่วง “ปล่อยมือไม่ได้” ซึ่งอันตรายมากอยู่แล้ว
+              ส่วนกรณี (ข) สูงกว่าระดับที่ทำให้หัวใจสั่นพลิ้วถึงสี่เท่า — ถึงแก่ชีวิตได้ในไม่กี่วินาที
+              <b>นี่คือเหตุผลที่ห้ามทำงานไฟฟ้าขณะมือเปียกหรือยืนบนพื้นเปียกโดยเด็ดขาด</b>
+              และเป็นเหตุผลที่วงจรในโรงเรือนและบ่อน้ำต้องมีเครื่องตัดไฟรั่วเสมอ</span>
+              <span class="en">Case (a) already falls in the "cannot let go" band. Case (b) is four times the
+              level that causes fibrillation — fatal within seconds.
+              <b>This is why electrical work with wet hands or on wet ground is absolutely
+              forbidden</b>, and why circuits in greenhouses and near water must always have a residual
+              current device.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <h3><span class="th">1.5.2 อันตรายที่พบบ่อยในงานเกษตร</span>
+          <span class="en">1.5.2 Common hazards in agricultural work</span></h3>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4 class="mt-0"><span class="th">อันตรายเฉพาะของฟาร์ม</span><span class="en">Farm-specific hazards</span></h4>
+          <ul class="mb-0 small">
+            <li><span class="th"><b>น้ำและความชื้น</b> — ระบบให้น้ำ บ่อพัก โรงเรือนพ่นหมอก ทำให้ความต้านทานร่างกายลดลงมาก</span>
+                <span class="en"><b>Water and damp</b> — irrigation, reservoirs and fogging systems all
+                slash the body's resistance.</span></li>
+            <li><span class="th"><b>ฝุ่นและวัสดุติดไฟ</b> — ฝุ่นข้าว ฟาง แกลบ ติดไฟได้จากประกายไฟของหน้าสัมผัส</span>
+                <span class="en"><b>Dust and combustible material</b> — rice dust, straw and husk ignite
+                readily from switch arcing.</span></li>
+            <li><span class="th"><b>สัตว์กัดแทะสายไฟ</b> — หนูและนกทำให้ฉนวนเสียหายจนเกิดไฟรั่ว</span>
+                <span class="en"><b>Rodents and birds</b> — chewed insulation is a frequent cause of earth
+                faults.</span></li>
+            <li><span class="th"><b>เครื่องจักรสูงใกล้สายไฟ</b> — รถเกี่ยวนวด รถบรรทุกยกกระบะ ชนสายแรงสูง</span>
+                <span class="en"><b>Tall machinery near overhead lines</b> — combines and tipping trucks
+                striking high-voltage conductors.</span></li>
+            <li><span class="th"><b>แสงแดดและอุณหภูมิ</b> — ฉนวนสายเสื่อมสภาพเร็วเมื่อเดินสายกลางแจ้ง</span>
+                <span class="en"><b>Sun and heat</b> — cable insulation ages quickly when run in the
+                open.</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4 class="mt-0"><span class="th">มาตรการป้องกัน</span><span class="en">Protective measures</span></h4>
+          <ul class="mb-0 small">
+            <li><span class="th"><b>ต่อลงดิน (earthing)</b> — ให้กระแสรั่วมีทางไหลกลับ ทำให้อุปกรณ์ป้องกันตัดวงจรได้</span>
+                <span class="en"><b>Earthing</b> — gives fault current a return path so that protective
+                devices can operate.</span></li>
+            <li><span class="th"><b>เครื่องตัดไฟรั่ว (RCD) 30 mA</b> — ตัดวงจรภายในเวลาไม่เกิน 40 ms เมื่อกระแสเข้า–ออกไม่เท่ากัน</span>
+                <span class="en"><b>A 30 mA RCD</b> — disconnects within about 40 ms when the currents in and
+                out are unequal.</span></li>
+            <li><span class="th"><b>เซอร์กิตเบรกเกอร์</b> — ป้องกันกระแสเกินและลัดวงจร (ไม่ได้ป้องกันไฟดูด)</span>
+                <span class="en"><b>Circuit breakers</b> — protect against overload and short circuit
+                (they do <i>not</i> protect against electric shock).</span></li>
+            <li><span class="th"><b>ระดับการป้องกัน IP</b> — เลือกกล่องและอุปกรณ์อย่างน้อย IP55 สำหรับโรงเรือน</span>
+                <span class="en"><b>IP rating</b> — specify at least IP55 enclosures for greenhouse
+                use.</span></li>
+            <li><span class="th"><b>ขั้นตอนล็อก–ติดป้าย (LOTO)</b> — ปลดเบรกเกอร์ ล็อกกุญแจ ติดป้าย แล้ว <b>วัดยืนยันว่าไม่มีไฟ</b> ก่อนลงมือ</span>
+                <span class="en"><b>Lock-out / tag-out</b> — open the breaker, lock it, tag it, then
+                <b>measure to prove it is dead</b> before starting work.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">🦺 <span class="th">กฎ 5 ข้อก่อนแตะต้องวงจรใด ๆ ในห้องปฏิบัติการ</span>
+          <span class="en">Five rules before touching any circuit in the laboratory</span></div>
+        <ol class="mb-0">
+          <li><span class="th"><b>ปลด</b> แหล่งจ่ายไฟและยืนยันว่าปลดจริง</span>
+              <span class="en"><b>Disconnect</b> the supply and confirm it is disconnected.</span></li>
+          <li><span class="th"><b>ป้องกัน</b> ไม่ให้มีผู้อื่นจ่ายไฟกลับเข้ามา — ล็อกและติดป้าย</span>
+              <span class="en"><b>Secure</b> against anyone re-energising it — lock and tag.</span></li>
+          <li><span class="th"><b>วัด</b> ยืนยันว่าไม่มีแรงดัน ด้วยเครื่องมือที่ทดสอบแล้วว่าใช้งานได้</span>
+              <span class="en"><b>Verify</b> the absence of voltage, with a meter you have proved
+              works.</span></li>
+          <li><span class="th"><b>ต่อลงดิน</b> และลัดวงจรเมื่อทำงานกับระบบแรงดันสูง</span>
+              <span class="en"><b>Earth and short-circuit</b> when working on high-voltage
+              equipment.</span></li>
+          <li><span class="th"><b>กั้น</b> ส่วนที่ยังมีไฟใกล้เคียงออกจากพื้นที่ทำงาน</span>
+              <span class="en"><b>Screen off</b> any adjacent live parts.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- =============================================== Summary -->
+    <section id="summary">
+      <h2><span class="num">📌</span><span class="th">สรุปบทเรียน</span><span class="en">Chapter summary</span></h2>
+      <div class="card">
+        <ul class="mb-0">
+          <li><span class="th">ไฟฟ้าเข้าสู่งานเกษตรสองทาง: <b>ทางตรง</b> ในฐานะแหล่งพลังงาน (มอเตอร์ ฮีตเตอร์ แสง)
+            และ <b>ทางอ้อม</b> ในฐานะพาหะของข้อมูล (เซนเซอร์ ตัวควบคุม)</span>
+            <span class="en">Electricity reaches agriculture two ways: <b>directly</b> as a power source
+            (motors, heaters, light) and <b>indirectly</b> as a carrier of data (sensors,
+            controllers).</span></li>
+          <li><span class="th">ระบบไฟฟ้าประกอบด้วยการผลิต → ระบบส่ง (500/230/115 kV) → ระบบจำหน่าย (33/22 kV)
+            → การใช้งาน (400/230 V, 50 Hz) โดยใช้แรงดันสูงเพื่อลดกำลังสูญเสีย \(I^2R\)</span>
+            <span class="en">The system runs generation → transmission (500/230/115 kV) → distribution
+            (33/22 kV) → utilisation (400/230 V, 50 Hz); high voltage is used to cut the \(I^2R\)
+            loss.</span></li>
+          <li><span class="th">ปริมาณพื้นฐานและความสัมพันธ์: \(I = dq/dt\), \(V = W/Q\), \(P = VI = I^2R = V^2/R\),
+            \(W = Pt\) และ \(1\ \text{kWh} = 3.6\ \text{MJ}\)</span>
+            <span class="en">The core relations: \(I = dq/dt\), \(V = W/Q\), \(P = VI = I^2R = V^2/R\),
+            \(W = Pt\), and \(1\ \text{kWh} = 3.6\ \text{MJ}\).</span></li>
+          <li><span class="th">คำอุปสรรค SI ต้องเขียนให้ถูกต้อง โดยเฉพาะ m (มิลลิ) กับ M (เมกะ)</span>
+            <span class="en">SI prefixes must be written exactly — especially m (milli) against M
+            (mega).</span></li>
+          <li><span class="th">กระแสคือสิ่งที่เป็นอันตราย ไม่ใช่แรงดัน กระแสเกิน 30 mA ทำให้ปล่อยมือไม่ได้
+            และเกิน 50 mA อาจถึงชีวิต การต่อลงดินและ RCD 30 mA จึงเป็นข้อบังคับในงานเกษตร</span>
+            <span class="en">It is current, not voltage, that harms: above 30 mA you cannot let go, above
+            50 mA it may be fatal. Earthing and a 30 mA RCD are therefore mandatory in agricultural
+            installations.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Activity -->
+    <section id="activity">
+      <h2><span class="num">🧭</span><span class="th">กิจกรรมในชั้นเรียน</span>
+          <span class="en">Class activity</span></h2>
+
+      <div class="activity">
+        <div class="activity-head">
+          <h3><span class="th">กิจกรรมที่ 1.1 — สำรวจไฟฟ้าในฟาร์มของเรา</span>
+              <span class="en">Activity 1.1 — Auditing the electricity in our farm</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">40 นาที</span><span class="en">40 minutes</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO1, CLO3</span><span class="en">CLO1, CLO3</span></span>
+          </div>
+        </div>
+        <div class="activity-body">
+          <p><span class="th"><b>สถานการณ์:</b> ฟาร์มผักสลัดในโรงเรือนขนาด 200 ตารางเมตร
+            มีอุปกรณ์ไฟฟ้าตามรายการด้านล่าง ให้แต่ละกลุ่มวิเคราะห์ว่าอุปกรณ์ใดเป็นการใช้ไฟฟ้าทางตรงหรือทางอ้อม
+            แล้วประมาณค่าไฟฟ้าต่อเดือน</span>
+            <span class="en"><b>Scenario:</b> A 200 m² lettuce greenhouse contains the equipment listed
+            below. Each group classifies every item as a direct or an indirect use of electricity, then
+            estimates the monthly running cost.</span></p>
+
+          <ol class="steps">
+            <li><span class="th"><b>จำแนกประเภท</b> — เติมคอลัมน์ “ทางตรง/ทางอ้อม” ในตารางให้ครบ
+              พร้อมระบุว่าไฟฟ้าถูกเปลี่ยนเป็นพลังงานรูปใด</span>
+              <span class="en"><b>Classify</b> — complete the "direct/indirect" column, stating which form
+              of energy the electricity becomes.</span></li>
+            <li><span class="th"><b>คำนวณพลังงาน</b> — หาพลังงานรายเดือนของแต่ละรายการเป็น kWh
+              (กำลังเป็น kW คูณชั่วโมงต่อวัน คูณ 30 วัน)</span>
+              <span class="en"><b>Compute energy</b> — find the monthly energy of each item in kWh
+              (power in kW × hours per day × 30 days).</span></li>
+            <li><span class="th"><b>หาค่าไฟ</b> — รวมพลังงานทั้งหมดแล้วคูณด้วย 4.20 บาทต่อหน่วย</span>
+              <span class="en"><b>Find the cost</b> — total the energy and multiply by 4.20 THB per
+              unit.</span></li>
+            <li><span class="th"><b>จัดลำดับ</b> — เรียงอุปกรณ์จากที่กินพลังงานมากที่สุดไปน้อยที่สุด
+              ผลลัพธ์ตรงกับที่กลุ่มเดาไว้ตอนแรกหรือไม่</span>
+              <span class="en"><b>Rank</b> — order the items from largest to smallest consumer. Does the
+              result match what your group guessed at the start?</span></li>
+            <li><span class="th"><b>อภิปราย</b> — หากต้องลดค่าไฟลง 20 % ควรเริ่มจากอุปกรณ์ใด
+              และการลดนั้นกระทบต่อผลผลิตอย่างไร เตรียมนำเสนอ 3 นาที</span>
+              <span class="en"><b>Discuss</b> — to cut the bill by 20 %, which item would you tackle first,
+              and how would that affect the crop? Prepare a three-minute presentation.</span></li>
+          </ol>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ใบงานกิจกรรมที่ 1.1 (กรอกลงในตาราง)</span>
+                <span class="en">Activity 1.1 worksheet (fill in the table)</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">อุปกรณ์</span><span class="en">Equipment</span></th>
+                  <th class="num"><span class="th">กำลัง</span><span class="en">Power</span></th>
+                  <th class="num"><span class="th">ชม./วัน</span><span class="en">h/day</span></th>
+                  <th><span class="th">ทางตรง / ทางอ้อม</span><span class="en">Direct / indirect</span></th>
+                  <th><span class="th">เปลี่ยนเป็นพลังงาน</span><span class="en">Energy form</span></th>
+                  <th class="num">kWh/<span class="th">เดือน</span><span class="en">month</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="th">ปั๊มน้ำหอยโข่ง</span><span class="en">Centrifugal pump</span></td>
+                  <td class="num">1.5 kW</td><td class="num">3</td>
+                  <td><input type="text" aria-label="type"></td><td><input type="text" aria-label="form"></td><td><input type="text" aria-label="kwh"></td></tr>
+                <tr><td><span class="th">พัดลมระบายอากาศ (2 ตัว)</span><span class="en">Exhaust fans (×2)</span></td>
+                  <td class="num">250 W <span class="th">ต่อตัว</span><span class="en">each</span></td><td class="num">8</td>
+                  <td><input type="text" aria-label="type"></td><td><input type="text" aria-label="form"></td><td><input type="text" aria-label="kwh"></td></tr>
+                <tr><td><span class="th">หลอด LED ปลูกพืช (24 ดวง)</span><span class="en">LED grow lights (×24)</span></td>
+                  <td class="num">18 W <span class="th">ต่อดวง</span><span class="en">each</span></td><td class="num">14</td>
+                  <td><input type="text" aria-label="type"></td><td><input type="text" aria-label="form"></td><td><input type="text" aria-label="kwh"></td></tr>
+                <tr><td><span class="th">ปั๊มสารละลายธาตุอาหาร</span><span class="en">Nutrient dosing pump</span></td>
+                  <td class="num">120 W</td><td class="num">1.5</td>
+                  <td><input type="text" aria-label="type"></td><td><input type="text" aria-label="form"></td><td><input type="text" aria-label="kwh"></td></tr>
+                <tr><td><span class="th">ชุดเซนเซอร์และตัวควบคุม</span><span class="en">Sensor and controller set</span></td>
+                  <td class="num">15 W</td><td class="num">24</td>
+                  <td><input type="text" aria-label="type"></td><td><input type="text" aria-label="form"></td><td><input type="text" aria-label="kwh"></td></tr>
+                <tr><td><span class="th">เราเตอร์และกล้องวงจรปิด</span><span class="en">Router and CCTV</span></td>
+                  <td class="num">25 W</td><td class="num">24</td>
+                  <td><input type="text" aria-label="type"></td><td><input type="text" aria-label="form"></td><td><input type="text" aria-label="kwh"></td></tr>
+                <tr><td><span class="th">ตู้เย็นเก็บผลผลิต</span><span class="en">Produce chiller</span></td>
+                  <td class="num">400 W</td><td class="num">10</td>
+                  <td><input type="text" aria-label="type"></td><td><input type="text" aria-label="form"></td><td><input type="text" aria-label="kwh"></td></tr>
+                <tr><td colspan="5"><b><span class="th">รวมพลังงานต่อเดือน</span><span class="en">Total monthly energy</span></b></td>
+                  <td><input type="text" aria-label="total"></td></tr>
+                <tr><td colspan="5"><b><span class="th">ค่าไฟฟ้าต่อเดือน (× 4.20 บาท)</span><span class="en">Monthly cost (× 4.20 THB)</span></b></td>
+                  <td><input type="text" aria-label="cost"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">✅ <span class="th">เกณฑ์การประเมิน (10 คะแนน)</span>
+              <span class="en">Marking guide (10 marks)</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">จำแนกทางตรง/ทางอ้อมถูกต้อง — 3 คะแนน</span>
+                  <span class="en">Correct direct/indirect classification — 3 marks</span></li>
+              <li><span class="th">คำนวณพลังงานและค่าไฟถูกต้อง พร้อมหน่วย — 4 คะแนน</span>
+                  <span class="en">Correct energy and cost with units — 4 marks</span></li>
+              <li><span class="th">ข้อเสนอการลดค่าไฟที่สมเหตุสมผลและอ้างอิงตัวเลข — 3 คะแนน</span>
+                  <span class="en">A reasoned, number-backed saving proposal — 3 marks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Laboratory -->
+    <section id="lab">
+      <h2><span class="num">🧪</span><span class="th">ปฏิบัติการที่ 1</span>
+          <span class="en">Laboratory 1</span></h2>
+
+      <div class="lab">
+        <div class="lab-head">
+          <h3><span class="th">ปฏิบัติการที่ 1 — ความปลอดภัยทางไฟฟ้าและการใช้มัลติมิเตอร์</span>
+              <span class="en">Laboratory 1 — Electrical safety and using a multimeter</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">2 ชั่วโมง</span><span class="en">2 hours</span></span>
+            <span>👥 <span class="th">กลุ่มละ 2–3 คน</span><span class="en">Groups of 2–3</span></span>
+            <span>🎯 <span class="th">CLO1, CLO6</span><span class="en">CLO1, CLO6</span></span>
+          </div>
+        </div>
+        <div class="lab-body">
+
+          <h4 class="mt-0"><span class="th">วัตถุประสงค์</span><span class="en">Objectives</span></h4>
+          <ol>
+            <li><span class="th">ใช้ดิจิทัลมัลติมิเตอร์วัดแรงดัน กระแส และความต้านทานได้อย่างถูกต้องและปลอดภัย</span>
+                <span class="en">Use a digital multimeter to measure voltage, current and resistance
+                correctly and safely.</span></li>
+            <li><span class="th">แยกความแตกต่างของการต่อมิเตอร์แบบขนาน (วัดแรงดัน) กับแบบอนุกรม (วัดกระแส)</span>
+                <span class="en">Distinguish connecting the meter in parallel (for voltage) from in series
+                (for current).</span></li>
+            <li><span class="th">ตรวจสอบความต่อเนื่องของวงจรและความสมบูรณ์ของสายต่อลงดิน</span>
+                <span class="en">Check circuit continuity and the integrity of an earthing
+                conductor.</span></li>
+            <li><span class="th">ยืนยันความสัมพันธ์ \(P = VI\) จากการวัดจริง</span>
+                <span class="en">Confirm the relation \(P = VI\) from real measurements.</span></li>
+          </ol>
+
+          <h4><span class="th">อุปกรณ์</span><span class="en">Equipment</span></h4>
+          <ul>
+            <li><span class="th">ดิจิทัลมัลติมิเตอร์ (CAT III 600 V) พร้อมสายวัด — 1 ชุดต่อกลุ่ม</span>
+                <span class="en">Digital multimeter (CAT III 600 V) with leads — one per group</span></li>
+            <li><span class="th">แหล่งจ่ายไฟกระแสตรงปรับค่าได้ 0–30 V</span>
+                <span class="en">Variable DC supply, 0–30 V</span></li>
+            <li><span class="th">ตัวต้านทาน 100 Ω, 220 Ω, 1 kΩ (1/2 W) และโพรโทบอร์ด</span>
+                <span class="en">Resistors 100 Ω, 220 Ω, 1 kΩ (½ W) and a breadboard</span></li>
+            <li><span class="th">หลอด LED 12 V และพัดลมกระแสตรง 12 V (จำลองโหลดในฟาร์ม)</span>
+                <span class="en">A 12 V LED lamp and a 12 V DC fan (standing in for farm loads)</span></li>
+            <li><span class="th">สายต่อลงดินตัวอย่าง 2 เส้น (เส้นหนึ่งขาดภายใน)</span>
+                <span class="en">Two sample earthing conductors (one broken internally)</span></li>
+          </ul>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">⚠️ <span class="th">ข้อควรระวังก่อนเริ่มปฏิบัติการ</span>
+              <span class="en">Safety precautions before starting</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">ห้ามต่อมิเตอร์ในโหมดวัดกระแส (A) คร่อมแหล่งจ่ายโดยเด็ดขาด — ฟิวส์จะขาดและอาจเกิดอาร์ก</span>
+                  <span class="en">Never connect the meter in current mode (A) across the supply — the fuse
+                  will blow and an arc may result.</span></li>
+              <li><span class="th">ตรวจสภาพสายวัดว่าฉนวนไม่ฉีกขาดก่อนใช้ทุกครั้ง</span>
+                  <span class="en">Inspect the leads for damaged insulation every time.</span></li>
+              <li><span class="th">มือต้องแห้ง และไม่วางเครื่องดื่มบนโต๊ะปฏิบัติการ</span>
+                  <span class="en">Keep hands dry; no drinks on the bench.</span></li>
+              <li><span class="th">ปรับแรงดันแหล่งจ่ายไปที่ศูนย์ก่อนต่อหรือแก้ไขวงจรทุกครั้ง</span>
+                  <span class="en">Turn the supply to zero before making or changing any
+                  connection.</span></li>
+            </ul>
+          </div>
+
+          <h4><span class="th">ขั้นตอนการทดลอง</span><span class="en">Procedure</span></h4>
+
+          <p><b><span class="th">ตอนที่ 1: การวัดความต้านทาน</span><span class="en">Part 1: Measuring resistance</span></b></p>
+          <ol class="steps">
+            <li><span class="th">อ่านค่าตัวต้านทานจากแถบสี บันทึกค่าที่คาดหวังและค่าความคลาดเคลื่อน</span>
+                <span class="en">Read each resistor's colour code; record the expected value and its
+                tolerance.</span></li>
+            <li><span class="th">ตั้งมิเตอร์ที่ย่าน Ω วัดตัวต้านทานแต่ละตัว <b>ขณะที่ไม่มีไฟจ่ายในวงจร</b>
+              บันทึกค่าที่วัดได้</span>
+                <span class="en">Set the meter to Ω and measure each resistor <b>with no supply
+                connected</b>; record the readings.</span></li>
+            <li><span class="th">คำนวณเปอร์เซ็นต์ความคลาดเคลื่อน และตรวจว่าอยู่ในพิกัดที่ผู้ผลิตระบุหรือไม่</span>
+                <span class="en">Compute the percentage deviation and check it lies within the stated
+                tolerance.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 2: การวัดแรงดันและกระแส</span><span class="en">Part 2: Measuring voltage and current</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อตัวต้านทาน 220 Ω เข้ากับแหล่งจ่ายกระแสตรง ตั้งแรงดันที่ 5 V</span>
+                <span class="en">Connect the 220 Ω resistor to the DC supply and set it to 5 V.</span></li>
+            <li><span class="th">วัดแรงดันคร่อมตัวต้านทานโดยต่อมิเตอร์ <b>ขนาน</b> บันทึกค่า</span>
+                <span class="en">Measure the voltage across the resistor with the meter in
+                <b>parallel</b>; record it.</span></li>
+            <li><span class="th">ปรับแรงดันเป็นศูนย์ ย้ายมิเตอร์ไปโหมด mA แล้วต่อ <b>อนุกรม</b> ในวงจร
+              ค่อย ๆ เพิ่มแรงดันกลับไปที่ 5 V และบันทึกกระแส</span>
+                <span class="en">Return the supply to zero, switch the meter to mA and connect it in
+                <b>series</b>; bring the supply back to 5 V and record the current.</span></li>
+            <li><span class="th">ทำซ้ำที่แรงดัน 10 V และ 15 V</span>
+                <span class="en">Repeat at 10 V and 15 V.</span></li>
+            <li><span class="th">คำนวณกำลังไฟฟ้า \(P = VI\) ในแต่ละกรณี
+              และเปรียบเทียบกับพิกัดกำลังของตัวต้านทาน (½ W) ค่าใดที่เกินพิกัด</span>
+                <span class="en">Compute \(P = VI\) for each case and compare with the resistor's ½ W
+                rating. Which case exceeds it?</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 3: การตรวจความต่อเนื่องของสายต่อลงดิน</span>
+              <span class="en">Part 3: Continuity of an earthing conductor</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ตั้งมิเตอร์ที่โหมดความต่อเนื่อง (สัญลักษณ์เสียง) แตะปลายสายวัดเข้าหากันเพื่อยืนยันว่าเครื่องทำงาน</span>
+                <span class="en">Set the meter to continuity (the buzzer symbol) and touch the probes
+                together to prove the meter works.</span></li>
+            <li><span class="th">วัดสายต่อลงดินทั้งสองเส้น ระบุว่าเส้นใดขาดภายใน และอธิบายว่าเหตุใดจึงมองไม่เห็นจากภายนอก</span>
+                <span class="en">Test both earthing conductors, identify the broken one, and explain why the
+                fault is invisible from the outside.</span></li>
+            <li><span class="th">อภิปราย: หากสายต่อลงดินของปั๊มน้ำในบ่อขาดโดยไม่มีใครรู้ จะเกิดอะไรขึ้นเมื่อฉนวนมอเตอร์เสื่อม</span>
+                <span class="en">Discuss: if the earthing conductor of a pond pump breaks unnoticed, what
+                happens when the motor's insulation fails?</span></li>
+          </ol>
+
+          <h4><span class="th">ตารางบันทึกผล</span><span class="en">Results table</span></h4>
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางบันทึกผลปฏิบัติการที่ 1 ตอนที่ 2</span>
+                <span class="en">Laboratory 1, Part 2 — data sheet</span></caption>
+              <thead>
+                <tr>
+                  <th class="num"><span class="th">แรงดันตั้ง (V)</span><span class="en">Set voltage (V)</span></th>
+                  <th class="num"><span class="th">แรงดันที่วัดได้ (V)</span><span class="en">Measured V</span></th>
+                  <th class="num"><span class="th">กระแสที่วัดได้ (mA)</span><span class="en">Measured I (mA)</span></th>
+                  <th class="num">\(R = V/I\) (Ω)</th>
+                  <th class="num">\(P = VI\) (W)</th>
+                  <th><span class="th">เกิน ½ W หรือไม่</span><span class="en">Over ½ W?</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">5</td><td><input type="text" aria-label="v1"></td><td><input type="text" aria-label="i1"></td><td><input type="text" aria-label="r1"></td><td><input type="text" aria-label="p1"></td><td><input type="text" aria-label="o1"></td></tr>
+                <tr><td class="num">10</td><td><input type="text" aria-label="v2"></td><td><input type="text" aria-label="i2"></td><td><input type="text" aria-label="r2"></td><td><input type="text" aria-label="p2"></td><td><input type="text" aria-label="o2"></td></tr>
+                <tr><td class="num">15</td><td><input type="text" aria-label="v3"></td><td><input type="text" aria-label="i3"></td><td><input type="text" aria-label="r3"></td><td><input type="text" aria-label="p3"></td><td><input type="text" aria-label="o3"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span class="th">คำถามท้ายปฏิบัติการ</span><span class="en">Questions</span></h4>
+          <ol>
+            <li><span class="th">เหตุใดจึงต้องต่อมิเตอร์วัดแรงดันแบบขนาน แต่ต่อมิเตอร์วัดกระแสแบบอนุกรม
+              อธิบายโดยอ้างอิงความต้านทานภายในของมิเตอร์แต่ละโหมด</span>
+              <span class="en">Why is a voltmeter connected in parallel but an ammeter in series? Answer in
+              terms of the meter's internal resistance in each mode.</span></li>
+            <li><span class="th">ค่า \(R\) ที่คำนวณจาก \(V/I\) ตรงกับค่าที่วัดด้วยโหมดโอห์มหรือไม่
+              หากต่างกัน ให้ระบุสาเหตุที่เป็นไปได้อย่างน้อยสองข้อ</span>
+              <span class="en">Does \(R\) computed from \(V/I\) agree with the value measured in ohms mode?
+              If not, give at least two possible reasons.</span></li>
+            <li><span class="th">จากตารางผล ตัวต้านทานเริ่มร้อนขึ้นอย่างชัดเจนที่แรงดันเท่าใด และเกี่ยวข้องกับ
+              \(P = V^2/R\) อย่างไร</span>
+              <span class="en">At which voltage did the resistor become noticeably hot, and how does that
+              relate to \(P = V^2/R\)?</span></li>
+            <li><span class="th">หากนำวงจรนี้ไปติดตั้งในโรงเรือนที่มีระบบพ่นหมอก ต้องเพิ่มมาตรการความปลอดภัยใดบ้าง
+              ระบุอย่างน้อยสามข้อพร้อมเหตุผล</span>
+              <span class="en">If this circuit were installed in a greenhouse with a fogging system, what
+              extra safety measures would be needed? Give at least three, with reasons.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">📄 <span class="th">การส่งรายงาน (20 คะแนน)</span>
+              <span class="en">Report submission (20 marks)</span></div>
+            <p class="mb-0"><span class="th">ส่งรายงานความยาวไม่เกิน 4 หน้า ประกอบด้วย วัตถุประสงค์
+              ตารางผลการทดลองที่กรอกครบพร้อมหน่วย ตัวอย่างการคำนวณอย่างละเอียด 1 ชุด
+              คำตอบของคำถามท้ายปฏิบัติการ และข้อสรุป ภายในสัปดาห์ถัดไป</span>
+              <span class="en">Submit a report of no more than four pages — objectives, the completed data
+              table with units, one fully worked sample calculation, answers to the questions, and a
+              conclusion — by the following week.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Post-test -->
+    <section id="posttest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบหลังเรียน</span>
+          <span class="en">Post-test</span></h2>
+      <p class="muted"><span class="th">ทำหลังอ่านเนื้อหาและทำปฏิบัติการแล้ว ควรได้อย่างน้อย 6 จาก 8 ข้อ
+        จึงถือว่าพร้อมสำหรับบทที่ 2</span>
+        <span class="en">Take this after the notes and the laboratory. You should score at least 6 out of 8
+        before moving on to Chapter 2.</span></p>
+
+      <section class="quiz" id="posttest-q" data-quiz="post" data-chapter="ch01">
+        <div class="quiz-head">
+          <h3><span class="th">หลังเรียน: บทที่ 1</span><span class="en">Post-test: Chapter 1</span></h3>
+          <p><span class="th">8 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">8 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="กำลังสูญเสีย P = I²R เมื่อส่งกำลังเท่าเดิม การเพิ่มแรงดันทำให้กระแสลดลงตามสัดส่วน กำลังสูญเสียจึงลดลงตามกำลังสอง ถ้าแรงดันเพิ่ม 4 เท่า กระแสเหลือ 1/4 กำลังสูญเสียเหลือ 1/16"
+               data-explain-en="Loss is I²R. For the same power, four times the voltage means a quarter of the current, so the loss falls to one sixteenth.">
+            <div class="q-text"><span class="th">หากเพิ่มแรงดันในสายส่งเป็น 4 เท่าโดยส่งกำลังเท่าเดิม กำลังสูญเสียในสายจะเป็นเท่าใด</span>
+              <span class="en">If the transmission voltage is raised fourfold while the power sent stays the same, the line loss becomes:</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เพิ่มเป็น 4 เท่า</span><span class="en">4 times larger</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ลดลงเหลือ 1/4</span><span class="en">One quarter</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ลดลงเหลือ 1/16</span><span class="en">One sixteenth</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เท่าเดิม</span><span class="en">Unchanged</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="Q = I·t = (2 A)(5 × 60 s) = 600 C จำนวนอิเล็กตรอน n = Q/e = 600 / 1.602×10⁻¹⁹ ≈ 3.75×10²¹ ตัว"
+               data-explain-en="Q = I·t = (2 A)(300 s) = 600 C, and n = Q/e = 600 / 1.602×10⁻¹⁹ ≈ 3.75×10²¹.">
+            <div class="q-text"><span class="th">กระแส 2 A ไหลผ่านตัวนำเป็นเวลา 5 นาที ประจุที่ไหลผ่านมีค่าเท่าใด</span>
+              <span class="en">A current of 2 A flows in a conductor for 5 minutes. How much charge passes?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>10 C</span></label>
+              <label class="opt" data-opt="b"><span>600 C</span></label>
+              <label class="opt" data-opt="c"><span>150 C</span></label>
+              <label class="opt" data-opt="d"><span>0.4 C</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="แรงเคลื่อนไฟฟ้า (e.m.f.) คือแรงดันที่แหล่งกำเนิดสร้างขึ้นจากการเปลี่ยนพลังงานรูปอื่นมาเป็นพลังงานไฟฟ้า ส่วนแรงดันตกคร่อมโหลดเรียกว่า potential difference"
+               data-explain-en="An e.m.f. is the voltage a source creates by converting another form of energy into electrical energy; the voltage across a load is a potential difference.">
+            <div class="q-text"><span class="th">ข้อใดอธิบาย “แรงเคลื่อนไฟฟ้า (e.m.f.)” ได้ถูกต้องที่สุด</span>
+              <span class="en">Which best describes an electromotive force (e.m.f.)?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">แรงที่กระทำต่ออิเล็กตรอน มีหน่วยเป็นนิวตัน</span><span class="en">A force on electrons, measured in newtons</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">แรงดันที่ตกคร่อมความต้านทานของโหลด</span><span class="en">The voltage dropped across a load resistance</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">กระแสสูงสุดที่แหล่งจ่ายจ่ายได้</span><span class="en">The maximum current a source can deliver</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">แรงดันที่แหล่งกำเนิดสร้างขึ้นจากการเปลี่ยนพลังงานรูปอื่นเป็นพลังงานไฟฟ้า</span><span class="en">The voltage a source creates by converting another energy form into electrical energy</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="P = V²/R = (230)²/50 = 52 900/50 = 1058 W ≈ 1.06 kW"
+               data-explain-en="P = V²/R = (230)²/50 = 1058 W ≈ 1.06 kW.">
+            <div class="q-text"><span class="th">ขดลวดความร้อนของเครื่องอบเมล็ดพันธุ์มีความต้านทาน 50 Ω ต่อกับแรงดัน 230 V จะใช้กำลังไฟฟ้าเท่าใด</span>
+              <span class="en">The heating element of a seed dryer has a resistance of 50 Ω and is connected to 230 V. What power does it take?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>1.06 kW</span></label>
+              <label class="opt" data-opt="b"><span>4.6 kW</span></label>
+              <label class="opt" data-opt="c"><span>11.5 kW</span></label>
+              <label class="opt" data-opt="d"><span>230 W</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="1 kWh = 1000 W × 3600 s = 3.6 × 10⁶ J = 3.6 MJ"
+               data-explain-en="1 kWh = 1000 W × 3600 s = 3.6 × 10⁶ J = 3.6 MJ.">
+            <div class="q-text"><span class="th">พลังงาน 1 กิโลวัตต์–ชั่วโมง เท่ากับกี่จูล</span>
+              <span class="en">One kilowatt-hour equals how many joules?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>1000 J</span></label>
+              <label class="opt" data-opt="b"><span>3600 J</span></label>
+              <label class="opt" data-opt="c"><span>3.6 × 10⁶ J</span></label>
+              <label class="opt" data-opt="d"><span>3.6 × 10⁹ J</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="I = V/R = 230/1150 = 0.2 A = 200 mA ซึ่งสูงกว่า 50 mA มาก จึงอยู่ในระดับที่ทำให้เกิดภาวะหัวใจห้องล่างสั่นพลิ้ว"
+               data-explain-en="I = V/R = 230/1150 = 0.2 A = 200 mA, far above 50 mA, so it is in the ventricular-fibrillation range.">
+            <div class="q-text"><span class="th">ผู้ปฏิบัติงานมือเปียกมีความต้านทานร่างกาย 1 150 Ω สัมผัสแรงดัน 230 V กระแสที่ไหลผ่านร่างกายและผลที่เกิดคือข้อใด</span>
+              <span class="en">A worker with wet hands (body resistance 1 150 Ω) touches 230 V. What current flows, and with what effect?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>20 mA — <span class="th">รู้สึกเสียวเท่านั้น</span><span class="en">only a tingle</span></span></label>
+              <label class="opt" data-opt="b"><span>200 mA — <span class="th">เสี่ยงหัวใจห้องล่างสั่นพลิ้ว ถึงชีวิตได้</span><span class="en">risk of ventricular fibrillation, potentially fatal</span></span></label>
+              <label class="opt" data-opt="c"><span>2 mA — <span class="th">ปลอดภัย</span><span class="en">safe</span></span></label>
+              <label class="opt" data-opt="d"><span>5 A — <span class="th">เบรกเกอร์ตัดก่อนเสมอ</span><span class="en">the breaker always trips first</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="เซอร์กิตเบรกเกอร์ป้องกันกระแสเกินและลัดวงจรเพื่อปกป้อง 'สายไฟและอุปกรณ์' ส่วนการป้องกันคนจากไฟดูดต้องใช้ RCD ซึ่งตรวจจับกระแสรั่วลงดินระดับ 30 mA"
+               data-explain-en="A breaker protects cables and equipment from overload and short circuit; protecting people from shock needs an RCD, which detects earth leakage at the 30 mA level.">
+            <div class="q-text"><span class="th">ข้อใดกล่าวถูกต้องเกี่ยวกับเซอร์กิตเบรกเกอร์และเครื่องตัดไฟรั่ว</span>
+              <span class="en">Which statement about circuit breakers and RCDs is correct?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เบรกเกอร์ป้องกันไฟดูดได้ดีกว่า RCD</span><span class="en">A breaker protects against shock better than an RCD</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">RCD ใช้แทนเบรกเกอร์ได้ทุกกรณี</span><span class="en">An RCD can replace a breaker in every case</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ทั้งสองทำหน้าที่เหมือนกัน ต่างกันแค่ราคา</span><span class="en">They do the same job and differ only in price</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เบรกเกอร์ป้องกันสายและอุปกรณ์จากกระแสเกิน ส่วน RCD ป้องกันคนจากไฟรั่ว</span><span class="en">A breaker protects cables and equipment from overcurrent; an RCD protects people from earth leakage</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="ระบบสามเฟส 4 สายที่ใช้ในประเทศไทยมีแรงดันระหว่างสาย 400 V และแรงดันระหว่างสายกับนิวทรัล 230 V ที่ความถี่ 50 Hz"
+               data-explain-en="Thailand's three-phase four-wire system is 400 V between lines and 230 V line-to-neutral, at 50 Hz.">
+            <div class="q-text"><span class="th">ระบบไฟฟ้าแรงดันต่ำสามเฟสสี่สายในประเทศไทยมีค่าแรงดันและความถี่เท่าใด</span>
+              <span class="en">What are the voltage and frequency of Thailand's low-voltage three-phase four-wire system?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>400/230 V, 50 Hz</span></label>
+              <label class="opt" data-opt="b"><span>380/220 V, 60 Hz</span></label>
+              <label class="opt" data-opt="c"><span>220/110 V, 50 Hz</span></label>
+              <label class="opt" data-opt="d"><span>22 kV, 50 Hz</span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== References -->
+    <section id="refs">
+      <h2><span class="num">📚</span><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></h2>
+      <ol class="references">
+        <li>Hughes, E., Hiley, J., Brown, K., &amp; Smith, I. M. (2016).
+          <i>Hughes Electrical and Electronic Technology</i> (12th ed.), Ch. 1–2. Pearson.</li>
+        <li>Boylestad, R. L. (2016). <i>Introductory Circuit Analysis</i> (13th ed.), Ch. 1–4.
+          Pearson.</li>
+        <li>Irwin, J. D., &amp; Nelms, R. M. (2021). <i>Basic Engineering Circuit Analysis</i>
+          (12th ed.), Ch. 1. Wiley.</li>
+        <li>Bureau International des Poids et Mesures. (2019).
+          <i>The International System of Units (SI Brochure)</i> (9th ed.). BIPM.
+          <span class="small muted">— <span class="th">นิยามหน่วยฐานและคำอุปสรรค SI</span>
+          <span class="en">definitions of the SI base units and prefixes</span></span></li>
+        <li>International Electrotechnical Commission. (2018).
+          <i>IEC 60479-1: Effects of current on human beings and livestock — Part 1: General aspects</i>.
+          IEC.</li>
+        <li>International Electrotechnical Commission. (2009).
+          <i>IEC 60038: IEC standard voltages</i>. IEC.</li>
+        <li><span class="th">วิศวกรรมสถานแห่งประเทศไทย ในพระบรมราชูปถัมภ์ (วสท.). (2565).
+          <i>มาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย</i> (ฉบับปรับปรุงครั้งที่ 2). กรุงเทพฯ: วสท.</span>
+          <span class="en">Engineering Institute of Thailand. (2022).
+          <i>Thailand Electrical Installation Standard</i> (2nd rev. ed.). Bangkok: EIT.</span></li>
+        <li><span class="th">การไฟฟ้าส่วนภูมิภาค. <i>มาตรฐานการติดตั้งระบบไฟฟ้าและอัตราค่าไฟฟ้า</i>.
+          สืบค้นจาก https://www.pea.co.th</span>
+          <span class="en">Provincial Electricity Authority. <i>Installation standards and electricity
+          tariffs</i>. Retrieved from https://www.pea.co.th</span></li>
+        <li>Food and Agriculture Organization of the United Nations. (2020).
+          <i>Energy-smart food for people and climate</i>. FAO.
+          <span class="small muted">— <span class="th">บทบาทของพลังงานไฟฟ้าในระบบการผลิตอาหาร</span>
+          <span class="en">the role of electrical energy in food production systems</span></span></li>
+        <li>American Society of Agricultural and Biological Engineers. (2019).
+          <i>ASABE EP342.3: Safety for Electrically Heated Livestock Waterers</i>. ASABE.</li>
+      </ol>
+    </section>
+
+    <!-- =============================================== Chapter nav -->
+    <nav class="chapter-nav">
+      <a href="../index.html">
+        <div class="dir">← <span class="th">ย้อนกลับ</span><span class="en">Back</span></div>
+        <div class="ttl"><span class="th">สารบัญรายวิชา</span><span class="en">Course index</span></div>
+      </a>
+      <a href="ch02.html" class="next">
+        <div class="dir"><span class="th">บทถัดไป</span><span class="en">Next chapter</span> →</div>
+        <div class="ttl"><span class="th">บทที่ 2 · วงจรไฟฟ้าและเครื่องมือวัด</span>
+          <span class="en">Chapter 2 · Circuits and Instruments</span></div>
+      </a>
+    </nav>
+
+  </main>
+</div>
+</div>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span><span class="th">บทที่ 1 — บทนำ หน่วยวัด และความปลอดภัยทางไฟฟ้า</span>
+        <span class="en">Chapter 1 — Introduction, Units and Electrical Safety</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>

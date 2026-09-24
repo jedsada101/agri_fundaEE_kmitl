@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900"
+     preserveAspectRatio="xMidYMid slice" role="img"
+     aria-label="Abstract dark background: a field, a greenhouse and a transmission pylon under circuit traces">
+  <!-- Hero background for the Fundamental of Electrical Engineering course site.
+       Drawn rather than photographed so the whole site stays offline-capable
+       and free of third-party image licensing.
+       Copyright (c) 2026 Jedsada Saijai. -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1128"/>
+      <stop offset="55%" stop-color="#171d3f"/>
+      <stop offset="100%" stop-color="#2a1b30"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="76%" cy="22%" r="42%">
+      <stop offset="0" stop-color="#fd5f00" stop-opacity=".40"/>
+      <stop offset="100%" stop-color="#fd5f00" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#101838"/>
+      <stop offset="100%" stop-color="#080b1c"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+
+  <!-- circuit traces across the upper sky -->
+  <g stroke="#fd5f00" stroke-width="2" fill="none" opacity=".18">
+    <path d="M-20 150 H240 l40 -40 H520 l40 40 H900"/>
+    <path d="M1600 96 H1320 l-40 40 H1030"/>
+    <path d="M-20 300 H160 l50 50 H430"/>
+    <path d="M1600 260 H1400 l-46 -46 H1140 l-40 40 H960"/>
+    <path d="M300 60 V150"/>
+    <path d="M1180 136 V40"/>
+    <path d="M620 190 V250 H760"/>
+  </g>
+  <g fill="#fd5f00" opacity=".5">
+    <circle cx="240" cy="150" r="6"/><circle cx="520" cy="150" r="6"/>
+    <circle cx="1320" cy="96" r="6"/><circle cx="430" cy="350" r="6"/>
+    <circle cx="1140" cy="214" r="6"/><circle cx="760" cy="250" r="6"/>
+  </g>
+
+  <!-- transmission pylon, right of centre -->
+  <g stroke="#9aa3c4" stroke-width="3" fill="none" opacity=".30">
+    <path d="M1245 660 L1285 300 L1325 660"/>
+    <path d="M1258 540 H1312 M1266 460 H1304 M1272 400 H1298"/>
+    <path d="M1200 420 H1370 M1214 350 H1356"/>
+    <path d="M1245 660 L1325 660"/>
+    <path d="M1258 540 L1312 460 M1312 540 L1258 460 M1266 460 L1298 400 M1298 460 L1266 400"/>
+  </g>
+  <!-- catenary conductors -->
+  <g stroke="#9aa3c4" stroke-width="2" fill="none" opacity=".22">
+    <path d="M0 386 Q620 470 1200 420"/>
+    <path d="M1370 420 Q1500 436 1600 430"/>
+    <path d="M0 320 Q610 402 1214 350"/>
+    <path d="M1356 350 Q1490 368 1600 362"/>
+  </g>
+
+  <!-- greenhouse silhouettes on the left -->
+  <g fill="#131a3c" opacity=".85">
+    <path d="M120 660 V560 q110 -86 220 0 V660 Z"/>
+    <path d="M370 660 V582 q92 -72 184 0 V660 Z"/>
+  </g>
+  <g stroke="#2b3566" stroke-width="2" fill="none" opacity=".7">
+    <path d="M230 508 V660 M175 528 V660 M285 528 V660"/>
+    <path d="M462 546 V660 M416 560 V660 M508 560 V660"/>
+  </g>
+
+  <!-- field rows receding toward the horizon -->
+  <rect y="655" width="1600" height="245" fill="url(#ground)"/>
+  <g stroke="#1d2650" stroke-width="3" fill="none" opacity=".9">
+    <path d="M-40 700 Q800 676 1640 700"/>
+    <path d="M-40 742 Q800 712 1640 742"/>
+    <path d="M-40 794 Q800 756 1640 794"/>
+    <path d="M-40 856 Q800 810 1640 856"/>
+  </g>
+  <g stroke="#2f855a" stroke-width="2" fill="none" opacity=".35">
+    <path d="M-40 716 Q800 690 1640 716"/>
+    <path d="M-40 764 Q800 730 1640 764"/>
+    <path d="M-40 822 Q800 780 1640 822"/>
+  </g>
+
+  <!-- a lit lamp on a pole, tying the field to the grid -->
+  <g opacity=".85">
+    <rect x="705" y="470" width="6" height="200" fill="#1d2650"/>
+    <circle cx="708" cy="462" r="13" fill="#fd5f00" opacity=".9"/>
+    <circle cx="708" cy="462" r="30" fill="#fd5f00" opacity=".16"/>
+    <circle cx="708" cy="462" r="52" fill="#fd5f00" opacity=".07"/>
+  </g>
+</svg>

@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ 2 วงจรไฟฟ้าและเครื่องมือวัดพื้นฐาน | Fundamental of Electrical Engineering</title>
+<meta name="description" content="Chapter 2 — Circuit elements (source, load, conductors, control and protection), circuit topology, and basic electrical instruments.">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+<script src="../assets/js/mathjax-config.js"></script>
+<script defer src="../assets/vendor/mathjax/tex-svg.js"></script>
+<style>
+  .sys-fig text { font-family: var(--font-sans); }
+  .sys-fig .lbl { font-size: 12px; font-weight: 600; fill: #0d1128; }
+  .sys-fig .sub { font-size: 10.5px; fill: #6c757d; }
+  .sys-fig .cap { font-size: 11px; font-weight: 700; fill: #fd5f00; }
+  .sys-fig .wire { stroke: #0d1128; stroke-width: 2; fill: none; }
+  .sys-fig .sym  { stroke: #0d1128; stroke-width: 2; fill: #fff; }
+  .sys-fig .node { fill: #fd5f00; }
+
+  /* Marching dashes show which way the current goes. Paused, the overlay is
+     simply a dashed orange line along the loop, so the figure still reads. */
+  @keyframes fee-march { to { stroke-dashoffset: -30; } }
+  .sys-fig .flow-path {
+    stroke: #fd5f00;
+    stroke-width: 4;
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 9 21;
+    animation: fee-march 1.1s linear infinite;
+  }
+</style>
+</head>
+<body data-chapter="ch02">
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="../index.html#chapters"><span class="th">บทเรียนทั้งหมด</span><span class="en">All chapters</span></a></li>
+      <li><a href="#pretest"><span class="th">Pre-test</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการ</span><span class="en">Laboratory</span></a></li>
+      <li><a href="ch03.html" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">บทถัดไป</span><span class="en">Next</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a> ·
+      <a href="../index.html#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a> ·
+      <span class="th">บทที่ 2</span><span class="en">Chapter 2</span>
+    </div>
+    <span class="eyebrow"><span class="th">สัปดาห์ที่ 2 · บทที่ 2</span><span class="en">Week 2 · Chapter 2</span></span>
+    <h1><span class="th">วงจรไฟฟ้าและเครื่องมือวัดพื้นฐาน</span>
+        <span class="en">Electrical Circuits and Basic Instruments</span></h1>
+    <p class="lead">
+      <span class="th">วงจรไฟฟ้าทุกวงจรในโลก ตั้งแต่ไฟฉายจนถึงระบบสูบน้ำทั้งฟาร์ม
+        ประกอบด้วยของเพียงสี่อย่าง — <b>แหล่งจ่าย โหลด ตัวนำ และอุปกรณ์ควบคุมกับป้องกัน</b>
+        บทนี้พาไปรู้จักทั้งสี่อย่างนั้น เรียนภาษาที่วิศวกรใช้อธิบายวงจร
+        และฝึกใช้เครื่องมือวัดที่จะอยู่ในมือเราตลอดทั้งรายวิชา</span>
+      <span class="en">Every electrical circuit in the world, from a torch to a whole farm's pumping system,
+        is built from just four things — <b>a source, a load, conductors, and control and protection</b>.
+        This chapter introduces all four, teaches the language engineers use to describe a circuit, and
+        puts into your hands the instruments you will use for the rest of the course.</span>
+    </p>
+    <div class="hero-meta">
+      <span>⏱ <strong>2+2</strong> <span class="th">ชั่วโมง</span><span class="en">hours</span></span>
+      <span>📘 <span class="th">หัวข้อหลัก</span><span class="en">Main topics</span> <strong>3</strong></span>
+      <span>🧪 <span class="th">ปฏิบัติการที่ 2</span><span class="en">Laboratory 2</span></span>
+      <span>📝 <span class="th">Pre / Post-test</span><span class="en">Pre / post-test</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+<div class="chapter-layout">
+
+  <!-- ============================================================= TOC -->
+  <aside class="toc">
+    <div class="toc-title"><span class="th">สารบัญบทเรียน</span><span class="en">On this page</span></div>
+    <ul>
+      <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
+      <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#s1"><span class="th">2.1 องค์ประกอบของวงจร</span><span class="en">2.1 Circuit elements</span></a></li>
+      <li class="toc-sub"><a href="#s1-1"><span class="th">2.1.1 แหล่งจ่าย</span><span class="en">2.1.1 Sources</span></a></li>
+      <li class="toc-sub"><a href="#s1-2"><span class="th">2.1.2 โหลด</span><span class="en">2.1.2 Loads</span></a></li>
+      <li class="toc-sub"><a href="#s1-3"><span class="th">2.1.3 ตัวนำ</span><span class="en">2.1.3 Conductors</span></a></li>
+      <li class="toc-sub"><a href="#s1-4"><span class="th">2.1.4 ควบคุมและป้องกัน</span><span class="en">2.1.4 Control &amp; protection</span></a></li>
+      <li><a href="#s2"><span class="th">2.2 โครงสร้างวงจร</span><span class="en">2.2 Circuit topology</span></a></li>
+      <li><a href="#s3"><span class="th">2.3 เครื่องมือวัดพื้นฐาน</span><span class="en">2.3 Basic instruments</span></a></li>
+      <li><a href="#summary"><span class="th">สรุปบทเรียน</span><span class="en">Summary</span></a></li>
+      <li><a href="#activity"><span class="th">กิจกรรมในชั้นเรียน</span><span class="en">Class activity</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการที่ 2</span><span class="en">Laboratory 2</span></a></li>
+      <li><a href="#posttest"><span class="th">แบบทดสอบหลังเรียน</span><span class="en">Post-test</span></a></li>
+      <li><a href="#refs"><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ==================================================== CHAPTER BODY -->
+  <main class="chapter-body">
+
+    <!-- ---------------------------------------------------- Objectives -->
+    <section id="objectives">
+      <div class="callout callout-objective">
+        <div class="callout-title">🎯 <span class="th">จุดประสงค์การเรียนรู้</span>
+          <span class="en">Learning objectives</span></div>
+        <p><span class="th">เมื่อเรียนจบบทนี้ นักศึกษาจะสามารถ</span>
+           <span class="en">After this chapter you will be able to:</span></p>
+        <ol>
+          <li><span class="th">ระบุองค์ประกอบสี่ส่วนของวงจรไฟฟ้า และบอกหน้าที่ของแต่ละส่วนในระบบจริงในฟาร์ม</span>
+            <span class="en">identify the four parts of an electrical circuit and state what each does in a
+            real farm system;</span></li>
+          <li><span class="th">แยกแหล่งจ่ายแรงดันกับแหล่งจ่ายกระแส และอธิบายผลของความต้านทานภายใน</span>
+            <span class="en">distinguish a voltage source from a current source and explain the effect of
+            internal resistance;</span></li>
+          <li><span class="th">คำนวณความต้านทานของสายตัวนำจาก \(R = \rho L / A\) และตรวจสอบแรงดันตกว่าผ่านเกณฑ์หรือไม่</span>
+            <span class="en">compute conductor resistance from \(R = \rho L / A\) and check whether the
+            voltage drop meets the limit;</span></li>
+          <li><span class="th">เลือกอุปกรณ์ควบคุมและป้องกันให้เหมาะกับโหลด และอธิบายความต่างของฟิวส์ เบรกเกอร์ และ RCD</span>
+            <span class="en">select control and protective devices to suit a load, and explain how a fuse,
+            a breaker and an RCD differ;</span></li>
+          <li><span class="th">อ่านและเขียนแผนผังวงจรด้วยสัญลักษณ์มาตรฐาน พร้อมระบุโนด กิ่ง ลูป และเมช</span>
+            <span class="en">read and draw circuit diagrams with standard symbols, identifying nodes,
+            branches, loops and meshes;</span></li>
+          <li><span class="th">ต่อและใช้โวลต์มิเตอร์ แอมมิเตอร์ โอห์มมิเตอร์ และแคลมป์มิเตอร์ได้อย่างถูกต้อง
+            พร้อมประเมินผลกระทบจากการโหลดของมิเตอร์</span>
+            <span class="en">connect and use a voltmeter, ammeter, ohmmeter and clamp meter correctly, and
+            assess the meter's loading effect.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ Pre-test -->
+    <section id="pretest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบก่อนเรียน</span>
+          <span class="en">Pre-test</span></h2>
+      <p class="muted"><span class="th">ทำก่อนเริ่มอ่านเนื้อหา เพื่อสำรวจความรู้เดิมของตนเอง</span>
+        <span class="en">Take this before reading, to see what you already know.</span></p>
+
+      <section class="quiz" id="pretest-q" data-quiz="pre" data-chapter="ch02">
+        <div class="quiz-head">
+          <h3><span class="th">ก่อนเรียน: บทที่ 2</span><span class="en">Pre-test: Chapter 2</span></h3>
+          <p><span class="th">5 ข้อ · ปรนัย · ตรวจคำตอบได้ทันที</span>
+             <span class="en">5 multiple-choice questions · marked instantly</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="แหล่งจ่ายแรงดันอุดมคติรักษาแรงดันที่ขั้วให้คงที่ไม่ว่าจะจ่ายกระแสเท่าใด ส่วนกระแสจะถูกกำหนดโดยโหลด (หัวข้อ 2.1.1)"
+               data-explain-en="An ideal voltage source holds its terminal voltage constant whatever current flows; the current is set by the load (Section 2.1.1).">
+            <div class="q-text"><span class="th">แหล่งจ่ายแรงดันอุดมคติมีคุณสมบัติอย่างไร</span>
+              <span class="en">What characterises an ideal voltage source?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">จ่ายกระแสคงที่เสมอ</span><span class="en">It always delivers a constant current</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">มีความต้านทานภายในสูงมาก</span><span class="en">It has a very high internal resistance</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">รักษาแรงดันที่ขั้วให้คงที่ไม่ว่ากระแสจะเป็นเท่าใด</span><span class="en">It holds its terminal voltage constant at any current</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">จ่ายกำลังไฟฟ้าคงที่เสมอ</span><span class="en">It always delivers constant power</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="ความต้านทานของตัวนำ R = ρL/A แปรผกผันกับพื้นที่หน้าตัด ดังนั้นสายที่ใหญ่ขึ้นสองเท่าจะมีความต้านทานลดลงครึ่งหนึ่ง (หัวข้อ 2.1.3)"
+               data-explain-en="Conductor resistance R = ρL/A is inversely proportional to cross-sectional area, so doubling the area halves the resistance (Section 2.1.3).">
+            <div class="q-text"><span class="th">หากเปลี่ยนสายไฟจากขนาด 2.5 mm² เป็น 5 mm² โดยความยาวเท่าเดิม ความต้านทานของสายจะเป็นอย่างไร</span>
+              <span class="en">If a cable is changed from 2.5 mm² to 5 mm² over the same length, its resistance:</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เพิ่มเป็นสองเท่า</span><span class="en">doubles</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ลดลงครึ่งหนึ่ง</span><span class="en">halves</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เท่าเดิม</span><span class="en">stays the same</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ลดลงสี่เท่า</span><span class="en">falls to one quarter</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="แอมมิเตอร์ต้องต่ออนุกรมเพื่อให้กระแสทั้งหมดไหลผ่านตัวมิเตอร์ และต้องมีความต้านทานภายในต่ำมากเพื่อไม่รบกวนวงจร (หัวข้อ 2.3)"
+               data-explain-en="An ammeter must be in series so the whole current passes through it, and must have a very low internal resistance so as not to disturb the circuit (Section 2.3).">
+            <div class="q-text"><span class="th">การต่อแอมมิเตอร์เพื่อวัดกระแสในวงจรต้องทำอย่างไร</span>
+              <span class="en">How is an ammeter connected to measure current?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ต่ออนุกรมกับโหลด และมิเตอร์ต้องมีความต้านทานต่ำมาก</span><span class="en">In series with the load, with a very low internal resistance</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ต่อขนานกับโหลด และมิเตอร์ต้องมีความต้านทานต่ำมาก</span><span class="en">In parallel with the load, with a very low internal resistance</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ต่อขนานกับโหลด และมิเตอร์ต้องมีความต้านทานสูงมาก</span><span class="en">In parallel with the load, with a very high internal resistance</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ต่ออย่างไรก็ได้ ขอให้อยู่ในวงจรเดียวกัน</span><span class="en">Any way, as long as it is in the same circuit</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="โนด (node) คือจุดที่อุปกรณ์ตั้งแต่สองตัวขึ้นไปมาต่อกัน สายไฟที่ต่อกันโดยไม่มีอุปกรณ์คั่นถือเป็นโนดเดียวกันทั้งเส้น (หัวข้อ 2.2)"
+               data-explain-en="A node is a point where two or more elements join; a length of wire with no element in it is all one node (Section 2.2).">
+            <div class="q-text"><span class="th">“โนด (node)” ในวงจรไฟฟ้าหมายถึงอะไร</span>
+              <span class="en">What is a node in a circuit?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เส้นทางปิดที่กระแสไหลครบรอบ</span><span class="en">A closed path around which current flows</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">อุปกรณ์หนึ่งตัวในวงจร</span><span class="en">A single element in the circuit</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">จุดที่มีแรงดันเป็นศูนย์เสมอ</span><span class="en">A point whose voltage is always zero</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">จุดเชื่อมต่อของอุปกรณ์ตั้งแต่สองตัวขึ้นไป</span><span class="en">A junction of two or more elements</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="แมกเนติกคอนแทกเตอร์ใช้กระแสเล็กน้อยจากวงจรควบคุมไปสร้างสนามแม่เหล็กดึงหน้าสัมผัสให้ปิด ทำให้สวิตช์เล็ก ๆ หรือสัญญาณจากตัวควบคุมสั่งงานมอเตอร์กำลังสูงได้อย่างปลอดภัย (หัวข้อ 2.1.4)"
+               data-explain-en="A contactor uses a small control current to energise a coil that pulls the main contacts closed, so a small switch or a controller output can safely operate a large motor (Section 2.1.4).">
+            <div class="q-text"><span class="th">เหตุใดระบบสูบน้ำในฟาร์มจึงนิยมใช้แมกเนติกคอนแทกเตอร์แทนการใช้สวิตช์ต่อตรงเข้ามอเตอร์</span>
+              <span class="en">Why do farm pumping systems use a magnetic contactor rather than wiring a switch straight to the motor?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เพราะคอนแทกเตอร์ราคาถูกกว่าสวิตช์</span><span class="en">Because a contactor is cheaper than a switch</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เพราะใช้กระแสควบคุมเล็กน้อยสั่งงานกระแสโหลดสูงได้อย่างปลอดภัยและสั่งงานอัตโนมัติได้</span><span class="en">Because a small control current can safely switch a large load current, and can be automated</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เพราะคอนแทกเตอร์ทำให้มอเตอร์หมุนเร็วขึ้น</span><span class="en">Because a contactor makes the motor run faster</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เพราะคอนแทกเตอร์ป้องกันไฟดูดได้ดีกว่า RCD</span><span class="en">Because a contactor protects against shock better than an RCD</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== 2.1 -->
+    <section id="s1">
+      <h2><span class="num">2.1</span><span class="th">องค์ประกอบสี่ส่วนของวงจรไฟฟ้า</span>
+          <span class="en">The four parts of an electrical circuit</span></h2>
+
+      <p><span class="th">วงจรไฟฟ้า คือเส้นทาง <b>ปิด</b> ที่ยอมให้ประจุไหลครบรอบได้
+        ถ้าเส้นทางขาดตอนที่ใดที่หนึ่ง กระแสจะหยุดไหลทันที ทั้งวงจร ไม่ว่าจุดขาดนั้นจะอยู่ห่างจากโหลดแค่ไหน
+        หลักการง่าย ๆ ข้อนี้คือสิ่งที่เราใช้เมื่อแก้ปัญหาปั๊มน้ำไม่ทำงาน — เราไล่หา “จุดที่วงจรขาด”</span>
+        <span class="en">An electrical circuit is a <b>closed</b> path that lets charge travel all the way
+        round. Break the path anywhere and current stops everywhere in that circuit at once, no matter how
+        far the break is from the load. That simple principle is exactly what we use when a pump will not
+        start: we go looking for the break.</span></p>
+
+      <figure>
+        <div class="figure-box is-animated" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 740 300" role="img" width="740"
+               aria-label="The four parts of a circuit arranged around a loop, with the current animated">
+            <!-- loop wires -->
+            <path class="wire" d="M120 90 H320"/>
+            <path class="wire" d="M420 90 H620"/>
+            <path class="wire" d="M620 90 V210"/>
+            <path class="wire" d="M620 210 H120"/>
+            <path class="wire" d="M120 210 V90"/>
+
+            <!-- current, marching the way conventional current flows -->
+            <path class="flow-path" d="M122 90 H318"/>
+            <path class="flow-path" d="M374 90 H618"/>
+            <path class="flow-path" d="M620 92 V122"/>
+            <path class="flow-path" d="M620 178 V208"/>
+            <path class="flow-path" d="M618 210 H122"/>
+            <path class="flow-path" d="M120 208 V178"/>
+            <path class="flow-path" d="M120 138 V92"/>
+
+            <!-- source (left, vertical battery) -->
+            <line class="wire" x1="120" y1="130" x2="120" y2="130"/>
+            <line x1="100" y1="140" x2="140" y2="140" stroke="#0d1128" stroke-width="3"/>
+            <line x1="110" y1="152" x2="130" y2="152" stroke="#0d1128" stroke-width="3"/>
+            <line x1="100" y1="164" x2="140" y2="164" stroke="#0d1128" stroke-width="3"/>
+            <line x1="110" y1="176" x2="130" y2="176" stroke="#0d1128" stroke-width="3"/>
+            <line class="wire" x1="120" y1="90" x2="120" y2="140"/>
+            <line class="wire" x1="120" y1="176" x2="120" y2="210"/>
+            <text class="cap" x="60" y="112" text-anchor="middle">1</text>
+            <text class="lbl th" x="58" y="160" text-anchor="middle">แหล่งจ่าย</text>
+            <text class="lbl en" x="58" y="160" text-anchor="middle">Source</text>
+            <text class="sub th" x="58" y="178" text-anchor="middle">230 V</text>
+            <text class="sub en" x="58" y="178" text-anchor="middle">230 V</text>
+
+            <!-- control & protection (top middle) -->
+            <rect class="sym" x="320" y="76" width="42" height="28" rx="4"/>
+            <line x1="326" y1="104" x2="356" y2="76" stroke="#0d1128" stroke-width="2"/>
+            <circle class="node" cx="320" cy="90" r="3.5"/>
+            <path class="wire" d="M362 90 h10"/>
+            <path class="wire" d="M372 76 v28"/>
+            <path class="wire" d="M372 90 h48"/>
+            <text class="cap" x="370" y="46" text-anchor="middle">2</text>
+            <text class="lbl th" x="370" y="64" text-anchor="middle">ควบคุมและป้องกัน</text>
+            <text class="lbl en" x="370" y="64" text-anchor="middle">Control &amp; protection</text>
+
+            <!-- load (right, motor) -->
+            <circle class="sym" cx="620" cy="150" r="26"/>
+            <text class="lbl" x="620" y="156" text-anchor="middle">M</text>
+            <line class="wire" x1="620" y1="90" x2="620" y2="124"/>
+            <line class="wire" x1="620" y1="176" x2="620" y2="210"/>
+            <text class="cap" x="690" y="112" text-anchor="middle">3</text>
+            <text class="lbl th" x="688" y="160" text-anchor="middle">โหลด</text>
+            <text class="lbl en" x="688" y="160" text-anchor="middle">Load</text>
+            <text class="sub th" x="688" y="178" text-anchor="middle">ปั๊ม 1.5 kW</text>
+            <text class="sub en" x="688" y="178" text-anchor="middle">1.5 kW pump</text>
+
+            <!-- conductors label -->
+            <text class="cap" x="370" y="240" text-anchor="middle">4</text>
+            <text class="lbl th" x="370" y="258" text-anchor="middle">ตัวนำ (สายไฟ)</text>
+            <text class="lbl en" x="370" y="258" text-anchor="middle">Conductors (cable)</text>
+            <text class="sub th" x="370" y="276" text-anchor="middle">เชื่อมทุกส่วนเข้าด้วยกันให้ครบวงจร</text>
+            <text class="sub en" x="370" y="276" text-anchor="middle">join everything into one closed loop</text>
+
+            <!-- current direction arrows -->
+            <polygon points="250,84 262,90 250,96" fill="#fd5f00"/>
+            <polygon points="500,84 512,90 500,96" fill="#fd5f00"/>
+            <polygon points="400,216 388,210 400,204" fill="#fd5f00"/>
+            <text class="cap" x="256" y="72" text-anchor="middle">I</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 2.1</span><span class="en">Figure 2.1</span></b>
+          <span class="th"> วงจรควบคุมปั๊มน้ำอย่างง่าย แสดงองค์ประกอบครบทั้งสี่ส่วน
+            ลูกศรสีส้มคือทิศทางกระแสตามแบบแผน ซึ่งไหลออกจากขั้วบวกของแหล่งจ่าย ผ่านโหลด แล้วกลับเข้าขั้วลบ</span>
+          <span class="en"> A simple pump control circuit containing all four parts. The orange arrows show
+            conventional current, leaving the positive terminal of the source, passing through the load and
+            returning to the negative terminal.</span></figcaption>
+      </figure>
+
+      <!-- ---------------------------------------------------- 2.1.1 -->
+      <h3 id="s1-1"><span class="th">2.1.1 แหล่งจ่าย (Source)</span><span class="en">2.1.1 Sources</span></h3>
+      <p><span class="th">แหล่งจ่ายทำหน้าที่ป้อนพลังงานเข้าสู่วงจร แบ่งตามพฤติกรรมได้สองแบบ</span>
+        <span class="en">A source supplies energy to the circuit. There are two kinds, distinguished by
+        their behaviour.</span></p>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h4 class="mt-0"><span class="th">แหล่งจ่ายแรงดัน (Voltage source)</span>
+            <span class="en">Voltage source</span></h4>
+          <p class="small"><span class="th">รักษา <b>แรงดัน</b> ที่ขั้วให้คงที่ ส่วนกระแสขึ้นอยู่กับโหลด
+            แหล่งจ่ายอุดมคติมีความต้านทานภายใน \(r = 0\) แต่ของจริงมี \(r\) เล็กน้อยเสมอ</span>
+            <span class="en">Holds its terminal <b>voltage</b> constant; the current depends on the load. An
+            ideal one has internal resistance \(r = 0\); a real one always has some.</span></p>
+          <p class="small mb-0"><b><span class="th">ตัวอย่าง:</span><span class="en">Examples:</span></b>
+            <span class="th">เต้ารับ 230 V, แบตเตอรี่ 12 V, อะแดปเตอร์ 24 V DC สำหรับตัวควบคุม</span>
+            <span class="en">the 230 V mains socket, a 12 V battery, a 24 V DC adapter for a
+            controller</span></p>
+        </div>
+        <div class="card">
+          <h4 class="mt-0"><span class="th">แหล่งจ่ายกระแส (Current source)</span>
+            <span class="en">Current source</span></h4>
+          <p class="small"><span class="th">รักษา <b>กระแส</b> ให้คงที่ ส่วนแรงดันขึ้นอยู่กับโหลด
+            แหล่งจ่ายอุดมคติมีความต้านทานภายในเป็นอนันต์</span>
+            <span class="en">Holds the <b>current</b> constant; the voltage depends on the load. An ideal one
+            has infinite internal resistance.</span></p>
+          <p class="small mb-0"><b><span class="th">ตัวอย่าง:</span><span class="en">Examples:</span></b>
+            <span class="th">วงจรขับหลอด LED แบบกระแสคงที่, ลูปสัญญาณเซนเซอร์ 4–20 mA,
+            แผงเซลล์แสงอาทิตย์ (ประพฤติใกล้เคียงแหล่งจ่ายกระแสเมื่อได้รับแสงคงที่)</span>
+            <span class="en">a constant-current LED driver, a 4–20 mA sensor loop, and a PV module, which
+            behaves much like a current source at fixed irradiance</span></p>
+        </div>
+      </div>
+
+      <p><span class="th">แหล่งจ่ายจริงทุกตัวมีความต้านทานภายใน ทำให้แรงดันที่ขั้วลดลงเมื่อจ่ายกระแสมากขึ้น
+        ตามที่เราเห็นในบทที่ 1</span>
+        <span class="en">Every real source has internal resistance, so its terminal voltage falls as it
+        supplies more current, as we saw in Chapter 1:</span></p>
+
+      <div class="equation">
+        \[ V_{\text{terminal}} = E - I\,r \]
+      </div>
+
+      <div class="callout callout-agri">
+        <div class="callout-title">🌱 <span class="th">ลูปกระแส 4–20 mA: ทำไมงานเกษตรจึงยังใช้อยู่</span>
+          <span class="en">The 4–20 mA loop: why agriculture still uses it</span></div>
+        <p class="mb-0"><span class="th">เซนเซอร์วัดระดับน้ำในบ่อที่อยู่ห่างจากตู้ควบคุม 300 เมตร
+          หากส่งสัญญาณเป็นแรงดัน ความต้านทานของสายจะทำให้แรงดันตกและค่าที่อ่านได้ผิดไป
+          แต่ถ้าส่งเป็น <b>กระแส</b> ค่ากระแสในวงจรอนุกรมจะเท่ากันทุกจุด ไม่ว่าสายจะยาวเท่าใด
+          ยิ่งไปกว่านั้น การกำหนดให้ค่าต่ำสุดคือ 4 mA ไม่ใช่ 0 mA
+          ทำให้เราแยกได้ว่า “ระดับน้ำเป็นศูนย์” (4 mA) ต่างจาก “สายขาด” (0 mA) — เป็นการออกแบบที่ฉลาดมาก</span>
+          <span class="en">A water-level sensor in a pond 300 m from the control cabinet: if it sent a
+          voltage, the cable's resistance would drop part of it and the reading would be wrong. Send a
+          <b>current</b> instead and it is the same at every point of a series loop, however long the cable.
+          Better still, making the minimum 4 mA rather than 0 mA lets us tell "the level is zero" (4 mA)
+          apart from "the cable is broken" (0 mA) — a beautifully economical piece of design.</span></p>
+      </div>
+
+      <!-- ---------------------------------------------------- 2.1.2 -->
+      <h3 id="s1-2"><span class="th">2.1.2 โหลด (Load)</span><span class="en">2.1.2 Loads</span></h3>
+      <p><span class="th">โหลดคืออุปกรณ์ที่รับพลังงานไฟฟ้าไปเปลี่ยนเป็นพลังงานรูปอื่นตามที่เราต้องการ
+        ในทางวงจร เราจำลองโหลดทุกชนิดด้วยองค์ประกอบพื้นฐานเพียงสามตัว คือ
+        <b>ความต้านทาน R</b> <b>ความเหนี่ยวนำ L</b> และ <b>ความจุไฟฟ้า C</b>
+        ซึ่งจะศึกษาละเอียดในบทที่ 3 และ 5</span>
+        <span class="en">A load takes electrical energy and turns it into whatever form we want. For
+        analysis, every load is modelled from just three basic elements — <b>resistance R</b>,
+        <b>inductance L</b> and <b>capacitance C</b> — which we study in detail in Chapters 3 and 5.</span></p>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 2.1 โหลดในฟาร์มกับแบบจำลองทางวงจร</span>
+            <span class="en">Table 2.1 Farm loads and their circuit models</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">โหลด</span><span class="en">Load</span></th>
+              <th><span class="th">แบบจำลอง</span><span class="en">Model</span></th>
+              <th><span class="th">พฤติกรรมที่ต้องระวัง</span><span class="en">Behaviour to watch</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">ฮีตเตอร์ หลอดไส้</span><span class="en">Heater, filament lamp</span></td>
+              <td><span class="th">ความต้านทานล้วน (R)</span><span class="en">Purely resistive (R)</span></td>
+              <td><span class="th">กระแสและแรงดันอยู่ในเฟสเดียวกัน ค่าตัวประกอบกำลังเท่ากับ 1</span>
+                  <span class="en">Current in phase with voltage; power factor of 1</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">มอเตอร์ปั๊ม พัดลม คอนแทกเตอร์</span><span class="en">Pump motor, fan, contactor</span></td>
+              <td><span class="th">ความต้านทานร่วมกับความเหนี่ยวนำ (R–L)</span><span class="en">Resistive–inductive (R–L)</span></td>
+              <td><span class="th">กระแสตามหลังแรงดัน ตัวประกอบกำลังต่ำ และมีกระแสพุ่งตอนสตาร์ต 6–8 เท่า</span>
+                  <span class="en">Current lags voltage, poor power factor, and a starting surge of 6–8×</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">หลอด LED อินเวอร์เตอร์ แหล่งจ่ายสวิตชิ่ง</span><span class="en">LED lamp, inverter, switch-mode supply</span></td>
+              <td><span class="th">โหลดไม่เชิงเส้น มี C ในวงจรเรียงกระแส</span><span class="en">Non-linear, with C in its rectifier</span></td>
+              <td><span class="th">ดึงกระแสเป็นพัลส์แคบ ทำให้เกิดฮาร์มอนิกในระบบ</span>
+                  <span class="en">Draws narrow current pulses, injecting harmonics into the supply</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">วาล์วโซลินอยด์</span><span class="en">Solenoid valve</span></td>
+              <td><span class="th">ความเหนี่ยวนำเป็นหลัก (L)</span><span class="en">Mainly inductive (L)</span></td>
+              <td><span class="th">เกิดแรงดันย้อนกลับสูงมากตอนตัดวงจร ต้องมีไดโอดฟลายแบ็ก (บทที่ 13)</span>
+                  <span class="en">A large back-e.m.f. on switch-off; needs a flyback diode (Chapter 13)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ---------------------------------------------------- 2.1.3 -->
+      <h3 id="s1-3"><span class="th">2.1.3 ตัวนำ (Conductors)</span><span class="en">2.1.3 Conductors</span></h3>
+      <p><span class="th">ในแผนผังวงจร เรามักวาดสายไฟเป็นเส้นตรงที่ไม่มีความต้านทาน
+        แต่ในฟาร์มจริงที่สายเดินยาวหลายร้อยเมตร ความต้านทานของสายกลายเป็นตัวแปรสำคัญ
+        ความต้านทานของตัวนำหาได้จาก</span>
+        <span class="en">On a diagram we draw wires as lines with no resistance. On a real farm, where cable
+        runs are hundreds of metres, that resistance becomes a decisive quantity. It is given by:</span></p>
+
+      <div class="equation">
+        \[ R = \frac{\rho L}{A} \]
+      </div>
+      <p class="eq-note"><span class="th">\(\rho\) = สภาพต้านทาน (Ω·m), \(L\) = ความยาว (m),
+        \(A\) = พื้นที่หน้าตัด (m²)</span>
+        <span class="en">\(\rho\) = resistivity (Ω·m), \(L\) = length (m), \(A\) = cross-sectional area
+        (m²)</span></p>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 2.2 สภาพต้านทานของวัสดุที่ 20 °C</span>
+            <span class="en">Table 2.2 Resistivity of materials at 20 °C</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">วัสดุ</span><span class="en">Material</span></th>
+              <th class="num">\(\rho\) (Ω·m)</th>
+              <th><span class="th">การใช้งาน</span><span class="en">Use</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="th">เงิน</span><span class="en">Silver</span></td><td class="num">1.59 × 10⁻⁸</td><td><span class="th">หน้าสัมผัสของรีเลย์คุณภาพสูง</span><span class="en">High-quality relay contacts</span></td></tr>
+            <tr><td><span class="th">ทองแดง</span><span class="en">Copper</span></td><td class="num">1.68 × 10⁻⁸</td><td><span class="th">สายไฟทั่วไป ขดลวดมอเตอร์</span><span class="en">General wiring, motor windings</span></td></tr>
+            <tr><td><span class="th">อะลูมิเนียม</span><span class="en">Aluminium</span></td><td class="num">2.82 × 10⁻⁸</td><td><span class="th">สายจำหน่ายเหนือดิน (เบาและถูกกว่า)</span><span class="en">Overhead distribution lines (lighter, cheaper)</span></td></tr>
+            <tr><td><span class="th">เหล็ก</span><span class="en">Iron</span></td><td class="num">9.71 × 10⁻⁸</td><td><span class="th">แกนแม่เหล็ก โครงสร้าง</span><span class="en">Magnetic cores, structures</span></td></tr>
+            <tr><td><span class="th">พีวีซี (ฉนวน)</span><span class="en">PVC (insulator)</span></td><td class="num">≈ 10¹³</td><td><span class="th">ฉนวนหุ้มสาย</span><span class="en">Cable insulation</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><span class="th">สังเกตว่าอะลูมิเนียมมีสภาพต้านทานสูงกว่าทองแดงราว 1.7 เท่า
+        แต่การไฟฟ้ายังเลือกใช้กับสายจำหน่ายเหนือดิน เพราะน้ำหนักเบากว่ามากและราคาถูกกว่า
+        จึงลดค่าเสาและอุปกรณ์จับยึดได้ — เป็นตัวอย่างของการตัดสินใจทางวิศวกรรมที่ไม่ได้ดูแค่ค่าเดียว</span>
+        <span class="en">Aluminium has about 1.7 times the resistivity of copper, yet the utility still uses
+        it for overhead lines because it is far lighter and cheaper, which saves on poles and fittings — a
+        good example of an engineering decision that is not made on one number alone.</span></p>
+
+      <h4><span class="th">แรงดันตกในสาย (Voltage drop)</span><span class="en">Voltage drop in a cable</span></h4>
+      <p><span class="th">กระแสที่ไหลผ่านความต้านทานของสายทำให้เกิดแรงดันตก ซึ่งหมายความว่าโหลดที่ปลายสาย
+        จะได้รับแรงดันน้อยกว่าที่แหล่งจ่าย ต้องคิดความยาวสาย <b>ไปและกลับ</b> เสมอ
+        เพราะกระแสต้องเดินทางครบวงจร</span>
+        <span class="en">Current through the cable's resistance produces a voltage drop, so the load at the
+        far end receives less than the source provides. Always count the cable length <b>both ways</b>,
+        because the current has to complete the loop:</span></p>
+
+      <div class="equation">
+        \[ V_{\text{drop}} = I R_{\text{cable}} = I \cdot \frac{\rho \,(2L)}{A}
+           \qquad\qquad \%V_{\text{drop}} = \frac{V_{\text{drop}}}{V_{\text{source}}} \times 100\,\% \]
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">📏 <span class="th">เกณฑ์แรงดันตกตามมาตรฐาน วสท.</span>
+          <span class="en">Voltage-drop limits in the EIT standard</span></div>
+        <p class="mb-0"><span class="th">มาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทยกำหนดให้แรงดันตกรวม
+          จากจุดจ่ายไฟถึงจุดใช้ไฟไกลสุด <b>ไม่เกิน 5 %</b> โดยแบ่งเป็นสายป้อน (feeder) ไม่เกิน 2 %
+          และวงจรย่อย (branch circuit) ไม่เกิน 3 % หากแรงดันตกเกินเกณฑ์
+          มอเตอร์จะร้อนผิดปกติ แรงบิดตก และอายุการใช้งานสั้นลงอย่างมาก</span>
+          <span class="en">The Thai electrical installation standard limits the total voltage drop from the
+          point of supply to the furthest point of use to <b>5 %</b> — no more than 2 % in the feeder and
+          3 % in the branch circuit. Beyond that, motors run hot, lose torque and age far
+          faster.</span></p>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 2.1</span><span class="en">Example 2.1</span></span>
+          <span class="th">แรงดันตกของสายจ่ายปั๊มน้ำในแปลง</span>
+          <span class="en">Voltage drop on a field pump supply</span></div>
+        <div class="example-body">
+          <p><span class="th">ปั๊มน้ำหนึ่งเฟส 230 V กินกระแส 7.0 A ติดตั้งอยู่ห่างจากตู้ควบคุม 80 เมตร
+            เดินสายทองแดงขนาด 2.5 mm² จงหาแรงดันตกและตรวจสอบว่าผ่านเกณฑ์ 3 % หรือไม่</span>
+            <span class="en">A single-phase 230 V pump draws 7.0 A and stands 80 m from the control cabinet,
+            fed by 2.5 mm² copper cable. Find the voltage drop and check it against the 3 %
+            limit.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th">ความยาวสายไปและกลับ และพื้นที่หน้าตัดในหน่วย SI:</span>
+              <span class="en">Total go-and-return length, and the area in SI units:</span></p>
+            \[ 2L = 2 \times 80 = 160\ \text{m}, \qquad
+               A = 2.5\ \text{mm}^2 = 2.5 \times 10^{-6}\ \text{m}^2 \]
+            \[ R_{\text{cable}} = \frac{\rho\,(2L)}{A}
+               = \frac{(1.68\times10^{-8})(160)}{2.5\times10^{-6}} = 1.075\ \Omega \]
+            \[ V_{\text{drop}} = I R_{\text{cable}} = (7.0)(1.075) = 7.53\ \text{V} \]
+            \[ \%V_{\text{drop}} = \frac{7.53}{230}\times100 = 3.27\ \% \]
+            <p><span class="th"><b>ไม่ผ่านเกณฑ์</b> เพราะเกิน 3 % แรงดันที่ปั๊มได้รับจะเหลือเพียง
+              230 − 7.53 = 222.5 V</span>
+              <span class="en"><b>It fails</b>: over the 3 % limit. The pump would receive only
+              230 − 7.53 = 222.5 V.</span></p>
+            <p class="mb-0"><span class="th">แก้ไขโดยเพิ่มขนาดสายเป็น 4 mm²:</span>
+              <span class="en">Fix it by going up to 4 mm²:</span></p>
+            \[ R_{\text{cable}} = \frac{(1.68\times10^{-8})(160)}{4.0\times10^{-6}} = 0.672\ \Omega,
+               \qquad V_{\text{drop}} = (7.0)(0.672) = 4.70\ \text{V} = 2.04\ \% \quad ✓ \]
+            <p class="mb-0"><span class="th">ยังต้องเสียกำลังไปกับความร้อนในสาย
+              \(P_{\text{loss}} = I^2R = (7.0)^2(0.672) = 32.9\) W ซึ่งเป็นค่าที่ยอมรับได้</span>
+              <span class="en">Some power is still lost as heat in the cable,
+              \(P_{\text{loss}} = I^2R = (7.0)^2(0.672) = 32.9\) W, which is
+              acceptable.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------------------------------------------------- 2.1.4 -->
+      <h3 id="s1-4"><span class="th">2.1.4 อุปกรณ์ควบคุมและป้องกัน (Control &amp; Protection)</span>
+          <span class="en">2.1.4 Control and protection</span></h3>
+      <p><span class="th">ส่วนนี้คือสิ่งที่แยก “วงจรทดลองบนโต๊ะ” ออกจาก “ระบบไฟฟ้าที่ใช้งานได้จริง”
+        อุปกรณ์ควบคุมบอกว่าจะให้กระแสไหล <b>เมื่อไร</b> ส่วนอุปกรณ์ป้องกันตัดกระแสเมื่อเกิดสิ่ง
+        <b>ผิดปกติ</b> ซึ่งเป็นคนละหน้าที่กัน และต้องมีทั้งคู่เสมอ</span>
+        <span class="en">This is what separates a bench experiment from a working installation. Control
+        devices decide <b>when</b> current flows; protective devices cut it off when something goes
+        <b>wrong</b>. They are different jobs, and you always need both.</span></p>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 2.3 อุปกรณ์ควบคุมและป้องกันที่พบในระบบไฟฟ้าฟาร์ม</span>
+            <span class="en">Table 2.3 Control and protective devices in a farm installation</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">อุปกรณ์</span><span class="en">Device</span></th>
+              <th><span class="th">หน้าที่</span><span class="en">Function</span></th>
+              <th><span class="th">ป้องกันอะไร / สั่งงานอย่างไร</span><span class="en">Protects against / how it is driven</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b><span class="th">สวิตช์</span><span class="en">Switch</span></b><br>
+                <span class="small muted"><span class="th">ควบคุม</span><span class="en">control</span></span></td>
+              <td><span class="th">เปิด–ปิดวงจรด้วยมือ</span><span class="en">Opens and closes the circuit by hand</span></td>
+              <td><span class="th">พิกัดกระแสต้องไม่ต่ำกว่ากระแสโหลด</span><span class="en">Its current rating must not be below the load current</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">รีเลย์</span><span class="en">Relay</span></b><br>
+                <span class="small muted"><span class="th">ควบคุม</span><span class="en">control</span></span></td>
+              <td><span class="th">ใช้กระแสเล็กน้อยสั่งปิดหน้าสัมผัสที่รับกระแสมากกว่า</span>
+                  <span class="en">A small current closes contacts that carry a larger one</span></td>
+              <td><span class="th">รับสัญญาณจากไมโครคอนโทรลเลอร์หรือเซนเซอร์ (มักเป็น 5 V หรือ 24 V)</span>
+                  <span class="en">Driven from a microcontroller or sensor output (typically 5 V or 24 V)</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">แมกเนติกคอนแทกเตอร์</span><span class="en">Contactor</span></b><br>
+                <span class="small muted"><span class="th">ควบคุม</span><span class="en">control</span></span></td>
+              <td><span class="th">รีเลย์ขนาดใหญ่สำหรับตัดต่อมอเตอร์โดยเฉพาะ</span>
+                  <span class="en">A heavy-duty relay made for switching motors</span></td>
+              <td><span class="th">ทนกระแสพุ่งตอนสตาร์ตและการอาร์กที่หน้าสัมผัสได้ มักใช้คู่กับโอเวอร์โหลดรีเลย์</span>
+                  <span class="en">Withstands starting surges and contact arcing; usually paired with an overload relay</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">ฟิวส์</span><span class="en">Fuse</span></b><br>
+                <span class="small muted"><span class="th">ป้องกัน</span><span class="en">protection</span></span></td>
+              <td><span class="th">ลวดโลหะหลอมละลายเมื่อกระแสเกินพิกัด</span>
+                  <span class="en">A metal element melts when the current exceeds its rating</span></td>
+              <td><span class="th">กระแสเกินและลัดวงจร ตัดเร็วมาก แต่ใช้ได้ครั้งเดียว</span>
+                  <span class="en">Overload and short circuit; very fast, but single-use</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">เซอร์กิตเบรกเกอร์ (MCB)</span><span class="en">Circuit breaker (MCB)</span></b><br>
+                <span class="small muted"><span class="th">ป้องกัน</span><span class="en">protection</span></span></td>
+              <td><span class="th">ตัดวงจรอัตโนมัติด้วยกลไกความร้อน (โหลดเกิน) และแม่เหล็ก (ลัดวงจร)</span>
+                  <span class="en">Trips automatically: thermally on overload, magnetically on short circuit</span></td>
+              <td><span class="th">ป้องกัน <b>สายและอุปกรณ์</b> ไม่ให้ร้อนจนไหม้ รีเซ็ตใช้ซ้ำได้</span>
+                  <span class="en">Protects <b>cables and equipment</b> from overheating; resettable</span></td>
+            </tr>
+            <tr style="background:#fdecec">
+              <td><b><span class="th">เครื่องตัดไฟรั่ว (RCD/RCBO)</span><span class="en">RCD / RCBO</span></b><br>
+                <span class="small muted"><span class="th">ป้องกัน</span><span class="en">protection</span></span></td>
+              <td><span class="th">เปรียบเทียบกระแสไหลเข้ากับไหลออก ถ้าต่างกันเกิน 30 mA แสดงว่ามีกระแสรั่วลงดิน</span>
+                  <span class="en">Compares the current out with the current back; a difference over 30 mA means leakage to earth</span></td>
+              <td><span class="th">ป้องกัน <b>คน</b> จากไฟดูด — เบรกเกอร์ธรรมดาทำหน้าที่นี้ไม่ได้</span>
+                  <span class="en">Protects <b>people</b> from shock — an ordinary breaker cannot do this</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">โอเวอร์โหลดรีเลย์</span><span class="en">Overload relay</span></b><br>
+                <span class="small muted"><span class="th">ป้องกัน</span><span class="en">protection</span></span></td>
+              <td><span class="th">ตรวจจับกระแสมอเตอร์ที่สูงเกินพิกัดต่อเนื่อง แล้วสั่งคอนแทกเตอร์ปลด</span>
+                  <span class="en">Senses sustained overcurrent in a motor and drops out the contactor</span></td>
+              <td><span class="th">ป้องกันขดลวดมอเตอร์ไหม้ เช่น เมื่อปั๊มดูดตะกอนจนติดขัด</span>
+                  <span class="en">Saves the motor windings, for example when a pump jams on silt</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-danger">
+        <div class="callout-title">⚠️ <span class="th">ความเข้าใจผิดที่อันตรายที่สุดข้อหนึ่ง</span>
+          <span class="en">One of the most dangerous misconceptions</span></div>
+        <p class="mb-0"><span class="th">“ตู้ไฟมีเบรกเกอร์แล้ว ปลอดภัยแล้ว” — <b>ไม่จริง</b>
+          เบรกเกอร์ 16 A จะตัดก็ต่อเมื่อกระแสเกิน 16 A แต่กระแสที่ไหลผ่านร่างกายคนซึ่งทำให้เสียชีวิตได้
+          มีเพียง 0.05 A เท่านั้น ซึ่งเบรกเกอร์ “มองไม่เห็น” เลย
+          การป้องกันคนจากไฟดูดต้องใช้ RCD ขนาด 30 mA เท่านั้น
+          และในงานเกษตรที่มีน้ำ วงจรทุกวงจรควรมี RCD</span>
+          <span class="en">"The board has a breaker, so it's safe" — <b>it is not</b>. A 16 A breaker trips
+          only above 16 A, while the current that kills a person is about 0.05 A, which the breaker simply
+          cannot see. Only a 30 mA RCD protects people from shock, and in wet agricultural work every
+          circuit should have one.</span></p>
+      </div>
+    </section>
+
+    <!-- =============================================== 2.2 -->
+    <section id="s2">
+      <h2><span class="num">2.2</span><span class="th">โครงสร้างวงจรและสัญลักษณ์</span>
+          <span class="en">Circuit topology and symbols</span></h2>
+
+      <p><span class="th">ก่อนจะวิเคราะห์วงจรได้ เราต้องพูดภาษาเดียวกันก่อน
+        แผนผังวงจร (schematic diagram) ไม่ได้บอกว่าอุปกรณ์วางอยู่ตรงไหนในตู้
+        แต่บอกว่าอะไร <b>ต่ออยู่กับอะไร</b> ซึ่งเป็นสิ่งเดียวที่มีผลต่อการทำงานของวงจร</span>
+        <span class="en">Before we can analyse a circuit we have to speak the same language. A schematic
+        does not say where anything sits inside the cabinet; it says what is <b>connected to what</b>,
+        which is the only thing that affects how the circuit behaves.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 700 250" role="img" width="700"
+               aria-label="Standard circuit symbols">
+            <!-- Row 1 -->
+            <g>
+              <!-- DC source -->
+              <line class="wire" x1="44" y1="42" x2="84" y2="42"/>
+              <line x1="84" y1="28" x2="84" y2="56" stroke="#0d1128" stroke-width="3"/>
+              <line x1="92" y1="34" x2="92" y2="50" stroke="#0d1128" stroke-width="3"/>
+              <line class="wire" x1="92" y1="42" x2="124" y2="42"/>
+              <text class="sub th" x="84" y="76" text-anchor="middle">แหล่งจ่าย DC</text>
+              <text class="sub en" x="84" y="76" text-anchor="middle">DC source</text>
+              <!-- AC source -->
+              <line class="wire" x1="184" y1="42" x2="206" y2="42"/>
+              <circle class="sym" cx="228" cy="42" r="20"/>
+              <path d="M216 42 q6 -10 12 0 q6 10 12 0" stroke="#0d1128" stroke-width="2" fill="none"/>
+              <line class="wire" x1="250" y1="42" x2="272" y2="42"/>
+              <text class="sub th" x="228" y="76" text-anchor="middle">แหล่งจ่าย AC</text>
+              <text class="sub en" x="228" y="76" text-anchor="middle">AC source</text>
+              <!-- Resistor -->
+              <line class="wire" x1="328" y1="42" x2="352" y2="42"/>
+              <rect class="sym" x="352" y="32" width="48" height="20"/>
+              <line class="wire" x1="400" y1="42" x2="424" y2="42"/>
+              <text class="sub th" x="376" y="76" text-anchor="middle">ตัวต้านทาน R</text>
+              <text class="sub en" x="376" y="76" text-anchor="middle">Resistor R</text>
+              <!-- Capacitor -->
+              <line class="wire" x1="472" y1="42" x2="512" y2="42"/>
+              <line x1="512" y1="26" x2="512" y2="58" stroke="#0d1128" stroke-width="3"/>
+              <line x1="522" y1="26" x2="522" y2="58" stroke="#0d1128" stroke-width="3"/>
+              <line class="wire" x1="522" y1="42" x2="562" y2="42"/>
+              <text class="sub th" x="517" y="76" text-anchor="middle">ตัวเก็บประจุ C</text>
+              <text class="sub en" x="517" y="76" text-anchor="middle">Capacitor C</text>
+              <!-- Inductor -->
+              <line class="wire" x1="600" y1="42" x2="618" y2="42"/>
+              <path d="M618 42 a9 9 0 0 1 18 0 a9 9 0 0 1 18 0 a9 9 0 0 1 18 0"
+                    stroke="#0d1128" stroke-width="2" fill="none"/>
+              <line class="wire" x1="672" y1="42" x2="690" y2="42"/>
+              <text class="sub th" x="645" y="76" text-anchor="middle">ตัวเหนี่ยวนำ L</text>
+              <text class="sub en" x="645" y="76" text-anchor="middle">Inductor L</text>
+            </g>
+            <!-- Row 2 -->
+            <g>
+              <!-- Lamp -->
+              <line class="wire" x1="44" y1="132" x2="64" y2="132"/>
+              <circle class="sym" cx="84" cy="132" r="18"/>
+              <line x1="72" y1="120" x2="96" y2="144" stroke="#0d1128" stroke-width="2"/>
+              <line x1="96" y1="120" x2="72" y2="144" stroke="#0d1128" stroke-width="2"/>
+              <line class="wire" x1="102" y1="132" x2="124" y2="132"/>
+              <text class="sub th" x="84" y="166" text-anchor="middle">หลอดไฟ</text>
+              <text class="sub en" x="84" y="166" text-anchor="middle">Lamp</text>
+              <!-- Motor -->
+              <line class="wire" x1="188" y1="132" x2="208" y2="132"/>
+              <circle class="sym" cx="228" cy="132" r="18"/>
+              <text class="lbl" x="228" y="137" text-anchor="middle">M</text>
+              <line class="wire" x1="246" y1="132" x2="268" y2="132"/>
+              <text class="sub th" x="228" y="166" text-anchor="middle">มอเตอร์</text>
+              <text class="sub en" x="228" y="166" text-anchor="middle">Motor</text>
+              <!-- Switch -->
+              <line class="wire" x1="332" y1="132" x2="358" y2="132"/>
+              <circle class="node" cx="358" cy="132" r="3.5"/>
+              <line x1="358" y1="132" x2="392" y2="114" stroke="#0d1128" stroke-width="2"/>
+              <circle class="node" cx="394" cy="132" r="3.5"/>
+              <line class="wire" x1="394" y1="132" x2="420" y2="132"/>
+              <text class="sub th" x="376" y="166" text-anchor="middle">สวิตช์</text>
+              <text class="sub en" x="376" y="166" text-anchor="middle">Switch</text>
+              <!-- Fuse -->
+              <line class="wire" x1="472" y1="132" x2="494" y2="132"/>
+              <rect class="sym" x="494" y="122" width="46" height="20"/>
+              <line x1="494" y1="132" x2="540" y2="132" stroke="#0d1128" stroke-width="2"/>
+              <line class="wire" x1="540" y1="132" x2="562" y2="132"/>
+              <text class="sub th" x="517" y="166" text-anchor="middle">ฟิวส์</text>
+              <text class="sub en" x="517" y="166" text-anchor="middle">Fuse</text>
+              <!-- Circuit breaker -->
+              <line class="wire" x1="600" y1="132" x2="622" y2="132"/>
+              <circle class="node" cx="622" cy="132" r="3.5"/>
+              <line x1="622" y1="132" x2="654" y2="114" stroke="#0d1128" stroke-width="2"/>
+              <rect class="sym" x="630" y="102" width="16" height="12"/>
+              <circle class="node" cx="658" cy="132" r="3.5"/>
+              <line class="wire" x1="658" y1="132" x2="690" y2="132"/>
+              <text class="sub th" x="645" y="166" text-anchor="middle">เบรกเกอร์</text>
+              <text class="sub en" x="645" y="166" text-anchor="middle">Breaker</text>
+            </g>
+            <!-- Row 3 -->
+            <g>
+              <!-- Ground -->
+              <line class="wire" x1="84" y1="196" x2="84" y2="214"/>
+              <line x1="66" y1="214" x2="102" y2="214" stroke="#0d1128" stroke-width="2.5"/>
+              <line x1="73" y1="221" x2="95" y2="221" stroke="#0d1128" stroke-width="2.5"/>
+              <line x1="79" y1="228" x2="89" y2="228" stroke="#0d1128" stroke-width="2.5"/>
+              <text class="sub th" x="84" y="244" text-anchor="middle">จุดต่อลงดิน</text>
+              <text class="sub en" x="84" y="244" text-anchor="middle">Earth</text>
+              <!-- Ammeter -->
+              <line class="wire" x1="188" y1="212" x2="208" y2="212"/>
+              <circle class="sym" cx="228" cy="212" r="18"/>
+              <text class="lbl" x="228" y="217" text-anchor="middle">A</text>
+              <line class="wire" x1="246" y1="212" x2="268" y2="212"/>
+              <text class="sub th" x="228" y="244" text-anchor="middle">แอมมิเตอร์</text>
+              <text class="sub en" x="228" y="244" text-anchor="middle">Ammeter</text>
+              <!-- Voltmeter -->
+              <line class="wire" x1="332" y1="212" x2="352" y2="212"/>
+              <circle class="sym" cx="372" cy="212" r="18"/>
+              <text class="lbl" x="372" y="217" text-anchor="middle">V</text>
+              <line class="wire" x1="390" y1="212" x2="412" y2="212"/>
+              <text class="sub th" x="372" y="244" text-anchor="middle">โวลต์มิเตอร์</text>
+              <text class="sub en" x="372" y="244" text-anchor="middle">Voltmeter</text>
+              <!-- Junction -->
+              <line class="wire" x1="494" y1="212" x2="540" y2="212"/>
+              <line class="wire" x1="517" y1="192" x2="517" y2="232"/>
+              <circle class="node" cx="517" cy="212" r="4.5"/>
+              <text class="sub th" x="517" y="244" text-anchor="middle">จุดต่อ (โนด)</text>
+              <text class="sub en" x="517" y="244" text-anchor="middle">Junction (node)</text>
+              <!-- Crossing, not connected -->
+              <line class="wire" x1="622" y1="212" x2="668" y2="212"/>
+              <path class="wire" d="M645 192 V204 a7 7 0 0 0 0 16 V232"/>
+              <text class="sub th" x="645" y="244" text-anchor="middle">สายไขว้ ไม่ต่อกัน</text>
+              <text class="sub en" x="645" y="244" text-anchor="middle">Crossing, not joined</text>
+            </g>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 2.2</span><span class="en">Figure 2.2</span></b>
+          <span class="th"> สัญลักษณ์มาตรฐานที่ใช้บ่อยที่สุด (ตามแนวทาง IEC 60617)
+            สังเกตความต่างของสองสัญลักษณ์สุดท้าย: <b>มีจุดทึบ</b> แปลว่าสายต่อถึงกัน
+            ส่วน <b>เส้นโค้งข้าม</b> แปลว่าสายไขว้กันเฉย ๆ ไม่ได้ต่อกัน
+            อ่านผิดข้อนี้ข้อเดียวก็ต่อวงจรผิดทั้งตู้ได้</span>
+          <span class="en"> The symbols you will meet most often (after IEC 60617). Note the difference
+            between the last two: a <b>solid dot</b> means the wires are joined; a <b>hop</b> means they
+            merely cross. Misreading that one detail is enough to wire a whole cabinet wrongly.</span>
+        </figcaption>
+      </figure>
+
+      <h3><span class="th">2.2.1 คำศัพท์ของโครงสร้างวงจร</span><span class="en">2.2.1 The vocabulary of topology</span></h3>
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 2.4 นิยามที่ใช้ตลอดรายวิชา</span>
+            <span class="en">Table 2.4 Definitions used throughout the course</span></caption>
+          <thead>
+            <tr><th style="width:9rem"><span class="th">คำศัพท์</span><span class="en">Term</span></th>
+              <th><span class="th">นิยาม</span><span class="en">Definition</span></th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b><span class="th">โนด</span><span class="en">Node</span></b></td>
+              <td><span class="th">จุดเชื่อมต่อของอุปกรณ์ตั้งแต่สองตัวขึ้นไป สายที่ต่อถึงกันโดยไม่มีอุปกรณ์คั่น
+                ถือเป็นโนดเดียวกันทั้งหมด แม้จะวาดยาวข้ามหน้ากระดาษก็ตาม</span>
+                <span class="en">A junction of two or more elements. Any stretch of wire with no element in
+                it is all one node, however long it is drawn.</span></td></tr>
+            <tr><td><b><span class="th">กิ่ง</span><span class="en">Branch</span></b></td>
+              <td><span class="th">อุปกรณ์หนึ่งตัว (หรือกลุ่มที่ต่ออนุกรมกัน) ที่เชื่อมระหว่างสองโนด</span>
+                <span class="en">A single element, or a series group, connecting two nodes.</span></td></tr>
+            <tr><td><b><span class="th">ลูป</span><span class="en">Loop</span></b></td>
+              <td><span class="th">เส้นทางปิดใด ๆ ที่เริ่มและจบที่โนดเดียวกัน โดยไม่ผ่านโนดใดซ้ำ</span>
+                <span class="en">Any closed path starting and ending at the same node without passing
+                through any node twice.</span></td></tr>
+            <tr><td><b><span class="th">เมช</span><span class="en">Mesh</span></b></td>
+              <td><span class="th">ลูปที่ไม่มีลูปอื่นอยู่ภายใน — เปรียบเหมือน “ช่องหน้าต่าง” ของวงจร</span>
+                <span class="en">A loop that contains no other loop inside it — a "window pane" of the
+                circuit.</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><span class="th">จำนวนลูปอิสระ (ซึ่งเท่ากับจำนวนสมการที่ต้องเขียนในบทที่ 4) หาได้จาก</span>
+        <span class="en">The number of independent loops — which is the number of equations we will need to
+        write in Chapter 4 — is given by:</span></p>
+
+      <div class="equation">
+        \[ l = b - n + 1 \]
+      </div>
+      <p class="eq-note"><span class="th">\(b\) = จำนวนกิ่ง, \(n\) = จำนวนโนด, \(l\) = จำนวนลูปอิสระ</span>
+        <span class="en">\(b\) = branches, \(n\) = nodes, \(l\) = independent loops</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 620 260" role="img" width="620"
+               aria-label="Circuit showing nodes, branches and meshes">
+            <!-- outer frame -->
+            <path class="wire" d="M70 60 H180"/>
+            <path class="wire" d="M240 60 H550"/>
+            <path class="wire" d="M550 60 V110"/>
+            <path class="wire" d="M550 150 V200"/>
+            <path class="wire" d="M550 200 H70"/>
+            <path class="wire" d="M70 200 V160"/>
+            <path class="wire" d="M70 110 V60"/>
+            <!-- source left -->
+            <line x1="52" y1="120" x2="88" y2="120" stroke="#0d1128" stroke-width="3"/>
+            <line x1="61" y1="130" x2="79" y2="130" stroke="#0d1128" stroke-width="3"/>
+            <line x1="52" y1="140" x2="88" y2="140" stroke="#0d1128" stroke-width="3"/>
+            <line x1="61" y1="150" x2="79" y2="150" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M70 110 V120"/>
+            <path class="wire" d="M70 150 V160"/>
+            <text class="lbl" x="28" y="135" text-anchor="middle">V₁</text>
+            <!-- R1 top -->
+            <rect class="sym" x="180" y="50" width="60" height="20"/>
+            <text class="lbl" x="210" y="42" text-anchor="middle">R₁</text>
+            <!-- middle branch R2 -->
+            <path class="wire" d="M310 60 V105"/>
+            <rect class="sym" x="290" y="105" width="40" height="52"/>
+            <text class="lbl" x="352" y="136" text-anchor="middle">R₂</text>
+            <path class="wire" d="M310 157 V200"/>
+            <!-- right branch R3 -->
+            <rect class="sym" x="530" y="110" width="40" height="40"/>
+            <text class="lbl" x="592" y="136" text-anchor="middle">R₃</text>
+            <!-- nodes -->
+            <circle class="node" cx="310" cy="60" r="5"/>
+            <text class="cap" x="310" y="38" text-anchor="middle">A</text>
+            <circle class="node" cx="310" cy="200" r="5"/>
+            <text class="cap" x="310" y="224" text-anchor="middle">B</text>
+            <!-- mesh labels -->
+            <text class="lbl th" x="190" y="136" text-anchor="middle">เมช 1</text>
+            <text class="lbl en" x="190" y="136" text-anchor="middle">Mesh 1</text>
+            <text class="lbl th" x="430" y="136" text-anchor="middle">เมช 2</text>
+            <text class="lbl en" x="430" y="136" text-anchor="middle">Mesh 2</text>
+            <text class="sub th" x="310" y="248" text-anchor="middle">โนดสำคัญมี 2 จุด (A และ B) · กิ่งมี 3 กิ่ง · ลูปอิสระ l = 3 − 2 + 1 = 2</text>
+            <text class="sub en" x="310" y="248" text-anchor="middle">2 essential nodes (A, B) · 3 branches · independent loops l = 3 − 2 + 1 = 2</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 2.3</span><span class="en">Figure 2.3</span></b>
+          <span class="th"> วงจรเดียวกันนี้จะถูกนำไปวิเคราะห์ด้วยกฎของเคอร์ชอฟฟ์ในบทที่ 4
+            สังเกตว่า <b>ทั้งเส้นทางบนจากแหล่งจ่ายผ่าน R₁ จนถึงจุด A เป็นโนดหลายจุดหรือไม่</b>
+            คำตอบคือไม่ใช่ — มุมบนซ้ายเป็นเพียงการหักมุมของสาย ไม่ใช่โนดสำคัญ
+            เพราะมีอุปกรณ์ต่ออยู่เพียงสองตัว</span>
+          <span class="en"> This same circuit is analysed with Kirchhoff's laws in Chapter 4. Ask yourself
+            whether the top-left corner is a node: it is not an <i>essential</i> one, because only two
+            elements meet there — it is just a bend in the wire.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 2.2</span><span class="en">Example 2.2</span></span>
+          <span class="th">การนับโนด กิ่ง และลูป</span><span class="en">Counting nodes, branches and loops</span></div>
+        <div class="example-body">
+          <p><span class="th">จากวงจรในรูปที่ 2.3 จงระบุจำนวนโนดสำคัญ กิ่ง และลูปอิสระ
+            แล้วบอกว่าต้องเขียนสมการกี่สมการจึงจะแก้วงจรได้</span>
+            <span class="en">For the circuit of Figure 2.3, state the number of essential nodes, branches and
+            independent loops, and say how many equations are needed to solve it.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th"><b>โนดสำคัญ</b> — จุดที่มีอุปกรณ์มาต่อกันตั้งแต่สามตัวขึ้นไป ได้แก่ A และ B
+              ดังนั้น \(n = 2\)</span>
+              <span class="en"><b>Essential nodes</b> — points where three or more elements meet: A and B,
+              so \(n = 2\).</span></p>
+            <p><span class="th"><b>กิ่ง</b> — เส้นทางระหว่าง A กับ B มีสามเส้นทาง คือ
+              (1) ผ่าน R₁ และแหล่งจ่าย V₁ (2) ผ่าน R₂ และ (3) ผ่าน R₃ ดังนั้น \(b = 3\)</span>
+              <span class="en"><b>Branches</b> — three paths run between A and B: through R₁ and V₁, through
+              R₂, and through R₃. So \(b = 3\).</span></p>
+            \[ l = b - n + 1 = 3 - 2 + 1 = 2 \]
+            <p class="mb-0"><span class="th">ต้องใช้สมการ 2 สมการ ซึ่งตรงกับจำนวนเมชในรูป
+              หากใช้วิธีแรงดันโนด (บทที่ 4) จะต้องใช้เพียง \(n - 1 = 1\) สมการเท่านั้น — ง่ายกว่ามาก
+              และนี่คือเหตุผลที่เราจะเน้นวิธีโนดในรายวิชานี้</span>
+              <span class="en">Two equations, matching the two meshes in the figure. By the node-voltage
+              method (Chapter 4) only \(n - 1 = 1\) equation is needed — far less work, and the reason this
+              course leans on the nodal method.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <h3><span class="th">2.2.2 วงจรเปิด วงจรปิด และวงจรลัด</span>
+          <span class="en">2.2.2 Open, closed and short circuits</span></h3>
+      <div class="grid grid-3">
+        <div class="card">
+          <h4 class="mt-0"><span class="th">วงจรปิด (Closed)</span><span class="en">Closed circuit</span></h4>
+          <p class="small mb-0"><span class="th">เส้นทางครบวงจร กระแสไหลได้ตามปกติ
+            เป็นสภาวะที่เราต้องการให้เกิดขึ้นเมื่อสั่งงาน</span>
+            <span class="en">The path is complete and current flows normally — the state we want when the
+            equipment is switched on.</span></p>
+        </div>
+        <div class="card">
+          <h4 class="mt-0"><span class="th">วงจรเปิด (Open)</span><span class="en">Open circuit</span></h4>
+          <p class="small mb-0"><span class="th">เส้นทางขาด \(R \to \infty\) กระแสเป็นศูนย์
+            แต่ <b>ยังมีแรงดันคร่อมจุดที่ขาด</b> — นี่คือเหตุที่สายหลุดในตู้ยังดูดได้</span>
+            <span class="en">The path is broken, \(R \to \infty\) and the current is zero, but <b>the voltage
+            still appears across the break</b> — which is why a loose wire in a cabinet can still give a
+            shock.</span></p>
+        </div>
+        <div class="card">
+          <h4 class="mt-0"><span class="th">วงจรลัด (Short)</span><span class="en">Short circuit</span></h4>
+          <p class="small mb-0"><span class="th">มีเส้นทางความต้านทานต่ำมากคร่อมโหลด \(R \to 0\)
+            กระแสจึงพุ่งสูงมาก เกิดความร้อนและอาร์ก เป็นสาเหตุอันดับหนึ่งของไฟไหม้ในโรงเรือน</span>
+            <span class="en">A near-zero-resistance path bypasses the load, \(R \to 0\), so the current
+            becomes enormous, with heat and arcing — the leading cause of greenhouse
+            fires.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 2.3 -->
+    <section id="s3">
+      <h2><span class="num">2.3</span><span class="th">เครื่องมือวัดทางไฟฟ้าพื้นฐาน</span>
+          <span class="en">Basic electrical instruments</span></h2>
+
+      <p><span class="th">เครื่องมือวัดคือประสาทสัมผัสของวิศวกรไฟฟ้า เพราะเรามองไม่เห็นกระแสหรือแรงดันด้วยตา
+        แต่ต้องจำหลักข้อหนึ่งไว้เสมอ — <b>การวัดทุกครั้งรบกวนสิ่งที่เรากำลังวัด</b>
+        เครื่องมือที่ดีคือเครื่องมือที่รบกวนน้อยจนละเลยได้</span>
+        <span class="en">Instruments are the electrical engineer's senses, since we cannot see current or
+        voltage. But keep one principle always in mind: <b>every measurement disturbs the thing being
+        measured</b>. A good instrument is one that disturbs it so little we can ignore the
+        difference.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 640 230" role="img" width="640"
+               aria-label="Ammeter in series and voltmeter in parallel">
+            <path class="wire" d="M80 60 H210"/>
+            <path class="wire" d="M250 60 H430"/>
+            <path class="wire" d="M430 60 V95"/>
+            <path class="wire" d="M430 145 V180"/>
+            <path class="wire" d="M430 180 H80"/>
+            <path class="wire" d="M80 180 V140"/>
+            <path class="wire" d="M80 100 V60"/>
+            <!-- source -->
+            <line x1="62" y1="110" x2="98" y2="110" stroke="#0d1128" stroke-width="3"/>
+            <line x1="71" y1="120" x2="89" y2="120" stroke="#0d1128" stroke-width="3"/>
+            <line x1="62" y1="130" x2="98" y2="130" stroke="#0d1128" stroke-width="3"/>
+            <line x1="71" y1="140" x2="89" y2="140" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M80 100 V110"/>
+            <text class="lbl" x="36" y="125" text-anchor="middle">12 V</text>
+            <!-- ammeter in series -->
+            <circle class="sym" cx="230" cy="60" r="20"/>
+            <text class="lbl" x="230" y="65" text-anchor="middle">A</text>
+            <text class="cap th" x="230" y="26" text-anchor="middle">ต่ออนุกรม</text>
+            <text class="cap en" x="230" y="26" text-anchor="middle">in series</text>
+            <!-- load -->
+            <rect class="sym" x="410" y="95" width="40" height="50"/>
+            <text class="lbl" x="472" y="124" text-anchor="middle">R</text>
+            <!-- voltmeter parallel -->
+            <path class="wire" d="M430 88 H548 V152 H430"/>
+            <circle class="node" cx="430" cy="88" r="4"/>
+            <circle class="node" cx="430" cy="152" r="4"/>
+            <circle class="sym" cx="548" cy="120" r="20"/>
+            <text class="lbl" x="548" y="125" text-anchor="middle">V</text>
+            <text class="cap th" x="586" y="86" text-anchor="middle">ต่อขนาน</text>
+            <text class="cap en" x="586" y="86" text-anchor="middle">in parallel</text>
+            <!-- annotations -->
+            <text class="sub th" x="230" y="210" text-anchor="middle">แอมมิเตอร์ต้องมีความต้านทานภายในต่ำมาก (≈ 0.01 Ω)</text>
+            <text class="sub en" x="230" y="210" text-anchor="middle">an ammeter needs very low internal resistance (≈ 0.01 Ω)</text>
+            <text class="sub th" x="500" y="192" text-anchor="middle">โวลต์มิเตอร์ต้องมีความต้านทานสูงมาก (≈ 10 MΩ)</text>
+            <text class="sub en" x="500" y="192" text-anchor="middle">a voltmeter needs very high resistance (≈ 10 MΩ)</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 2.4</span><span class="en">Figure 2.4</span></b>
+          <span class="th"> การต่อมิเตอร์ที่ถูกต้อง จำด้วยเหตุผล ไม่ใช่ท่องจำ:
+            แอมมิเตอร์ต้องให้กระแสทั้งหมดไหลผ่านตัวมันจึงต้องอนุกรม และต้องต้านทานต่ำเพื่อไม่ให้กระแสลดลง
+            ส่วนโวลต์มิเตอร์ต้องคร่อมสองจุดที่ต้องการวัดจึงต้องขนาน
+            และต้องต้านทานสูงเพื่อไม่ให้ดึงกระแสออกจากวงจร</span>
+          <span class="en"> Connecting meters correctly. Remember the reason rather than the rule: an
+            ammeter must carry the whole current, so it goes in series and must have low resistance lest it
+            reduce that current; a voltmeter must sit across the two points of interest, so it goes in
+            parallel and must have high resistance lest it steal current from the circuit.</span>
+        </figcaption>
+      </figure>
+
+      <h3><span class="th">2.3.1 ดิจิทัลมัลติมิเตอร์ (DMM)</span><span class="en">2.3.1 The digital multimeter</span></h3>
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 2.5 โหมดการทำงานของมัลติมิเตอร์</span>
+            <span class="en">Table 2.5 Multimeter modes</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">โหมด</span><span class="en">Mode</span></th>
+              <th><span class="th">การต่อ</span><span class="en">Connection</span></th>
+              <th><span class="th">ความต้านทานภายใน</span><span class="en">Internal resistance</span></th>
+              <th><span class="th">ข้อควรระวัง</span><span class="en">Watch out for</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>V</b> <span class="th">แรงดัน</span><span class="en">Voltage</span></td>
+              <td><span class="th">ขนาน (วงจรมีไฟ)</span><span class="en">Parallel, circuit live</span></td>
+              <td class="num">≈ 10 MΩ</td>
+              <td><span class="th">เลือก DC หรือ AC ให้ถูก มิฉะนั้นค่าที่อ่านได้จะผิดมาก</span>
+                  <span class="en">Choose DC or AC correctly, or the reading will be badly wrong</span></td>
+            </tr>
+            <tr style="background:#fdecec">
+              <td><b>A</b> <span class="th">กระแส</span><span class="en">Current</span></td>
+              <td><span class="th">อนุกรม (ต้องตัดวงจรเพื่อแทรกมิเตอร์)</span><span class="en">Series — the circuit must be broken to insert it</span></td>
+              <td class="num">≈ 0.01–1 Ω</td>
+              <td><span class="th"><b>ห้ามต่อคร่อมแหล่งจ่าย</b> จะเกิดลัดวงจรทันที ฟิวส์ขาดหรือเกิดอาร์ก</span>
+                  <span class="en"><b>Never connect across a source</b> — an instant short circuit, blown fuse or arc</span></td>
+            </tr>
+            <tr>
+              <td><b>Ω</b> <span class="th">ความต้านทาน</span><span class="en">Resistance</span></td>
+              <td><span class="th">คร่อมอุปกรณ์ที่ <b>ปลดออกจากวงจรแล้ว</b></span>
+                  <span class="en">Across the component, <b>disconnected from the circuit</b></span></td>
+              <td>—</td>
+              <td><span class="th">ต้องไม่มีไฟในวงจร และต้องปลดอย่างน้อยหนึ่งขาออก ไม่งั้นอ่านค่าขนานของทั้งวงจร</span>
+                  <span class="en">The circuit must be dead, and one leg lifted, or you read the whole network in parallel</span></td>
+            </tr>
+            <tr>
+              <td>🕪 <span class="th">ความต่อเนื่อง</span><span class="en">Continuity</span></td>
+              <td><span class="th">คร่อมสายที่ต้องการตรวจ</span><span class="en">Across the conductor under test</span></td>
+              <td>—</td>
+              <td><span class="th">ทดสอบมิเตอร์เองก่อนใช้ทุกครั้งโดยแตะปลายสายวัดเข้าหากัน</span>
+                  <span class="en">Prove the meter first by touching the probes together</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3><span class="th">2.3.2 ผลกระทบจากการโหลดของมิเตอร์ (Loading effect)</span>
+          <span class="en">2.3.2 The meter's loading effect</span></h3>
+      <p><span class="th">โวลต์มิเตอร์ที่มีความต้านทาน 10 MΩ เมื่อนำไปคร่อมวงจรที่มีความต้านทานต่ำ ๆ
+        ผลกระทบแทบไม่มี แต่ถ้านำไปวัดวงจรที่มีความต้านทานสูงมาก เช่น วงจรเซนเซอร์บางชนิด
+        ตัวมิเตอร์เองจะกลายเป็นโหลดขนานที่ทำให้แรงดันที่อ่านได้ต่ำกว่าความจริง</span>
+        <span class="en">A 10 MΩ voltmeter placed across a low-resistance circuit has almost no effect. Across
+        a very high-resistance circuit — some sensor circuits, for instance — the meter itself becomes a
+        parallel load, and the voltage it reads is lower than the true one.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 680 280" role="img" width="680"
+               aria-label="A voltmeter loading a high-resistance divider, and the equivalent circuit">
+            <text class="cap th" x="180" y="28" text-anchor="middle">ก. สิ่งที่เกิดขึ้นจริงเมื่อต่อมิเตอร์</text>
+            <text class="cap en" x="180" y="28" text-anchor="middle">a. what really happens when the meter is connected</text>
+            <text class="cap th" x="520" y="28" text-anchor="middle">ข. วงจรสมมูลที่ได้</text>
+            <text class="cap en" x="520" y="28" text-anchor="middle">b. the resulting equivalent circuit</text>
+
+            <!-- ============== panel A ============== -->
+            <path class="wire" d="M60 60 V126"/>
+            <line x1="38" y1="126" x2="82" y2="126" stroke="#0d1128" stroke-width="3"/>
+            <line x1="49" y1="138" x2="71" y2="138" stroke="#0d1128" stroke-width="3"/>
+            <line x1="38" y1="150" x2="82" y2="150" stroke="#0d1128" stroke-width="3"/>
+            <line x1="49" y1="162" x2="71" y2="162" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M60 162 V230"/>
+            <text class="lbl" x="22" y="148" text-anchor="middle">10 V</text>
+
+            <path class="wire" d="M60 60 H150 V80"/>
+            <rect class="sym" x="136" y="80" width="28" height="52"/>
+            <text class="lbl" x="108" y="110" text-anchor="middle">R₁</text>
+            <text class="sub" x="108" y="126" text-anchor="middle">10 MΩ</text>
+            <path class="wire" d="M150 132 V158"/>
+            <rect class="sym" x="136" y="158" width="28" height="52"/>
+            <text class="lbl" x="108" y="188" text-anchor="middle">R₂</text>
+            <text class="sub" x="108" y="204" text-anchor="middle">10 MΩ</text>
+            <path class="wire" d="M150 210 V230"/>
+            <path class="wire" d="M60 230 H262"/>
+
+            <circle class="node" cx="150" cy="145" r="5"/>
+            <path class="wire" d="M150 145 H262 V158"/>
+            <circle class="sym" cx="262" cy="180" r="21"/>
+            <text class="lbl" x="262" y="185" text-anchor="middle">V</text>
+            <path class="wire" d="M262 201 V230"/>
+            <text class="sub th" x="308" y="176">ความต้านทาน</text>
+            <text class="sub en" x="308" y="176">meter's own</text>
+            <text class="sub th" x="308" y="190">ของมิเตอร์เอง</text>
+            <text class="sub en" x="308" y="190">resistance</text>
+            <text class="lbl" x="308" y="208">10 MΩ</text>
+
+            <text class="sub th" x="180" y="256" text-anchor="middle">มิเตอร์ต่อ "ขนาน" กับ R₂ โดยที่เราไม่ได้ตั้งใจ</text>
+            <text class="sub en" x="180" y="256" text-anchor="middle">without meaning to, the meter is now in parallel with R₂</text>
+
+            <line x1="356" y1="40" x2="356" y2="250" stroke="#e4e7ec" stroke-width="1"/>
+            <text class="lbl" x="376" y="150">⟹</text>
+
+            <!-- ============== panel B ============== -->
+            <path class="wire" d="M430 60 V126"/>
+            <line x1="408" y1="126" x2="452" y2="126" stroke="#0d1128" stroke-width="3"/>
+            <line x1="419" y1="138" x2="441" y2="138" stroke="#0d1128" stroke-width="3"/>
+            <line x1="408" y1="150" x2="452" y2="150" stroke="#0d1128" stroke-width="3"/>
+            <line x1="419" y1="162" x2="441" y2="162" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M430 162 V230"/>
+            <text class="lbl" x="392" y="148" text-anchor="middle">10 V</text>
+
+            <path class="wire" d="M430 60 H540 V80"/>
+            <rect class="sym" x="526" y="80" width="28" height="52"/>
+            <text class="lbl" x="498" y="110" text-anchor="middle">R₁</text>
+            <text class="sub" x="498" y="126" text-anchor="middle">10 MΩ</text>
+            <path class="wire" d="M540 132 V158"/>
+            <rect x="526" y="158" width="28" height="52" fill="#eaf7ef" stroke="#2f855a" stroke-width="2"/>
+            <text class="lbl" x="588" y="182" text-anchor="middle" fill="#2f855a">R₂ ∥ R_V</text>
+            <text class="lbl" x="588" y="200" text-anchor="middle" fill="#2f855a">= 5 MΩ</text>
+            <path class="wire" d="M540 210 V230"/>
+            <path class="wire" d="M430 230 H540"/>
+
+            <circle class="node" cx="540" cy="145" r="5"/>
+            <path class="wire" d="M540 145 H636"/>
+            <circle class="node" cx="636" cy="145" r="5"/>
+            <text class="cap" x="636" y="132" text-anchor="middle">3.33 V</text>
+            <text class="sub th" x="520" y="256" text-anchor="middle">ตัวล่างเหลือครึ่งเดียว แรงดันที่อ่านได้จึงต่ำกว่าความจริง</text>
+            <text class="sub en" x="520" y="256" text-anchor="middle">the lower arm is halved, so the reading falls below the truth</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 2.5</span><span class="en">Figure 2.5</span></b>
+          <span class="th"> วงจรสมมูลของการวัดที่รบกวนสิ่งที่วัด
+            โวลต์มิเตอร์ไม่ได้เสีย และไม่ได้อ่านผิด — มันอ่านแรงดันที่มีอยู่จริง ณ ขณะนั้นอย่างถูกต้อง
+            แต่แรงดันนั้นเปลี่ยนไปแล้วเพราะการมีอยู่ของมันเอง
+            บทเรียนนี้ใช้ได้กับการวัดทุกชนิดในวิชาวิศวกรรม ไม่เฉพาะทางไฟฟ้า</span>
+          <span class="en"> The equivalent circuit of a measurement that disturbs what it measures. The
+            voltmeter is not faulty and is not reading wrongly — it correctly reports the voltage that is
+            there at that moment. It is just that the voltage changed because the meter arrived. The lesson
+            holds for every kind of engineering measurement, not only electrical ones.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 2.3</span><span class="en">Example 2.3</span></span>
+          <span class="th">เมื่อมิเตอร์ทำให้ค่าที่อ่านผิด</span><span class="en">When the meter falsifies the reading</span></div>
+        <div class="example-body">
+          <p><span class="th">วงจรแบ่งแรงดันใช้ตัวต้านทานสองตัว ตัวละ 10 MΩ ต่ออนุกรมกับแหล่งจ่าย 10 V
+            (ค่าที่ถูกต้องคือ 5 V ที่จุดกลาง) หากใช้โวลต์มิเตอร์ความต้านทาน 10 MΩ วัดที่จุดกลาง
+            จะอ่านค่าได้เท่าใด</span>
+            <span class="en">A divider of two 10 MΩ resistors is connected across 10 V, so the true midpoint
+            voltage is 5 V. What does a 10 MΩ voltmeter read there?</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th">มิเตอร์ต่อขนานกับตัวต้านทานตัวล่าง ความต้านทานรวมของสองตัวขนานกันคือ</span>
+              <span class="en">The meter is in parallel with the lower resistor, giving a combined
+              resistance of:</span></p>
+            \[ R_{\text{parallel}} = \frac{(10)(10)}{10+10} = 5\ \text{M}\Omega \]
+            <p><span class="th">แรงดันที่จุดกลางจึงกลายเป็น</span>
+              <span class="en">The midpoint voltage therefore becomes:</span></p>
+            \[ V_{\text{read}} = 10 \times \frac{5}{10 + 5} = 3.33\ \text{V} \]
+            <p class="mb-0"><span class="th">อ่านได้ 3.33 V ทั้งที่ค่าจริงคือ 5 V — คลาดเคลื่อนถึง 33 %
+              โดยที่มิเตอร์ไม่ได้เสียเลย นี่คือเหตุผลที่วงจรเซนเซอร์ความต้านทานสูง
+              ต้องใช้วงจรบัฟเฟอร์ (op-amp follower) ก่อนวัดเสมอ ซึ่งจะกล่าวถึงในบทที่ 13
+              ลองคำนวณดูว่าถ้าตัวต้านทานเป็น 10 kΩ ความคลาดเคลื่อนจะเหลือเท่าใด</span>
+              <span class="en">It reads 3.33 V where the truth is 5 V — a 33 % error with nothing wrong with
+              the meter at all. This is why high-resistance sensor circuits are always buffered by an
+              op-amp follower before measurement, a technique we meet in Chapter 13. Work out for yourself
+              how small the error becomes if the resistors are 10 kΩ instead.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <h3><span class="th">2.3.3 เครื่องมืออื่นที่ใช้ในงานภาคสนาม</span>
+          <span class="en">2.3.3 Other instruments used in the field</span></h3>
+      <div class="grid grid-2">
+        <div class="card">
+          <h4 class="mt-0">🔧 <span class="th">แคลมป์มิเตอร์ (Clamp meter)</span><span class="en">Clamp meter</span></h4>
+          <p class="small mb-0"><span class="th">วัดกระแสโดย <b>ไม่ต้องตัดวงจร</b>
+            อาศัยการตรวจจับสนามแม่เหล็กรอบตัวนำ จึงเป็นเครื่องมือหลักในการตรวจสอบมอเตอร์ที่กำลังทำงาน
+            ข้อควรจำ: ต้องคล้องสายเพียง <b>เส้นเดียว</b> ถ้าคล้องทั้งสายไฟและสายนิวทรัลพร้อมกัน
+            สนามแม่เหล็กจะหักล้างกันและอ่านค่าได้ใกล้ศูนย์</span>
+            <span class="en">Measures current <b>without breaking the circuit</b>, by sensing the magnetic
+            field around the conductor — the field engineer's main tool for checking a running motor.
+            Remember to clamp <b>one</b> conductor only: clamp both line and neutral together and the
+            fields cancel, giving a reading near zero.</span></p>
+        </div>
+        <div class="card">
+          <h4 class="mt-0">🔬 <span class="th">ออสซิลโลสโคป (Oscilloscope)</span><span class="en">Oscilloscope</span></h4>
+          <p class="small mb-0"><span class="th">แสดงรูปคลื่นแรงดันเทียบกับเวลา ทำให้เห็นสิ่งที่มัลติมิเตอร์มองไม่เห็น
+            เช่น สัญญาณรบกวนจากอินเวอร์เตอร์ หรือพัลส์ PWM ที่ใช้ควบคุมความเร็วพัดลม
+            จะใช้อย่างจริงจังในปฏิบัติการที่ 6</span>
+            <span class="en">Shows voltage against time, revealing what a multimeter cannot: inverter noise,
+            or the PWM pulses controlling a fan's speed. We use it in earnest in Laboratory 6.</span></p>
+        </div>
+        <div class="card">
+          <h4 class="mt-0">⚡ <span class="th">เพาเวอร์มิเตอร์ (Power meter)</span><span class="en">Power meter</span></h4>
+          <p class="small mb-0"><span class="th">วัดแรงดัน กระแส กำลังจริง และตัวประกอบกำลังพร้อมกัน
+            สำหรับโหลดมอเตอร์ การคูณค่า V กับ I ที่อ่านจากมัลติมิเตอร์ <b>จะให้ผลผิด</b>
+            เพราะกระแสไม่อยู่ในเฟสเดียวกับแรงดัน เหตุผลเต็ม ๆ อยู่ในบทที่ 7</span>
+            <span class="en">Reads voltage, current, true power and power factor together. For a motor load,
+            multiplying the V and I from a multimeter <b>gives the wrong answer</b>, because the current is
+            not in phase with the voltage — the full reason is in Chapter 7.</span></p>
+        </div>
+        <div class="card">
+          <h4 class="mt-0">🧱 <span class="th">เครื่องวัดความต้านทานฉนวน (Insulation tester)</span>
+            <span class="en">Insulation tester</span></h4>
+          <p class="small mb-0"><span class="th">จ่ายแรงดันทดสอบ 500 V DC เพื่อวัดความต้านทานของฉนวน
+            มาตรฐาน วสท. กำหนดค่าต่ำสุดที่ยอมรับได้สำหรับวงจรแรงดันต่ำคือ 1 MΩ
+            ในโรงเรือนที่ชื้นตลอดเวลา ค่านี้จะลดลงตามอายุการใช้งาน จึงควรตรวจวัดเป็นประจำทุกปี</span>
+            <span class="en">Applies a 500 V DC test voltage to measure insulation resistance. The EIT
+            standard sets a minimum of 1 MΩ for low-voltage circuits. In a permanently damp greenhouse this
+            falls with age, so an annual test is worth scheduling.</span></p>
+        </div>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">🏷 <span class="th">พิกัดประเภทการวัด (CAT rating) — เลือกให้ถูก</span>
+          <span class="en">Measurement category (CAT) ratings — choose correctly</span></div>
+        <p><span class="th">ตัวเลข CAT บอกว่าเครื่องมือทนแรงดันกระชากได้แค่ไหน ไม่ใช่แค่แรงดันปกติ
+          ยิ่งใกล้แหล่งจ่ายมากยิ่งต้องใช้ CAT สูง</span>
+          <span class="en">The CAT number says how large a transient the instrument can survive, not merely
+          the steady voltage. The closer to the source, the higher the category needed.</span></p>
+        <ul class="mb-0 small">
+          <li><b>CAT II</b> — <span class="th">วงจรที่ต่อผ่านเต้ารับ เช่น วัดที่ปลั๊กของปั๊มน้ำ</span>
+              <span class="en">circuits fed through a socket, such as at a pump's plug</span></li>
+          <li><b>CAT III</b> — <span class="th">แผงจ่ายไฟและวงจรเดินสายถาวรในอาคาร (ใช้ในปฏิบัติการของเรา)</span>
+              <span class="en">distribution boards and fixed wiring (what we use in our laboratory)</span></li>
+          <li><b>CAT IV</b> — <span class="th">จุดต่อเข้าอาคาร มิเตอร์ และสายจากหม้อแปลง</span>
+              <span class="en">the service entrance, the meter and the line from the transformer</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Summary -->
+    <section id="summary">
+      <h2><span class="num">📌</span><span class="th">สรุปบทเรียน</span><span class="en">Chapter summary</span></h2>
+      <div class="card">
+        <ul class="mb-0">
+          <li><span class="th">วงจรไฟฟ้าประกอบด้วยสี่ส่วน: <b>แหล่งจ่าย</b> (ให้พลังงาน) <b>โหลด</b> (ใช้พลังงาน)
+            <b>ตัวนำ</b> (เชื่อมเส้นทาง) และ <b>อุปกรณ์ควบคุมกับป้องกัน</b> (สั่งงานและตัดเมื่อผิดปกติ)</span>
+            <span class="en">A circuit has four parts: a <b>source</b> to supply energy, a <b>load</b> to use
+            it, <b>conductors</b> to complete the path, and <b>control and protective devices</b> to command
+            it and cut it off on a fault.</span></li>
+          <li><span class="th">แหล่งจ่ายแรงดันรักษาแรงดันคงที่ แหล่งจ่ายกระแสรักษากระแสคงที่
+            แหล่งจ่ายจริงมีความต้านทานภายในเสมอ \(V_{\text{terminal}} = E - Ir\)</span>
+            <span class="en">A voltage source holds voltage constant, a current source holds current
+            constant, and every real source has internal resistance:
+            \(V_{\text{terminal}} = E - Ir\).</span></li>
+          <li><span class="th">ความต้านทานของสาย \(R = \rho L / A\) ทำให้เกิดแรงดันตก ซึ่งต้องคิดความยาวไป–กลับ
+            และต้องไม่เกิน 3 % สำหรับวงจรย่อยตามมาตรฐาน วสท.</span>
+            <span class="en">Cable resistance \(R = \rho L / A\) causes a voltage drop — count the length
+            both ways — which must not exceed 3 % in a branch circuit under the EIT standard.</span></li>
+          <li><span class="th">เบรกเกอร์ป้องกัน <b>สายและอุปกรณ์</b> จากกระแสเกิน ส่วน RCD 30 mA
+            ป้องกัน <b>คน</b> จากไฟดูด ทั้งสองอย่างทำหน้าที่แทนกันไม่ได้</span>
+            <span class="en">A breaker protects <b>cables and equipment</b> from overcurrent; a 30 mA RCD
+            protects <b>people</b> from shock. Neither substitutes for the other.</span></li>
+          <li><span class="th">โนดคือจุดเชื่อมต่อ กิ่งคือเส้นทางระหว่างโนด ลูปคือเส้นทางปิด
+            และจำนวนลูปอิสระ \(l = b - n + 1\)</span>
+            <span class="en">A node is a junction, a branch is a path between nodes, a loop is a closed path,
+            and the number of independent loops is \(l = b - n + 1\).</span></li>
+          <li><span class="th">โวลต์มิเตอร์ต่อขนานและต้องต้านทานสูง แอมมิเตอร์ต่ออนุกรมและต้องต้านทานต่ำ
+            การวัดทุกครั้งรบกวนวงจร จึงต้องประเมินผลกระทบจากการโหลดเสมอ</span>
+            <span class="en">A voltmeter goes in parallel and must be high-resistance; an ammeter goes in
+            series and must be low-resistance. Every measurement disturbs the circuit, so always weigh the
+            loading effect.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Activity -->
+    <section id="activity">
+      <h2><span class="num">🧭</span><span class="th">กิจกรรมในชั้นเรียน</span>
+          <span class="en">Class activity</span></h2>
+
+      <div class="activity">
+        <div class="activity-head">
+          <h3><span class="th">กิจกรรมที่ 2.1 — ถอดรหัสตู้ควบคุมปั๊มน้ำ</span>
+              <span class="en">Activity 2.1 — Decoding a pump control panel</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">40 นาที</span><span class="en">40 minutes</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO1, CLO2</span><span class="en">CLO1, CLO2</span></span>
+          </div>
+        </div>
+        <div class="activity-body">
+          <p><span class="th"><b>สถานการณ์:</b> ระบบสูบน้ำอัตโนมัติของฟาร์มทำงานดังนี้ —
+            เมื่อลูกลอยในถังพักน้ำต่ำกว่าระดับที่กำหนด สวิตช์ลูกลอยจะปิดวงจรควบคุม 24 V
+            ทำให้คอยล์ของแมกเนติกคอนแทกเตอร์ทำงาน หน้าสัมผัสหลักจึงปิด
+            และจ่ายไฟ 230 V เข้ามอเตอร์ปั๊ม 1.5 kW ผ่านโอเวอร์โหลดรีเลย์
+            ทั้งระบบมีเบรกเกอร์ 16 A และ RCD 30 mA อยู่ต้นทาง</span>
+            <span class="en"><b>Scenario:</b> A farm's automatic pumping system works like this. When the
+            float in the storage tank drops below its set level, the float switch closes a 24 V control
+            circuit, energising a contactor coil; the main contacts close and feed 230 V to a 1.5 kW pump
+            motor through an overload relay. Upstream of everything sit a 16 A breaker and a 30 mA
+            RCD.</span></p>
+
+          <ol class="steps">
+            <li><span class="th"><b>เขียนแผนผัง</b> — วาดแผนผังวงจรด้วยสัญลักษณ์มาตรฐานจากรูปที่ 2.2
+              โดยแยกเป็นสองส่วน คือ <i>วงจรกำลัง</i> (230 V) และ <i>วงจรควบคุม</i> (24 V)</span>
+              <span class="en"><b>Draw the schematic</b> — using the standard symbols of Figure 2.2, in two
+              parts: the <i>power circuit</i> (230 V) and the <i>control circuit</i> (24 V).</span></li>
+            <li><span class="th"><b>จำแนกอุปกรณ์</b> — ระบุว่าอุปกรณ์แต่ละตัวอยู่ในหมวดใดใน 4 หมวด
+              (แหล่งจ่าย / โหลด / ตัวนำ / ควบคุมและป้องกัน) ในตารางด้านล่าง</span>
+              <span class="en"><b>Classify</b> — put every device into one of the four categories
+              (source / load / conductor / control and protection) in the table below.</span></li>
+            <li><span class="th"><b>นับโครงสร้าง</b> — ในวงจรควบคุม 24 V มีโนดกี่โนด กิ่งกี่กิ่ง
+              และลูปอิสระกี่ลูป</span>
+              <span class="en"><b>Count the topology</b> — how many nodes, branches and independent loops
+              are there in the 24 V control circuit?</span></li>
+            <li><span class="th"><b>วินิจฉัยปัญหา</b> — ปั๊มไม่ทำงาน ให้แต่ละกลุ่มเรียงลำดับจุดที่จะวัดด้วยมัลติมิเตอร์
+              พร้อมระบุว่าจะวัดโหมดใดและคาดว่าจะเห็นค่าอะไรหากจุดนั้นปกติ</span>
+              <span class="en"><b>Diagnose</b> — the pump will not start. List, in order, the points you
+              would measure with a multimeter, stating which mode you would use and what reading you would
+              expect if that point were healthy.</span></li>
+            <li><span class="th"><b>อภิปราย</b> — เหตุใดจึงออกแบบให้วงจรควบคุมใช้แรงดันเพียง 24 V
+              ทั้งที่มอเตอร์ใช้ 230 V ให้เหตุผลอย่างน้อยสองข้อ</span>
+              <span class="en"><b>Discuss</b> — why is the control circuit designed at only 24 V when the
+              motor runs on 230 V? Give at least two reasons.</span></li>
+          </ol>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ใบงานกิจกรรมที่ 2.1 — จำแนกอุปกรณ์</span>
+                <span class="en">Activity 2.1 worksheet — classifying the devices</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">อุปกรณ์</span><span class="en">Device</span></th>
+                  <th><span class="th">หมวด (1 ใน 4)</span><span class="en">Category (of 4)</span></th>
+                  <th><span class="th">หน้าที่ในระบบนี้</span><span class="en">Its job in this system</span></th>
+                  <th><span class="th">อยู่ในวงจรกำลังหรือควบคุม</span><span class="en">Power or control circuit?</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="th">เบรกเกอร์ 16 A</span><span class="en">16 A breaker</span></td>
+                  <td><input type="text" aria-label="c1"></td><td><input type="text" aria-label="f1"></td><td><input type="text" aria-label="w1"></td></tr>
+                <tr><td><span class="th">RCD 30 mA</span><span class="en">30 mA RCD</span></td>
+                  <td><input type="text" aria-label="c2"></td><td><input type="text" aria-label="f2"></td><td><input type="text" aria-label="w2"></td></tr>
+                <tr><td><span class="th">สวิตช์ลูกลอย</span><span class="en">Float switch</span></td>
+                  <td><input type="text" aria-label="c3"></td><td><input type="text" aria-label="f3"></td><td><input type="text" aria-label="w3"></td></tr>
+                <tr><td><span class="th">คอยล์คอนแทกเตอร์</span><span class="en">Contactor coil</span></td>
+                  <td><input type="text" aria-label="c4"></td><td><input type="text" aria-label="f4"></td><td><input type="text" aria-label="w4"></td></tr>
+                <tr><td><span class="th">หน้าสัมผัสหลักของคอนแทกเตอร์</span><span class="en">Contactor main contacts</span></td>
+                  <td><input type="text" aria-label="c5"></td><td><input type="text" aria-label="f5"></td><td><input type="text" aria-label="w5"></td></tr>
+                <tr><td><span class="th">โอเวอร์โหลดรีเลย์</span><span class="en">Overload relay</span></td>
+                  <td><input type="text" aria-label="c6"></td><td><input type="text" aria-label="f6"></td><td><input type="text" aria-label="w6"></td></tr>
+                <tr><td><span class="th">มอเตอร์ปั๊ม 1.5 kW</span><span class="en">1.5 kW pump motor</span></td>
+                  <td><input type="text" aria-label="c7"></td><td><input type="text" aria-label="f7"></td><td><input type="text" aria-label="w7"></td></tr>
+                <tr><td><span class="th">หม้อแปลงควบคุม 230/24 V</span><span class="en">230/24 V control transformer</span></td>
+                  <td><input type="text" aria-label="c8"></td><td><input type="text" aria-label="f8"></td><td><input type="text" aria-label="w8"></td></tr>
+                <tr><td><span class="th">สาย THW 2.5 mm²</span><span class="en">2.5 mm² THW cable</span></td>
+                  <td><input type="text" aria-label="c9"></td><td><input type="text" aria-label="f9"></td><td><input type="text" aria-label="w9"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">✅ <span class="th">เกณฑ์การประเมิน (10 คะแนน)</span>
+              <span class="en">Marking guide (10 marks)</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">แผนผังวงจรใช้สัญลักษณ์ถูกต้องและแยกวงจรกำลัง/ควบคุมชัดเจน — 4 คะแนน</span>
+                  <span class="en">Correct symbols, with power and control circuits clearly separated — 4 marks</span></li>
+              <li><span class="th">จำแนกอุปกรณ์และนับโครงสร้างวงจรถูกต้อง — 3 คะแนน</span>
+                  <span class="en">Correct classification and topology count — 3 marks</span></li>
+              <li><span class="th">ลำดับการวินิจฉัยปัญหาสมเหตุสมผลและปลอดภัย — 3 คะแนน</span>
+                  <span class="en">A logical and safe fault-finding sequence — 3 marks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Laboratory -->
+    <section id="lab">
+      <h2><span class="num">🧪</span><span class="th">ปฏิบัติการที่ 2</span>
+          <span class="en">Laboratory 2</span></h2>
+
+      <div class="lab">
+        <div class="lab-head">
+          <h3><span class="th">ปฏิบัติการที่ 2 — ต่อวงจรควบคุมปั๊มน้ำและตรวจวัดค่า</span>
+              <span class="en">Laboratory 2 — Building and measuring a pump control circuit</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">2 ชั่วโมง</span><span class="en">2 hours</span></span>
+            <span>👥 <span class="th">กลุ่มละ 2–3 คน</span><span class="en">Groups of 2–3</span></span>
+            <span>🎯 <span class="th">CLO1, CLO2, CLO6</span><span class="en">CLO1, CLO2, CLO6</span></span>
+          </div>
+        </div>
+        <div class="lab-body">
+
+          <h4 class="mt-0"><span class="th">วัตถุประสงค์</span><span class="en">Objectives</span></h4>
+          <ol>
+            <li><span class="th">ต่อวงจรควบคุมแบบรีเลย์ที่มีองค์ประกอบครบทั้งสี่ส่วนจากแผนผังวงจร</span>
+                <span class="en">Build, from a schematic, a relay control circuit containing all four
+                parts.</span></li>
+            <li><span class="th">วัดแรงดันและกระแสในวงจรควบคุมและวงจรกำลัง แล้วเปรียบเทียบกับค่าที่คำนวณได้</span>
+                <span class="en">Measure voltage and current in both the control and the power circuit and
+                compare with calculation.</span></li>
+            <li><span class="th">วัดแรงดันตกในสายยาว และตรวจสอบกับเกณฑ์ 3 %</span>
+                <span class="en">Measure the voltage drop along a long cable and check it against the 3 %
+                limit.</span></li>
+            <li><span class="th">สังเกตความแตกต่างระหว่างสภาวะวงจรเปิด วงจรปิด และการโหลดของมิเตอร์</span>
+                <span class="en">Observe the difference between open-circuit, closed-circuit and
+                meter-loading conditions.</span></li>
+          </ol>
+
+          <h4><span class="th">อุปกรณ์</span><span class="en">Equipment</span></h4>
+          <ul>
+            <li><span class="th">แหล่งจ่ายไฟ DC 24 V และ 12 V, ดิจิทัลมัลติมิเตอร์ 2 เครื่องต่อกลุ่ม</span>
+                <span class="en">24 V and 12 V DC supplies; two digital multimeters per group</span></li>
+            <li><span class="th">รีเลย์ 24 V DC (หน้าสัมผัส SPDT 10 A), สวิตช์กดติด–ปล่อยดับ, สวิตช์โยก</span>
+                <span class="en">A 24 V DC relay (SPDT, 10 A), a push-button and a toggle switch</span></li>
+            <li><span class="th">มอเตอร์กระแสตรง 12 V (จำลองปั๊ม) และหลอด LED แสดงสถานะ</span>
+                <span class="en">A 12 V DC motor standing in for the pump, and an LED status lamp</span></li>
+            <li><span class="th">ฟิวส์ 2 A พร้อมกระบอก, ตัวต้านทาน 220 Ω, สายต่อวงจร</span>
+                <span class="en">A 2 A fuse and holder, a 220 Ω resistor, connecting leads</span></li>
+            <li><span class="th">สายทองแดงขนาด 0.5 mm² ยาว 20 เมตร (จำลองสายเดินยาวในแปลง)</span>
+                <span class="en">A 20 m length of 0.5 mm² copper wire, standing in for a long field
+                run</span></li>
+          </ul>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">⚠️ <span class="th">ข้อควรระวัง</span>
+              <span class="en">Safety precautions</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">ปฏิบัติการนี้ใช้แรงดันต่ำ (ไม่เกิน 24 V) เท่านั้น ห้ามต่อกับไฟ 230 V โดยเด็ดขาด</span>
+                  <span class="en">This laboratory uses extra-low voltage only (24 V maximum). Never connect
+                  it to the 230 V mains.</span></li>
+              <li><span class="th">ตรวจแผนผังกับผู้ช่วยสอนก่อนจ่ายไฟทุกครั้ง</span>
+                  <span class="en">Have the demonstrator check your wiring before switching on, every
+                  time.</span></li>
+              <li><span class="th">ตั้งมิเตอร์ให้ถูกโหมดก่อนต่อ — ต่อมิเตอร์โหมด A คร่อมแหล่งจ่ายจะทำให้ฟิวส์ขาดทันที</span>
+                  <span class="en">Set the meter's mode before connecting — a meter in A mode across the
+                  supply blows its fuse instantly.</span></li>
+            </ul>
+          </div>
+
+          <h4><span class="th">ขั้นตอนการทดลอง</span><span class="en">Procedure</span></h4>
+
+          <p><b><span class="th">ตอนที่ 1: วงจรควบคุมด้วยรีเลย์</span>
+            <span class="en">Part 1: The relay control circuit</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อวงจรควบคุม: แหล่งจ่าย 24 V → ฟิวส์ 2 A → สวิตช์กด → คอยล์รีเลย์ → กลับแหล่งจ่าย</span>
+                <span class="en">Wire the control circuit: 24 V supply → 2 A fuse → push-button → relay coil
+                → back to the supply.</span></li>
+            <li><span class="th">ต่อวงจรกำลัง: แหล่งจ่าย 12 V → หน้าสัมผัสปกติเปิด (NO) ของรีเลย์ → มอเตอร์ → กลับแหล่งจ่าย</span>
+                <span class="en">Wire the power circuit: 12 V supply → the relay's normally-open contact →
+                motor → back to the supply.</span></li>
+            <li><span class="th">จ่ายไฟและกดสวิตช์ บันทึกว่ามอเตอร์ทำงานหรือไม่ และได้ยินเสียงรีเลย์ทำงานหรือไม่</span>
+                <span class="en">Power up and press the button; record whether the motor runs and whether you
+                hear the relay operate.</span></li>
+            <li><span class="th">วัดกระแสในวงจรควบคุม (ผ่านคอยล์) และกระแสในวงจรกำลัง (ผ่านมอเตอร์)
+              บันทึกทั้งสองค่า</span>
+                <span class="en">Measure the current in the control circuit (through the coil) and in the
+                power circuit (through the motor); record both.</span></li>
+            <li><span class="th">คำนวณอัตราส่วนของกระแสทั้งสอง แล้วอธิบายว่าเหตุใดรีเลย์จึงเรียกได้ว่าเป็น
+              “ตัวขยายกำลัง” ในเชิงการควบคุม</span>
+                <span class="en">Compute the ratio of the two currents and explain why a relay can be called
+                a power amplifier in the control sense.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 2: วงจรเปิด วงจรปิด และแรงดันคร่อมจุดขาด</span>
+            <span class="en">Part 2: Open, closed, and the voltage across a break</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ขณะที่ยังไม่กดสวิตช์ (วงจรเปิด) วัดแรงดันคร่อม <b>ขั้วสวิตช์</b> บันทึกค่า</span>
+                <span class="en">With the button not pressed (circuit open), measure the voltage across the
+                <b>switch terminals</b>; record it.</span></li>
+            <li><span class="th">กดสวิตช์ค้างไว้ (วงจรปิด) วัดแรงดันคร่อมขั้วสวิตช์อีกครั้ง บันทึกค่า</span>
+                <span class="en">Hold the button down (circuit closed) and measure across the switch again;
+                record it.</span></li>
+            <li><span class="th">อธิบายว่าเหตุใดค่าทั้งสองจึงต่างกันมาก และเชื่อมโยงกับคำเตือนในหัวข้อ 2.2.2
+              ว่าทำไมสายที่หลุดในตู้จึงยังอันตราย</span>
+                <span class="en">Explain why the two readings differ so much, and link this to the warning in
+                Section 2.2.2 about why a loose wire in a cabinet is still dangerous.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 3: แรงดันตกในสายยาว</span>
+            <span class="en">Part 3: Voltage drop in a long cable</span></b></p>
+          <ol class="steps">
+            <li><span class="th">คำนวณล่วงหน้า: สายทองแดง 0.5 mm² ยาว 20 m (ไป–กลับ 40 m)
+              มีความต้านทานเท่าใด ใช้ \(\rho = 1.68\times10^{-8}\) Ω·m</span>
+                <span class="en">Predict first: what is the resistance of 20 m of 0.5 mm² copper (40 m
+                go-and-return), taking \(\rho = 1.68\times10^{-8}\) Ω·m?</span></li>
+            <li><span class="th">วัดความต้านทานของสายด้วยโหมด Ω เทียบกับค่าที่คำนวณได้ ตรงกันหรือไม่ เพราะเหตุใด</span>
+                <span class="en">Measure it in Ω mode and compare with your prediction. Do they agree? Why or
+                why not?</span></li>
+            <li><span class="th">ต่อสายยาวนี้คั่นระหว่างแหล่งจ่าย 12 V กับมอเตอร์
+              วัดแรงดันที่ต้นสายและที่ขั้วมอเตอร์พร้อมกันโดยใช้มิเตอร์สองเครื่อง</span>
+                <span class="en">Insert the long cable between the 12 V supply and the motor, and measure the
+                voltage at both ends at once with two meters.</span></li>
+            <li><span class="th">คำนวณ \(\%V_{\text{drop}}\) และเปรียบเทียบกับเกณฑ์ 3 %
+              จากนั้นสังเกตว่ามอเตอร์หมุนช้าลงหรือไม่</span>
+                <span class="en">Compute \(\%V_{\text{drop}}\), compare with the 3 % limit, and note whether
+                the motor runs more slowly.</span></li>
+          </ol>
+
+          <h4><span class="th">ตารางบันทึกผล</span><span class="en">Results table</span></h4>
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางบันทึกผลปฏิบัติการที่ 2</span>
+                <span class="en">Laboratory 2 — data sheet</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">รายการที่วัด</span><span class="en">Measurement</span></th>
+                  <th class="num"><span class="th">ค่าที่คำนวณได้</span><span class="en">Predicted</span></th>
+                  <th class="num"><span class="th">ค่าที่วัดได้</span><span class="en">Measured</span></th>
+                  <th class="num"><span class="th">ความคลาดเคลื่อน (%)</span><span class="en">Deviation (%)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="th">กระแสคอยล์รีเลย์ (mA)</span><span class="en">Relay coil current (mA)</span></td>
+                  <td><input type="text" aria-label="p1"></td><td><input type="text" aria-label="m1"></td><td><input type="text" aria-label="d1"></td></tr>
+                <tr><td><span class="th">กระแสมอเตอร์ (A)</span><span class="en">Motor current (A)</span></td>
+                  <td><input type="text" aria-label="p2"></td><td><input type="text" aria-label="m2"></td><td><input type="text" aria-label="d2"></td></tr>
+                <tr><td><span class="th">แรงดันคร่อมสวิตช์ ขณะวงจรเปิด (V)</span><span class="en">Voltage across open switch (V)</span></td>
+                  <td><input type="text" aria-label="p3"></td><td><input type="text" aria-label="m3"></td><td><input type="text" aria-label="d3"></td></tr>
+                <tr><td><span class="th">แรงดันคร่อมสวิตช์ ขณะวงจรปิด (V)</span><span class="en">Voltage across closed switch (V)</span></td>
+                  <td><input type="text" aria-label="p4"></td><td><input type="text" aria-label="m4"></td><td><input type="text" aria-label="d4"></td></tr>
+                <tr><td><span class="th">ความต้านทานสายยาว (Ω)</span><span class="en">Long-cable resistance (Ω)</span></td>
+                  <td><input type="text" aria-label="p5"></td><td><input type="text" aria-label="m5"></td><td><input type="text" aria-label="d5"></td></tr>
+                <tr><td><span class="th">แรงดันที่ต้นสาย (V)</span><span class="en">Voltage at supply end (V)</span></td>
+                  <td><input type="text" aria-label="p6"></td><td><input type="text" aria-label="m6"></td><td><input type="text" aria-label="d6"></td></tr>
+                <tr><td><span class="th">แรงดันที่ขั้วมอเตอร์ (V)</span><span class="en">Voltage at motor terminals (V)</span></td>
+                  <td><input type="text" aria-label="p7"></td><td><input type="text" aria-label="m7"></td><td><input type="text" aria-label="d7"></td></tr>
+                <tr><td><span class="th">แรงดันตก (%)</span><span class="en">Voltage drop (%)</span></td>
+                  <td><input type="text" aria-label="p8"></td><td><input type="text" aria-label="m8"></td><td><input type="text" aria-label="d8"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span class="th">คำถามท้ายปฏิบัติการ</span><span class="en">Questions</span></h4>
+          <ol>
+            <li><span class="th">จากอัตราส่วนกระแสควบคุมต่อกระแสโหลดที่วัดได้
+              จงอธิบายว่าเหตุใดไมโครคอนโทรลเลอร์ที่จ่ายกระแสได้เพียง 20 mA
+              จึงสั่งงานปั๊ม 1.5 kW ได้ และต้องใช้อุปกรณ์อะไรคั่นบ้าง</span>
+              <span class="en">From the ratio of control current to load current you measured, explain how a
+              microcontroller able to supply only 20 mA can command a 1.5 kW pump, and what devices must
+              sit between them.</span></li>
+            <li><span class="th">ความต้านทานสายที่วัดได้ต่างจากที่คำนวณหรือไม่ ระบุแหล่งที่มาของความคลาดเคลื่อน
+              อย่างน้อยสามข้อ (พิจารณาความต้านทานของสายวัด อุณหภูมิ และความละเอียดของมิเตอร์)</span>
+              <span class="en">Did the measured cable resistance differ from the calculated value? Give at
+              least three sources of error, considering the test leads' own resistance, temperature and the
+              meter's resolution.</span></li>
+            <li><span class="th">หากต้องการลดแรงดันตกในตอนที่ 3 ลงครึ่งหนึ่ง มีวิธีใดบ้าง
+              ระบุอย่างน้อยสองวิธีพร้อมข้อดีข้อเสียของแต่ละวิธี</span>
+              <span class="en">To halve the voltage drop in Part 3, what could you do? Give at least two
+              approaches with the advantages and disadvantages of each.</span></li>
+            <li><span class="th">เหตุใดเราจึงวัดความต้านทานของสายขณะที่ <b>ไม่มีไฟ</b> เท่านั้น
+              จะเกิดอะไรขึ้นถ้าวัดขณะมีไฟจ่ายอยู่</span>
+              <span class="en">Why must cable resistance be measured only with the circuit <b>dead</b>? What
+              happens if you try it on a live circuit?</span></li>
+            <li><span class="th">ออกแบบ: หากนำวงจรนี้ไปใช้จริงกับปั๊ม 230 V ในโรงเรือน
+              ต้องเพิ่มอุปกรณ์ใดบ้างจากที่ต่อในห้องปฏิบัติการ วาดแผนผังประกอบ</span>
+              <span class="en">Design: if this circuit were used with a real 230 V greenhouse pump, what
+              devices would have to be added to what you built here? Support your answer with a
+              schematic.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">📄 <span class="th">การส่งรายงาน (20 คะแนน)</span>
+              <span class="en">Report submission (20 marks)</span></div>
+            <p class="mb-0"><span class="th">ส่งรายงานความยาวไม่เกิน 5 หน้า ประกอบด้วย วัตถุประสงค์
+              แผนผังวงจรที่ต่อจริง (วาดด้วยสัญลักษณ์มาตรฐาน) ตารางผลที่กรอกครบพร้อมหน่วย
+              ตัวอย่างการคำนวณแรงดันตก 1 ชุด คำตอบของคำถามท้ายปฏิบัติการ และข้อสรุป ภายในสัปดาห์ถัดไป</span>
+              <span class="en">Submit a report of no more than five pages — objectives, a schematic of the
+              circuit as actually built (in standard symbols), the completed data table with units, one
+              worked voltage-drop calculation, answers to the questions, and a conclusion — by the
+              following week.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Post-test -->
+    <section id="posttest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบหลังเรียน</span>
+          <span class="en">Post-test</span></h2>
+      <p class="muted"><span class="th">ทำหลังอ่านเนื้อหาและทำปฏิบัติการแล้ว ควรได้อย่างน้อย 6 จาก 8 ข้อ</span>
+        <span class="en">Take this after the notes and the laboratory; aim for at least 6 out of 8.</span></p>
+
+      <section class="quiz" id="posttest-q" data-quiz="post" data-chapter="ch02">
+        <div class="quiz-head">
+          <h3><span class="th">หลังเรียน: บทที่ 2</span><span class="en">Post-test: Chapter 2</span></h3>
+          <p><span class="th">8 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">8 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="b"
+               data-explain-th="R = ρ(2L)/A = (1.68×10⁻⁸)(2×50)/(4×10⁻⁶) = 0.42 Ω จากนั้น V_drop = IR = (10)(0.42) = 4.2 V"
+               data-explain-en="R = ρ(2L)/A = (1.68×10⁻⁸)(100)/(4×10⁻⁶) = 0.42 Ω, so V_drop = IR = (10)(0.42) = 4.2 V.">
+            <div class="q-text"><span class="th">สายทองแดง 4 mm² ยาว 50 เมตร จ่ายกระแส 10 A ให้โหลด จะเกิดแรงดันตกเท่าใด (คิดไป–กลับ, ρ = 1.68×10⁻⁸ Ω·m)</span>
+              <span class="en">A 50 m run of 4 mm² copper carries 10 A to a load. What is the voltage drop (go and return, ρ = 1.68×10⁻⁸ Ω·m)?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>2.1 V</span></label>
+              <label class="opt" data-opt="b"><span>4.2 V</span></label>
+              <label class="opt" data-opt="c"><span>8.4 V</span></label>
+              <label class="opt" data-opt="d"><span>0.42 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="ในวงจรเปิด กระแสเป็นศูนย์ แต่แรงดันของแหล่งจ่ายยังปรากฏคร่อมจุดที่ขาดทั้งหมด จึงยังสัมผัสแล้วอันตราย"
+               data-explain-en="With the circuit open the current is zero, but the full source voltage appears across the break — so touching it is still dangerous.">
+            <div class="q-text"><span class="th">เมื่อสวิตช์ในวงจรอยู่ในสถานะเปิด (ยังไม่กด) แรงดันคร่อมขั้วสวิตช์ทั้งสองมีค่าเท่าใด</span>
+              <span class="en">With the switch in a circuit open, what voltage appears across its two terminals?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ศูนย์ เพราะไม่มีกระแสไหล</span><span class="en">Zero, because no current flows</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ครึ่งหนึ่งของแรงดันแหล่งจ่าย</span><span class="en">Half the source voltage</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เท่ากับแรงดันแหล่งจ่ายทั้งหมด</span><span class="en">The full source voltage</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ขึ้นกับความต้านทานของโหลดเท่านั้น</span><span class="en">It depends only on the load resistance</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="l = b − n + 1 = 6 − 4 + 1 = 3 ลูปอิสระ"
+               data-explain-en="l = b − n + 1 = 6 − 4 + 1 = 3 independent loops.">
+            <div class="q-text"><span class="th">วงจรหนึ่งมีกิ่ง 6 กิ่งและโนด 4 โนด มีลูปอิสระกี่ลูป</span>
+              <span class="en">A circuit has 6 branches and 4 nodes. How many independent loops?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>3</span></label>
+              <label class="opt" data-opt="b"><span>2</span></label>
+              <label class="opt" data-opt="c"><span>9</span></label>
+              <label class="opt" data-opt="d"><span>10</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="แคลมป์มิเตอร์ตรวจจับสนามแม่เหล็กรอบตัวนำ ถ้าคล้องทั้งสายไฟและสายนิวทรัลพร้อมกัน กระแสไปและกลับมีขนาดเท่ากันแต่ทิศตรงข้าม สนามแม่เหล็กจึงหักล้างกันหมด อ่านค่าได้ใกล้ศูนย์"
+               data-explain-en="A clamp meter senses the magnetic field around the conductor. Clamping line and neutral together encloses equal and opposite currents, the fields cancel, and the reading is near zero.">
+            <div class="q-text"><span class="th">หากใช้แคลมป์มิเตอร์คล้องรอบสายไฟและสายนิวทรัลพร้อมกัน จะอ่านค่าได้เท่าใด</span>
+              <span class="en">If a clamp meter is closed around the line and neutral conductors together, what does it read?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">สองเท่าของกระแสโหลด</span><span class="en">Twice the load current</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เท่ากับกระแสโหลดพอดี</span><span class="en">Exactly the load current</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ครึ่งหนึ่งของกระแสโหลด</span><span class="en">Half the load current</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ใกล้ศูนย์ เพราะสนามแม่เหล็กหักล้างกัน</span><span class="en">Near zero, because the fields cancel</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="โอห์มมิเตอร์จ่ายกระแสทดสอบของตัวเองเข้าไปในอุปกรณ์ หากวงจรยังมีไฟอยู่ ค่าที่อ่านจะผิดและอาจทำให้มิเตอร์เสียหาย อีกทั้งต้องปลดขาอุปกรณ์อย่างน้อยหนึ่งขาเพื่อไม่ให้อ่านค่าของวงจรอื่นที่ขนานอยู่"
+               data-explain-en="An ohmmeter injects its own test current; with the circuit live the reading is wrong and the meter may be damaged. One leg must also be lifted so that parallel paths are not included.">
+            <div class="q-text"><span class="th">ข้อใดคือวิธีวัดความต้านทานของตัวต้านทานในวงจรที่ถูกต้อง</span>
+              <span class="en">What is the correct way to measure a resistor that is part of a circuit?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">วัดได้เลยขณะวงจรทำงานปกติ</span><span class="en">Measure it directly while the circuit is running</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ตัดไฟออกจากวงจร แล้วปลดขาตัวต้านทานอย่างน้อยหนึ่งขาก่อนวัด</span><span class="en">De-energise the circuit and lift at least one leg of the resistor first</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ใช้โหมดวัดกระแสแล้วคำนวณย้อนกลับ</span><span class="en">Use the current mode and work backwards</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ต่อโอห์มมิเตอร์อนุกรมกับตัวต้านทานขณะมีไฟ</span><span class="en">Connect the ohmmeter in series with it while live</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="แหล่งจ่ายจริงมีความต้านทานภายใน r ทำให้ V = E − Ir = 12.6 − (30)(0.04) = 12.6 − 1.2 = 11.4 V"
+               data-explain-en="A real source has internal resistance r, so V = E − Ir = 12.6 − (30)(0.04) = 11.4 V.">
+            <div class="q-text"><span class="th">แบตเตอรี่มี e.m.f. 12.6 V และความต้านทานภายใน 0.04 Ω เมื่อจ่ายกระแส 30 A แรงดันที่ขั้วจะเป็นเท่าใด</span>
+              <span class="en">A battery of e.m.f. 12.6 V and internal resistance 0.04 Ω supplies 30 A. What is its terminal voltage?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>12.6 V</span></label>
+              <label class="opt" data-opt="b"><span>13.8 V</span></label>
+              <label class="opt" data-opt="c"><span>11.4 V</span></label>
+              <label class="opt" data-opt="d"><span>1.2 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="เซนเซอร์ส่งสัญญาณเป็นกระแสในลูปอนุกรม ค่ากระแสจึงเท่ากันทุกจุดไม่ว่าสายจะยาวเท่าใด ความต้านทานสายไม่ทำให้ค่าผิด และการใช้ 4 mA เป็นค่าต่ำสุดยังแยกภาวะสายขาด (0 mA) ออกจากค่าศูนย์ได้"
+               data-explain-en="In a series loop the current is the same everywhere, so cable resistance does not corrupt the reading; and a 4 mA floor distinguishes a broken cable (0 mA) from a genuine zero.">
+            <div class="q-text"><span class="th">เหตุใดสัญญาณเซนเซอร์แบบ 4–20 mA จึงเหมาะกับการเดินสายระยะไกลในฟาร์ม</span>
+              <span class="en">Why is a 4–20 mA sensor signal well suited to long cable runs on a farm?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">กระแสในลูปอนุกรมเท่ากันทุกจุด และ 4 mA ยังใช้แยกภาวะสายขาดได้</span><span class="en">The current is identical at every point of the loop, and the 4 mA floor detects a broken cable</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เพราะใช้สายเส้นเล็กกว่าการส่งแรงดัน</span><span class="en">Because it needs thinner cable than a voltage signal</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เพราะไม่ต้องใช้แหล่งจ่ายไฟเลย</span><span class="en">Because it needs no power supply at all</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เพราะส่งข้อมูลได้เร็วกว่าสัญญาณดิจิทัล</span><span class="en">Because it is faster than a digital signal</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="ห้ามต่อมัลติมิเตอร์โหมดวัดกระแสคร่อมแหล่งจ่าย เพราะความต้านทานภายในต่ำมาก (≈0.01 Ω) จะกลายเป็นการลัดวงจรแหล่งจ่ายโดยตรง เกิดกระแสมหาศาล ฟิวส์ขาดหรือเกิดอาร์ก"
+               data-explain-en="Never put a meter in current mode across a source: its internal resistance is about 0.01 Ω, so it short-circuits the supply, with an enormous current, a blown fuse or an arc.">
+            <div class="q-text"><span class="th">การกระทำใดอันตรายที่สุดเมื่อใช้มัลติมิเตอร์</span>
+              <span class="en">Which action is the most dangerous when using a multimeter?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ต่อโหมดวัดแรงดันขนานกับโหลด</span><span class="en">Connecting in voltage mode across a load</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">วัดความต้านทานขณะวงจรไม่มีไฟ</span><span class="en">Measuring resistance with the circuit dead</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ใช้โหมดความต่อเนื่องตรวจสายที่ปลดออกแล้ว</span><span class="en">Using continuity mode on a disconnected cable</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ต่อโหมดวัดกระแสคร่อมขั้วแหล่งจ่ายโดยตรง</span><span class="en">Connecting in current mode straight across the supply terminals</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== References -->
+    <section id="refs">
+      <h2><span class="num">📚</span><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></h2>
+      <ol class="references">
+        <li>Boylestad, R. L. (2016). <i>Introductory Circuit Analysis</i> (13th ed.), Ch. 2–5.
+          Pearson.</li>
+        <li>Irwin, J. D., &amp; Nelms, R. M. (2021). <i>Basic Engineering Circuit Analysis</i>
+          (12th ed.), Ch. 1–2. Wiley.</li>
+        <li>Hughes, E., Hiley, J., Brown, K., &amp; Smith, I. M. (2016).
+          <i>Hughes Electrical and Electronic Technology</i> (12th ed.), Ch. 3 and 47. Pearson.</li>
+        <li>Nilsson, J. W., &amp; Riedel, S. A. (2019). <i>Electric Circuits</i> (11th ed.), Ch. 2.
+          Pearson.</li>
+        <li>International Electrotechnical Commission. (2012).
+          <i>IEC 60617: Graphical symbols for diagrams</i>. IEC.
+          <span class="small muted">— <span class="th">สัญลักษณ์มาตรฐานในแผนผังวงจร</span>
+          <span class="en">the standard graphical symbols used in schematics</span></span></li>
+        <li>International Electrotechnical Commission. (2020).
+          <i>IEC 61010-1: Safety requirements for electrical equipment for measurement, control and
+          laboratory use</i>. IEC.
+          <span class="small muted">— <span class="th">ที่มาของพิกัด CAT II–IV</span>
+          <span class="en">the source of the CAT II–IV ratings</span></span></li>
+        <li>International Electrotechnical Commission. (2018).
+          <i>IEC 60947-4-1: Low-voltage switchgear and controlgear — Contactors and motor-starters</i>.
+          IEC.</li>
+        <li><span class="th">วิศวกรรมสถานแห่งประเทศไทย ในพระบรมราชูปถัมภ์ (วสท.). (2565).
+          <i>มาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย</i> (ฉบับปรับปรุงครั้งที่ 2), บทที่ 2 และ 5.
+          กรุงเทพฯ: วสท.</span>
+          <span class="en">Engineering Institute of Thailand. (2022).
+          <i>Thailand Electrical Installation Standard</i> (2nd rev. ed.), Ch. 2 and 5. Bangkok: EIT.</span>
+          <span class="small muted">— <span class="th">ข้อกำหนดขนาดสายและแรงดันตก</span>
+          <span class="en">requirements for conductor sizing and voltage drop</span></span></li>
+        <li>Fluke Corporation. (2021). <i>ABCs of Multimeter Safety</i> (Application Note). Fluke.</li>
+        <li>American Society of Agricultural and Biological Engineers. (2017).
+          <i>ASABE EP364.5: Installation and Maintenance of Farm Standby Electric Power</i>. ASABE.</li>
+      </ol>
+    </section>
+
+    <!-- =============================================== Chapter nav -->
+    <nav class="chapter-nav">
+      <a href="ch01.html">
+        <div class="dir">← <span class="th">บทก่อนหน้า</span><span class="en">Previous</span></div>
+        <div class="ttl"><span class="th">บทที่ 1 · บทนำและความปลอดภัย</span>
+          <span class="en">Chapter 1 · Introduction &amp; Safety</span></div>
+      </a>
+      <a href="ch03.html" class="next">
+        <div class="dir"><span class="th">บทถัดไป</span><span class="en">Next chapter</span> →</div>
+        <div class="ttl"><span class="th">บทที่ 3 · R L C และกฎของโอห์ม</span>
+          <span class="en">Chapter 3 · R L C and Ohm's Law</span></div>
+      </a>
+    </nav>
+
+  </main>
+</div>
+</div>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span><span class="th">บทที่ 2 — วงจรไฟฟ้าและเครื่องมือวัดพื้นฐาน</span>
+        <span class="en">Chapter 2 — Electrical Circuits and Basic Instruments</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>

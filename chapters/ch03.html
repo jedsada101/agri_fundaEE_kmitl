@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ 3 โหลดพื้นฐาน R L C และกฎของโอห์ม | Fundamental of Electrical Engineering</title>
+<meta name="description" content="Chapter 3 — Basic loads R, L and C; resistance and resistivity; Ohm's law; series and parallel resistance circuits; voltage and current dividers.">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+<script src="../assets/js/mathjax-config.js"></script>
+<script defer src="../assets/vendor/mathjax/tex-svg.js"></script>
+<style>
+  .sys-fig text { font-family: var(--font-sans); }
+  .sys-fig .lbl { font-size: 12px; font-weight: 600; fill: #0d1128; }
+  .sys-fig .sub { font-size: 10.5px; fill: #6c757d; }
+  .sys-fig .cap { font-size: 11px; font-weight: 700; fill: #fd5f00; }
+  .sys-fig .wire { stroke: #0d1128; stroke-width: 2; fill: none; }
+  .sys-fig .sym  { stroke: #0d1128; stroke-width: 2; fill: #fff; }
+  .sys-fig .axis { stroke: #6c757d; stroke-width: 1.5; }
+  .sys-fig .node { fill: #fd5f00; }
+  .sys-fig .metal { fill: #dfe4ee; stroke: #9aa3c4; stroke-width: 1.5; }
+  .sys-fig .ion   { stroke: #6c757d; stroke-width: 1.5; }
+  .sys-fig .elec  { fill: #fd5f00; }
+
+  /* --- flowing charge ------------------------------------------------
+     Each dot train is spaced one "step" apart and animated exactly one
+     step, so the motion reads as a continuous stream. Clip paths keep the
+     dots inside their conductor. Everything still reads when paused.   */
+  .sys-fig .flow { transform-box: view-box; }
+  @keyframes fee-flow { from { transform: translateX(0); } to { transform: translateX(34px); } }
+
+  .drift-fig .flow { animation: fee-flow linear infinite; }
+  .drift-fig .slow { animation-duration: 2.1s; }   /* thin wire, less current */
+  .drift-fig .fast { animation-duration: 0.9s; }   /* thick wire, more current */
+
+  .sp-fig .flow { animation: fee-flow linear infinite; }
+  .sp-fig .same  { animation-duration: 1.5s; }     /* series: one current only */
+  .sp-fig .big   { animation-duration: 1.1s; }     /* parallel: 31 mA branch */
+  .sp-fig .small { animation-duration: 1.65s; }    /* 20.7 mA branch */
+  .sp-fig .total { animation-duration: 0.66s; }    /* 51.7 mA in the main line */
+</style>
+</head>
+<body data-chapter="ch03">
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="../index.html#chapters"><span class="th">บทเรียนทั้งหมด</span><span class="en">All chapters</span></a></li>
+      <li><a href="#pretest"><span class="th">Pre-test</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการ</span><span class="en">Laboratory</span></a></li>
+      <li><a href="ch04.html" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">บทถัดไป</span><span class="en">Next</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a> ·
+      <a href="../index.html#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a> ·
+      <span class="th">บทที่ 3</span><span class="en">Chapter 3</span>
+    </div>
+    <span class="eyebrow"><span class="th">สัปดาห์ที่ 3 · บทที่ 3</span><span class="en">Week 3 · Chapter 3</span></span>
+    <h1><span class="th">โหลดพื้นฐาน R L C<br>และกฎของโอห์ม</span>
+        <span class="en">Basic Loads R, L, C<br>and Ohm's Law</span></h1>
+    <p class="lead">
+      <span class="th">โหลดทุกชนิดในฟาร์ม ไม่ว่าจะซับซ้อนเพียงใด
+        ประกอบขึ้นจากองค์ประกอบพื้นฐานเพียงสามตัวคือ <b>ความต้านทาน ความเหนี่ยวนำ และความจุไฟฟ้า</b>
+        บทนี้เจาะลึกตัวแรกให้หมดเปลือก เพราะ <i>ความต้านทาน</i> คือประตูสู่ทุกอย่างที่เหลือ —
+        กฎของโอห์ม วงจรอนุกรม–ขนาน และวงจรแบ่งแรงดันที่เป็นหัวใจของการอ่านค่าเซนเซอร์</span>
+      <span class="en">Every load on a farm, however complicated, is built from just three basic elements:
+        <b>resistance, inductance and capacitance</b>. This chapter takes the first of them apart
+        completely, because <i>resistance</i> is the doorway to everything else — Ohm's law, series and
+        parallel circuits, and the divider that sits at the heart of every sensor reading.</span>
+    </p>
+    <div class="hero-meta">
+      <span>⏱ <strong>2+2</strong> <span class="th">ชั่วโมง</span><span class="en">hours</span></span>
+      <span>📘 <span class="th">หัวข้อหลัก</span><span class="en">Main topics</span> <strong>5</strong></span>
+      <span>🧪 <span class="th">ปฏิบัติการที่ 3</span><span class="en">Laboratory 3</span></span>
+      <span>📝 <span class="th">Pre / Post-test</span><span class="en">Pre / post-test</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+<div class="chapter-layout">
+
+  <!-- ============================================================= TOC -->
+  <aside class="toc">
+    <div class="toc-title"><span class="th">สารบัญบทเรียน</span><span class="en">On this page</span></div>
+    <ul>
+      <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
+      <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#s1"><span class="th">3.1 โหลดพื้นฐาน R L C</span><span class="en">3.1 The elements R, L, C</span></a></li>
+      <li><a href="#s2"><span class="th">3.2 ความต้านทาน</span><span class="en">3.2 Resistance</span></a></li>
+      <li class="toc-sub"><a href="#s2-1"><span class="th">3.2.1 ที่มาทางกายภาพ</span><span class="en">3.2.1 Where it comes from</span></a></li>
+      <li class="toc-sub"><a href="#s2-2"><span class="th">3.2.2 ผลของอุณหภูมิ</span><span class="en">3.2.2 Effect of temperature</span></a></li>
+      <li class="toc-sub"><a href="#s2-3"><span class="th">3.2.3 ตัวต้านทานจริง</span><span class="en">3.2.3 Real resistors</span></a></li>
+      <li><a href="#s3"><span class="th">3.3 กฎของโอห์ม</span><span class="en">3.3 Ohm's law</span></a></li>
+      <li><a href="#s4"><span class="th">3.4 วงจรอนุกรมและขนาน</span><span class="en">3.4 Series and parallel</span></a></li>
+      <li><a href="#s5"><span class="th">3.5 วงจรแบ่งแรงดันและแบ่งกระแส</span><span class="en">3.5 Voltage and current dividers</span></a></li>
+      <li><a href="#summary"><span class="th">สรุปบทเรียน</span><span class="en">Summary</span></a></li>
+      <li><a href="#activity"><span class="th">กิจกรรมในชั้นเรียน</span><span class="en">Class activity</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการที่ 3</span><span class="en">Laboratory 3</span></a></li>
+      <li><a href="#posttest"><span class="th">แบบทดสอบหลังเรียน</span><span class="en">Post-test</span></a></li>
+      <li><a href="#refs"><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ==================================================== CHAPTER BODY -->
+  <main class="chapter-body">
+
+    <!-- ---------------------------------------------------- Objectives -->
+    <section id="objectives">
+      <div class="callout callout-objective">
+        <div class="callout-title">🎯 <span class="th">จุดประสงค์การเรียนรู้</span>
+          <span class="en">Learning objectives</span></div>
+        <p><span class="th">เมื่อเรียนจบบทนี้ นักศึกษาจะสามารถ</span>
+           <span class="en">After this chapter you will be able to:</span></p>
+        <ol>
+          <li><span class="th">เขียนความสัมพันธ์ระหว่างแรงดันกับกระแสของ R, L และ C
+            และบอกได้ว่าองค์ประกอบใดเก็บพลังงานและองค์ประกอบใดเปลี่ยนพลังงานเป็นความร้อน</span>
+            <span class="en">state the voltage–current relation for R, L and C, and say which elements store
+            energy and which turn it into heat;</span></li>
+          <li><span class="th">คำนวณความต้านทานจากขนาดและวัสดุของตัวนำ และแก้ค่าตามอุณหภูมิที่เปลี่ยนไป</span>
+            <span class="en">compute resistance from a conductor's material and dimensions, and correct it
+            for a change of temperature;</span></li>
+          <li><span class="th">อ่านแถบสีและพิกัดกำลังของตัวต้านทาน แล้วเลือกตัวที่เหมาะกับงาน</span>
+            <span class="en">read a resistor's colour code and power rating, and choose one fit for the
+            job;</span></li>
+          <li><span class="th">ใช้กฎของโอห์มร่วมกับสมการกำลังไฟฟ้าแก้ปัญหาวงจร และระบุได้ว่าโหลดใดไม่เป็นไปตามกฎของโอห์ม</span>
+            <span class="en">apply Ohm's law together with the power relations, and recognise loads that do
+            not obey Ohm's law;</span></li>
+          <li><span class="th">ยุบวงจรความต้านทานแบบผสมให้เหลือความต้านทานสมมูลตัวเดียว
+            แล้วหากระแสและแรงดันของทุกกิ่ง</span>
+            <span class="en">reduce a series–parallel network to a single equivalent resistance, then find
+            every branch current and voltage;</span></li>
+          <li><span class="th">ออกแบบวงจรแบ่งแรงดันสำหรับอ่านค่าเซนเซอร์ และวงจรแบ่งกระแสสำหรับขยายย่านวัด
+            พร้อมประเมินผลกระทบจากการโหลด</span>
+            <span class="en">design a voltage divider to read a sensor and a current divider to extend a
+            meter's range, allowing for the loading effect.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ Pre-test -->
+    <section id="pretest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบก่อนเรียน</span>
+          <span class="en">Pre-test</span></h2>
+      <p class="muted"><span class="th">ทำก่อนเริ่มอ่านเนื้อหา เพื่อสำรวจความรู้เดิมของตนเอง</span>
+        <span class="en">Take this before reading, to see what you already know.</span></p>
+
+      <section class="quiz" id="pretest-q" data-quiz="pre" data-chapter="ch03">
+        <div class="quiz-head">
+          <h3><span class="th">ก่อนเรียน: บทที่ 3</span><span class="en">Pre-test: Chapter 3</span></h3>
+          <p><span class="th">5 ข้อ · ปรนัย · ตรวจคำตอบได้ทันที</span>
+             <span class="en">5 multiple-choice questions · marked instantly</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="b"
+               data-explain-th="กฎของโอห์ม I = V/R = 12/470 = 0.0255 A ≈ 25.5 mA (หัวข้อ 3.3)"
+               data-explain-en="Ohm's law: I = V/R = 12/470 = 0.0255 A ≈ 25.5 mA (Section 3.3).">
+            <div class="q-text"><span class="th">ตัวต้านทาน 470 Ω ต่อคร่อมแหล่งจ่าย 12 V จะมีกระแสไหลผ่านเท่าใด</span>
+              <span class="en">A 470 Ω resistor is connected across 12 V. What current flows?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>2.55 mA</span></label>
+              <label class="opt" data-opt="b"><span>25.5 mA</span></label>
+              <label class="opt" data-opt="c"><span>39.2 mA</span></label>
+              <label class="opt" data-opt="d"><span>5.64 A</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="ต่อขนานกัน ความต้านทานสมมูลจะน้อยกว่าตัวที่น้อยที่สุดเสมอ สองตัวเท่ากัน 100 Ω ขนานกันได้ 50 Ω (หัวข้อ 3.4)"
+               data-explain-en="In parallel the equivalent is always less than the smallest branch; two equal 100 Ω resistors give 50 Ω (Section 3.4).">
+            <div class="q-text"><span class="th">ตัวต้านทาน 100 Ω สองตัวต่อขนานกัน ได้ความต้านทานสมมูลเท่าใด</span>
+              <span class="en">Two 100 Ω resistors in parallel give what equivalent resistance?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>200 Ω</span></label>
+              <label class="opt" data-opt="b"><span>100 Ω</span></label>
+              <label class="opt" data-opt="c"><span>50 Ω</span></label>
+              <label class="opt" data-opt="d"><span>10 Ω</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="ในวงจรอนุกรม กระแสเท่ากันทุกจุด สิ่งที่ถูกแบ่งคือแรงดัน ส่วนในวงจรขนาน แรงดันเท่ากันทุกกิ่ง สิ่งที่ถูกแบ่งคือกระแส (หัวข้อ 3.4)"
+               data-explain-en="In a series circuit the current is the same everywhere and the voltage divides; in a parallel circuit the voltage is the same across every branch and the current divides (Section 3.4).">
+            <div class="q-text"><span class="th">ข้อใดกล่าวถูกต้องเกี่ยวกับวงจรอนุกรม</span>
+              <span class="en">Which statement about a series circuit is correct?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">กระแสเท่ากันทุกจุด แต่แรงดันถูกแบ่งตามค่าความต้านทาน</span><span class="en">The current is the same everywhere; the voltage divides in proportion to resistance</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">แรงดันเท่ากันทุกจุด แต่กระแสถูกแบ่ง</span><span class="en">The voltage is the same everywhere; the current divides</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ทั้งกระแสและแรงดันเท่ากันทุกจุด</span><span class="en">Both current and voltage are the same everywhere</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ความต้านทานสมมูลน้อยกว่าตัวที่น้อยที่สุด</span><span class="en">The equivalent resistance is less than the smallest resistor</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="P = V²/R = 12²/470 = 144/470 = 0.306 W ดังนั้นตัวต้านทานขนาด 1/4 W (0.25 W) จะร้อนเกินพิกัด ต้องใช้ 1/2 W ขึ้นไป (หัวข้อ 3.3)"
+               data-explain-en="P = V²/R = 144/470 = 0.306 W, which exceeds a ¼ W (0.25 W) rating — a ½ W part is needed (Section 3.3).">
+            <div class="q-text"><span class="th">ตัวต้านทาน 470 Ω ต่อคร่อม 12 V ควรเลือกพิกัดกำลังเท่าใด</span>
+              <span class="en">What power rating should the 470 Ω resistor across 12 V have?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">1/8 W ก็เพียงพอ</span><span class="en">⅛ W is enough</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">1/4 W ก็เพียงพอ</span><span class="en">¼ W is enough</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ไม่ต้องสนใจพิกัดกำลัง</span><span class="en">The power rating does not matter</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">อย่างน้อย 1/2 W เพราะกินกำลังราว 0.31 W</span><span class="en">At least ½ W, because it dissipates about 0.31 W</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="วงจรแบ่งแรงดัน V_out = V_in × R2/(R1+R2) = 3.3 × 10/(10+10) = 1.65 V (หัวข้อ 3.5)"
+               data-explain-en="Voltage divider: V_out = V_in × R2/(R1+R2) = 3.3 × 10/20 = 1.65 V (Section 3.5).">
+            <div class="q-text"><span class="th">วงจรแบ่งแรงดันใช้ตัวต้านทาน 10 kΩ สองตัวต่ออนุกรมคร่อม 3.3 V แรงดันที่จุดกลางเป็นเท่าใด</span>
+              <span class="en">A divider of two 10 kΩ resistors is connected across 3.3 V. What is the midpoint voltage?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>3.3 V</span></label>
+              <label class="opt" data-opt="b"><span>1.65 V</span></label>
+              <label class="opt" data-opt="c"><span>0.33 V</span></label>
+              <label class="opt" data-opt="d"><span>0 V</span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== 3.1 -->
+    <section id="s1">
+      <h2><span class="num">3.1</span><span class="th">โหลดพื้นฐานสามชนิด: R, L และ C</span>
+          <span class="en">The three basic elements: R, L and C</span></h2>
+
+      <p><span class="th">ในบทที่ 2 เราบอกไว้ว่าโหลดทุกชนิดจำลองได้ด้วยองค์ประกอบพื้นฐานสามตัว
+        ถึงเวลาดูว่าแต่ละตัวมีนิยามอย่างไร สิ่งที่นิยามองค์ประกอบหนึ่ง ๆ ในทางวงจรคือ
+        <b>ความสัมพันธ์ระหว่างแรงดันคร่อมมันกับกระแสที่ไหลผ่าน</b> เท่านั้น ไม่ใช่รูปร่างหรือวัสดุ</span>
+        <span class="en">In Chapter 2 we said that every load can be modelled from three basic elements. Now
+        we meet their definitions. What defines an element in circuit terms is one thing only: <b>the
+        relation between the voltage across it and the current through it</b> — not its shape or what it is
+        made of.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 250" role="img" width="720"
+               aria-label="The defining voltage-current relations of resistance, inductance and capacitance">
+            <!-- R -->
+            <rect x="12" y="16" width="224" height="218" rx="12" fill="#fff1e8" stroke="#ffd9c2"/>
+            <text class="cap th" x="124" y="42" text-anchor="middle">ความต้านทาน R</text>
+            <text class="cap en" x="124" y="42" text-anchor="middle">Resistance R</text>
+            <path class="wire" d="M40 82 H74"/>
+            <rect class="sym" x="74" y="70" width="60" height="24"/>
+            <path class="wire" d="M134 82 H208"/>
+            <text class="lbl" x="172" y="74" text-anchor="middle">Ω</text>
+            <text class="lbl" x="124" y="126" text-anchor="middle">v = i R</text>
+            <text class="sub th" x="124" y="154" text-anchor="middle">เปลี่ยนพลังงานไฟฟ้าเป็นความร้อน</text>
+            <text class="sub en" x="124" y="154" text-anchor="middle">turns electrical energy into heat</text>
+            <text class="sub th" x="124" y="172" text-anchor="middle">พลังงานที่ใช้ไปแล้วเอาคืนไม่ได้</text>
+            <text class="sub en" x="124" y="172" text-anchor="middle">the energy is gone for good</text>
+            <text class="sub th" x="124" y="200" text-anchor="middle">ฮีตเตอร์ · หลอดไส้ · ขดลวด</text>
+            <text class="sub en" x="124" y="200" text-anchor="middle">heaters · filament lamps · windings</text>
+            <text class="sub th" x="124" y="220" text-anchor="middle">เรียนในบทนี้</text>
+            <text class="sub en" x="124" y="220" text-anchor="middle">studied in this chapter</text>
+
+            <!-- L -->
+            <rect x="248" y="16" width="224" height="218" rx="12" fill="#e9f2fb" stroke="#cfe1f5"/>
+            <text class="cap th" x="360" y="42" text-anchor="middle" fill="#2b6cb0">ความเหนี่ยวนำ L</text>
+            <text class="cap en" x="360" y="42" text-anchor="middle" fill="#2b6cb0">Inductance L</text>
+            <path class="wire" d="M276 82 H306"/>
+            <path d="M306 82 a9 9 0 0 1 18 0 a9 9 0 0 1 18 0 a9 9 0 0 1 18 0 a9 9 0 0 1 18 0"
+                  stroke="#0d1128" stroke-width="2" fill="none"/>
+            <path class="wire" d="M378 82 H444"/>
+            <text class="lbl" x="360" y="126" text-anchor="middle">v = L di/dt</text>
+            <text class="sub th" x="360" y="154" text-anchor="middle">เก็บพลังงานไว้ในสนามแม่เหล็ก</text>
+            <text class="sub en" x="360" y="154" text-anchor="middle">stores energy in a magnetic field</text>
+            <text class="sub th" x="360" y="172" text-anchor="middle">ต้านการเปลี่ยนแปลงของกระแส</text>
+            <text class="sub en" x="360" y="172" text-anchor="middle">opposes any change of current</text>
+            <text class="sub th" x="360" y="200" text-anchor="middle">มอเตอร์ · โซลินอยด์ · หม้อแปลง</text>
+            <text class="sub en" x="360" y="200" text-anchor="middle">motors · solenoids · transformers</text>
+            <text class="sub th" x="360" y="220" text-anchor="middle">เรียนในบทที่ 5</text>
+            <text class="sub en" x="360" y="220" text-anchor="middle">studied in Chapter 5</text>
+
+            <!-- C -->
+            <rect x="484" y="16" width="224" height="218" rx="12" fill="#eaf7ef" stroke="#c6e8d5"/>
+            <text class="cap th" x="596" y="42" text-anchor="middle" fill="#2f855a">ความจุไฟฟ้า C</text>
+            <text class="cap en" x="596" y="42" text-anchor="middle" fill="#2f855a">Capacitance C</text>
+            <path class="wire" d="M512 82 H586"/>
+            <line x1="586" y1="66" x2="586" y2="98" stroke="#0d1128" stroke-width="3"/>
+            <line x1="596" y1="66" x2="596" y2="98" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M596 82 H680"/>
+            <text class="lbl" x="596" y="126" text-anchor="middle">i = C dv/dt</text>
+            <text class="sub th" x="596" y="154" text-anchor="middle">เก็บพลังงานไว้ในสนามไฟฟ้า</text>
+            <text class="sub en" x="596" y="154" text-anchor="middle">stores energy in an electric field</text>
+            <text class="sub th" x="596" y="172" text-anchor="middle">ต้านการเปลี่ยนแปลงของแรงดัน</text>
+            <text class="sub en" x="596" y="172" text-anchor="middle">opposes any change of voltage</text>
+            <text class="sub th" x="596" y="200" text-anchor="middle">วงจรกรอง · สตาร์ตมอเตอร์ · แหล่งจ่าย</text>
+            <text class="sub en" x="596" y="200" text-anchor="middle">filters · motor starting · power supplies</text>
+            <text class="sub th" x="596" y="220" text-anchor="middle">เรียนในบทที่ 5</text>
+            <text class="sub en" x="596" y="220" text-anchor="middle">studied in Chapter 5</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 3.1</span><span class="en">Figure 3.1</span></b>
+          <span class="th"> องค์ประกอบพื้นฐานสามตัวกับสมการนิยามของแต่ละตัว
+            สังเกตความต่างที่สำคัญที่สุด: สมการของ R ไม่มีอนุพันธ์ ความสัมพันธ์จึงเกิดขึ้น
+            <b>ทันที</b> และไม่ขึ้นกับอดีต ส่วน L และ C มีอนุพันธ์อยู่ในสมการ
+            พฤติกรรมของมันจึงขึ้นกับ <b>อัตราการเปลี่ยนแปลง</b> และต้องใช้เวลา
+            นี่คือเหตุผลที่เราเริ่มจาก R ก่อน — วงจรที่มีแต่ R แก้ได้ด้วยพีชคณิตล้วน ๆ</span>
+          <span class="en"> The three elements and the equation that defines each. Note the crucial
+            difference: the equation for R contains no derivative, so its relation is <b>instantaneous</b>
+            and has no memory of the past. L and C have derivatives in theirs, so their behaviour depends on
+            a <b>rate of change</b> and takes time to unfold. That is why we begin with R: a circuit of pure
+            resistance can be solved with algebra alone.</span></figcaption>
+      </figure>
+    </section>
+
+    <!-- =============================================== 3.2 -->
+    <section id="s2">
+      <h2><span class="num">3.2</span><span class="th">ความต้านทาน</span><span class="en">Resistance</span></h2>
+
+      <h3 id="s2-1"><span class="th">3.2.1 ความต้านทานมาจากไหน</span>
+          <span class="en">3.2.1 Where resistance comes from</span></h3>
+      <p><span class="th">ในโลหะ อิเล็กตรอนอิสระเคลื่อนที่ไปภายใต้แรงจากสนามไฟฟ้า
+        แต่ระหว่างทางมันชนกับไอออนของโลหะที่สั่นอยู่ในโครงผลึกตลอดเวลา
+        การชนแต่ละครั้งถ่ายเทพลังงานให้โครงผลึก ทำให้โลหะร้อนขึ้น
+        <b>ความต้านทานคือมาตรวัดว่าการเดินทางนั้นยากเพียงใด</b>
+        และเป็นเหตุผลว่าทำไมสายไฟจึงอุ่นขึ้นเมื่อจ่ายกระแสมาก</span>
+        <span class="en">In a metal, free electrons drift under the force of the electric field, colliding as
+        they go with the metal ions vibrating in the lattice. Each collision hands energy to the lattice and
+        the metal grows warmer. <b>Resistance measures how hard that journey is</b> — and it is why a cable
+        gets warm when it carries a large current.</span></p>
+
+      <figure>
+        <div class="figure-box is-animated drift-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 300" role="img" width="720"
+               aria-label="Charge flowing through a thin and a thick conductor, illustrating R = rho L over A">
+            <defs>
+              <clipPath id="clipThin"><rect x="70" y="62" width="420" height="26"/></clipPath>
+              <clipPath id="clipThick"><rect x="70" y="150" width="420" height="52"/></clipPath>
+              <marker id="ar3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#0d1128"/></marker>
+            </defs>
+
+            <!-- thin conductor -->
+            <rect class="metal" x="70" y="62" width="420" height="26" rx="4"/>
+            <g clip-path="url(#clipThin)">
+              <g class="flow slow">
+                <circle class="elec" cx="36"  cy="75" r="5.5"/><circle class="elec" cx="70"  cy="75" r="5.5"/>
+                <circle class="elec" cx="104" cy="75" r="5.5"/><circle class="elec" cx="138" cy="75" r="5.5"/>
+                <circle class="elec" cx="172" cy="75" r="5.5"/><circle class="elec" cx="206" cy="75" r="5.5"/>
+                <circle class="elec" cx="240" cy="75" r="5.5"/><circle class="elec" cx="274" cy="75" r="5.5"/>
+                <circle class="elec" cx="308" cy="75" r="5.5"/><circle class="elec" cx="342" cy="75" r="5.5"/>
+                <circle class="elec" cx="376" cy="75" r="5.5"/><circle class="elec" cx="410" cy="75" r="5.5"/>
+                <circle class="elec" cx="444" cy="75" r="5.5"/><circle class="elec" cx="478" cy="75" r="5.5"/>
+              </g>
+            </g>
+            <g class="ion">
+              <line x1="120" y1="68" x2="128" y2="76"/><line x1="128" y1="68" x2="120" y2="76"/>
+              <line x1="220" y1="74" x2="228" y2="82"/><line x1="228" y1="74" x2="220" y2="82"/>
+              <line x1="320" y1="68" x2="328" y2="76"/><line x1="328" y1="68" x2="320" y2="76"/>
+              <line x1="420" y1="74" x2="428" y2="82"/><line x1="428" y1="74" x2="420" y2="82"/>
+            </g>
+            <text class="lbl th" x="510" y="70">พื้นที่หน้าตัดน้อย</text>
+            <text class="lbl en" x="510" y="70">small area</text>
+            <text class="sub th" x="510" y="88">R มาก → กระแสน้อย</text>
+            <text class="sub en" x="510" y="88">large R → less current</text>
+
+            <!-- thick conductor -->
+            <rect class="metal" x="70" y="150" width="420" height="52" rx="5"/>
+            <g clip-path="url(#clipThick)">
+              <g class="flow fast">
+                <circle class="elec" cx="36"  cy="164" r="5.5"/><circle class="elec" cx="70"  cy="164" r="5.5"/>
+                <circle class="elec" cx="104" cy="164" r="5.5"/><circle class="elec" cx="138" cy="164" r="5.5"/>
+                <circle class="elec" cx="172" cy="164" r="5.5"/><circle class="elec" cx="206" cy="164" r="5.5"/>
+                <circle class="elec" cx="240" cy="164" r="5.5"/><circle class="elec" cx="274" cy="164" r="5.5"/>
+                <circle class="elec" cx="308" cy="164" r="5.5"/><circle class="elec" cx="342" cy="164" r="5.5"/>
+                <circle class="elec" cx="376" cy="164" r="5.5"/><circle class="elec" cx="410" cy="164" r="5.5"/>
+                <circle class="elec" cx="444" cy="164" r="5.5"/><circle class="elec" cx="478" cy="164" r="5.5"/>
+                <circle class="elec" cx="53"  cy="188" r="5.5"/><circle class="elec" cx="87"  cy="188" r="5.5"/>
+                <circle class="elec" cx="121" cy="188" r="5.5"/><circle class="elec" cx="155" cy="188" r="5.5"/>
+                <circle class="elec" cx="189" cy="188" r="5.5"/><circle class="elec" cx="223" cy="188" r="5.5"/>
+                <circle class="elec" cx="257" cy="188" r="5.5"/><circle class="elec" cx="291" cy="188" r="5.5"/>
+                <circle class="elec" cx="325" cy="188" r="5.5"/><circle class="elec" cx="359" cy="188" r="5.5"/>
+                <circle class="elec" cx="393" cy="188" r="5.5"/><circle class="elec" cx="427" cy="188" r="5.5"/>
+                <circle class="elec" cx="461" cy="188" r="5.5"/><circle class="elec" cx="495" cy="188" r="5.5"/>
+              </g>
+            </g>
+            <g class="ion">
+              <line x1="150" y1="156" x2="158" y2="164"/><line x1="158" y1="156" x2="150" y2="164"/>
+              <line x1="250" y1="186" x2="258" y2="194"/><line x1="258" y1="186" x2="250" y2="194"/>
+              <line x1="350" y1="156" x2="358" y2="164"/><line x1="358" y1="156" x2="350" y2="164"/>
+            </g>
+            <text class="lbl th" x="510" y="170">พื้นที่หน้าตัดมาก</text>
+            <text class="lbl en" x="510" y="170">large area</text>
+            <text class="sub th" x="510" y="188">R น้อย → กระแสมาก</text>
+            <text class="sub en" x="510" y="188">small R → more current</text>
+
+            <!-- length marker -->
+            <line x1="70" y1="232" x2="490" y2="232" stroke="#0d1128" stroke-width="1.5"
+                  marker-start="url(#ar3)" marker-end="url(#ar3)"/>
+            <text class="lbl" x="280" y="252" text-anchor="middle">L</text>
+            <text class="sub th" x="280" y="270" text-anchor="middle">ยิ่งยาว ยิ่งชนมาก ยิ่งต้านทานมาก</text>
+            <text class="sub en" x="280" y="270" text-anchor="middle">the longer it is, the more collisions, the more resistance</text>
+
+            <text class="cap" x="614" y="238" text-anchor="middle">R = ρL / A</text>
+            <text class="sub th" x="614" y="258" text-anchor="middle">× คือไอออนในโครงผลึก</text>
+            <text class="sub en" x="614" y="258" text-anchor="middle">× marks a lattice ion</text>
+            <text class="sub th" x="614" y="274" text-anchor="middle">ที่อิเล็กตรอนชนระหว่างทาง</text>
+            <text class="sub en" x="614" y="274" text-anchor="middle">the electrons collide with</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 3.2</span><span class="en">Figure 3.2</span></b>
+          <span class="th"> ที่มาทางกายภาพของ \(R = \rho L / A\)
+            ในภาพเคลื่อนไหว ตัวนำเส้นล่างที่หนากว่ามีประจุผ่านหน้าตัดต่อวินาทีมากกว่า
+            ซึ่งก็คือกระแสที่มากกว่าเมื่อป้อนแรงดันเท่ากัน
+            <br><i>ข้อควรระวัง:</i> ภาพนี้สื่อถึง “ปริมาณประจุที่ผ่านต่อวินาที” ไม่ใช่ความเร็วของอิเล็กตรอนแต่ละตัว
+            ซึ่งในสายไฟจริงช้ามากเพียงระดับมิลลิเมตรต่อวินาที ตามที่กล่าวไว้ในบทที่ 1</span>
+          <span class="en"> Where \(R = \rho L / A\) comes from. In the animation the thicker conductor
+            below passes more charge per second across its cross-section, which is simply a larger current
+            for the same applied voltage. <br><i>A caution:</i> the picture conveys <i>charge per second</i>,
+            not the speed of an individual electron, which in a real cable is only millimetres per second,
+            as noted in Chapter 1.</span></figcaption>
+      </figure>
+
+      <div class="equation">
+        \[ R = \frac{\rho L}{A} \qquad\qquad G = \frac{1}{R} \]
+      </div>
+      <p class="eq-note"><span class="th">\(G\) คือความนำไฟฟ้า (conductance) หน่วยซีเมนส์ (S)
+        ใช้สะดวกมากในวงจรขนาน</span>
+        <span class="en">\(G\) is conductance, in siemens (S) — very convenient for parallel circuits</span></p>
+
+      <h3 id="s2-2"><span class="th">3.2.2 ผลของอุณหภูมิ</span><span class="en">3.2.2 The effect of temperature</span></h3>
+      <p><span class="th">เมื่อโลหะร้อนขึ้น ไอออนในโครงผลึกสั่นแรงขึ้น อิเล็กตรอนจึงชนบ่อยขึ้น
+        ความต้านทานของโลหะจึง <b>เพิ่มขึ้น</b> ตามอุณหภูมิ</span>
+        <span class="en">When a metal warms, its lattice ions vibrate harder and the electrons collide more
+        often, so a metal's resistance <b>rises</b> with temperature:</span></p>
+
+      <div class="equation">
+        \[ R_T = R_{20}\left[\,1 + \alpha\,(T - 20)\,\right] \]
+      </div>
+      <p class="eq-note"><span class="th">\(\alpha\) = สัมประสิทธิ์อุณหภูมิ (/°C), ทองแดง \(\alpha = 0.00393\)</span>
+        <span class="en">\(\alpha\) = temperature coefficient (/°C); for copper \(\alpha = 0.00393\)</span></p>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 3.1</span><span class="en">Example 3.1</span></span>
+          <span class="th">สายไฟที่เดินกลางแดด</span><span class="en">A cable run in full sun</span></div>
+        <div class="example-body">
+          <p><span class="th">ในตัวอย่างที่ 2.1 เราเลือกสายทองแดง 4 mm² ยาว 80 เมตร
+            ซึ่งมีความต้านทาน (ไป–กลับ) 0.672 Ω ที่ 20 °C และคำนวณได้แรงดันตก 2.04 %
+            ผ่านเกณฑ์อย่างสบาย ๆ แต่สายเส้นนี้เดินลอยกลางแดดในแปลง อุณหภูมิตัวนำขึ้นถึง 65 °C
+            จงตรวจสอบว่ายังผ่านเกณฑ์ 3 % หรือไม่ (กระแส 7.0 A, แรงดัน 230 V)</span>
+            <span class="en">In Example 2.1 we chose 4 mm² copper over 80 m, with a go-and-return resistance
+            of 0.672 Ω at 20 °C, giving a 2.04 % voltage drop — comfortably inside the limit. But the cable
+            runs in the open sun and the conductor reaches 65 °C. Check whether it still meets the 3 %
+            limit. (Current 7.0 A, supply 230 V.)</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            \[ R_{65} = 0.672\left[\,1 + 0.00393\,(65 - 20)\,\right]
+               = 0.672\,(1.1769) = 0.791\ \Omega \]
+            \[ V_{\text{drop}} = I R = (7.0)(0.791) = 5.54\ \text{V}
+               \qquad \%V_{\text{drop}} = \frac{5.54}{230}\times100 = 2.41\ \% \]
+            <p class="mb-0"><span class="th">ยังผ่านเกณฑ์ แต่สังเกตว่าระยะห่างจากขีดจำกัดหดจาก
+              0.96 % เหลือเพียง 0.59 % เพราะความต้านทานเพิ่มขึ้นถึง 17.7 %
+              จากอุณหภูมิอย่างเดียว บทเรียนคือ <b>การออกแบบที่คำนวณไว้ที่ 20 °C
+              เป็นการประเมินที่ดีเกินจริงเสมอ</b> สำหรับงานกลางแจ้งในประเทศไทย
+              ควรเผื่อขนาดสายไว้อีกขั้นหนึ่ง ซึ่งเป็นสิ่งที่จะทำอย่างเป็นระบบในบทที่ 11</span>
+              <span class="en">It still passes, but the margin has shrunk from 0.96 % to 0.59 %, because
+              temperature alone raised the resistance by 17.7 %. The lesson: <b>a design computed at 20 °C
+              always flatters itself</b>. For outdoor work in Thailand, allow one size up — something we do
+              systematically in Chapter 11.</span></p>
+          </div>
+        </div>
+      </div>
+
+      <h3 id="s2-3"><span class="th">3.2.3 ตัวต้านทานจริง: แถบสี พิกัด และความคลาดเคลื่อน</span>
+          <span class="en">3.2.3 Real resistors: colour code, rating and tolerance</span></h3>
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 3.1 รหัสแถบสีของตัวต้านทาน (ตาม IEC 60062)</span>
+            <span class="en">Table 3.1 Resistor colour code (IEC 60062)</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">สี</span><span class="en">Colour</span></th>
+              <th class="num"><span class="th">แถบที่ 1–2 (ตัวเลข)</span><span class="en">Bands 1–2 (digit)</span></th>
+              <th class="num"><span class="th">แถบที่ 3 (ตัวคูณ)</span><span class="en">Band 3 (multiplier)</span></th>
+              <th class="num"><span class="th">แถบที่ 4 (ความคลาดเคลื่อน)</span><span class="en">Band 4 (tolerance)</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="th">ดำ</span><span class="en">Black</span></td><td class="num">0</td><td class="num">×1</td><td class="num">—</td></tr>
+            <tr><td><span class="th">น้ำตาล</span><span class="en">Brown</span></td><td class="num">1</td><td class="num">×10</td><td class="num">±1 %</td></tr>
+            <tr><td><span class="th">แดง</span><span class="en">Red</span></td><td class="num">2</td><td class="num">×100</td><td class="num">±2 %</td></tr>
+            <tr><td><span class="th">ส้ม</span><span class="en">Orange</span></td><td class="num">3</td><td class="num">×1 k</td><td class="num">—</td></tr>
+            <tr><td><span class="th">เหลือง</span><span class="en">Yellow</span></td><td class="num">4</td><td class="num">×10 k</td><td class="num">—</td></tr>
+            <tr><td><span class="th">เขียว</span><span class="en">Green</span></td><td class="num">5</td><td class="num">×100 k</td><td class="num">±0.5 %</td></tr>
+            <tr><td><span class="th">น้ำเงิน</span><span class="en">Blue</span></td><td class="num">6</td><td class="num">×1 M</td><td class="num">±0.25 %</td></tr>
+            <tr><td><span class="th">ม่วง</span><span class="en">Violet</span></td><td class="num">7</td><td class="num">×10 M</td><td class="num">±0.1 %</td></tr>
+            <tr><td><span class="th">เทา</span><span class="en">Grey</span></td><td class="num">8</td><td class="num">—</td><td class="num">—</td></tr>
+            <tr><td><span class="th">ขาว</span><span class="en">White</span></td><td class="num">9</td><td class="num">—</td><td class="num">—</td></tr>
+            <tr><td><span class="th">ทอง</span><span class="en">Gold</span></td><td class="num">—</td><td class="num">×0.1</td><td class="num">±5 %</td></tr>
+            <tr><td><span class="th">เงิน</span><span class="en">Silver</span></td><td class="num">—</td><td class="num">×0.01</td><td class="num">±10 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 3.2</span><span class="en">Example 3.2</span></span>
+          <span class="th">อ่านแถบสีและตรวจกับค่าที่วัดได้</span>
+          <span class="en">Reading the code and checking a measurement</span></div>
+        <div class="example-body">
+          <p><span class="th">ตัวต้านทานมีแถบสี <b>น้ำตาล–ดำ–แดง–ทอง</b> เมื่อวัดด้วยมัลติมิเตอร์ได้ 1 043 Ω
+            ตัวต้านทานตัวนี้อยู่ในพิกัดที่ผู้ผลิตระบุหรือไม่</span>
+            <span class="en">A resistor is banded <b>brown–black–red–gold</b>. A multimeter reads 1 043 Ω. Is
+            it within the manufacturer's stated tolerance?</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th">น้ำตาล = 1, ดำ = 0 จึงได้เลขนัยสำคัญ 10 แดง = ตัวคูณ ×100 และทอง = ±5 %</span>
+              <span class="en">Brown = 1, black = 0, giving the digits 10; red = ×100; gold = ±5 %.</span></p>
+            \[ R_{\text{nominal}} = 10 \times 100 = 1000\ \Omega = 1\ \text{k}\Omega \]
+            \[ \Delta R = 0.05 \times 1000 = 50\ \Omega
+               \quad\Rightarrow\quad 950\ \Omega \le R \le 1050\ \Omega \]
+            <p class="mb-0"><span class="th">ค่าที่วัดได้ 1 043 Ω อยู่ในช่วง จึง <b>ผ่านพิกัด</b>
+              แม้จะคลาดเคลื่อนจากค่าที่ระบุถึง 4.3 % ก็ตาม
+              จุดที่ต้องระวังในงานออกแบบคือ ถ้าวงจรของเราทำงานได้ก็ต่อเมื่อค่าคลาดเคลื่อนไม่เกิน 1 %
+              การใช้ตัวต้านทาน ±5 % ถือว่าออกแบบผิดตั้งแต่ต้น ไม่ใช่ความผิดของตัวต้านทาน</span>
+              <span class="en">At 1 043 Ω it is inside the band and therefore <b>within
+              specification</b>, even though it differs from nominal by 4.3 %. The design lesson: if your
+              circuit only works when the value is within 1 %, then choosing a ±5 % part was a design
+              error, not a fault in the resistor.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 3.3 -->
+    <section id="s3">
+      <h2><span class="num">3.3</span><span class="th">กฎของโอห์ม</span><span class="en">Ohm's law</span></h2>
+
+      <p><span class="th">Georg Simon Ohm ค้นพบในปี ค.ศ. 1827 ว่าสำหรับตัวนำโลหะที่อุณหภูมิคงที่
+        กระแสที่ไหลผ่านแปรผันตรงกับแรงดันที่คร่อมอยู่ ค่าคงที่ของการแปรผันนั้นคือความต้านทาน</span>
+        <span class="en">Georg Simon Ohm found in 1827 that for a metallic conductor at constant temperature
+        the current through it is proportional to the voltage across it. The constant of proportionality is
+        the resistance:</span></p>
+
+      <div class="equation">
+        \[ V = I R \qquad\qquad I = \frac{V}{R} \qquad\qquad R = \frac{V}{I} \]
+      </div>
+
+      <p><span class="th">รวมกับนิยามกำลังไฟฟ้า \(P = VI\) จากบทที่ 1 จะได้ชุดสมการที่ใช้บ่อยที่สุดในวิชานี้</span>
+        <span class="en">Combined with the definition of power \(P = VI\) from Chapter 1, this gives the set of
+        relations used more than any other in this course:</span></p>
+
+      <div class="equation">
+        \[ P = VI = I^{2}R = \frac{V^{2}}{R} \]
+      </div>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 700 300" role="img" width="700"
+               aria-label="Voltage-current characteristics of a resistor, a filament lamp and a diode">
+            <!-- axes -->
+            <line class="axis" x1="70" y1="248" x2="470" y2="248"/>
+            <line class="axis" x1="70" y1="248" x2="70" y2="40"/>
+            <polygon points="470,244 480,248 470,252" fill="#6c757d"/>
+            <polygon points="66,46 70,36 74,46" fill="#6c757d"/>
+            <text class="lbl" x="275" y="278" text-anchor="middle">V</text>
+            <text class="lbl" x="40" y="146" text-anchor="middle">I</text>
+
+            <!-- resistor: straight line -->
+            <line x1="70" y1="248" x2="440" y2="64" stroke="#fd5f00" stroke-width="2.5"/>
+            <!-- lamp: bends down (R rises with temperature) -->
+            <path d="M70 248 Q210 156 440 128" stroke="#2b6cb0" stroke-width="2.5"
+                  fill="none" stroke-dasharray="7 4"/>
+            <!-- diode: nothing then sharp rise -->
+            <path d="M70 248 L232 246 Q272 244 288 64" stroke="#2f855a" stroke-width="2.5" fill="none"/>
+
+            <!-- legend -->
+            <line x1="500" y1="70" x2="536" y2="70" stroke="#fd5f00" stroke-width="2.5"/>
+            <text class="lbl th" x="544" y="74">ตัวต้านทาน</text>
+            <text class="lbl en" x="544" y="74">Resistor</text>
+            <text class="sub th" x="500" y="92">เส้นตรงผ่านจุดกำเนิด — เป็นไปตามกฎของโอห์ม</text>
+            <text class="sub en" x="500" y="92">a straight line through the origin — ohmic</text>
+            <text class="sub th" x="500" y="108">ความชัน = 1/R และคงที่</text>
+            <text class="sub en" x="500" y="108">slope = 1/R, and constant</text>
+
+            <line x1="500" y1="146" x2="536" y2="146" stroke="#2b6cb0" stroke-width="2.5" stroke-dasharray="7 4"/>
+            <text class="lbl th" x="544" y="150">หลอดไส้</text>
+            <text class="lbl en" x="544" y="150">Filament lamp</text>
+            <text class="sub th" x="500" y="168">โค้งลง เพราะไส้ร้อนขึ้น R จึงเพิ่ม</text>
+            <text class="sub en" x="500" y="168">bends down: the filament heats, R rises</text>
+            <text class="sub th" x="500" y="184">ไม่เป็นไปตามกฎของโอห์ม</text>
+            <text class="sub en" x="500" y="184">not ohmic</text>
+
+            <line x1="500" y1="222" x2="536" y2="222" stroke="#2f855a" stroke-width="2.5"/>
+            <text class="lbl th" x="544" y="226">ไดโอด</text>
+            <text class="lbl en" x="544" y="226">Diode</text>
+            <text class="sub th" x="500" y="244">แทบไม่นำกระแสจนถึง ~0.7 V แล้วพุ่งขึ้น</text>
+            <text class="sub en" x="500" y="244">almost no current until ~0.7 V, then a surge</text>
+            <text class="sub th" x="500" y="260">ใช้ R = V/I ตายตัวไม่ได้ (บทที่ 13)</text>
+            <text class="sub en" x="500" y="260">no single R applies (Chapter 13)</text>
+
+            <text class="sub" x="290" y="60" text-anchor="middle" fill="#fd5f00">ΔI</text>
+            <text class="sub" x="245" y="242" text-anchor="middle" fill="#2f855a">0.7 V</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 3.3</span><span class="en">Figure 3.3</span></b>
+          <span class="th"> เส้นโค้งลักษณะสมบัติ V–I ของโหลดสามชนิด
+            <b>กฎของโอห์มไม่ใช่กฎสากล</b> แต่เป็นคำอธิบายพฤติกรรมของวัสดุกลุ่มหนึ่งเท่านั้น
+            โหลดที่กราฟเป็นเส้นตรงผ่านจุดกำเนิดเรียกว่า “โอห์มมิก”
+            ส่วนหลอดไส้และไดโอดไม่ใช่ ในงานเกษตรที่ใช้หลอด LED และอินเวอร์เตอร์เป็นหลัก
+            โหลดส่วนใหญ่ <b>ไม่</b> เป็นโอห์มมิก จึงต้องระวังเวลานำกฎของโอห์มไปใช้กับอุปกรณ์เหล่านี้</span>
+          <span class="en"> The V–I characteristics of three loads. <b>Ohm's law is not a universal
+            law</b> but a description of how one class of material behaves. A load whose graph is a straight
+            line through the origin is called ohmic; a filament lamp and a diode are not. On a modern farm,
+            full of LEDs and inverters, most loads are <b>not</b> ohmic — so take care before applying Ohm's
+            law to them.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 3.3</span><span class="en">Example 3.3</span></span>
+          <span class="th">ตัวต้านทานจำกัดกระแสให้ LED แสดงสถานะ</span>
+          <span class="en">A current-limiting resistor for a status LED</span></div>
+        <div class="example-body">
+          <p><span class="th">ตู้ควบคุมระบบให้น้ำใช้ไฟ 12 V และต้องการติดหลอด LED แสดงสถานะ
+            ซึ่งมีแรงดันตกคร่อมตัวมันเอง 2.0 V และต้องการกระแส 20 mA
+            จงหาค่าตัวต้านทานที่ต้องต่ออนุกรม เลือกค่ามาตรฐาน แล้วตรวจสอบพิกัดกำลัง</span>
+            <span class="en">An irrigation control cabinet runs on 12 V and needs a status LED that drops
+            2.0 V across itself and wants 20 mA. Find the series resistor, choose a standard value, and
+            check its power rating.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th">แรงดันที่ต้องตกคร่อมตัวต้านทานคือส่วนที่เหลือจากแหล่งจ่าย</span>
+              <span class="en">The resistor must drop whatever the LED does not:</span></p>
+            \[ V_R = 12 - 2.0 = 10.0\ \text{V} \]
+            \[ R = \frac{V_R}{I} = \frac{10.0}{0.020} = 500\ \Omega \]
+            <p><span class="th">ค่ามาตรฐานที่ใกล้ที่สุดคือ 470 Ω ตรวจดูว่ากระแสที่ได้ยังปลอดภัยหรือไม่</span>
+              <span class="en">The nearest standard value is 470 Ω; check that the resulting current is still
+              safe:</span></p>
+            \[ I = \frac{10.0}{470} = 0.0213\ \text{A} = 21.3\ \text{mA} \quad ✓ \]
+            \[ P_R = I^{2}R = (0.0213)^{2}(470) = 0.213\ \text{W} \]
+            <p class="mb-0"><span class="th">กำลัง 0.213 W ต่ำกว่าพิกัด 1/4 W (0.25 W) อยู่เพียง 15 %
+              ซึ่ง <b>ใกล้เกินไป</b> ในทางปฏิบัติ เพราะตู้ควบคุมในโรงเรือนอาจร้อนถึง 50 °C
+              และพิกัดกำลังของตัวต้านทานลดลงตามอุณหภูมิ จึงควรเลือก <b>1/2 W</b>
+              ราคาต่างกันไม่ถึงหนึ่งบาท แต่ได้ความมั่นใจเพิ่มขึ้นมาก</span>
+              <span class="en">At 0.213 W it is only 15 % below a ¼ W (0.25 W) rating, which is <b>too
+              close</b> in practice: a control cabinet in a greenhouse can reach 50 °C, and a resistor's
+              rating falls with temperature. Specify <b>½ W</b>. It costs almost nothing more and buys a
+              great deal of confidence.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 3.4 -->
+    <section id="s4">
+      <h2><span class="num">3.4</span><span class="th">วงจรความต้านทาน: อนุกรมและขนาน</span>
+          <span class="en">Resistance circuits: series and parallel</span></h2>
+
+      <p><span class="th">เมื่อมีตัวต้านทานหลายตัวในวงจร เราสามารถแทนกลุ่มของมันด้วย
+        <b>ความต้านทานสมมูล</b> เพียงตัวเดียวที่ให้ผลต่อแหล่งจ่ายเหมือนกันทุกประการ
+        การยุบวงจรแบบนี้คือเครื่องมือที่ทรงพลังที่สุดในการวิเคราะห์วงจรกระแสตรง</span>
+        <span class="en">When several resistors appear together we can replace the group by a single
+        <b>equivalent resistance</b> that the source cannot tell apart from the original. This reduction is
+        the most powerful tool we have for analysing DC circuits.</span></p>
+
+      <figure>
+        <div class="figure-box is-animated sp-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 470" role="img" width="720"
+               aria-label="Series and parallel circuits with their equivalent circuits and animated current">
+            <defs>
+              <clipPath id="clipSer"><rect x="92" y="54" width="380" height="20"/></clipPath>
+              <clipPath id="clipPar1"><rect x="150" y="292" width="300" height="20"/></clipPath>
+              <clipPath id="clipPar2"><rect x="150" y="352" width="300" height="20"/></clipPath>
+              <clipPath id="clipParM"><rect x="60" y="392" width="120" height="20"/></clipPath>
+            </defs>
+
+            <!-- ================= SERIES ================= -->
+            <text class="cap th" x="20" y="28">ก. ต่ออนุกรม — กระแสเดียวกันทั้งวงจร</text>
+            <text class="cap en" x="20" y="28">a. In series — one current throughout</text>
+
+            <path class="wire" d="M92 64 H472"/>
+            <g clip-path="url(#clipSer)">
+              <g class="flow same">
+                <circle class="elec" cx="58"  cy="64" r="5"/><circle class="elec" cx="92"  cy="64" r="5"/>
+                <circle class="elec" cx="126" cy="64" r="5"/><circle class="elec" cx="160" cy="64" r="5"/>
+                <circle class="elec" cx="194" cy="64" r="5"/><circle class="elec" cx="228" cy="64" r="5"/>
+                <circle class="elec" cx="262" cy="64" r="5"/><circle class="elec" cx="296" cy="64" r="5"/>
+                <circle class="elec" cx="330" cy="64" r="5"/><circle class="elec" cx="364" cy="64" r="5"/>
+                <circle class="elec" cx="398" cy="64" r="5"/><circle class="elec" cx="432" cy="64" r="5"/>
+                <circle class="elec" cx="466" cy="64" r="5"/>
+              </g>
+            </g>
+            <rect class="sym" x="170" y="52" width="60" height="24"/>
+            <text class="lbl" x="200" y="44" text-anchor="middle">R₁</text>
+            <rect class="sym" x="300" y="52" width="60" height="24"/>
+            <text class="lbl" x="330" y="44" text-anchor="middle">R₂</text>
+            <path class="wire" d="M92 64 V150 H472 V64"/>
+            <line x1="74" y1="98" x2="110" y2="98" stroke="#0d1128" stroke-width="3"/>
+            <line x1="83" y1="110" x2="101" y2="110" stroke="#0d1128" stroke-width="3"/>
+            <line x1="74" y1="122" x2="110" y2="122" stroke="#0d1128" stroke-width="3"/>
+            <line x1="83" y1="134" x2="101" y2="134" stroke="#0d1128" stroke-width="3"/>
+            <text class="lbl" x="48" y="116" text-anchor="middle">V</text>
+            <text class="sub th" x="200" y="172" text-anchor="middle">V₁ = I R₁</text>
+            <text class="sub en" x="200" y="172" text-anchor="middle">V₁ = I R₁</text>
+            <text class="sub th" x="330" y="172" text-anchor="middle">V₂ = I R₂</text>
+            <text class="sub en" x="330" y="172" text-anchor="middle">V₂ = I R₂</text>
+
+            <text class="lbl" x="530" y="60">⟹</text>
+            <text class="cap th" x="560" y="40">วงจรสมมูล</text>
+            <text class="cap en" x="560" y="40">equivalent</text>
+            <path class="wire" d="M560 64 H600"/>
+            <rect class="sym" x="600" y="52" width="66" height="24"/>
+            <path class="wire" d="M666 64 H700 V150 H560 V64"/>
+            <text class="lbl" x="633" y="44" text-anchor="middle">R_eq</text>
+            <line x1="542" y1="98" x2="578" y2="98" stroke="#0d1128" stroke-width="3"/>
+            <line x1="551" y1="110" x2="569" y2="110" stroke="#0d1128" stroke-width="3"/>
+            <line x1="542" y1="122" x2="578" y2="122" stroke="#0d1128" stroke-width="3"/>
+            <line x1="551" y1="134" x2="569" y2="134" stroke="#0d1128" stroke-width="3"/>
+            <text class="lbl" x="633" y="172" text-anchor="middle">R_eq = R₁ + R₂</text>
+            <text class="sub th" x="633" y="192" text-anchor="middle">มากกว่าตัวที่มากที่สุดเสมอ</text>
+            <text class="sub en" x="633" y="192" text-anchor="middle">always larger than the largest</text>
+
+            <line x1="20" y1="220" x2="700" y2="220" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ================= PARALLEL ================= -->
+            <text class="cap th" x="20" y="252">ข. ต่อขนาน — แรงดันเดียวกันทุกกิ่ง กระแสถูกแบ่ง</text>
+            <text class="cap en" x="20" y="252">b. In parallel — one voltage, the current divides</text>
+
+            <!-- main line -->
+            <path class="wire" d="M60 302 H150"/>
+            <path class="wire" d="M60 302 V402"/>
+            <path class="wire" d="M60 402 H180"/>
+            <g clip-path="url(#clipParM)">
+              <g class="flow total">
+                <circle class="elec" cx="26"  cy="402" r="5"/><circle class="elec" cx="60"  cy="402" r="5"/>
+                <circle class="elec" cx="94"  cy="402" r="5"/><circle class="elec" cx="128" cy="402" r="5"/>
+                <circle class="elec" cx="162" cy="402" r="5"/><circle class="elec" cx="196" cy="402" r="5"/>
+              </g>
+            </g>
+            <text class="cap" x="120" y="424" text-anchor="middle">I = 51.7 mA</text>
+
+            <!-- branch 1 -->
+            <path class="wire" d="M150 302 H450"/>
+            <g clip-path="url(#clipPar1)">
+              <g class="flow big">
+                <circle class="elec" cx="116" cy="302" r="5"/><circle class="elec" cx="150" cy="302" r="5"/>
+                <circle class="elec" cx="184" cy="302" r="5"/><circle class="elec" cx="218" cy="302" r="5"/>
+                <circle class="elec" cx="252" cy="302" r="5"/><circle class="elec" cx="286" cy="302" r="5"/>
+                <circle class="elec" cx="320" cy="302" r="5"/><circle class="elec" cx="354" cy="302" r="5"/>
+                <circle class="elec" cx="388" cy="302" r="5"/><circle class="elec" cx="422" cy="302" r="5"/>
+                <circle class="elec" cx="456" cy="302" r="5"/>
+              </g>
+            </g>
+            <rect class="sym" x="270" y="290" width="60" height="24"/>
+            <text class="lbl" x="300" y="284" text-anchor="middle">R₁ = 220 Ω</text>
+            <text class="cap" x="400" y="284" text-anchor="middle">I₁ = 31.0 mA</text>
+
+            <!-- branch 2 -->
+            <path class="wire" d="M150 362 H450"/>
+            <g clip-path="url(#clipPar2)">
+              <g class="flow small">
+                <circle class="elec" cx="116" cy="362" r="5"/><circle class="elec" cx="150" cy="362" r="5"/>
+                <circle class="elec" cx="184" cy="362" r="5"/><circle class="elec" cx="218" cy="362" r="5"/>
+                <circle class="elec" cx="252" cy="362" r="5"/><circle class="elec" cx="286" cy="362" r="5"/>
+                <circle class="elec" cx="320" cy="362" r="5"/><circle class="elec" cx="354" cy="362" r="5"/>
+                <circle class="elec" cx="388" cy="362" r="5"/><circle class="elec" cx="422" cy="362" r="5"/>
+                <circle class="elec" cx="456" cy="362" r="5"/>
+              </g>
+            </g>
+            <rect class="sym" x="270" y="350" width="60" height="24"/>
+            <text class="lbl" x="300" y="392" text-anchor="middle">R₂ = 330 Ω</text>
+            <text class="cap" x="400" y="392" text-anchor="middle">I₂ = 20.7 mA</text>
+
+            <!-- nodes and closing wires -->
+            <path class="wire" d="M150 302 V362"/>
+            <path class="wire" d="M450 302 V402 H180"/>
+            <circle class="node" cx="150" cy="302" r="5"/>
+            <circle class="node" cx="150" cy="362" r="5"/>
+            <circle class="node" cx="450" cy="302" r="5"/>
+            <circle class="node" cx="450" cy="362" r="5"/>
+
+            <text class="lbl" x="530" y="336">⟹</text>
+            <path class="wire" d="M560 302 H600"/>
+            <rect class="sym" x="600" y="290" width="66" height="24"/>
+            <path class="wire" d="M666 302 H700 V402 H560 V302"/>
+            <text class="lbl" x="633" y="284" text-anchor="middle">R_eq = 132 Ω</text>
+            <text class="sub th" x="633" y="424" text-anchor="middle">น้อยกว่ากิ่งที่น้อยที่สุดเสมอ</text>
+            <text class="sub en" x="633" y="424" text-anchor="middle">always less than the smallest branch</text>
+            <text class="sub th" x="633" y="444" text-anchor="middle">1/R_eq = 1/R₁ + 1/R₂</text>
+            <text class="sub en" x="633" y="444" text-anchor="middle">1/R_eq = 1/R₁ + 1/R₂</text>
+
+            <text class="sub th" x="300" y="452" text-anchor="middle">กิ่งที่ต้านทานน้อยกว่าได้กระแสมากกว่า — สังเกตความเร็วของจุดสีส้ม</text>
+            <text class="sub en" x="300" y="452" text-anchor="middle">the lower-resistance branch takes more current — watch the orange dots</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 3.4</span><span class="en">Figure 3.4</span></b>
+          <span class="th"> วงจรอนุกรมและขนานพร้อมวงจรสมมูลของแต่ละแบบ
+            ในภาพเคลื่อนไหว จุดสีส้มแทนประจุที่ไหลผ่าน — ในวงจรอนุกรมทุกจุดเคลื่อนที่ด้วยอัตราเดียวกัน
+            เพราะมีเส้นทางเดียว ส่วนในวงจรขนาน กิ่ง 220 Ω มีจุดผ่านถี่กว่ากิ่ง 330 Ω
+            ตามสัดส่วนกระแส 31.0 ต่อ 20.7 mA และในสายประธานจุดจะถี่ที่สุดเพราะรวมกระแสทั้งสองกิ่ง</span>
+          <span class="en"> Series and parallel circuits with their equivalents. In the animation the
+            orange dots stand for charge in transit. In the series circuit every dot moves at the same rate,
+            because there is only one path. In the parallel circuit the 220 Ω branch passes dots more
+            frequently than the 330 Ω branch, in the ratio of their currents, 31.0 to 20.7 mA — and the main
+            line is busiest of all, since it carries both.</span></figcaption>
+      </figure>
+
+      <div class="equation">
+        \[ \text{series:}\quad R_{\text{eq}} = R_1 + R_2 + \cdots + R_n \]
+        \[ \text{parallel:}\quad \frac{1}{R_{\text{eq}}} = \frac{1}{R_1} + \frac{1}{R_2} + \cdots + \frac{1}{R_n}
+           \qquad\text{or}\qquad G_{\text{eq}} = G_1 + G_2 + \cdots + G_n \]
+        \[ \text{two in parallel:}\quad R_{\text{eq}} = \frac{R_1 R_2}{R_1 + R_2} \]
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">💡 <span class="th">วิธีตรวจคำตอบด้วยสามัญสำนึก</span>
+          <span class="en">A common-sense check on your answer</span></div>
+        <ul class="mb-0">
+          <li><span class="th"><b>อนุกรม</b> — ค่าที่ได้ต้อง <b>มากกว่า</b> ตัวที่มากที่สุดเสมอ
+            (เพิ่มความยาวของเส้นทาง)</span>
+            <span class="en"><b>Series</b> — the answer must be <b>larger</b> than the largest resistor, since
+            you have lengthened the path.</span></li>
+          <li><span class="th"><b>ขนาน</b> — ค่าที่ได้ต้อง <b>น้อยกว่า</b> ตัวที่น้อยที่สุดเสมอ
+            (เพิ่มเส้นทางให้กระแสเลือกเดิน)</span>
+            <span class="en"><b>Parallel</b> — the answer must be <b>smaller</b> than the smallest, since you
+            have given the current another path.</span></li>
+          <li><span class="th">ถ้าคำตอบขัดกับสองข้อนี้ แปลว่าคำนวณผิดแน่นอน ไม่ต้องตรวจอย่างอื่นเลย</span>
+            <span class="en">If your answer breaks either rule you have made an arithmetic mistake — no
+            further checking needed.</span></li>
+        </ul>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 3.4</span><span class="en">Example 3.4</span></span>
+          <span class="th">ยุบวงจรผสมและหากระแสทุกกิ่ง</span>
+          <span class="en">Reducing a mixed network and finding every current</span></div>
+        <div class="example-body">
+          <p><span class="th">แหล่งจ่าย 12 V ต่อกับ \(R_1 = 100\ \Omega\) อนุกรมกับกลุ่มขนานของ
+            \(R_2 = 220\ \Omega\) และ \(R_3 = 330\ \Omega\) จงหาความต้านทานสมมูล กระแสรวม
+            แรงดันคร่อมแต่ละส่วน และกระแสในแต่ละกิ่ง</span>
+            <span class="en">A 12 V source feeds \(R_1 = 100\ \Omega\) in series with the parallel pair
+            \(R_2 = 220\ \Omega\) and \(R_3 = 330\ \Omega\). Find the equivalent resistance, the total
+            current, the voltage across each part, and each branch current.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th"><b>ขั้นที่ 1</b> ยุบกลุ่มขนานก่อนเสมอ — เริ่มจากส่วนที่อยู่ไกลแหล่งจ่ายที่สุด</span>
+              <span class="en"><b>Step 1</b> — always collapse the parallel group first, working from the end
+              furthest from the source:</span></p>
+            \[ R_{23} = \frac{R_2 R_3}{R_2 + R_3} = \frac{(220)(330)}{220 + 330}
+               = \frac{72\,600}{550} = 132\ \Omega \]
+            <p><span class="th">ตรวจ: 132 Ω น้อยกว่า 220 Ω ซึ่งเป็นตัวที่น้อยที่สุด ✓</span>
+              <span class="en">Check: 132 Ω is less than 220 Ω, the smaller branch ✓</span></p>
+            <p><span class="th"><b>ขั้นที่ 2</b> รวมกับ \(R_1\) แบบอนุกรม</span>
+              <span class="en"><b>Step 2</b> — add \(R_1\) in series:</span></p>
+            \[ R_{\text{eq}} = R_1 + R_{23} = 100 + 132 = 232\ \Omega \]
+            <p><span class="th"><b>ขั้นที่ 3</b> หากระแสรวมจากกฎของโอห์ม</span>
+              <span class="en"><b>Step 3</b> — total current from Ohm's law:</span></p>
+            \[ I = \frac{V}{R_{\text{eq}}} = \frac{12}{232} = 0.0517\ \text{A} = 51.7\ \text{mA} \]
+            <p><span class="th"><b>ขั้นที่ 4</b> แรงดันคร่อมแต่ละส่วน</span>
+              <span class="en"><b>Step 4</b> — the voltage across each part:</span></p>
+            \[ V_1 = I R_1 = (0.0517)(100) = 5.17\ \text{V} \]
+            \[ V_{23} = I R_{23} = (0.0517)(132) = 6.83\ \text{V} \]
+            <p><span class="th">ตรวจ: \(5.17 + 6.83 = 12.00\) V ✓ (เป็นกฎแรงดันของเคอร์ชอฟฟ์ ซึ่งจะเรียนในบทที่ 4)</span>
+              <span class="en">Check: \(5.17 + 6.83 = 12.00\) V ✓ — this is Kirchhoff's voltage law, formalised
+              in Chapter 4.</span></p>
+            <p><span class="th"><b>ขั้นที่ 5</b> กระแสในแต่ละกิ่ง โดยใช้ว่าทั้งสองกิ่งคร่อมแรงดันเดียวกัน 6.83 V</span>
+              <span class="en"><b>Step 5</b> — each branch current, both branches sharing the same 6.83 V:</span></p>
+            \[ I_2 = \frac{6.83}{220} = 31.0\ \text{mA} \qquad
+               I_3 = \frac{6.83}{330} = 20.7\ \text{mA} \]
+            <p class="mb-0"><span class="th">ตรวจ: \(31.0 + 20.7 = 51.7\) mA ตรงกับกระแสรวม ✓
+              (กฎกระแสของเคอร์ชอฟฟ์) สังเกตว่ากิ่งที่ต้านทานน้อยกว่าได้กระแสมากกว่าเสมอ
+              และนี่คือวงจรเดียวกับที่แสดงในรูปที่ 3.4 ข</span>
+              <span class="en">Check: \(31.0 + 20.7 = 51.7\) mA, matching the total ✓ — Kirchhoff's current
+              law. The lower-resistance branch always takes the larger share, and this is the very circuit
+              animated in Figure 3.4 b.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 3.5 -->
+    <section id="s5">
+      <h2><span class="num">3.5</span><span class="th">วงจรแบ่งแรงดันและแบ่งกระแส</span>
+          <span class="en">Voltage and current dividers</span></h2>
+
+      <p><span class="th">ในตัวอย่างที่ 3.4 เราหาแรงดันของแต่ละส่วนโดยหากระแสก่อน
+        แต่มีทางลัดที่ใช้ได้ทันทีโดยไม่ต้องหากระแสเลย เรียกว่ากฎการแบ่งแรงดันและการแบ่งกระแส
+        ซึ่งเป็นสองสูตรที่วิศวกรใช้บ่อยที่สุดในการอ่านค่าเซนเซอร์และขยายย่านวัด</span>
+        <span class="en">In Example 3.4 we found each voltage by first finding the current. There is a
+        shortcut that skips the current altogether: the voltage- and current-divider rules, the two formulas
+        engineers reach for most often when reading a sensor or extending a meter's range.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 300" role="img" width="720"
+               aria-label="The voltage divider and the current divider">
+            <defs>
+              <marker id="arV" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#fd5f00"/></marker>
+            </defs>
+
+            <!-- voltage divider -->
+            <text class="cap th" x="20" y="30">ก. แบ่งแรงดัน (ต่ออนุกรม)</text>
+            <text class="cap en" x="20" y="30">a. Voltage divider (series)</text>
+            <path class="wire" d="M90 56 V80"/>
+            <rect class="sym" x="76" y="80" width="28" height="56"/>
+            <text class="lbl" x="48" y="112" text-anchor="middle">R₁</text>
+            <path class="wire" d="M90 136 V162"/>
+            <rect class="sym" x="76" y="162" width="28" height="56"/>
+            <text class="lbl" x="48" y="194" text-anchor="middle">R₂</text>
+            <path class="wire" d="M90 218 V248"/>
+            <path class="wire" d="M90 56 H190 V248 H90"/>
+            <line x1="172" y1="66" x2="172" y2="238" stroke="#fd5f00" stroke-width="2"
+                  marker-end="url(#arV)"/>
+            <text class="cap" x="204" y="156">V_in</text>
+            <!-- output tap -->
+            <circle class="node" cx="90" cy="149" r="5"/>
+            <path class="wire" d="M90 149 H250"/>
+            <circle class="node" cx="250" cy="149" r="5"/>
+            <circle class="node" cx="250" cy="248" r="5"/>
+            <path class="wire" d="M90 248 H250"/>
+            <line x1="268" y1="159" x2="268" y2="238" stroke="#fd5f00" stroke-width="2"
+                  marker-end="url(#arV)"/>
+            <text class="cap" x="296" y="204">V_out</text>
+            <text class="lbl" x="150" y="286" text-anchor="middle">V_out = V_in · R₂ / (R₁ + R₂)</text>
+            <text class="sub th" x="150" y="268" text-anchor="middle">ตัวที่ต้านทานมากกว่าได้แรงดันมากกว่า</text>
+            <text class="sub en" x="150" y="268" text-anchor="middle">the larger resistor gets the larger share</text>
+
+            <line x1="360" y1="20" x2="360" y2="280" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- current divider -->
+            <text class="cap th" x="390" y="30">ข. แบ่งกระแส (ต่อขนาน)</text>
+            <text class="cap en" x="390" y="30">b. Current divider (parallel)</text>
+            <path class="wire" d="M400 92 H470"/>
+            <line x1="410" y1="92" x2="450" y2="92" stroke="#fd5f00" stroke-width="2.5" marker-end="url(#arV)"/>
+            <text class="cap" x="430" y="80" text-anchor="middle">I</text>
+            <circle class="node" cx="470" cy="92" r="5"/>
+            <path class="wire" d="M470 92 V216"/>
+            <path class="wire" d="M470 92 H540"/>
+            <rect class="sym" x="540" y="80" width="56" height="24"/>
+            <text class="lbl" x="568" y="72" text-anchor="middle">R₁</text>
+            <path class="wire" d="M596 92 H660 V216 H470"/>
+            <path class="wire" d="M470 160 H540"/>
+            <rect class="sym" x="540" y="148" width="56" height="24"/>
+            <text class="lbl" x="568" y="188" text-anchor="middle">R₂</text>
+            <path class="wire" d="M596 160 H660"/>
+            <circle class="node" cx="470" cy="160" r="5"/>
+            <circle class="node" cx="660" cy="160" r="5"/>
+            <circle class="node" cx="660" cy="92" r="5"/>
+            <line x1="500" y1="104" x2="500" y2="80" stroke="#fd5f00" stroke-width="2" marker-end="url(#arV)"/>
+            <text class="cap" x="506" y="120">I₁</text>
+            <text class="cap" x="506" y="150">I₂</text>
+            <text class="lbl" x="540" y="252" text-anchor="middle">I₁ = I · R₂ / (R₁ + R₂)</text>
+            <text class="sub th" x="540" y="272" text-anchor="middle">สลับตัวส่วน! ตัวที่ต้านทานน้อยกว่าได้กระแสมากกว่า</text>
+            <text class="sub en" x="540" y="272" text-anchor="middle">note the swap — the smaller resistor gets the larger share</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 3.5</span><span class="en">Figure 3.5</span></b>
+          <span class="th"> สองกฎที่หน้าตาคล้ายกันแต่ <b>ตัวเศษสลับกัน</b> —
+            จุดที่นักศึกษาสับสนมากที่สุดในบทนี้ วิธีจำที่ไม่มีวันพลาดคือถามตัวเองว่า
+            “ผลลัพธ์ควรมากหรือน้อย” ในการแบ่งแรงดัน ตัวต้านทานมากย่อมกินแรงดันมาก ตัวเศษจึงเป็นตัวมันเอง
+            ส่วนในการแบ่งกระแส ตัวต้านทานมากย่อมกีดกันกระแส กระแสจึงไปทางอื่น ตัวเศษจึงเป็นตัว
+            <i>อีกตัวหนึ่ง</i></span>
+          <span class="en"> Two rules that look alike but whose <b>numerators are swapped</b> — the
+            commonest confusion in this chapter. The infallible way to remember is to ask which way the
+            answer should go: in a voltage divider a larger resistor takes a larger share, so its own value
+            is on top; in a current divider a larger resistor turns current away, so the <i>other</i>
+            resistor is on top.</span></figcaption>
+      </figure>
+
+      <div class="equation">
+        \[ V_x = V_{\text{in}}\cdot\frac{R_x}{R_1 + R_2 + \cdots + R_n} \qquad\qquad
+           I_1 = I\cdot\frac{R_2}{R_1 + R_2} \]
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 3.5</span><span class="en">Example 3.5</span></span>
+          <span class="th">อ่านค่าเซนเซอร์ความชื้นดินด้วยวงจรแบ่งแรงดัน</span>
+          <span class="en">Reading a soil-moisture sensor with a voltage divider</span></div>
+        <div class="example-body">
+          <p><span class="th">เซนเซอร์ความชื้นดินแบบความต้านทานมีค่า 2 kΩ เมื่อดินชื้นมาก
+            และ 20 kΩ เมื่อดินแห้ง ต่ออนุกรมกับตัวต้านทานคงที่ 10 kΩ ลงกราวด์
+            จ่ายไฟ 3.3 V และวัดแรงดันคร่อมตัวต้านทานคงที่เข้าสู่ ADC ของไมโครคอนโทรลเลอร์
+            (ก) จงหาช่วงแรงดันขาออก (ข) หาก ADC มีความต้านทานขาเข้า 100 kΩ
+            ค่าที่อ่านได้ตอนดินแห้งจะคลาดเคลื่อนไปเท่าใด</span>
+            <span class="en">A resistive soil-moisture sensor measures 2 kΩ in wet soil and 20 kΩ in dry, and
+            is connected in series with a fixed 10 kΩ resistor to ground. The supply is 3.3 V and the
+            voltage across the fixed resistor feeds a microcontroller's ADC. (a) Find the output range.
+            (b) If the ADC's input resistance is 100 kΩ, how far out is the dry-soil reading?</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th">(ก) ใช้กฎการแบ่งแรงดันโดยตรง</span>
+              <span class="en">(a) Straight from the divider rule:</span></p>
+            \[ V_{\text{wet}} = 3.3 \cdot \frac{10}{2 + 10} = 3.3 \cdot \frac{10}{12} = 2.75\ \text{V} \]
+            \[ V_{\text{dry}} = 3.3 \cdot \frac{10}{20 + 10} = 3.3 \cdot \frac{10}{30} = 1.10\ \text{V} \]
+            <p><span class="th">ช่วงสัญญาณ 1.10–2.75 V กว้าง 1.65 V ซึ่งใช้ย่านของ ADC ได้ดีพอสมควร</span>
+              <span class="en">A span of 1.10–2.75 V, that is 1.65 V, which uses a fair part of the ADC's
+              range.</span></p>
+            <p><span class="th">(ข) ความต้านทานขาเข้าของ ADC ต่อขนานกับตัวต้านทานคงที่ (เหมือนตัวอย่างที่ 2.3)</span>
+              <span class="en">(b) The ADC's input resistance sits in parallel with the fixed resistor, just
+              as in Example 2.3:</span></p>
+            \[ R_{\text{eff}} = \frac{(10)(100)}{10 + 100} = 9.09\ \text{k}\Omega \]
+            \[ V_{\text{dry,actual}} = 3.3 \cdot \frac{9.09}{20 + 9.09} = 1.031\ \text{V} \]
+            \[ \text{error} = \frac{1.100 - 1.031}{1.100}\times100 = 6.3\ \% \]
+            <p class="mb-0"><span class="th">คลาดเคลื่อน 6.3 % ซึ่งในการวัดความชื้นดินอาจยอมรับได้
+              แต่ถ้าต้องการความแม่นยำกว่านี้มีสองทางเลือก — ลดค่าตัวต้านทานในวงจรแบ่งแรงดันลง
+              (เช่นใช้ 1 kΩ แทน 10 kΩ ทำให้ผลของ 100 kΩ แทบไม่มี แต่กินกระแสมากขึ้น)
+              หรือใส่วงจรบัฟเฟอร์คั่น ซึ่งจะเรียนในบทที่ 13
+              <b>นี่คือเหตุผลที่วิศวกรต้องรู้ค่าความต้านทานขาเข้าของอุปกรณ์ที่ต่ออยู่เสมอ</b></span>
+              <span class="en">A 6.3 % error, which may well be tolerable for soil moisture. For better
+              accuracy there are two routes: lower the divider's resistances — 1 kΩ instead of 10 kΩ makes
+              the 100 kΩ load almost irrelevant, at the cost of more current — or insert a buffer, which we
+              meet in Chapter 13. <b>This is why an engineer must always know the input resistance of
+              whatever is connected.</b></span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 3.6</span><span class="en">Example 3.6</span></span>
+          <span class="th">ขยายย่านวัดของแอมมิเตอร์ด้วยตัวต้านทานชันต์</span>
+          <span class="en">Extending an ammeter's range with a shunt</span></div>
+        <div class="example-body">
+          <p><span class="th">มิเตอร์เคลื่อนที่ตัวหนึ่งเบนเต็มสเกลที่กระแส 1.0 mA
+            และมีความต้านทานภายใน 50 Ω ต้องการดัดแปลงให้วัดได้ถึง 1.0 A
+            จงหาค่าตัวต้านทานชันต์ที่ต้องต่อขนาน</span>
+            <span class="en">A meter movement gives full-scale deflection at 1.0 mA and has an internal
+            resistance of 50 Ω. It is to be adapted to read up to 1.0 A. Find the shunt resistance to be
+            connected in parallel.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+            <p><span class="th">กระแสส่วนเกินต้องไหลผ่านชันต์ทั้งหมด</span>
+              <span class="en">The shunt must carry everything the movement cannot:</span></p>
+            \[ I_{\text{sh}} = 1.000 - 0.001 = 0.999\ \text{A} \]
+            <p><span class="th">ทั้งสองตัวขนานกันจึงคร่อมแรงดันเดียวกัน</span>
+              <span class="en">Being in parallel, both share the same voltage:</span></p>
+            \[ I_m R_m = I_{\text{sh}} R_{\text{sh}}
+               \quad\Rightarrow\quad
+               R_{\text{sh}} = \frac{I_m R_m}{I_{\text{sh}}} = \frac{(0.001)(50)}{0.999} = 0.0501\ \Omega \]
+            <p class="mb-0"><span class="th">ต้องใช้ชันต์เพียง 50 mΩ ซึ่งเล็กมาก
+              และนี่คือสาเหตุที่แอมมิเตอร์ต้องมีความต้านทานภายในต่ำมากตามที่กล่าวไว้ในบทที่ 2
+              ลองตรวจดูกำลังที่ชันต์ต้องทนขณะวัดเต็มสเกล
+              \(P = I^2R = (0.999)^2(0.0501) = 0.050\) W ซึ่งน้อยมาก
+              แต่ถ้าขยายย่านเป็น 20 A สำหรับวัดกระแสปั๊ม กำลังจะพุ่งเป็น 20 W
+              ชันต์จึงต้องเป็นแผ่นโลหะขนาดใหญ่ที่ระบายความร้อนได้</span>
+              <span class="en">Only 50 mΩ — very small indeed, and exactly why an ammeter must have a very low
+              internal resistance, as stated in Chapter 2. Check the power the shunt must handle at full
+              scale: \(P = I^2R = (0.999)^2(0.0501) = 0.050\) W, negligible. But extend the range to 20 A to
+              measure a pump and it becomes 20 W, which is why such shunts are large metal bars able to shed
+              the heat.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Summary -->
+    <section id="summary">
+      <h2><span class="num">📌</span><span class="th">สรุปบทเรียน</span><span class="en">Chapter summary</span></h2>
+      <div class="card">
+        <ul class="mb-0">
+          <li><span class="th">องค์ประกอบพื้นฐานนิยามด้วยความสัมพันธ์ v–i: \(v = iR\) (ไม่มีอนุพันธ์ จึงตอบสนองทันที),
+            \(v = L\,di/dt\) และ \(i = C\,dv/dt\) (มีอนุพันธ์ จึงต้องใช้เวลา)</span>
+            <span class="en">The elements are defined by their v–i relations: \(v = iR\) (no derivative,
+            hence instantaneous), \(v = L\,di/dt\) and \(i = C\,dv/dt\) (derivatives, hence taking
+            time).</span></li>
+          <li><span class="th">\(R = \rho L/A\) และความต้านทานของโลหะเพิ่มตามอุณหภูมิ
+            \(R_T = R_{20}[1 + \alpha(T-20)]\) ซึ่งกินระยะเผื่อของการออกแบบไปมากในงานกลางแจ้ง</span>
+            <span class="en">\(R = \rho L/A\), and a metal's resistance rises with temperature,
+            \(R_T = R_{20}[1 + \alpha(T-20)]\) — which eats into the design margin on outdoor
+            runs.</span></li>
+          <li><span class="th">กฎของโอห์ม \(V = IR\) ใช้ได้กับโหลดโอห์มมิกเท่านั้น
+            หลอดไส้ ไดโอด และ LED ไม่ใช่โหลดโอห์มมิก</span>
+            <span class="en">Ohm's law \(V = IR\) applies only to ohmic loads; filament lamps, diodes and LEDs
+            are not ohmic.</span></li>
+          <li><span class="th">\(P = VI = I^2R = V^2/R\) และต้องตรวจพิกัดกำลังของตัวต้านทานทุกครั้ง
+            โดยเผื่อความร้อนของสภาพแวดล้อมด้วย</span>
+            <span class="en">\(P = VI = I^2R = V^2/R\), and a resistor's power rating must be checked every
+            time, with an allowance for ambient heat.</span></li>
+          <li><span class="th">อนุกรม: \(R_{\text{eq}} = \sum R\) (มากกว่าตัวมากที่สุด) ·
+            ขนาน: \(1/R_{\text{eq}} = \sum 1/R\) (น้อยกว่าตัวน้อยที่สุด)</span>
+            <span class="en">Series: \(R_{\text{eq}} = \sum R\), larger than the largest. Parallel:
+            \(1/R_{\text{eq}} = \sum 1/R\), smaller than the smallest.</span></li>
+          <li><span class="th">แบ่งแรงดันใช้ตัวมันเองเป็นตัวเศษ ส่วนแบ่งกระแสใช้ตัวอีกตัวหนึ่งเป็นตัวเศษ
+            และต้องคิดผลจากการโหลดของอุปกรณ์ที่นำไปต่อเสมอ</span>
+            <span class="en">A voltage divider puts the resistor's own value on top; a current divider puts
+            the other one on top — and always allow for the loading of whatever you connect.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Activity -->
+    <section id="activity">
+      <h2><span class="num">🧭</span><span class="th">กิจกรรมในชั้นเรียน</span>
+          <span class="en">Class activity</span></h2>
+
+      <div class="activity">
+        <div class="activity-head">
+          <h3><span class="th">กิจกรรมที่ 3.1 — ออกแบบวงจรปรับระดับสัญญาณเซนเซอร์</span>
+              <span class="en">Activity 3.1 — Designing a sensor level-shifting circuit</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">40 นาที</span><span class="en">40 minutes</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO2, CLO5</span><span class="en">CLO2, CLO5</span></span>
+          </div>
+        </div>
+        <div class="activity-body">
+          <p><span class="th"><b>สถานการณ์:</b> เซนเซอร์วัดระดับน้ำในถังพักของฟาร์มให้สัญญาณขาออก
+            <b>0–10 V</b> แต่บอร์ดควบคุมที่ใช้มี ADC รับได้สูงสุดเพียง <b>3.3 V</b>
+            หากต่อตรงจะทำให้บอร์ดเสียหายทันที แต่ละกลุ่มต้องออกแบบวงจรแบ่งแรงดันมาคั่น
+            โดยบอร์ดมีความต้านทานขาเข้า 100 kΩ และเซนเซอร์จ่ายกระแสได้สูงสุด 5 mA</span>
+            <span class="en"><b>Scenario:</b> A tank level sensor outputs <b>0–10 V</b>, but the controller's
+            ADC accepts at most <b>3.3 V</b>; connected directly it would destroy the board at once. Each
+            group must design a divider to sit between them. The board's input resistance is 100 kΩ and the
+            sensor can supply at most 5 mA.</span></p>
+
+          <ol class="steps">
+            <li><span class="th"><b>หาอัตราส่วนที่ต้องการ</b> — ต้องลดสัญญาณลงกี่เท่า
+              และ \(R_2/(R_1+R_2)\) ต้องเท่ากับเท่าใด</span>
+              <span class="en"><b>Find the ratio</b> — by what factor must the signal be reduced, and what
+              must \(R_2/(R_1+R_2)\) equal?</span></li>
+            <li><span class="th"><b>เลือกค่าตัวต้านทาน</b> — เสนอคู่ \(R_1, R_2\) จากค่ามาตรฐาน E12
+              และคำนวณแรงดันขาออกจริงที่ได้เมื่ออินพุตเป็น 10 V</span>
+              <span class="en"><b>Choose values</b> — propose an \(R_1, R_2\) pair from the E12 series and
+              compute the actual output when the input is 10 V.</span></li>
+            <li><span class="th"><b>ตรวจกระแส</b> — กระแสที่ไหลในวงจรแบ่งแรงดันเป็นเท่าใด
+              เกิน 5 mA ที่เซนเซอร์จ่ายได้หรือไม่</span>
+              <span class="en"><b>Check the current</b> — what current does the divider draw? Is it within
+              the sensor's 5 mA?</span></li>
+            <li><span class="th"><b>ตรวจการโหลด</b> — เมื่อรวมความต้านทานขาเข้า 100 kΩ ของบอร์ดเข้าไป
+              แรงดันขาออกเปลี่ยนไปกี่เปอร์เซ็นต์ ยอมรับได้หรือไม่</span>
+              <span class="en"><b>Check the loading</b> — with the board's 100 kΩ included, by what
+              percentage does the output shift? Is that acceptable?</span></li>
+            <li><span class="th"><b>ตรวจกำลัง</b> — หากำลังที่ตัวต้านทานแต่ละตัวต้องทน
+              และระบุพิกัดที่จะสั่งซื้อ</span>
+              <span class="en"><b>Check the power</b> — find the dissipation in each resistor and state the
+              rating you would order.</span></li>
+            <li><span class="th"><b>อภิปราย</b> — มีคู่ค่าที่ให้อัตราส่วนถูกต้องอยู่มากมาย
+              เหตุใดจึงเลือกคู่นี้ มีข้อแลกเปลี่ยนอะไรระหว่างการใช้ค่าสูงกับค่าต่ำ
+              เตรียมนำเสนอ 3 นาที</span>
+              <span class="en"><b>Discuss</b> — many pairs give the right ratio, so why this one? What is
+              traded off between high and low values? Prepare a three-minute presentation.</span></li>
+          </ol>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ใบงานกิจกรรมที่ 3.1 — เปรียบเทียบทางเลือกอย่างน้อยสามคู่</span>
+                <span class="en">Activity 3.1 worksheet — compare at least three candidate pairs</span></caption>
+              <thead>
+                <tr>
+                  <th class="num">R₁</th>
+                  <th class="num">R₂</th>
+                  <th class="num"><span class="th">V_out ที่ 10 V (ไม่มีโหลด)</span><span class="en">V_out at 10 V (unloaded)</span></th>
+                  <th class="num"><span class="th">กระแสในวงจร (mA)</span><span class="en">Divider current (mA)</span></th>
+                  <th class="num"><span class="th">V_out เมื่อมีโหลด 100 kΩ</span><span class="en">V_out loaded by 100 kΩ</span></th>
+                  <th class="num"><span class="th">คลาดเคลื่อน (%)</span><span class="en">Error (%)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><input type="text" aria-label="r1a"></td><td><input type="text" aria-label="r2a"></td><td><input type="text" aria-label="va"></td><td><input type="text" aria-label="ia"></td><td><input type="text" aria-label="vla"></td><td><input type="text" aria-label="ea"></td></tr>
+                <tr><td><input type="text" aria-label="r1b"></td><td><input type="text" aria-label="r2b"></td><td><input type="text" aria-label="vb"></td><td><input type="text" aria-label="ib"></td><td><input type="text" aria-label="vlb"></td><td><input type="text" aria-label="eb"></td></tr>
+                <tr><td><input type="text" aria-label="r1c"></td><td><input type="text" aria-label="r2c"></td><td><input type="text" aria-label="vc"></td><td><input type="text" aria-label="ic"></td><td><input type="text" aria-label="vlc"></td><td><input type="text" aria-label="ec"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">✅ <span class="th">เกณฑ์การประเมิน (10 คะแนน)</span>
+              <span class="en">Marking guide (10 marks)</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">คำนวณอัตราส่วนและเลือกค่าตัวต้านทานได้ถูกต้องพร้อมหน่วย — 4 คะแนน</span>
+                  <span class="en">Correct ratio and resistor choice, with units — 4 marks</span></li>
+              <li><span class="th">ตรวจทั้งกระแส การโหลด และพิกัดกำลังครบทุกข้อ — 3 คะแนน</span>
+                  <span class="en">All three checks — current, loading and power — carried out — 3 marks</span></li>
+              <li><span class="th">อธิบายข้อแลกเปลี่ยนระหว่างค่าสูงกับค่าต่ำได้อย่างมีเหตุผล — 3 คะแนน</span>
+                  <span class="en">A reasoned account of the high-versus-low trade-off — 3 marks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Laboratory -->
+    <section id="lab">
+      <h2><span class="num">🧪</span><span class="th">ปฏิบัติการที่ 3</span>
+          <span class="en">Laboratory 3</span></h2>
+
+      <div class="lab">
+        <div class="lab-head">
+          <h3><span class="th">ปฏิบัติการที่ 3 — พิสูจน์กฎของโอห์มและวงจรแบ่งแรงดัน</span>
+              <span class="en">Laboratory 3 — Verifying Ohm's law and the voltage divider</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">2 ชั่วโมง</span><span class="en">2 hours</span></span>
+            <span>👥 <span class="th">กลุ่มละ 2–3 คน</span><span class="en">Groups of 2–3</span></span>
+            <span>🎯 <span class="th">CLO2, CLO6</span><span class="en">CLO2, CLO6</span></span>
+          </div>
+        </div>
+        <div class="lab-body">
+
+          <h4 class="mt-0"><span class="th">วัตถุประสงค์</span><span class="en">Objectives</span></h4>
+          <ol>
+            <li><span class="th">พิสูจน์ความสัมพันธ์เชิงเส้นระหว่าง V กับ I ของตัวต้านทาน และหาค่า R จากความชันของกราฟ</span>
+                <span class="en">Verify the linear V–I relation of a resistor and obtain R from the slope of
+                the graph.</span></li>
+            <li><span class="th">แสดงให้เห็นว่าหลอดไส้ไม่เป็นไปตามกฎของโอห์ม</span>
+                <span class="en">Show that a filament lamp does not obey Ohm's law.</span></li>
+            <li><span class="th">ตรวจสอบสูตรความต้านทานสมมูลของวงจรอนุกรมและขนานจากการวัดจริง</span>
+                <span class="en">Check the series and parallel equivalent-resistance formulas by
+                measurement.</span></li>
+            <li><span class="th">สร้างวงจรแบ่งแรงดันและวัดผลกระทบจากการโหลด</span>
+                <span class="en">Build a voltage divider and measure its loading effect.</span></li>
+          </ol>
+
+          <h4><span class="th">อุปกรณ์</span><span class="en">Equipment</span></h4>
+          <ul>
+            <li><span class="th">แหล่งจ่ายไฟกระแสตรงปรับค่าได้ 0–20 V และมัลติมิเตอร์ 2 เครื่องต่อกลุ่ม</span>
+                <span class="en">A 0–20 V variable DC supply and two multimeters per group</span></li>
+            <li><span class="th">ตัวต้านทาน 100 Ω, 220 Ω, 330 Ω, 1 kΩ, 10 kΩ (1/2 W) และ 10 kΩ อีกหนึ่งตัว</span>
+                <span class="en">Resistors 100 Ω, 220 Ω, 330 Ω, 1 kΩ and two of 10 kΩ (½ W)</span></li>
+            <li><span class="th">หลอดไส้ 12 V ขนาดเล็ก พร้อมขั้ว</span>
+                <span class="en">A small 12 V filament lamp and holder</span></li>
+            <li><span class="th">โพรโทบอร์ดและสายต่อวงจร</span>
+                <span class="en">Breadboard and connecting leads</span></li>
+          </ul>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">⚠️ <span class="th">ข้อควรระวัง</span>
+              <span class="en">Safety precautions</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">ตรวจพิกัดกำลังก่อนจ่ายไฟทุกครั้ง — ตัวต้านทาน 100 Ω ที่ 20 V จะกินถึง 4 W
+                และจะไหม้ทันที ห้ามเกิน 7 V สำหรับตัวนี้</span>
+                  <span class="en">Check the power rating before switching on: 100 Ω at 20 V would dissipate
+                  4 W and burn out at once — keep below 7 V for that resistor.</span></li>
+              <li><span class="th">ตั้งแรงดันแหล่งจ่ายเป็นศูนย์ก่อนต่อหรือแก้วงจรทุกครั้ง</span>
+                  <span class="en">Return the supply to zero before making or changing any
+                  connection.</span></li>
+              <li><span class="th">ตัวต้านทานที่เพิ่งจ่ายไฟอาจร้อนจัด อย่าใช้นิ้วแตะทันที</span>
+                  <span class="en">A resistor that has been conducting may be hot — do not touch it at
+                  once.</span></li>
+            </ul>
+          </div>
+
+          <h4><span class="th">ขั้นตอนการทดลอง</span><span class="en">Procedure</span></h4>
+
+          <p><b><span class="th">ตอนที่ 1: กราฟ V–I ของตัวต้านทาน</span>
+            <span class="en">Part 1: The V–I graph of a resistor</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อตัวต้านทาน 1 kΩ เข้ากับแหล่งจ่าย พร้อมโวลต์มิเตอร์ขนานและแอมมิเตอร์อนุกรม
+              (ทบทวนรูปที่ 2.4 ในบทที่ 2)</span>
+                <span class="en">Connect the 1 kΩ resistor to the supply with a voltmeter in parallel and an
+                ammeter in series — revisit Figure 2.4 of Chapter 2.</span></li>
+            <li><span class="th">ปรับแรงดันเป็น 2, 4, 6, 8, 10 และ 12 V บันทึกกระแสที่แต่ละค่า</span>
+                <span class="en">Set the supply to 2, 4, 6, 8, 10 and 12 V, recording the current at
+                each.</span></li>
+            <li><span class="th">เขียนกราฟ I (แกนตั้ง) เทียบกับ V (แกนนอน) แล้วหาความชัน
+              ความชันควรเท่ากับ \(1/R\)</span>
+                <span class="en">Plot I against V and find the slope, which should equal
+                \(1/R\).</span></li>
+            <li><span class="th">เปรียบเทียบ \(R\) ที่ได้จากความชันกับค่าที่วัดด้วยโหมดโอห์มและค่าจากแถบสี</span>
+                <span class="en">Compare the \(R\) from the slope with the ohmmeter reading and the colour
+                code.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 2: หลอดไส้ — โหลดที่ไม่เป็นโอห์มมิก</span>
+            <span class="en">Part 2: The filament lamp — a non-ohmic load</span></b></p>
+          <ol class="steps">
+            <li><span class="th">เปลี่ยนตัวต้านทานเป็นหลอดไส้ 12 V แล้วทำซ้ำตอนที่ 1
+              โดยเพิ่มแรงดันทีละ 2 V จนถึง 12 V</span>
+                <span class="en">Replace the resistor with the 12 V lamp and repeat Part 1 in 2 V steps up to
+                12 V.</span></li>
+            <li><span class="th">คำนวณ \(R = V/I\) ที่แต่ละจุด แล้วบันทึกลงตาราง ค่า R คงที่หรือไม่</span>
+                <span class="en">Compute \(R = V/I\) at each point and tabulate it. Is R constant?</span></li>
+            <li><span class="th">เขียนกราฟ I–V ทับกับกราฟของตัวต้านทานในตอนที่ 1 บนแกนเดียวกัน
+              แล้วเปรียบเทียบกับรูปที่ 3.3</span>
+                <span class="en">Plot this I–V curve on the same axes as Part 1 and compare with Figure
+                3.3.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 3: ความต้านทานสมมูล</span>
+            <span class="en">Part 3: Equivalent resistance</span></b></p>
+          <ol class="steps">
+            <li><span class="th">คำนวณล่วงหน้า: 220 Ω อนุกรมกับ 330 Ω และ 220 Ω ขนานกับ 330 Ω
+              บันทึกเป็นค่าที่คาดหวัง</span>
+                <span class="en">Predict first: 220 Ω in series with 330 Ω, and 220 Ω in parallel with
+                330 Ω. Record these as your predictions.</span></li>
+            <li><span class="th">ต่อวงจรทั้งสองแบบแล้ววัด \(R_{\text{eq}}\) ด้วยโหมดโอห์ม (ไม่จ่ายไฟ)</span>
+                <span class="en">Build both and measure \(R_{\text{eq}}\) in ohms mode, with no supply
+                connected.</span></li>
+            <li><span class="th">ต่อวงจรผสมตามตัวอย่างที่ 3.4 (100 Ω อนุกรมกับ 220 ∥ 330) จ่ายไฟ 12 V
+              แล้ววัดกระแสทุกกิ่งและแรงดันทุกส่วน เทียบกับค่าที่คำนวณไว้ในตัวอย่าง</span>
+                <span class="en">Build the mixed network of Example 3.4 (100 Ω in series with 220 ∥ 330),
+                apply 12 V, and measure every branch current and every voltage against the worked
+                values.</span></li>
+            <li><span class="th">ตรวจสอบว่าผลรวมของกระแสสองกิ่งเท่ากับกระแสรวมหรือไม่
+              และผลรวมของแรงดันสองส่วนเท่ากับ 12 V หรือไม่</span>
+                <span class="en">Check that the two branch currents sum to the total, and that the two
+                voltages sum to 12 V.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 4: วงจรแบ่งแรงดันและผลจากการโหลด</span>
+            <span class="en">Part 4: The divider and its loading effect</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อวงจรแบ่งแรงดันด้วยตัวต้านทาน 10 kΩ สองตัวคร่อมแหล่งจ่าย 10 V
+              วัดแรงดันที่จุดกลาง ควรได้ 5 V</span>
+                <span class="en">Build a divider from two 10 kΩ resistors across 10 V and measure the
+                midpoint; it should read 5 V.</span></li>
+            <li><span class="th">ต่อตัวต้านทาน 1 kΩ เป็นโหลดคร่อมตัวล่าง แล้ววัดแรงดันจุดกลางอีกครั้ง
+              เปลี่ยนไปเท่าใด</span>
+                <span class="en">Connect a 1 kΩ resistor as a load across the lower resistor and measure
+                again. How much has it moved?</span></li>
+            <li><span class="th">คำนวณค่าที่ควรได้โดยใช้ 10 kΩ ขนานกับ 1 kΩ แล้วเทียบกับที่วัดได้</span>
+                <span class="en">Predict the new value using 10 kΩ in parallel with 1 kΩ and compare with
+                your measurement.</span></li>
+            <li><span class="th">ทำซ้ำโดยใช้โหลด 100 kΩ แทน ผลต่างน้อยลงหรือไม่ เพราะเหตุใด</span>
+                <span class="en">Repeat with a 100 kΩ load. Is the shift smaller, and why?</span></li>
+          </ol>
+
+          <h4><span class="th">ตารางบันทึกผล</span><span class="en">Results tables</span></h4>
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 1 — กราฟ V–I ของตัวต้านทานและหลอดไส้ (ตอนที่ 1–2)</span>
+                <span class="en">Table 1 — V–I data for the resistor and the lamp (Parts 1–2)</span></caption>
+              <thead>
+                <tr>
+                  <th class="num">V (V)</th>
+                  <th class="num"><span class="th">I ตัวต้านทาน (mA)</span><span class="en">I resistor (mA)</span></th>
+                  <th class="num"><span class="th">R = V/I (Ω)</span><span class="en">R = V/I (Ω)</span></th>
+                  <th class="num"><span class="th">I หลอดไส้ (mA)</span><span class="en">I lamp (mA)</span></th>
+                  <th class="num"><span class="th">R หลอดไส้ (Ω)</span><span class="en">R lamp (Ω)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">2</td><td><input type="text" aria-label="a1"></td><td><input type="text" aria-label="b1"></td><td><input type="text" aria-label="c1"></td><td><input type="text" aria-label="d1"></td></tr>
+                <tr><td class="num">4</td><td><input type="text" aria-label="a2"></td><td><input type="text" aria-label="b2"></td><td><input type="text" aria-label="c2"></td><td><input type="text" aria-label="d2"></td></tr>
+                <tr><td class="num">6</td><td><input type="text" aria-label="a3"></td><td><input type="text" aria-label="b3"></td><td><input type="text" aria-label="c3"></td><td><input type="text" aria-label="d3"></td></tr>
+                <tr><td class="num">8</td><td><input type="text" aria-label="a4"></td><td><input type="text" aria-label="b4"></td><td><input type="text" aria-label="c4"></td><td><input type="text" aria-label="d4"></td></tr>
+                <tr><td class="num">10</td><td><input type="text" aria-label="a5"></td><td><input type="text" aria-label="b5"></td><td><input type="text" aria-label="c5"></td><td><input type="text" aria-label="d5"></td></tr>
+                <tr><td class="num">12</td><td><input type="text" aria-label="a6"></td><td><input type="text" aria-label="b6"></td><td><input type="text" aria-label="c6"></td><td><input type="text" aria-label="d6"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 2 — วงจรผสมและวงจรแบ่งแรงดัน (ตอนที่ 3–4)</span>
+                <span class="en">Table 2 — Mixed network and divider (Parts 3–4)</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">รายการ</span><span class="en">Quantity</span></th>
+                  <th class="num"><span class="th">ค่าที่คำนวณ</span><span class="en">Predicted</span></th>
+                  <th class="num"><span class="th">ค่าที่วัดได้</span><span class="en">Measured</span></th>
+                  <th class="num"><span class="th">คลาดเคลื่อน (%)</span><span class="en">Deviation (%)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>220 Ω + 330 Ω <span class="th">อนุกรม</span><span class="en">in series</span></td>
+                  <td><input type="text" aria-label="p1"></td><td><input type="text" aria-label="m1"></td><td><input type="text" aria-label="e1"></td></tr>
+                <tr><td>220 Ω ∥ 330 Ω</td>
+                  <td><input type="text" aria-label="p2"></td><td><input type="text" aria-label="m2"></td><td><input type="text" aria-label="e2"></td></tr>
+                <tr><td>R_eq <span class="th">ของวงจรผสม</span><span class="en">of the mixed network</span></td>
+                  <td><input type="text" aria-label="p3"></td><td><input type="text" aria-label="m3"></td><td><input type="text" aria-label="e3"></td></tr>
+                <tr><td><span class="th">กระแสรวม I (mA)</span><span class="en">Total current I (mA)</span></td>
+                  <td><input type="text" aria-label="p4"></td><td><input type="text" aria-label="m4"></td><td><input type="text" aria-label="e4"></td></tr>
+                <tr><td>I₂ <span class="th">ผ่าน 220 Ω (mA)</span><span class="en">through 220 Ω (mA)</span></td>
+                  <td><input type="text" aria-label="p5"></td><td><input type="text" aria-label="m5"></td><td><input type="text" aria-label="e5"></td></tr>
+                <tr><td>I₃ <span class="th">ผ่าน 330 Ω (mA)</span><span class="en">through 330 Ω (mA)</span></td>
+                  <td><input type="text" aria-label="p6"></td><td><input type="text" aria-label="m6"></td><td><input type="text" aria-label="e6"></td></tr>
+                <tr><td><span class="th">แบ่งแรงดัน ไม่มีโหลด (V)</span><span class="en">Divider, unloaded (V)</span></td>
+                  <td><input type="text" aria-label="p7"></td><td><input type="text" aria-label="m7"></td><td><input type="text" aria-label="e7"></td></tr>
+                <tr><td><span class="th">แบ่งแรงดัน โหลด 1 kΩ (V)</span><span class="en">Divider, 1 kΩ load (V)</span></td>
+                  <td><input type="text" aria-label="p8"></td><td><input type="text" aria-label="m8"></td><td><input type="text" aria-label="e8"></td></tr>
+                <tr><td><span class="th">แบ่งแรงดัน โหลด 100 kΩ (V)</span><span class="en">Divider, 100 kΩ load (V)</span></td>
+                  <td><input type="text" aria-label="p9"></td><td><input type="text" aria-label="m9"></td><td><input type="text" aria-label="e9"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span class="th">คำถามท้ายปฏิบัติการ</span><span class="en">Questions</span></h4>
+          <ol>
+            <li><span class="th">กราฟ I–V ของตัวต้านทานเป็นเส้นตรงผ่านจุดกำเนิดหรือไม่
+              หากไม่ผ่านพอดี ให้ระบุสาเหตุอย่างน้อยสองข้อ</span>
+              <span class="en">Was the resistor's I–V graph a straight line through the origin? If it did not
+              pass exactly through, give at least two reasons.</span></li>
+            <li><span class="th">ค่า \(R\) ของหลอดไส้ที่ 2 V ต่างจากที่ 12 V กี่เท่า
+              และอธิบายด้วยสมการ \(R_T = R_{20}[1+\alpha(T-20)]\) ว่าเหตุใดจึงเป็นเช่นนั้น</span>
+              <span class="en">By what factor did the lamp's \(R\) differ between 2 V and 12 V, and explain it
+              using \(R_T = R_{20}[1+\alpha(T-20)]\).</span></li>
+            <li><span class="th">เหตุใดการต่อโหลด 1 kΩ จึงทำให้แรงดันจุดกลางเปลี่ยนมาก
+              แต่โหลด 100 kΩ แทบไม่เปลี่ยน อธิบายด้วยความต้านทานสมมูลของกิ่งขนาน</span>
+              <span class="en">Why did the 1 kΩ load move the midpoint so much while the 100 kΩ load hardly
+              did? Answer in terms of the parallel equivalent resistance.</span></li>
+            <li><span class="th">ในตอนที่ 3 ผลรวมของกระแสสองกิ่งเท่ากับกระแสรวมพอดีหรือไม่
+              ถ้าไม่ ให้ประเมินว่าความคลาดเคลื่อนมาจากมิเตอร์หรือจากตัวต้านทาน</span>
+              <span class="en">In Part 3, did the branch currents sum exactly to the total? If not, judge
+              whether the discrepancy came from the meters or from the resistors.</span></li>
+            <li><span class="th">ออกแบบ: ต้องการวัดกระแสของปั๊มขนาด 0–20 A ด้วยชันต์ที่ให้แรงดันขาออก 100 mV
+              ที่กระแสเต็มสเกล จงหาค่าชันต์และกำลังที่มันต้องทน แล้วอภิปรายว่าจะระบายความร้อนอย่างไร</span>
+              <span class="en">Design: to measure a pump's 0–20 A with a shunt giving 100 mV at full scale,
+              find the shunt value and the power it must handle, then discuss how you would cool
+              it.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">📄 <span class="th">การส่งรายงาน (20 คะแนน)</span>
+              <span class="en">Report submission (20 marks)</span></div>
+            <p class="mb-0"><span class="th">ส่งรายงานความยาวไม่เกิน 5 หน้า ประกอบด้วย วัตถุประสงค์
+              ตารางผลทั้งสองตารางที่กรอกครบพร้อมหน่วย กราฟ I–V ที่มีทั้งตัวต้านทานและหลอดไส้บนแกนเดียวกัน
+              พร้อมเส้นแนวโน้มและค่าความชัน ตัวอย่างการคำนวณอย่างละเอียด 1 ชุด
+              คำตอบของคำถามท้ายปฏิบัติการ และข้อสรุป ภายในสัปดาห์ถัดไป</span>
+              <span class="en">Submit a report of no more than five pages — objectives, both completed tables
+              with units, an I–V graph carrying both the resistor and the lamp on one set of axes with a
+              trend line and its slope, one fully worked calculation, answers to the questions, and a
+              conclusion — by the following week.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Post-test -->
+    <section id="posttest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบหลังเรียน</span>
+          <span class="en">Post-test</span></h2>
+      <p class="muted"><span class="th">ทำหลังอ่านเนื้อหาและทำปฏิบัติการแล้ว ควรได้อย่างน้อย 6 จาก 8 ข้อ</span>
+        <span class="en">Take this after the notes and the laboratory; aim for at least 6 out of 8.</span></p>
+
+      <section class="quiz" id="posttest-q" data-quiz="post" data-chapter="ch03">
+        <div class="quiz-head">
+          <h3><span class="th">หลังเรียน: บทที่ 3</span><span class="en">Post-test: Chapter 3</span></h3>
+          <p><span class="th">8 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">8 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="ยุบกลุ่มขนานก่อน: 470∥470 = 235 Ω แล้วบวกอนุกรม: 235 + 165 = 400 Ω"
+               data-explain-en="Collapse the parallel pair first: 470∥470 = 235 Ω, then add in series: 235 + 165 = 400 Ω.">
+            <div class="q-text"><span class="th">ตัวต้านทาน 165 Ω ต่ออนุกรมกับกลุ่มขนานของ 470 Ω สองตัว ได้ความต้านทานสมมูลเท่าใด</span>
+              <span class="en">A 165 Ω resistor is in series with two 470 Ω resistors in parallel. What is the equivalent resistance?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>1105 Ω</span></label>
+              <label class="opt" data-opt="b"><span>635 Ω</span></label>
+              <label class="opt" data-opt="c"><span>400 Ω</span></label>
+              <label class="opt" data-opt="d"><span>124 Ω</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="กฎการแบ่งแรงดัน V_out = 24 × 2.2/(4.7+2.2) = 24 × 0.3188 = 7.65 V"
+               data-explain-en="Divider rule: V_out = 24 × 2.2/(4.7+2.2) = 24 × 0.3188 = 7.65 V.">
+            <div class="q-text"><span class="th">วงจรแบ่งแรงดันใช้ R₁ = 4.7 kΩ และ R₂ = 2.2 kΩ คร่อม 24 V แรงดันคร่อม R₂ เป็นเท่าใด</span>
+              <span class="en">A divider uses R₁ = 4.7 kΩ and R₂ = 2.2 kΩ across 24 V. What is the voltage across R₂?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>16.4 V</span></label>
+              <label class="opt" data-opt="b"><span>7.65 V</span></label>
+              <label class="opt" data-opt="c"><span>12.0 V</span></label>
+              <label class="opt" data-opt="d"><span>3.48 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="ในกฎการแบ่งกระแส ตัวเศษคือความต้านทานของ 'อีกกิ่งหนึ่ง' I₁ = I × R₂/(R₁+R₂) = 900 × 600/(300+600) = 600 mA"
+               data-explain-en="In the current-divider rule the numerator is the OTHER branch: I₁ = I × R₂/(R₁+R₂) = 900 × 600/900 = 600 mA.">
+            <div class="q-text"><span class="th">กระแส 900 mA ไหลเข้าสู่กิ่งขนาน R₁ = 300 Ω และ R₂ = 600 Ω กระแสที่ไหลผ่าน R₁ เป็นเท่าใด</span>
+              <span class="en">900 mA enters two parallel branches, R₁ = 300 Ω and R₂ = 600 Ω. What current flows in R₁?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>300 mA</span></label>
+              <label class="opt" data-opt="b"><span>450 mA</span></label>
+              <label class="opt" data-opt="c"><span>900 mA</span></label>
+              <label class="opt" data-opt="d"><span>600 mA</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="R_T = R_20[1 + α(T−20)] = 50[1 + 0.00393(80−20)] = 50(1.2358) = 61.8 Ω"
+               data-explain-en="R_T = R_20[1 + α(T−20)] = 50[1 + 0.00393(60)] = 50(1.2358) = 61.8 Ω.">
+            <div class="q-text"><span class="th">ขดลวดทองแดงมีความต้านทาน 50 Ω ที่ 20 °C เมื่อมอเตอร์ทำงานจนขดลวดร้อนถึง 80 °C ความต้านทานจะเป็นเท่าใด (α = 0.00393 /°C)</span>
+              <span class="en">A copper winding measures 50 Ω at 20 °C. What is its resistance when the motor heats it to 80 °C? (α = 0.00393 /°C)</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>61.8 Ω</span></label>
+              <label class="opt" data-opt="b"><span>50.0 Ω</span></label>
+              <label class="opt" data-opt="c"><span>40.5 Ω</span></label>
+              <label class="opt" data-opt="d"><span>128 Ω</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="P = V²/R = 24²/1200 = 576/1200 = 0.48 W ซึ่งเกิน 1/4 W และเกิน 1/3 W จึงต้องใช้อย่างน้อย 1/2 W"
+               data-explain-en="P = V²/R = 576/1200 = 0.48 W, which exceeds both ¼ W and ⅓ W, so a ½ W part is the minimum.">
+            <div class="q-text"><span class="th">ตัวต้านทาน 1.2 kΩ ต่อคร่อม 24 V ต้องเลือกพิกัดกำลังอย่างน้อยเท่าใด</span>
+              <span class="en">A 1.2 kΩ resistor is connected across 24 V. What is the minimum power rating needed?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>1/8 W</span></label>
+              <label class="opt" data-opt="b"><span>1/4 W</span></label>
+              <label class="opt" data-opt="c"><span>1/2 W</span></label>
+              <label class="opt" data-opt="d"><span>1/16 W</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="แถบสี เหลือง–ม่วง–ส้ม–ทอง คือ 4, 7, ตัวคูณ ×1k และ ±5% จึงได้ 47 × 1000 = 47 kΩ ±5%"
+               data-explain-en="Yellow–violet–orange–gold reads 4, 7, ×1k, ±5 %, giving 47 × 1000 = 47 kΩ ±5 %.">
+            <div class="q-text"><span class="th">ตัวต้านทานแถบสี เหลือง–ม่วง–ส้ม–ทอง มีค่าเท่าใด</span>
+              <span class="en">What is the value of a resistor banded yellow–violet–orange–gold?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>4.7 kΩ ±5 %</span></label>
+              <label class="opt" data-opt="b"><span>47 kΩ ±5 %</span></label>
+              <label class="opt" data-opt="c"><span>470 kΩ ±5 %</span></label>
+              <label class="opt" data-opt="d"><span>470 Ω ±10 %</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="หลอดไส้ไม่เป็นโหลดโอห์มมิก เพราะเมื่อกระแสเพิ่มขึ้น ไส้หลอดร้อนขึ้น ความต้านทานจึงเพิ่มตาม กราฟ I–V จึงโค้ง ไม่เป็นเส้นตรง"
+               data-explain-en="A filament lamp is non-ohmic: as the current rises the filament heats and its resistance rises with it, so the I–V graph curves instead of staying straight.">
+            <div class="q-text"><span class="th">เหตุใดหลอดไส้จึงไม่ถือเป็นโหลดที่เป็นไปตามกฎของโอห์ม</span>
+              <span class="en">Why is a filament lamp not considered an ohmic load?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เพราะใช้ไฟฟ้ากระแสสลับเท่านั้น</span><span class="en">Because it only works on AC</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เพราะกระแสไหลได้ทางเดียว</span><span class="en">Because current flows only one way through it</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เพราะความต้านทานของมันเป็นศูนย์</span><span class="en">Because its resistance is zero</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เพราะไส้หลอดร้อนขึ้นเมื่อกระแสเพิ่ม ความต้านทานจึงไม่คงที่</span><span class="en">Because the filament heats as the current rises, so its resistance is not constant</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="โหลดที่นำมาต่อจะขนานกับ R₂ ทำให้ความต้านทานส่วนล่างลดลง แรงดันขาออกจึงต่ำกว่าค่าที่คำนวณไว้เสมอ ยิ่งโหลดมีความต้านทานต่ำ ยิ่งคลาดเคลื่อนมาก"
+               data-explain-en="The load sits in parallel with R₂, lowering the lower resistance, so the output is always below the unloaded value — and the lower the load resistance, the larger the error.">
+            <div class="q-text"><span class="th">เมื่อนำอุปกรณ์ไปต่อคร่อมขาออกของวงจรแบ่งแรงดัน จะเกิดอะไรขึ้น</span>
+              <span class="en">What happens when a device is connected across a voltage divider's output?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">แรงดันขาออกลดลงจากค่าที่คำนวณไว้ เพราะโหลดขนานกับ R₂</span><span class="en">The output falls below the calculated value, because the load parallels R₂</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">แรงดันขาออกเพิ่มขึ้น</span><span class="en">The output rises</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ไม่มีผลใด ๆ ต่อแรงดันขาออก</span><span class="en">It has no effect on the output</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">แรงดันขาออกเป็นศูนย์ทันที</span><span class="en">The output drops immediately to zero</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== References -->
+    <section id="refs">
+      <h2><span class="num">📚</span><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></h2>
+      <ol class="references">
+        <li>Boylestad, R. L. (2016). <i>Introductory Circuit Analysis</i> (13th ed.), Ch. 3–7.
+          Pearson.</li>
+        <li>Alexander, C. K., &amp; Sadiku, M. N. O. (2020). <i>Fundamentals of Electric Circuits</i>
+          (7th ed.), Ch. 2. McGraw-Hill.</li>
+        <li>Irwin, J. D., &amp; Nelms, R. M. (2021). <i>Basic Engineering Circuit Analysis</i>
+          (12th ed.), Ch. 2. Wiley.</li>
+        <li>Nilsson, J. W., &amp; Riedel, S. A. (2019). <i>Electric Circuits</i> (11th ed.), Ch. 2–3.
+          Pearson.</li>
+        <li>Hughes, E., Hiley, J., Brown, K., &amp; Smith, I. M. (2016).
+          <i>Hughes Electrical and Electronic Technology</i> (12th ed.), Ch. 3. Pearson.</li>
+        <li>International Electrotechnical Commission. (2016).
+          <i>IEC 60062: Marking codes for resistors and capacitors</i>. IEC.
+          <span class="small muted">— <span class="th">ที่มาของรหัสแถบสีในตารางที่ 3.1</span>
+          <span class="en">the source of the colour code in Table 3.1</span></span></li>
+        <li>International Electrotechnical Commission. (2014).
+          <i>IEC 60228: Conductors of insulated cables</i>. IEC.
+          <span class="small muted">— <span class="th">ค่าความต้านทานสูงสุดต่อกิโลเมตรของตัวนำแต่ละขนาด</span>
+          <span class="en">maximum resistance per kilometre for each conductor size</span></span></li>
+        <li>International Electrotechnical Commission. (2015).
+          <i>IEC 60063: Preferred number series for resistors and capacitors (E-series)</i>. IEC.</li>
+        <li><span class="th">วิศวกรรมสถานแห่งประเทศไทย ในพระบรมราชูปถัมภ์ (วสท.). (2565).
+          <i>มาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย</i> (ฉบับปรับปรุงครั้งที่ 2), บทที่ 5
+          ตัวนำประธานและสายป้อน. กรุงเทพฯ: วสท.</span>
+          <span class="en">Engineering Institute of Thailand. (2022).
+          <i>Thailand Electrical Installation Standard</i> (2nd rev. ed.), Ch. 5, Conductors. Bangkok:
+          EIT.</span></li>
+        <li>American Society of Agricultural and Biological Engineers. (2018).
+          <i>ASABE EP505: Measuring Soil Water Content with Electrical Resistance Sensors</i>. ASABE.
+          <span class="small muted">— <span class="th">พื้นฐานของเซนเซอร์ความชื้นดินในตัวอย่างที่ 3.5</span>
+          <span class="en">the basis of the soil-moisture sensor in Example 3.5</span></span></li>
+      </ol>
+    </section>
+
+    <!-- =============================================== Chapter nav -->
+    <nav class="chapter-nav">
+      <a href="ch02.html">
+        <div class="dir">← <span class="th">บทก่อนหน้า</span><span class="en">Previous</span></div>
+        <div class="ttl"><span class="th">บทที่ 2 · วงจรไฟฟ้าและเครื่องมือวัด</span>
+          <span class="en">Chapter 2 · Circuits and Instruments</span></div>
+      </a>
+      <a href="ch04.html" class="next">
+        <div class="dir"><span class="th">บทถัดไป</span><span class="en">Next chapter</span> →</div>
+        <div class="ttl"><span class="th">บทที่ 4 · กฎของเคอร์ชอฟฟ์</span>
+          <span class="en">Chapter 4 · Kirchhoff's Laws</span></div>
+      </a>
+    </nav>
+
+  </main>
+</div>
+</div>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span><span class="th">บทที่ 3 — โหลดพื้นฐาน R L C และกฎของโอห์ม</span>
+        <span class="en">Chapter 3 — Basic Loads R, L, C and Ohm's Law</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>

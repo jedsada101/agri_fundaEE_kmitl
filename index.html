@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fundamental of Electrical Engineering | Agri-Intelligence Engineering</title>
+<meta name="description" content="รายวิชาพื้นฐานวิศวกรรมไฟฟ้า สำหรับนักศึกษาวิศวกรรมเกษตรอัจฉริยะ ชั้นปีที่ 2 — 16 สัปดาห์ ทฤษฎี 2 ชั่วโมง ปฏิบัติ 2 ชั่วโมง">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  /* Apply the stored language before first paint to avoid a flash */
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+</head>
+<body>
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links"
+            aria-label="Menu">☰</button>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html" class="active"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="#course"><span class="th">เกี่ยวกับรายวิชา</span><span class="en">About</span></a></li>
+      <li><a href="#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a></li>
+      <li><a href="#plan"><span class="th">แผนการสอน</span><span class="en">Schedule</span></a></li>
+      <li><a href="#assess"><span class="th">การประเมินผล</span><span class="en">Assessment</span></a></li>
+      <li><a href="chapters/ch01.html" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">เริ่มเรียน</span><span class="en">Start</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <span class="eyebrow">KMITL · Agri-Intelligence Engineering · Year 2</span>
+    <h1>
+      <span class="th">พื้นฐานวิศวกรรมไฟฟ้า</span>
+      <span class="en">Fundamental of Electrical Engineering</span>
+    </h1>
+    <p class="lead">
+      <span class="th">รายวิชาที่ปูพื้นฐานไฟฟ้าตั้งแต่ประจุและกฎของโอห์ม ไปจนถึงระบบไฟฟ้าสามเฟส
+        การออกแบบวงจรย่อย มอเตอร์ และระบบเซลล์แสงอาทิตย์ โดยยึดโจทย์จริงในฟาร์มและโรงเรือนอัจฉริยะเป็นตัวตั้ง</span>
+      <span class="en">A ground-up course in electrical engineering — from electric charge and Ohm's law
+        to three-phase systems, branch-circuit design, motors and photovoltaics — taught throughout
+        with real problems from farms and smart greenhouses.</span>
+    </p>
+    <div class="hero-meta">
+      <span><strong>16</strong> <span class="th">สัปดาห์</span><span class="en">weeks</span></span>
+      <span><strong>14</strong> <span class="th">บทเรียน</span><span class="en">chapters</span></span>
+      <span><strong>2+2</strong> <span class="th">ชั่วโมง/สัปดาห์ (ทฤษฎี+ปฏิบัติ)</span><span class="en">h/week (lecture + lab)</span></span>
+      <span><strong>3(2-2-5)</strong> <span class="th">หน่วยกิต</span><span class="en">credits</span></span>
+    </div>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="chapters/ch01.html">
+        <span class="th">เริ่มบทที่ 1</span><span class="en">Start Chapter 1</span> →</a>
+      <a class="btn btn-ghost" href="#plan">
+        <span class="th">ดูแผนการสอน 16 สัปดาห์</span><span class="en">See the 16-week plan</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- ======================================================= ABOUT COURSE -->
+<section class="section" id="course">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow"><span class="th">เกี่ยวกับรายวิชา</span><span class="en">About the course</span></span>
+      <h2><span class="th">เรียนไฟฟ้าผ่านโจทย์ของงานเกษตร</span>
+          <span class="en">Learning electricity through agricultural problems</span></h2>
+      <p>
+        <span class="th">ทุกบทเริ่มจากสถานการณ์จริง เช่น ปั๊มน้ำในแปลง พัดลมระบายอากาศในโรงเรือน
+          เซนเซอร์วัดความชื้นดิน หรือระบบโซลาร์สูบน้ำ แล้วจึงค่อยพัฒนาไปสู่ทฤษฎีและการคำนวณ</span>
+        <span class="en">Every chapter opens with a real situation — an irrigation pump, a greenhouse
+          exhaust fan, a soil-moisture sensor, a solar pumping system — and builds the theory and the
+          calculations from there.</span>
+      </p>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card">
+        <div class="icon-box">🎯</div>
+        <h3><span class="th">เรียนแล้วใช้ได้จริง</span><span class="en">Applied by design</span></h3>
+        <p class="muted small">
+          <span class="th">ตัวอย่างและแบบฝึกหัดทั้งหมดอ้างอิงอุปกรณ์ที่พบในฟาร์ม
+            ทั้งมอเตอร์ปั๊ม อินเวอร์เตอร์ และแผงเซลล์แสงอาทิตย์</span>
+          <span class="en">Worked examples and exercises use equipment you meet on a farm:
+            pump motors, inverters and PV modules.</span>
+        </p>
+      </div>
+      <div class="card">
+        <div class="icon-box">🧪</div>
+        <h3><span class="th">ปฏิบัติการทุกบท</span><span class="en">A lab in every chapter</span></h3>
+        <p class="muted small">
+          <span class="th">กิจกรรมในชั้นเรียน 1 ชุด และปฏิบัติการ 2 ชั่วโมง 1 ชุดต่อบท
+            พร้อมใบบันทึกผลและเกณฑ์การให้คะแนน</span>
+          <span class="en">One in-class activity and one two-hour laboratory per chapter,
+            each with a data sheet and a marking rubric.</span>
+        </p>
+      </div>
+      <div class="card">
+        <div class="icon-box">📝</div>
+        <h3><span class="th">Pre-test / Post-test</span><span class="en">Pre- &amp; post-test</span></h3>
+        <p class="muted small">
+          <span class="th">วัดความรู้ก่อนเรียนและหลังเรียนในหน้าเดียวกัน ตรวจคำตอบทันที
+            พร้อมคำอธิบายเหตุผลรายข้อ</span>
+          <span class="en">Check what you know before and after each chapter, marked instantly
+            with a worked explanation for every question.</span>
+        </p>
+      </div>
+      <div class="card">
+        <div class="icon-box">🌐</div>
+        <h3><span class="th">สองภาษา · ออฟไลน์ได้</span><span class="en">Bilingual · offline</span></h3>
+        <p class="muted small">
+          <span class="th">สลับไทย–อังกฤษได้ทุกหน้า สมการเรนเดอร์ด้วย MathJax ที่ติดตั้งในเครื่อง
+            จึงเปิดอ่านได้แม้ไม่มีอินเทอร์เน็ต</span>
+          <span class="en">Switch TH/EN on any page. Equations render with a bundled copy of MathJax,
+            so the site works with no internet connection.</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:42px">
+      <div class="card">
+        <h3><span class="th">ผลลัพธ์การเรียนรู้ของรายวิชา (CLOs)</span>
+            <span class="en">Course learning outcomes (CLOs)</span></h3>
+        <ol>
+          <li><span class="th"><b>CLO1</b> อธิบายองค์ประกอบของระบบไฟฟ้าตั้งแต่การผลิตจนถึงการใช้งาน
+            และระบุความเสี่ยงทางไฟฟ้าในงานเกษตรพร้อมมาตรการป้องกัน</span>
+            <span class="en"><b>CLO1</b> Explain the electrical system from generation to utilisation, and
+            identify electrical hazards in agricultural work together with their controls.</span></li>
+          <li><span class="th"><b>CLO2</b> วิเคราะห์วงจรไฟฟ้ากระแสตรงและกระแสสลับด้วยกฎของโอห์ม
+            กฎของเคอร์ชอฟฟ์ และการวิเคราะห์แบบโนด</span>
+            <span class="en"><b>CLO2</b> Analyse DC and AC circuits using Ohm's law, Kirchhoff's laws and
+            nodal analysis.</span></li>
+          <li><span class="th"><b>CLO3</b> คำนวณกำลังไฟฟ้า ค่าตัวประกอบกำลัง และพลังงานไฟฟ้า
+            ทั้งระบบหนึ่งเฟสและสามเฟส และประมาณค่าไฟฟ้าจากอัตราค่าไฟจริง</span>
+            <span class="en"><b>CLO3</b> Compute power, power factor and energy for single- and three-phase
+            systems, and estimate a bill from a real tariff.</span></li>
+          <li><span class="th"><b>CLO4</b> ออกแบบวงจรย่อย สายป้อน สายประธาน และระบบต่อลงดิน
+            สำหรับโหลดในฟาร์มตามมาตรฐานการติดตั้ง</span>
+            <span class="en"><b>CLO4</b> Design branch circuits, feeders, mains and the earthing system for
+            farm loads in accordance with the installation standard.</span></li>
+          <li><span class="th"><b>CLO5</b> เลือกใช้เครื่องจักรกลไฟฟ้า อุปกรณ์อิเล็กทรอนิกส์พื้นฐาน
+            และระบบเซลล์แสงอาทิตย์ให้เหมาะกับงานเกษตรอัจฉริยะ</span>
+            <span class="en"><b>CLO5</b> Select electrical machines, basic electronic devices and PV systems
+            appropriate to smart-agriculture applications.</span></li>
+          <li><span class="th"><b>CLO6</b> ปฏิบัติงานวัดทางไฟฟ้าอย่างปลอดภัย บันทึกผล และรายงานผลการทดลอง
+            ได้อย่างถูกต้องตามหลักวิชาชีพ</span>
+            <span class="en"><b>CLO6</b> Carry out electrical measurements safely, record data and report
+            laboratory results to professional standards.</span></li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3><span class="th">ความรู้พื้นฐานที่ควรมี</span><span class="en">Prerequisites</span></h3>
+        <ul>
+          <li><span class="th">ฟิสิกส์ทั่วไป — แรง งาน พลังงาน และสนามไฟฟ้าเบื้องต้น</span>
+              <span class="en">General physics — force, work, energy and elementary electric fields</span></li>
+          <li><span class="th">คณิตศาสตร์วิศวกรรม — พีชคณิตเชิงเส้น ตรีโกณมิติ และแคลคูลัสเบื้องต้น</span>
+              <span class="en">Engineering mathematics — linear algebra, trigonometry, introductory calculus</span></li>
+          <li><span class="th">จำนวนเชิงซ้อนเบื้องต้น (ทบทวนให้ในบทที่ 6)</span>
+              <span class="en">Basic complex numbers (revised in Chapter 6)</span></li>
+        </ul>
+        <h3><span class="th">อุปกรณ์สำหรับปฏิบัติการ</span><span class="en">Laboratory equipment</span></h3>
+        <ul class="small">
+          <li><span class="th">ดิจิทัลมัลติมิเตอร์ (DMM) และแคลมป์มิเตอร์</span>
+              <span class="en">Digital multimeter (DMM) and clamp meter</span></li>
+          <li><span class="th">แหล่งจ่ายไฟกระแสตรงปรับค่าได้ และโพรโทบอร์ด</span>
+              <span class="en">Variable DC power supply and breadboard</span></li>
+          <li><span class="th">ออสซิลโลสโคป เครื่องกำเนิดสัญญาณ และเพาเวอร์มิเตอร์</span>
+              <span class="en">Oscilloscope, function generator and power meter</span></li>
+          <li><span class="th">ชุดสาธิตมอเตอร์เหนี่ยวนำ และชุดแผงเซลล์แสงอาทิตย์ขนาดเล็ก</span>
+              <span class="en">Induction-motor demonstration set and a small PV kit</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================== CHAPTERS -->
+<section class="section section-alt" id="chapters">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow"><span class="th">บทเรียน</span><span class="en">Chapters</span></span>
+      <h2><span class="th">14 บทเรียน พร้อมกิจกรรมและปฏิบัติการ</span>
+          <span class="en">Fourteen chapters, each with an activity and a lab</span></h2>
+      <p><span class="th">คลิกที่บทเรียนเพื่อเข้าสู่เนื้อหา แบบทดสอบก่อน–หลังเรียน ใบงานปฏิบัติการ และรายการอ้างอิง</span>
+         <span class="en">Open a chapter for its notes, pre/post-test, laboratory sheet and reference list.</span></p>
+    </div>
+
+    <div class="grid grid-3">
+
+      <a class="card card-link ch-card" href="chapters/ch01.html" data-chapter-card="ch01">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 1 · บทที่ 1</span><span class="en">Week 1 · Chapter 1</span></div>
+        <h3><span class="th">บทนำ หน่วยวัด และความปลอดภัยทางไฟฟ้า</span>
+            <span class="en">Introduction, Units and Electrical Safety</span></h3>
+        <p><span class="th">ทำไมไฟฟ้าจึงสำคัญต่องานเกษตร ระบบไฟฟ้าตั้งแต่ผลิตถึงใช้งาน หน่วยและคำอุปสรรค
+          ปริมาณทางไฟฟ้าพื้นฐาน และความปลอดภัย</span>
+          <span class="en">Why electricity matters in agriculture, the system from generation to
+          utilisation, units and prefixes, the basic quantities, and safety.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch02.html" data-chapter-card="ch02">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 2 · บทที่ 2</span><span class="en">Week 2 · Chapter 2</span></div>
+        <h3><span class="th">วงจรไฟฟ้าและเครื่องมือวัดพื้นฐาน</span>
+            <span class="en">Electrical Circuits and Basic Instruments</span></h3>
+        <p><span class="th">แหล่งจ่าย โหลด ตัวนำ อุปกรณ์ควบคุมและป้องกัน โครงสร้างวงจร
+          และการใช้เครื่องมือวัดทางไฟฟ้า</span>
+          <span class="en">Source, load, conductors, control and protection, circuit topology,
+          and how to use electrical instruments.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch03.html" data-chapter-card="ch03">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 3 · บทที่ 3</span><span class="en">Week 3 · Chapter 3</span></div>
+        <h3><span class="th">โหลดพื้นฐาน R L C และกฎของโอห์ม</span>
+            <span class="en">Basic Loads R, L, C and Ohm's Law</span></h3>
+        <p><span class="th">ความต้านทาน วงจรอนุกรม–ขนาน กฎของโอห์ม และการแบ่งแรงดัน–แบ่งกระแส</span>
+          <span class="en">Resistance, series and parallel circuits, Ohm's law, and the voltage and
+          current dividers.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch04.html" data-chapter-card="ch04">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 4 · บทที่ 4</span><span class="en">Week 4 · Chapter 4</span></div>
+        <h3><span class="th">กฎของเคอร์ชอฟฟ์และการวิเคราะห์แบบโนด</span>
+            <span class="en">Kirchhoff's Laws and Nodal Analysis</span></h3>
+        <p><span class="th">KCL KVL การประยุกต์ใช้งาน และการวิเคราะห์วงจรด้วยวิธีแรงดันโนด</span>
+          <span class="en">KCL, KVL, their applications, and solving circuits by the node-voltage
+          method.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch05.html" data-chapter-card="ch05">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 5 · บทที่ 5</span><span class="en">Week 5 · Chapter 5</span></div>
+        <h3><span class="th">ตัวเก็บประจุและตัวเหนี่ยวนำในวงจร DC</span>
+            <span class="en">Capacitance and Inductance in DC Circuits</span></h3>
+        <p><span class="th">ผลตอบสนองชั่วครู่ ค่าคงตัวเวลา และการประยุกต์ เช่น วงจรกรองสัญญาณเซนเซอร์</span>
+          <span class="en">Transient response, the time constant, and applications such as filtering a
+          sensor signal.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch06.html" data-chapter-card="ch06">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 6 · บทที่ 6</span><span class="en">Week 6 · Chapter 6</span></div>
+        <h3><span class="th">ระบบไฟฟ้ากระแสสลับ</span><span class="en">The AC System</span></h3>
+        <p><span class="th">ฟังก์ชันไซน์ จำนวนเชิงซ้อนและเฟเซอร์ อิมพีแดนซ์ และการใช้กฎของโอห์ม–เคอร์ชอฟฟ์
+          กับวงจร AC</span>
+          <span class="en">Sinusoids, complex numbers and phasors, impedance, and Ohm's and Kirchhoff's
+          laws applied to AC circuits.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch07.html" data-chapter-card="ch07">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 7 · บทที่ 7</span><span class="en">Week 7 · Chapter 7</span></div>
+        <h3><span class="th">กำลังไฟฟ้ากระแสสลับและตัวประกอบกำลัง</span>
+            <span class="en">AC Power and Power Factor</span></h3>
+        <p><span class="th">ค่าอาร์เอ็มเอส กำลังปรากฏ กำลังจริง กำลังรีแอกทีฟ และการแก้ตัวประกอบกำลัง</span>
+          <span class="en">RMS values, apparent, real and reactive power, and power-factor
+          correction.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <div class="card ch-card" style="background:#f1eaff;border-color:#ddd0fb">
+        <div class="ch-week" style="color:#6b3fd4"><span class="th">สัปดาห์ที่ 8</span><span class="en">Week 8</span></div>
+        <h3><span class="th">สอบกลางภาค</span><span class="en">Midterm Examination</span></h3>
+        <p><span class="th">ครอบคลุมบทที่ 1–7 ข้อสอบอัตนัยและการคำนวณ 2 ชั่วโมง
+          ตามด้วยชั่วโมงปฏิบัติการทบทวนการวัดค่าทางไฟฟ้า</span>
+          <span class="en">Covers Chapters 1–7. Two hours of written and calculation problems,
+          followed by a lab session revising electrical measurement.</span></p>
+        <span class="ch-foot"><span class="badge badge-exam">30%</span></span>
+      </div>
+
+      <a class="card card-link ch-card" href="chapters/ch08.html" data-chapter-card="ch08">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 9 · บทที่ 8</span><span class="en">Week 9 · Chapter 8</span></div>
+        <h3><span class="th">ระบบไฟฟ้ากระแสสลับสามเฟส</span><span class="en">Three-phase AC Systems</span></h3>
+        <p><span class="th">การต่อแบบสตาร์และเดลตา ความสัมพันธ์ระหว่างค่าเฟสกับค่าสาย
+          และกำลังไฟฟ้าในระบบสามเฟส</span>
+          <span class="en">Star and delta connections, phase-to-line relationships, and power in a
+          three-phase system.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch09.html" data-chapter-card="ch09">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 10 · บทที่ 9</span><span class="en">Week 10 · Chapter 9</span></div>
+        <h3><span class="th">ระบบการใช้กำลังไฟฟ้าและหม้อแปลง</span>
+            <span class="en">Power Utilisation Systems and Transformers</span></h3>
+        <p><span class="th">แผนภาพเส้นเดี่ยว หม้อแปลงไฟฟ้าหนึ่งเฟสและสามเฟส และการจ่ายไฟเข้าสู่ฟาร์ม</span>
+          <span class="en">Single-line diagrams, single- and three-phase transformers, and how supply
+          reaches the farm.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch10.html" data-chapter-card="ch10">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 11 · บทที่ 10</span><span class="en">Week 11 · Chapter 10</span></div>
+        <h3><span class="th">มิเตอร์ ค่าไฟฟ้า และบริภัณฑ์ติดตั้ง</span>
+            <span class="en">Meters, Tariffs and Installation Equipment</span></h3>
+        <p><span class="th">กิโลวัตต์–ชั่วโมงมิเตอร์ ประเภทผู้ใช้ไฟและอัตราค่าไฟ แผงจ่ายไฟ สายไฟฟ้า
+          ช่องเดินสาย และอุปกรณ์ป้องกัน</span>
+          <span class="en">The kWh meter, user classes and tariffs, panel boards, cables, raceways and
+          protective devices.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch11.html" data-chapter-card="ch11">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 12 · บทที่ 11</span><span class="en">Week 12 · Chapter 11</span></div>
+        <h3><span class="th">การออกแบบระบบจำหน่ายไฟฟ้าภายใน</span>
+            <span class="en">Electrical Distribution System Design</span></h3>
+        <p><span class="th">การออกแบบวงจรย่อย สายป้อน วงจรประธาน และระบบต่อลงดินสำหรับอาคารและโรงเรือน</span>
+          <span class="en">Designing branch circuits, feeders, the main circuit and the earthing system
+          for buildings and greenhouses.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch12.html" data-chapter-card="ch12">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 13 · บทที่ 12</span><span class="en">Week 13 · Chapter 12</span></div>
+        <h3><span class="th">เครื่องจักรกลไฟฟ้า</span><span class="en">Electrical Machines</span></h3>
+        <p><span class="th">หลักการเครื่องกำเนิดไฟฟ้า มอเตอร์กระแสตรง มอเตอร์เหนี่ยวนำ บรัชเลสดีซี
+          และเทคนิคการขับเคลื่อน</span>
+          <span class="en">Generator principles, DC motors, induction motors, brushless DC machines and
+          drive techniques.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch13.html" data-chapter-card="ch13">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 14 · บทที่ 13</span><span class="en">Week 14 · Chapter 13</span></div>
+        <h3><span class="th">อุปกรณ์อิเล็กทรอนิกส์พื้นฐาน</span><span class="en">Basic Electronic Devices</span></h3>
+        <p><span class="th">รอยต่อพีเอ็น ไดโอด แอลอีดี ทรานซิสเตอร์ BJT และ FET พร้อมการประยุกต์ใช้งาน</span>
+          <span class="en">The PN junction, diodes, LEDs, BJTs and FETs, with their applications.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <a class="card card-link ch-card" href="chapters/ch14.html" data-chapter-card="ch14">
+        <div class="ch-week"><span class="th">สัปดาห์ที่ 15 · บทที่ 14</span><span class="en">Week 15 · Chapter 14</span></div>
+        <h3><span class="th">ระบบเซลล์แสงอาทิตย์เบื้องต้น</span><span class="en">Basic PV Systems</span></h3>
+        <p><span class="th">ชนิดของเซลล์ แผงเซลล์แสงอาทิตย์ แบตเตอรี่ ระบบออนกริด–ออฟกริด
+          และการประยุกต์ในฟาร์ม</span>
+          <span class="en">Cell types, PV modules, battery storage, on-grid and off-grid systems, and
+          farm applications.</span></p>
+        <span class="ch-foot"><span data-progress-slot></span><span class="ch-go">
+          <span class="th">เข้าเรียน</span><span class="en">Open</span> →</span></span>
+      </a>
+
+      <div class="card ch-card" style="background:#f1eaff;border-color:#ddd0fb">
+        <div class="ch-week" style="color:#6b3fd4"><span class="th">สัปดาห์ที่ 16</span><span class="en">Week 16</span></div>
+        <h3><span class="th">สอบปลายภาคและนำเสนอโครงงาน</span>
+            <span class="en">Final Examination and Project Presentation</span></h3>
+        <p><span class="th">ข้อสอบครอบคลุมบทที่ 8–14 และการนำเสนอโครงงานออกแบบระบบไฟฟ้าสำหรับฟาร์มอัจฉริยะ</span>
+          <span class="en">Examination on Chapters 8–14, plus presentation of the smart-farm electrical
+          design project.</span></p>
+        <span class="ch-foot"><span class="badge badge-exam">30% + 15%</span></span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== PLAN -->
+<section class="section" id="plan">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow"><span class="th">แผนการสอน</span><span class="en">Schedule</span></span>
+      <h2><span class="th">แผนการสอน 16 สัปดาห์</span><span class="en">The 16-week plan</span></h2>
+      <p><span class="th">ทฤษฎี 2 ชั่วโมง และปฏิบัติการ 2 ชั่วโมงต่อสัปดาห์</span>
+         <span class="en">Two hours of lecture and two hours of laboratory each week.</span></p>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:6rem"><span class="th">สัปดาห์</span><span class="en">Week</span></th>
+            <th><span class="th">หัวข้อบรรยาย (2 ชม.)</span><span class="en">Lecture topic (2 h)</span></th>
+            <th><span class="th">ปฏิบัติการ (2 ชม.)</span><span class="en">Laboratory (2 h)</span></th>
+            <th style="width:7rem"><span class="th">ประเมินผล</span><span class="en">Assessment</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>1</b></td>
+            <td><span class="th">บทนำ ระบบไฟฟ้า หน่วยและคำอุปสรรค ปริมาณทางไฟฟ้า ความปลอดภัย</span>
+                <span class="en">Introduction, the electrical system, units and prefixes, basic quantities, safety</span></td>
+            <td><span class="th">ปฏิบัติการ 1: ความปลอดภัยและการใช้มัลติมิเตอร์</span>
+                <span class="en">Lab 1: Safety and using a multimeter</span></td>
+            <td><span class="th">ใบงาน</span><span class="en">Lab sheet</span></td>
+          </tr>
+          <tr>
+            <td><b>2</b></td>
+            <td><span class="th">องค์ประกอบวงจร โครงสร้างวงจร เครื่องมือวัดพื้นฐาน</span>
+                <span class="en">Circuit elements, topology, basic instruments</span></td>
+            <td><span class="th">ปฏิบัติการ 2: ต่อวงจรควบคุมปั๊มน้ำและวัดค่า</span>
+                <span class="en">Lab 2: Wiring a pump control circuit and measuring it</span></td>
+            <td><span class="th">ใบงาน</span><span class="en">Lab sheet</span></td>
+          </tr>
+          <tr>
+            <td><b>3</b></td>
+            <td><span class="th">R L C ความต้านทาน กฎของโอห์ม วงจรแบ่งแรงดัน–กระแส</span>
+                <span class="en">R, L, C, resistance, Ohm's law, voltage and current dividers</span></td>
+            <td><span class="th">ปฏิบัติการ 3: พิสูจน์กฎของโอห์มและวงจรแบ่งแรงดัน</span>
+                <span class="en">Lab 3: Verifying Ohm's law and the voltage divider</span></td>
+            <td><span class="th">แบบฝึกหัด</span><span class="en">Problem set</span></td>
+          </tr>
+          <tr>
+            <td><b>4</b></td>
+            <td><span class="th">กฎของเคอร์ชอฟฟ์ การประยุกต์ และการวิเคราะห์แบบโนด</span>
+                <span class="en">Kirchhoff's laws, applications, nodal analysis</span></td>
+            <td><span class="th">ปฏิบัติการ 4: ตรวจสอบ KCL/KVL ในวงจรหลายลูป</span>
+                <span class="en">Lab 4: Verifying KCL/KVL in a multi-loop circuit</span></td>
+            <td><span class="th">แบบฝึกหัด</span><span class="en">Problem set</span></td>
+          </tr>
+          <tr>
+            <td><b>5</b></td>
+            <td><span class="th">ความจุไฟฟ้าและความเหนี่ยวนำในวงจร DC ผลตอบสนองชั่วครู่</span>
+                <span class="en">Capacitance and inductance in DC, transient response</span></td>
+            <td><span class="th">ปฏิบัติการ 5: วัดการประจุ–คายประจุ และวงจรกรองสัญญาณเซนเซอร์</span>
+                <span class="en">Lab 5: Charging/discharging and a sensor filter circuit</span></td>
+            <td><span class="th">ใบงาน</span><span class="en">Lab sheet</span></td>
+          </tr>
+          <tr>
+            <td><b>6</b></td>
+            <td><span class="th">ฟังก์ชันไซน์ จำนวนเชิงซ้อน เฟเซอร์ อิมพีแดนซ์</span>
+                <span class="en">Sinusoids, complex numbers, phasors, impedance</span></td>
+            <td><span class="th">ปฏิบัติการ 6: วัดรูปคลื่นและมุมเฟสด้วยออสซิลโลสโคป</span>
+                <span class="en">Lab 6: Waveforms and phase angle on the oscilloscope</span></td>
+            <td><span class="th">ใบงาน</span><span class="en">Lab sheet</span></td>
+          </tr>
+          <tr>
+            <td><b>7</b></td>
+            <td><span class="th">กำลังไฟฟ้า AC ค่าอาร์เอ็มเอส ตัวประกอบกำลัง</span>
+                <span class="en">AC power, RMS, power factor</span></td>
+            <td><span class="th">ปฏิบัติการ 7: วัดกำลังไฟฟ้าและแก้ตัวประกอบกำลังของมอเตอร์</span>
+                <span class="en">Lab 7: Measuring power and correcting a motor's power factor</span></td>
+            <td><span class="th">แบบฝึกหัด</span><span class="en">Problem set</span></td>
+          </tr>
+          <tr style="background:#f7f2ff">
+            <td><b>8</b></td>
+            <td colspan="2"><b><span class="th">สอบกลางภาค (บทที่ 1–7)</span>
+                <span class="en">Midterm examination (Chapters 1–7)</span></b></td>
+            <td><span class="badge badge-exam">30%</span></td>
+          </tr>
+          <tr>
+            <td><b>9</b></td>
+            <td><span class="th">ระบบสามเฟส การต่อสตาร์–เดลตา กำลังไฟฟ้าสามเฟส</span>
+                <span class="en">Three-phase systems, star/delta, three-phase power</span></td>
+            <td><span class="th">ปฏิบัติการ 8: วัดแรงดันเฟส–สาย และโหลดสมดุล</span>
+                <span class="en">Lab 8: Phase/line voltages and a balanced load</span></td>
+            <td><span class="th">ใบงาน</span><span class="en">Lab sheet</span></td>
+          </tr>
+          <tr>
+            <td><b>10</b></td>
+            <td><span class="th">แผนภาพเส้นเดี่ยว หม้อแปลงหนึ่งเฟสและสามเฟส</span>
+                <span class="en">Single-line diagram, single- and three-phase transformers</span></td>
+            <td><span class="th">ปฏิบัติการ 9: ทดสอบอัตราส่วนหม้อแปลงและเขียนแผนภาพเส้นเดี่ยว</span>
+                <span class="en">Lab 9: Transformer ratio test and drawing a single-line diagram</span></td>
+            <td><span class="th">ใบงาน</span><span class="en">Lab sheet</span></td>
+          </tr>
+          <tr>
+            <td><b>11</b></td>
+            <td><span class="th">มิเตอร์ kWh อัตราค่าไฟ แผงจ่ายไฟ สายไฟ ช่องเดินสาย อุปกรณ์ป้องกัน</span>
+                <span class="en">kWh meter, tariffs, panel board, cables, raceways, protection</span></td>
+            <td><span class="th">ปฏิบัติการ 10: อ่านมิเตอร์ คำนวณค่าไฟ และสำรวจแผงจ่ายไฟ</span>
+                <span class="en">Lab 10: Reading a meter, computing a bill, surveying a panel board</span></td>
+            <td><span class="th">งานกลุ่ม</span><span class="en">Group work</span></td>
+          </tr>
+          <tr>
+            <td><b>12</b></td>
+            <td><span class="th">การออกแบบวงจรย่อย สายป้อน วงจรประธาน และระบบต่อลงดิน</span>
+                <span class="en">Branch, feeder and main circuit design; earthing</span></td>
+            <td><span class="th">ปฏิบัติการ 11: ออกแบบวงจรไฟฟ้าโรงเรือน และวัดความต้านทานดิน</span>
+                <span class="en">Lab 11: Greenhouse circuit design and earth-resistance measurement</span></td>
+            <td><span class="th">โครงงาน (เริ่ม)</span><span class="en">Project starts</span></td>
+          </tr>
+          <tr>
+            <td><b>13</b></td>
+            <td><span class="th">เครื่องกำเนิดไฟฟ้า มอเตอร์ DC มอเตอร์เหนี่ยวนำ BLDC และการขับเคลื่อน</span>
+                <span class="en">Generators, DC motors, induction motors, BLDC, drives</span></td>
+            <td><span class="th">ปฏิบัติการ 12: เริ่มเดินมอเตอร์เหนี่ยวนำและปรับความเร็วด้วยอินเวอร์เตอร์</span>
+                <span class="en">Lab 12: Starting an induction motor and speed control with a VFD</span></td>
+            <td><span class="th">ใบงาน</span><span class="en">Lab sheet</span></td>
+          </tr>
+          <tr>
+            <td><b>14</b></td>
+            <td><span class="th">รอยต่อพีเอ็น ไดโอด แอลอีดี BJT FET และการประยุกต์</span>
+                <span class="en">PN junction, diode, LED, BJT, FET and applications</span></td>
+            <td><span class="th">ปฏิบัติการ 13: วงจรเรียงกระแสและวงจรขับรีเลย์ด้วยทรานซิสเตอร์</span>
+                <span class="en">Lab 13: Rectifier circuit and a transistor relay driver</span></td>
+            <td><span class="th">ใบงาน</span><span class="en">Lab sheet</span></td>
+          </tr>
+          <tr>
+            <td><b>15</b></td>
+            <td><span class="th">ระบบเซลล์แสงอาทิตย์ แบตเตอรี่ ออนกริด–ออฟกริด</span>
+                <span class="en">PV systems, batteries, on-grid and off-grid</span></td>
+            <td><span class="th">ปฏิบัติการ 14: วัดเส้นโค้ง I–V ของแผงและออกแบบระบบสูบน้ำโซลาร์</span>
+                <span class="en">Lab 14: Module I–V curve and solar pumping system design</span></td>
+            <td><span class="th">ใบงาน</span><span class="en">Lab sheet</span></td>
+          </tr>
+          <tr style="background:#f7f2ff">
+            <td><b>16</b></td>
+            <td colspan="2"><b><span class="th">สอบปลายภาค (บทที่ 8–14) และนำเสนอโครงงาน</span>
+                <span class="en">Final examination (Chapters 8–14) and project presentation</span></b></td>
+            <td><span class="badge badge-exam">30%+15%</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================= ASSESSMENT -->
+<section class="section section-alt" id="assess">
+  <div class="container">
+    <div class="section-head center">
+      <span class="eyebrow"><span class="th">การประเมินผล</span><span class="en">Assessment</span></span>
+      <h2><span class="th">สัดส่วนคะแนน</span><span class="en">Grade breakdown</span></h2>
+    </div>
+    <div class="grid grid-4">
+      <div class="card stat"><div class="v">30%</div>
+        <div class="l"><span class="th">สอบกลางภาค</span><span class="en">Midterm exam</span></div></div>
+      <div class="card stat"><div class="v">30%</div>
+        <div class="l"><span class="th">สอบปลายภาค</span><span class="en">Final exam</span></div></div>
+      <div class="card stat"><div class="v">25%</div>
+        <div class="l"><span class="th">ปฏิบัติการและใบงาน</span><span class="en">Labs and worksheets</span></div></div>
+      <div class="card stat"><div class="v">15%</div>
+        <div class="l"><span class="th">โครงงานออกแบบระบบไฟฟ้าฟาร์ม</span><span class="en">Farm electrical design project</span></div></div>
+    </div>
+
+    <div class="callout callout-info" style="max-width:860px;margin-inline:auto;margin-top:36px">
+      <div class="callout-title">ℹ️ <span class="th">การใช้แบบทดสอบก่อน–หลังเรียน</span>
+        <span class="en">About the pre- and post-tests</span></div>
+      <p class="mb-0"><span class="th">แบบทดสอบในเว็บไซต์ตรวจให้อัตโนมัติเพื่อการเรียนรู้ด้วยตนเอง
+        คะแนนจะถูกเก็บไว้ในเบราว์เซอร์ของนักศึกษาเองเท่านั้น ไม่ได้ส่งเข้าระบบใด ๆ
+        และไม่ถูกนำไปคิดเป็นคะแนนเก็บโดยตรง</span>
+        <span class="en">The tests on this site are marked automatically for self-study. Scores stay in
+        your own browser, are never uploaded anywhere, and do not count directly towards your
+        grade.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="grid grid-4">
+      <div>
+        <h4 class="foot-logo"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span></h4>
+        <p><span class="th">สื่อการสอนสำหรับหลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิศวกรรมเกษตรอัจฉริยะ</span>
+           <span class="en">Courseware for the B.Eng. programme in Agri-Intelligence Engineering.</span></p>
+      </div>
+      <div>
+        <h4><span class="th">บทเรียน</span><span class="en">Chapters</span></h4>
+        <ul>
+          <li><a href="chapters/ch01.html">1 · <span class="th">บทนำและความปลอดภัย</span><span class="en">Introduction &amp; Safety</span></a></li>
+          <li><a href="chapters/ch02.html">2 · <span class="th">วงจรไฟฟ้า</span><span class="en">Electrical Circuits</span></a></li>
+          <li><a href="chapters/ch03.html">3 · <span class="th">R L C และกฎของโอห์ม</span><span class="en">R L C &amp; Ohm's Law</span></a></li>
+          <li><a href="chapters/ch04.html">4 · <span class="th">กฎของเคอร์ชอฟฟ์</span><span class="en">Kirchhoff's Laws</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h4><span class="th">ลิงก์</span><span class="en">Links</span></h4>
+        <ul>
+          <li><a href="#plan"><span class="th">แผนการสอน</span><span class="en">Schedule</span></a></li>
+          <li><a href="#assess"><span class="th">การประเมินผล</span><span class="en">Assessment</span></a></li>
+          <li><a href="#course"><span class="th">ผลลัพธ์การเรียนรู้</span><span class="en">Learning outcomes</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h4><span class="th">การใช้งานออฟไลน์</span><span class="en">Offline use</span></h4>
+        <p class="small"><span class="th">คัดลอกทั้งโฟลเดอร์ไปยังเครื่องหรือแฟลชไดรฟ์ แล้วเปิดไฟล์
+          <code>index.html</code> ได้ทันที สมการยังแสดงผลครบถ้วน</span>
+          <span class="en">Copy the whole folder to a computer or a flash drive and open
+          <code>index.html</code> directly — the equations still render.</span></p>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span class="th">ออกแบบตามแนวทางเทมเพลต Fox (ThemeWagon)</span>
+      <span class="en">Visual design adapted from the Fox template (ThemeWagon).</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
