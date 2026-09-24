@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ 14 ระบบเซลล์แสงอาทิตย์เบื้องต้น | Fundamental of Electrical Engineering</title>
+<meta name="description" content="Chapter 14 — How a PV cell works, module characteristics, battery storage, on-grid and off-grid systems, and their use on farms.">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+<script src="../assets/js/mathjax-config.js"></script>
+<script defer src="../assets/vendor/mathjax/tex-svg.js"></script>
+<style>
+  .sys-fig text { font-family: var(--font-sans); }
+  .sys-fig .lbl { font-size: 12px; font-weight: 600; fill: #0d1128; }
+  .sys-fig .sub { font-size: 10.5px; fill: #6c757d; }
+  .sys-fig .cap { font-size: 11px; font-weight: 700; fill: #fd5f00; }
+  .sys-fig .wire { stroke: #0d1128; stroke-width: 2; fill: none; }
+  .sys-fig .sym  { stroke: #0d1128; stroke-width: 2; fill: #fff; }
+  .sys-fig .axis { stroke: #6c757d; stroke-width: 1.5; }
+  .sys-fig .node { fill: #fd5f00; }
+  .sys-fig .hole { fill: #d64545; }
+  .sys-fig .elec { fill: #2b6cb0; }
+  .sys-fig .n-reg { fill: #dce8f7; stroke: #0d1128; stroke-width: 2; }
+  .sys-fig .p-reg { fill: #f7dcdc; stroke: #0d1128; stroke-width: 2; }
+  .sys-fig .dep   { fill: #eef1f5; stroke: #6c757d; stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .sys-fig .metal { fill: #6c757d; }
+
+  /* --- PV effect: photons arrive, the built-in field sorts the carriers -- */
+  .pv-fig .photon, .pv-fig .carr { transform-box: view-box; }
+  @keyframes pv-fall { from { transform: translateY(0); }   to { transform: translateY(96px); } }
+  @keyframes pv-up   { from { transform: translateY(0); }   to { transform: translateY(-34px); } }
+  @keyframes pv-down { from { transform: translateY(0); }   to { transform: translateY(34px); } }
+  .pv-fig .photon { animation: pv-fall 1.4s linear infinite; }
+  .pv-fig .ph2 { animation-delay: -0.35s; }
+  .pv-fig .ph3 { animation-delay: -0.70s; }
+  .pv-fig .ph4 { animation-delay: -1.05s; }
+  .pv-fig .carr-up { animation: pv-up   1.6s linear infinite; }
+  .pv-fig .carr-dn { animation: pv-down 1.6s linear infinite; }
+
+  /* --- Maximum power point: one dot on the I-V curve, one on the P-V curve,
+         both on the same timeline so the peak in power lines up with the
+         knee in current. Paused, the two curves still read normally.     --- */
+  .mpp-fig .mpp-dot { transform-box: view-box; }
+  @keyframes mpp-iv {
+      0%   { transform: translate(0, 0); }
+      45%  { transform: translate(210px, 5px); }
+      62%  { transform: translate(290px, 15px); }
+      72%  { transform: translate(330px, 40px); }
+      82%  { transform: translate(355px, 85px); }
+      91%  { transform: translate(375px, 130px); }
+      100% { transform: translate(390px, 170px); }
+  }
+  @keyframes mpp-pv {
+      0%   { transform: translate(0, 0); }
+      45%  { transform: translate(210px, -80px); }
+      62%  { transform: translate(290px, -130px); }
+      72%  { transform: translate(330px, -155px); }
+      82%  { transform: translate(355px, -140px); }
+      91%  { transform: translate(375px, -85px); }
+      100% { transform: translate(390px, 0); }
+  }
+  .mpp-fig .dot-iv { animation: mpp-iv 6s ease-in-out infinite alternate; }
+  .mpp-fig .dot-pv { animation: mpp-pv 6s ease-in-out infinite alternate; }
+
+  /* --- Energy marching along the block diagrams ------------------------- */
+  @keyframes fee-march { to { stroke-dashoffset: -32; } }
+  .sys-fig .flow-path {
+    stroke: #fd5f00; stroke-width: 5; fill: none; stroke-linecap: round;
+    stroke-dasharray: 10 22; animation: fee-march 1.1s linear infinite;
+  }
+  .sys-fig .flow-green { stroke: #2f855a; }
+</style>
+</head>
+<body data-chapter="ch14">
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="../index.html#chapters"><span class="th">บทเรียนทั้งหมด</span><span class="en">All chapters</span></a></li>
+      <li><a href="#pretest"><span class="th">Pre-test</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการ</span><span class="en">Laboratory</span></a></li>
+      <li><a href="../index.html#chapters" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">สารบัญ</span><span class="en">Index</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a> ·
+      <a href="../index.html#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a> ·
+      <span class="th">บทที่ 14</span><span class="en">Chapter 14</span>
+    </div>
+    <span class="eyebrow"><span class="th">สัปดาห์ที่ 15 · บทที่ 14</span><span class="en">Week 15 · Chapter 14</span></span>
+    <h1><span class="th">ระบบเซลล์แสงอาทิตย์เบื้องต้น</span>
+        <span class="en">Basic Photovoltaic Systems</span></h1>
+    <p class="lead">
+      <span class="th">บทสุดท้ายนี้นำทุกอย่างที่เรียนมาทั้งรายวิชามาบรรจบกัน —
+        รอยต่อพีเอ็นจากบทที่ 13 กลายเป็นเซลล์แสงอาทิตย์ กฎของโอห์มและวงจรอนุกรม–ขนานจากบทที่ 3
+        ใช้ต่อแผงเป็นสตริง มอเตอร์บรัชเลสจากบทที่ 12 กลายเป็นปั๊มโซลาร์
+        และความรู้เรื่องพลังงานกับค่าไฟจากบทที่ 1 และ 10 ใช้ตัดสินว่าระบบนั้นคุ้มหรือไม่</span>
+      <span class="en">This final chapter brings the whole course together. The PN junction of Chapter 13
+        becomes a solar cell; Ohm's law and the series-parallel work of Chapter 3 wire modules into
+        strings; the brushless motor of Chapter 12 becomes a solar pump; and the energy and tariff work of
+        Chapters 1 and 10 decides whether any of it is worth doing.</span>
+    </p>
+    <div class="hero-meta">
+      <span>⏱ <strong>2+2</strong> <span class="th">ชั่วโมง</span><span class="en">hours</span></span>
+      <span>📘 <span class="th">หัวข้อหลัก</span><span class="en">Main topics</span> <strong>5</strong></span>
+      <span>🧪 <span class="th">ปฏิบัติการที่ 14</span><span class="en">Laboratory 14</span></span>
+      <span>📝 <span class="th">Pre / Post-test</span><span class="en">Pre / post-test</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+<div class="chapter-layout">
+
+  <!-- ============================================================= TOC -->
+  <aside class="toc">
+    <div class="toc-title"><span class="th">สารบัญบทเรียน</span><span class="en">On this page</span></div>
+    <ul>
+      <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
+      <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#s1"><span class="th">14.1 เซลล์แสงอาทิตย์ทำงานอย่างไร</span><span class="en">14.1 How a PV cell works</span></a></li>
+      <li><a href="#s2"><span class="th">14.2 แผงเซลล์แสงอาทิตย์</span><span class="en">14.2 The PV module</span></a></li>
+      <li><a href="#s3"><span class="th">14.3 การเก็บพลังงานด้วยแบตเตอรี่</span><span class="en">14.3 Battery storage</span></a></li>
+      <li><a href="#s4"><span class="th">14.4 ระบบออนกริดและออฟกริด</span><span class="en">14.4 On-grid and off-grid</span></a></li>
+      <li><a href="#s5"><span class="th">14.5 การประยุกต์ในฟาร์ม</span><span class="en">14.5 Applications on the farm</span></a></li>
+      <li><a href="#summary"><span class="th">สรุปบทเรียน</span><span class="en">Summary</span></a></li>
+      <li><a href="#activity"><span class="th">กิจกรรมในชั้นเรียน</span><span class="en">Class activity</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการที่ 14</span><span class="en">Laboratory 14</span></a></li>
+      <li><a href="#posttest"><span class="th">แบบทดสอบหลังเรียน</span><span class="en">Post-test</span></a></li>
+      <li><a href="#refs"><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ==================================================== CHAPTER BODY -->
+  <main class="chapter-body">
+
+    <!-- ---------------------------------------------------- Objectives -->
+    <section id="objectives">
+      <div class="callout callout-objective">
+        <div class="callout-title">🎯 <span class="th">จุดประสงค์การเรียนรู้</span>
+          <span class="en">Learning objectives</span></div>
+        <p><span class="th">เมื่อเรียนจบบทนี้ นักศึกษาจะสามารถ</span>
+           <span class="en">After this chapter you will be able to:</span></p>
+        <ol>
+          <li><span class="th">อธิบายปรากฏการณ์โฟโตวอลเทอิกโดยเชื่อมโยงกับรอยต่อพีเอ็นในบทที่ 13
+            และเปรียบเทียบเซลล์แต่ละชนิด</span>
+            <span class="en">explain the photovoltaic effect in terms of the PN junction of Chapter 13, and
+            compare the types of cell;</span></li>
+          <li><span class="th">อ่านเส้นโค้ง I–V และ P–V ของแผง ระบุจุดกำลังสูงสุด และอธิบายหน้าที่ของ MPPT</span>
+            <span class="en">read a module's I–V and P–V curves, identify the maximum power point, and
+            explain what an MPPT does;</span></li>
+          <li><span class="th">แก้ค่าแรงดันของแผงตามอุณหภูมิ และคำนวณจำนวนแผงต่ออนุกรมให้อยู่ในย่านที่อินเวอร์เตอร์รับได้</span>
+            <span class="en">correct a module's voltage for temperature and size a string to fit an
+            inverter's input window;</span></li>
+          <li><span class="th">คำนวณขนาดแบตเตอรี่จากพลังงานที่ใช้ต่อวัน ระดับการคายประจุ และจำนวนวันสำรอง</span>
+            <span class="en">size a battery from the daily energy, the depth of discharge and the days of
+            autonomy required;</span></li>
+          <li><span class="th">เปรียบเทียบต้นทุนต่อหน่วยพลังงานตลอดอายุใช้งานของแบตเตอรี่ต่างชนิด</span>
+            <span class="en">compare battery technologies on their cost per unit of energy delivered over
+            their whole life;</span></li>
+          <li><span class="th">แยกแยะโครงสร้างระบบออนกริดกับออฟกริด และประเมินความคุ้มค่าของระบบบนหลังคาโรงคัดบรรจุ</span>
+            <span class="en">distinguish on-grid from off-grid architectures, and assess the economics of a
+            rooftop system on a packing house.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ Pre-test -->
+    <section id="pretest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบก่อนเรียน</span>
+          <span class="en">Pre-test</span></h2>
+      <p class="muted"><span class="th">ทำก่อนเริ่มอ่านเนื้อหา เพื่อสำรวจความรู้เดิมของตนเอง</span>
+        <span class="en">Take this before reading, to see what you already know.</span></p>
+
+      <section class="quiz" id="pretest-q" data-quiz="pre" data-chapter="ch14">
+        <div class="quiz-head">
+          <h3><span class="th">ก่อนเรียน: บทที่ 14</span><span class="en">Pre-test: Chapter 14</span></h3>
+          <p><span class="th">5 ข้อ · ปรนัย · ตรวจคำตอบได้ทันที</span>
+             <span class="en">5 multiple-choice questions · marked instantly</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="เซลล์แสงอาทิตย์คือรอยต่อพีเอ็นขนาดใหญ่ โฟตอนที่มีพลังงานพอจะกระแทกอิเล็กตรอนให้หลุดเกิดคู่อิเล็กตรอน–โฮล แล้วสนามไฟฟ้าภายในที่แถบพร่องจะแยกทั้งคู่ออกจากกัน ทำให้เกิดแรงดันที่ขั้ว (หัวข้อ 14.1)"
+               data-explain-en="A solar cell is a large PN junction. A photon with enough energy frees an electron-hole pair, and the built-in field of the depletion region separates the two, producing a voltage at the terminals (Section 14.1).">
+            <div class="q-text"><span class="th">เซลล์แสงอาทิตย์ผลิตไฟฟ้าได้อย่างไร</span>
+              <span class="en">How does a solar cell generate electricity?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ความร้อนจากแดดทำให้โลหะขยายตัวและเกิดแรงดัน</span><span class="en">The sun's heat expands a metal, producing a voltage</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">แสงทำให้เกิดปฏิกิริยาเคมีเหมือนแบตเตอรี่</span><span class="en">Light drives a chemical reaction, as in a battery</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">โฟตอนสร้างคู่อิเล็กตรอน–โฮล แล้วสนามไฟฟ้าที่รอยต่อพีเอ็นแยกทั้งคู่ออกจากกัน</span><span class="en">Photons create electron-hole pairs, which the PN junction's field then separates</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">แสงทำให้เกิดสนามแม่เหล็กหมุนเหมือนเครื่องกำเนิดไฟฟ้า</span><span class="en">Light creates a rotating magnetic field, as in a generator</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="การต่ออนุกรมทำให้แรงดันบวกกัน ส่วนกระแสเท่ากับแผงเดียว เหมือนกับการต่อตัวต้านทานอนุกรมในบทที่ 3 ที่แรงดันถูกแบ่งกัน (หัวข้อ 14.2)"
+               data-explain-en="Connecting modules in series adds their voltages while the current stays that of one module — the same logic as the series resistors of Chapter 3 (Section 14.2).">
+            <div class="q-text"><span class="th">ต่อแผงเซลล์แสงอาทิตย์ 4 แผงแบบอนุกรม จะได้อะไร</span>
+              <span class="en">Four PV modules connected in series give:</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">แรงดันเท่าเดิม กระแสเพิ่ม 4 เท่า</span><span class="en">The same voltage, four times the current</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">แรงดันเพิ่ม 4 เท่า กระแสเท่าเดิม</span><span class="en">Four times the voltage, the same current</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ทั้งแรงดันและกระแสเพิ่ม 4 เท่า</span><span class="en">Four times both voltage and current</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">แรงดันและกระแสเท่าเดิมทั้งคู่</span><span class="en">Both unchanged</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="แผงเซลล์แสงอาทิตย์มีจุดเดียวบนเส้นโค้ง I–V ที่ให้ผลคูณ V × I สูงสุด เรียกว่าจุดกำลังสูงสุด (MPP) อุปกรณ์ MPPT ทำหน้าที่บังคับให้แผงทำงานที่จุดนั้นตลอดเวลาแม้แสงและอุณหภูมิจะเปลี่ยน (หัวข้อ 14.2)"
+               data-explain-en="There is one point on a module's I–V curve where the product V × I is greatest, the maximum power point. An MPPT keeps the module working there as light and temperature change (Section 14.2).">
+            <div class="q-text"><span class="th">อุปกรณ์ MPPT ในเครื่องควบคุมการประจุทำหน้าที่อะไร</span>
+              <span class="en">What does the MPPT in a charge controller do?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ป้องกันไม่ให้แบตเตอรี่คายประจุย้อนเข้าแผง</span><span class="en">Stops the battery discharging back into the panel</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">แปลงไฟตรงเป็นไฟสลับ</span><span class="en">Converts DC into AC</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">หมุนแผงตามดวงอาทิตย์</span><span class="en">Turns the panel to follow the sun</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">บังคับให้แผงทำงานที่จุดที่ให้กำลังสูงสุดตลอดเวลา</span><span class="en">Holds the module at the point of greatest power output</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="แผงเซลล์แสงอาทิตย์ให้แรงดันลดลงเมื่อร้อนขึ้น โดยทั่วไปประมาณ −0.3 %/°C ดังนั้นแผงที่ร้อนจัดกลางแดดเที่ยงจะให้กำลังน้อยกว่าที่ระบุบนป้ายซึ่งวัดที่ 25 °C (หัวข้อ 14.2)"
+               data-explain-en="A PV module's voltage falls as it heats, typically about −0.3 %/°C, so a panel baking at midday delivers less than its nameplate, which is measured at 25 °C (Section 14.2).">
+            <div class="q-text"><span class="th">เมื่อแผงเซลล์แสงอาทิตย์ร้อนขึ้น กำลังที่ผลิตได้เป็นอย่างไร</span>
+              <span class="en">What happens to a PV module's output as it gets hotter?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ลดลง เพราะแรงดันตกลงตามอุณหภูมิ</span><span class="en">It falls, because the voltage drops with temperature</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เพิ่มขึ้น เพราะได้พลังงานความร้อนเพิ่ม</span><span class="en">It rises, because of the extra heat energy</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ไม่เปลี่ยนแปลง</span><span class="en">It does not change</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เพิ่มขึ้นเป็นสองเท่าทุก 10 °C</span><span class="en">It doubles for every 10 °C</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="ระบบออฟกริดไม่มีสายจากการไฟฟ้า จึงต้องมีแบตเตอรี่เก็บพลังงานไว้ใช้ตอนกลางคืน ส่วนระบบออนกริดใช้โครงข่ายไฟฟ้าเป็นที่พักพลังงานแทน จึงไม่จำเป็นต้องมีแบตเตอรี่ (หัวข้อ 14.4)"
+               data-explain-en="An off-grid system has no utility connection, so it needs batteries to carry it through the night. An on-grid system uses the grid itself for that, and needs no battery (Section 14.4).">
+            <div class="q-text"><span class="th">ความแตกต่างสำคัญที่สุดระหว่างระบบออนกริดกับออฟกริดคืออะไร</span>
+              <span class="en">What is the most important difference between on-grid and off-grid systems?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ออนกริดใช้แผงชนิดต่างจากออฟกริด</span><span class="en">They use different types of panel</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ออฟกริดต้องมีแบตเตอรี่ ส่วนออนกริดใช้โครงข่ายไฟฟ้าแทน</span><span class="en">Off-grid needs batteries; on-grid uses the grid instead</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ออนกริดผลิตไฟตรง ส่วนออฟกริดผลิตไฟสลับ</span><span class="en">On-grid produces DC, off-grid produces AC</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ออฟกริดมีประสิทธิภาพสูงกว่าเสมอ</span><span class="en">Off-grid is always more efficient</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== 14.1 -->
+    <section id="s1">
+      <h2><span class="num">14.1</span><span class="th">เซลล์แสงอาทิตย์ทำงานอย่างไร</span>
+          <span class="en">How a photovoltaic cell works</span></h2>
+
+      <p><span class="th">ในบทที่ 13 เราเห็นแล้วว่ารอยต่อพีเอ็นมีสนามไฟฟ้าภายในอยู่ที่แถบพร่อง
+        ซึ่งคอยผลักอิเล็กตรอนไปทางฝั่ง N และผลักโฮลไปทางฝั่ง P ตลอดเวลา
+        เซลล์แสงอาทิตย์คือการนำสนามนั้นมาใช้ประโยชน์ — ทำรอยต่อพีเอ็นให้ใหญ่และบาง
+        แล้วปล่อยให้แสงตกลงมา เมื่อโฟตอนที่มีพลังงานมากพอชนเข้ากับอะตอมซิลิคอน
+        มันจะกระแทกอิเล็กตรอนตัวหนึ่งให้หลุดจากพันธะ เกิดเป็น <b>คู่อิเล็กตรอน–โฮล</b>
+        และถ้าเหตุการณ์นี้เกิดใกล้รอยต่อ สนามไฟฟ้าที่มีอยู่แล้วจะแยกทั้งคู่ออกจากกันทันที
+        ก่อนที่มันจะรวมตัวกันกลับ ผลคืออิเล็กตรอนสะสมอยู่ฝั่ง N และโฮลสะสมฝั่ง P
+        เกิดเป็นแรงดันที่ขั้วทั้งสอง</span>
+        <span class="en">In Chapter 13 we saw that a PN junction carries a built-in electric field across its
+        depletion region, permanently pushing electrons toward the N side and holes toward the P side. A
+        solar cell puts that field to work: make the junction large and thin, and let light fall on it. When
+        a photon of sufficient energy strikes a silicon atom it knocks an electron out of its bond, creating
+        an <b>electron-hole pair</b>. If that happens near the junction, the field already there separates
+        the two at once, before they can recombine. Electrons pile up on the N side and holes on the P side,
+        and a voltage appears across the terminals.</span></p>
+
+      <figure>
+        <div class="figure-box is-animated pv-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 370" role="img" width="720"
+               aria-label="Cross-section of a solar cell: photons arrive from above, free electron-hole pairs, and the junction field drives electrons up and holes down into an external circuit">
+            <defs>
+              <clipPath id="clipSky"><rect x="182" y="28" width="296" height="98"/></clipPath>
+              <clipPath id="clipN14"><rect x="180" y="120" width="300" height="40"/></clipPath>
+              <clipPath id="clipP14"><rect x="180" y="180" width="300" height="70"/></clipPath>
+              <marker id="ar14" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#fd5f00"/></marker>
+            </defs>
+
+            <!-- sunlight -->
+            <text class="cap th" x="330" y="22" text-anchor="middle">แสงอาทิตย์</text>
+            <text class="cap en" x="330" y="22" text-anchor="middle">sunlight</text>
+            <g clip-path="url(#clipSky)">
+              <circle class="photon"     cx="215" cy="34" r="7" fill="#e8a33d"/>
+              <circle class="photon ph2" cx="275" cy="34" r="7" fill="#e8a33d"/>
+              <circle class="photon ph3" cx="345" cy="34" r="7" fill="#e8a33d"/>
+              <circle class="photon ph4" cx="415" cy="34" r="7" fill="#e8a33d"/>
+              <circle class="photon ph3" cx="245" cy="34" r="7" fill="#e8a33d"/>
+              <circle class="photon"     cx="380" cy="34" r="7" fill="#e8a33d"/>
+              <circle class="photon ph2" cx="445" cy="34" r="7" fill="#e8a33d"/>
+            </g>
+
+            <!-- top contact fingers and busbar -->
+            <path class="wire" d="M190 108 H470"/>
+            <rect class="metal" x="206" y="108" width="12" height="14"/>
+            <rect class="metal" x="266" y="108" width="12" height="14"/>
+            <rect class="metal" x="336" y="108" width="12" height="14"/>
+            <rect class="metal" x="406" y="108" width="12" height="14"/>
+            <text class="sub th" x="500" y="106">ขั้วบน (ลบ)</text>
+            <text class="sub en" x="500" y="106">top contact (−)</text>
+            <text class="sub th" x="500" y="120">เป็นซี่บาง ๆ เพื่อไม่บังแสง</text>
+            <text class="sub en" x="500" y="120">thin fingers, so they shade little</text>
+
+            <!-- the cell itself -->
+            <rect class="n-reg" x="180" y="120" width="300" height="40"/>
+            <rect class="dep"   x="180" y="160" width="300" height="20"/>
+            <rect class="p-reg" x="180" y="180" width="300" height="70"/>
+            <rect class="metal" x="180" y="250" width="300" height="12"/>
+            <text class="lbl" x="164" y="144" text-anchor="end">N</text>
+            <text class="lbl" x="164" y="220" text-anchor="end">P</text>
+            <text class="sub th" x="500" y="176">แถบพร่อง — สนามไฟฟ้าอยู่ตรงนี้</text>
+            <text class="sub en" x="500" y="176">depletion region — the field lives here</text>
+            <text class="sub th" x="500" y="262">ขั้วล่าง (บวก)</text>
+            <text class="sub en" x="500" y="262">bottom contact (+)</text>
+
+            <!-- electrons swept up into N -->
+            <g clip-path="url(#clipN14)">
+              <g class="carr carr-up">
+                <circle class="elec" cx="215" cy="158" r="6"/><circle class="elec" cx="285" cy="158" r="6"/>
+                <circle class="elec" cx="355" cy="158" r="6"/><circle class="elec" cx="425" cy="158" r="6"/>
+                <circle class="elec" cx="215" cy="124" r="6"/><circle class="elec" cx="285" cy="124" r="6"/>
+                <circle class="elec" cx="355" cy="124" r="6"/><circle class="elec" cx="425" cy="124" r="6"/>
+              </g>
+            </g>
+            <!-- holes swept down into P -->
+            <g clip-path="url(#clipP14)">
+              <g class="carr carr-dn">
+                <circle class="hole" cx="215" cy="182" r="6"/><circle class="hole" cx="285" cy="182" r="6"/>
+                <circle class="hole" cx="355" cy="182" r="6"/><circle class="hole" cx="425" cy="182" r="6"/>
+                <circle class="hole" cx="215" cy="216" r="6"/><circle class="hole" cx="285" cy="216" r="6"/>
+                <circle class="hole" cx="355" cy="216" r="6"/><circle class="hole" cx="425" cy="216" r="6"/>
+                <circle class="hole" cx="215" cy="250" r="6"/><circle class="hole" cx="285" cy="250" r="6"/>
+                <circle class="hole" cx="355" cy="250" r="6"/><circle class="hole" cx="425" cy="250" r="6"/>
+              </g>
+            </g>
+
+            <!-- external circuit -->
+            <path class="wire" d="M190 108 H100 V320 H300"/>
+            <rect class="sym" x="300" y="308" width="70" height="24"/>
+            <text class="sub th" x="335" y="352" text-anchor="middle">โหลด</text>
+            <text class="sub en" x="335" y="352" text-anchor="middle">load</text>
+            <path class="wire" d="M370 320 H560 V256 H480"/>
+            <line x1="430" y1="320" x2="386" y2="320" stroke="#fd5f00" stroke-width="2.5" marker-end="url(#ar14)"/>
+            <text class="cap" x="408" y="310" text-anchor="middle">I</text>
+
+            <text class="sub th" x="60" y="352">อิเล็กตรอนถูกผลักขึ้นไปฝั่ง N · โฮลถูกผลักลงไปฝั่ง P · จึงเกิดแรงดันคร่อมขั้วทั้งสอง</text>
+            <text class="sub en" x="60" y="352">electrons are swept up into the N side and holes down into the P — and a voltage appears</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 14.1</span><span class="en">Figure 14.1</span></b>
+          <span class="th"> ภาคตัดขวางของเซลล์แสงอาทิตย์ จุดสีเหลืองคือโฟตอนที่ตกลงมา
+            จุดสีน้ำเงินคืออิเล็กตรอนที่ถูกสนามไฟฟ้าผลักขึ้นไปฝั่ง N
+            และจุดสีแดงคือโฮลที่ถูกผลักลงไปฝั่ง P
+            สังเกตว่าเซลล์แสงอาทิตย์ <b>ไม่ได้เก็บพลังงานไว้เลย</b> —
+            มันเป็นเพียงตัวแปลงพลังงานทันที หยุดแสงเมื่อใด กระแสหยุดทันทีเมื่อนั้น
+            นี่คือเหตุผลที่ระบบออฟกริดต้องมีแบตเตอรี่ในหัวข้อ 14.3
+            <br>ขั้วบนทำเป็นซี่บาง ๆ เพราะทุกตารางมิลลิเมตรที่โลหะบังไว้คือพื้นที่ที่ผลิตไฟไม่ได้
+            การออกแบบขั้วจึงเป็นการชั่งน้ำหนักระหว่างความต้านทานกับการบังแสง</span>
+          <span class="en"> A cross-section of a solar cell. Yellow dots are arriving photons, blue ones the
+            electrons the field sweeps up into the N side, red ones the holes pushed down into the P. Note
+            that a solar cell <b>stores nothing at all</b>: it is a converter working in the instant, and
+            the moment the light stops the current stops with it. That is why an off-grid system needs the
+            batteries of Section 14.3. <br>The top contact is made of thin fingers because every square
+            millimetre of metal is area that generates nothing — contact design is a balance between
+            resistance and shading.</span></figcaption>
+      </figure>
+
+      <div class="callout callout-info">
+        <div class="callout-title">ℹ️ <span class="th">ทำไมประสิทธิภาพจึงได้เพียง 20 % เท่านั้น</span>
+          <span class="en">Why only about 20 % efficiency</span></div>
+        <p class="mb-0"><span class="th">แสงอาทิตย์มีโฟตอนหลายพลังงานปนกัน โฟตอนที่พลังงาน
+          <b>น้อยเกินไป</b> (ช่วงอินฟราเรด) ทะลุผ่านไปเฉย ๆ ไม่สร้างคู่อิเล็กตรอน–โฮลเลย
+          ส่วนโฟตอนที่พลังงาน <b>มากเกินไป</b> (ช่วงอัลตราไวโอเลต) สร้างคู่ได้ก็จริง
+          แต่พลังงานส่วนเกินกลายเป็นความร้อนทิ้งไป มีเพียงโฟตอนที่พลังงานใกล้เคียงกับช่องว่างพลังงานของซิลิคอน
+          (ราว 1.1 eV) เท่านั้นที่ถูกใช้อย่างคุ้มค่า ข้อจำกัดทางฟิสิกส์นี้เรียกว่าขีดจำกัด
+          Shockley–Queisser ซึ่งกำหนดเพดานไว้ราว 33 % สำหรับเซลล์รอยต่อเดียว
+          เซลล์เชิงพาณิชย์ที่ทำได้ 20–23 % จึงถือว่าใกล้เคียงขีดจำกัดพอสมควรแล้ว</span>
+          <span class="en">Sunlight is a mixture of photon energies. Photons with <b>too little</b> energy —
+          the infrared — pass straight through and create nothing. Photons with <b>too much</b> — the
+          ultraviolet — do create a pair, but their surplus energy is simply lost as heat. Only photons
+          close to silicon's band gap of about 1.1 eV are used well. This physical limit, the
+          Shockley–Queisser limit, caps a single-junction cell at roughly 33 %, so commercial cells
+          reaching 20–23 % are already respectably close to it.</span></p>
+      </div>
+
+      <h3><span class="th">14.1.1 ชนิดของเซลล์แสงอาทิตย์</span>
+          <span class="en">14.1.1 Types of photovoltaic cell</span></h3>
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 14.1 เปรียบเทียบเซลล์แสงอาทิตย์แต่ละชนิดสำหรับงานเกษตร</span>
+            <span class="en">Table 14.1 Types of PV cell compared for agricultural work</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">ชนิด</span><span class="en">Type</span></th>
+              <th class="num"><span class="th">ประสิทธิภาพ</span><span class="en">Efficiency</span></th>
+              <th class="num"><span class="th">สัมประสิทธิ์อุณหภูมิ</span><span class="en">Temp. coefficient</span></th>
+              <th><span class="th">เหมาะกับงานแบบใด</span><span class="en">Where it suits</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b><span class="th">ผลึกเดี่ยว</span><span class="en">Monocrystalline</span></b></td>
+              <td class="num">20–23 %</td>
+              <td class="num">−0.29 %/°C</td>
+              <td><span class="th">หลังคาโรงเรือนหรือโรงคัดบรรจุที่พื้นที่จำกัด ต้องการกำลังต่อตารางเมตรสูงสุด</span>
+                  <span class="en">Greenhouse or packing-house roofs where area is limited and watts per square metre matter most</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">ผลึกรวม</span><span class="en">Polycrystalline</span></b></td>
+              <td class="num">16–18 %</td>
+              <td class="num">−0.39 %/°C</td>
+              <td><span class="th">เคยเป็นตัวเลือกราคาประหยัด ปัจจุบันถูกผลึกเดี่ยวแทนที่เกือบหมดแล้ว</span>
+                  <span class="en">Once the budget choice, now almost entirely displaced by monocrystalline</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">ฟิล์มบาง</span><span class="en">Thin film</span></b></td>
+              <td class="num">10–13 %</td>
+              <td class="num">−0.25 %/°C</td>
+              <td><span class="th">ทนความร้อนดีกว่าและโค้งงอได้ เหมาะกับหลังคาโรงเรือนโค้งหรือพื้นที่กว้างที่ไม่จำกัดขนาด</span>
+                  <span class="en">Better in heat and can be flexible — for curved greenhouse roofs, or wide sites where area is free</span></td>
+            </tr>
+            <tr style="background:#eaf7ef">
+              <td><b><span class="th">สองหน้า (bifacial)</span><span class="en">Bifacial</span></b></td>
+              <td class="num">20–22 %<br><span class="small">+5–15 %</span></td>
+              <td class="num">−0.30 %/°C</td>
+              <td><span class="th">รับแสงสะท้อนจากพื้นด้านล่างได้ด้วย จึงเหมาะกับ <b>เกษตรโซลาร์ (agrivoltaics)</b>
+                  ที่ติดตั้งยกสูงเหนือแปลงปลูก ให้พืชได้แสงบางส่วนและเก็บไฟได้ทั้งสองหน้า</span>
+                  <span class="en">Also collects light reflected off the ground, which suits
+                  <b>agrivoltaics</b> — mounted high over a crop so the plants get part of the light and both
+                  faces of the panel work</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =============================================== 14.2 -->
+    <section id="s2">
+      <h2><span class="num">14.2</span><span class="th">แผงเซลล์แสงอาทิตย์</span>
+          <span class="en">The photovoltaic module</span></h2>
+
+      <p><span class="th">เซลล์ซิลิคอนหนึ่งเซลล์ให้แรงดันเพียงราว 0.6 V ซึ่งน้อยเกินกว่าจะใช้งานอะไรได้
+        ผู้ผลิตจึงต่อเซลล์อนุกรมกันในแผงเดียว เช่น 60 หรือ 72 เซลล์ ตามหลักการเดียวกับการต่อตัวต้านทานอนุกรม
+        ในบทที่ 3 คือ <b>แรงดันบวกกัน กระแสเท่าเดิม</b> และเมื่อนำแผงมาต่อกันเป็นระบบ
+        ก็ใช้หลักการเดียวกันนี้อีกชั้นหนึ่ง</span>
+        <span class="en">One silicon cell gives only about 0.6 V, far too little to be useful, so a
+        manufacturer wires 60 or 72 of them in series inside a module — the same rule as the series
+        resistors of Chapter 3: <b>voltages add, the current stays the same</b>. Wiring modules into a
+        system applies that rule once more, one level up.</span></p>
+
+      <div class="equation">
+        \[ \text{อนุกรม / series:}\quad V_{\text{total}} = N \times V_{\text{module}},
+           \quad I_{\text{total}} = I_{\text{module}} \]
+        \[ \text{ขนาน / parallel:}\quad I_{\text{total}} = N \times I_{\text{module}},
+           \quad V_{\text{total}} = V_{\text{module}} \]
+      </div>
+
+      <h3><span class="th">14.2.1 เส้นโค้ง I–V และจุดกำลังสูงสุด</span>
+          <span class="en">14.2.1 The I–V curve and the maximum power point</span></h3>
+      <p><span class="th">แผงเซลล์แสงอาทิตย์ไม่ใช่ทั้งแหล่งจ่ายแรงดันและแหล่งจ่ายกระแสตามนิยามในบทที่ 2
+        แต่อยู่กึ่งกลางระหว่างสองอย่างนั้น — ในช่วงแรงดันต่ำมันประพฤติตัวเหมือนแหล่งจ่ายกระแส
+        (กระแสเกือบคงที่ไม่ว่าแรงดันจะเป็นเท่าใด) และในช่วงแรงดันสูงใกล้ \(V_{oc}\)
+        มันกลับประพฤติตัวเหมือนแหล่งจ่ายแรงดัน กำลังที่ได้คือผลคูณ \(P = V \times I\)
+        จึงเป็นศูนย์ที่ปลายทั้งสองข้าง และมีค่าสูงสุดเพียงจุดเดียวตรงหัวเข่าของเส้นโค้ง
+        เรียกว่า <b>จุดกำลังสูงสุด (MPP)</b></span>
+        <span class="en">A PV module is neither the voltage source nor the current source defined in
+        Chapter 2, but something in between. At low voltage it behaves like a current source, holding its
+        current almost regardless of voltage; near \(V_{oc}\) it behaves like a voltage source. Since the
+        power is the product \(P = V \times I\), it is zero at both ends and greatest at exactly one place,
+        the knee of the curve — the <b>maximum power point</b>.</span></p>
+
+      <figure>
+        <div class="figure-box is-animated mpp-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 340" role="img" width="720"
+               aria-label="The I-V and P-V curves of a module, with an operating point sweeping along both and the maximum power point marked">
+            <!-- axes -->
+            <line class="axis" x1="90" y1="260" x2="560" y2="260"/>
+            <line class="axis" x1="90" y1="260" x2="90" y2="56"/>
+            <polygon points="560,256 570,260 560,264" fill="#6c757d"/>
+            <polygon points="86,62 90,52 94,62" fill="#6c757d"/>
+            <text class="sub th" x="325" y="282" text-anchor="middle">แรงดันของแผง V (V)</text>
+            <text class="sub en" x="325" y="282" text-anchor="middle">module voltage V (V)</text>
+            <text class="sub" x="76" y="70" text-anchor="end">I, P</text>
+
+            <!-- MPP guide -->
+            <line x1="420" y1="105" x2="420" y2="260" stroke="#6c757d" stroke-width="1" stroke-dasharray="4 4"/>
+            <line x1="90" y1="130" x2="420" y2="130" stroke="#eef1f5" stroke-width="1"/>
+
+            <!-- I-V curve -->
+            <path d="M90 90 L290 94 Q340 97 380 106 Q408 114 420 130 Q436 150 445 175
+                     Q456 200 465 220 Q474 242 480 260"
+                  stroke="#fd5f00" stroke-width="3" fill="none"/>
+            <!-- P-V curve -->
+            <path d="M90 260 Q200 218 300 180 Q345 152 380 130 Q404 114 420 105
+                     Q434 108 445 120 Q457 142 465 175 Q473 218 480 260"
+                  stroke="#2f855a" stroke-width="3" fill="none" stroke-dasharray="8 4"/>
+
+            <!-- the sweeping operating point -->
+            <circle class="mpp-dot dot-iv" cx="90" cy="90"  r="7.5" fill="#0d1128"/>
+            <circle class="mpp-dot dot-pv" cx="90" cy="260" r="7.5" fill="#2f855a"/>
+
+            <!-- MPP markers -->
+            <circle cx="420" cy="105" r="5" fill="#0d1128"/>
+            <circle cx="420" cy="130" r="5" fill="#0d1128"/>
+            <text class="cap" x="432" y="98">MPP</text>
+            <text class="sub" x="420" y="276" text-anchor="middle">V_mp</text>
+            <text class="sub" x="82" y="134" text-anchor="end">I_mp</text>
+            <text class="sub" x="82" y="94" text-anchor="end">I_sc</text>
+            <text class="sub" x="486" y="276" text-anchor="middle">V_oc</text>
+
+            <!-- legend -->
+            <line x1="590" y1="96" x2="626" y2="96" stroke="#fd5f00" stroke-width="3"/>
+            <text class="sub th" x="590" y="118">กระแส I เทียบกับแรงดัน</text>
+            <text class="sub en" x="590" y="118">current against voltage</text>
+            <line x1="590" y1="146" x2="626" y2="146" stroke="#2f855a" stroke-width="3" stroke-dasharray="8 4"/>
+            <text class="sub th" x="590" y="168">กำลัง P = V × I</text>
+            <text class="sub en" x="590" y="168">power P = V × I</text>
+            <text class="sub th" x="590" y="196">จุดดำวิ่งบนเส้น I–V</text>
+            <text class="sub en" x="590" y="196">the black dot runs the I–V</text>
+            <text class="sub th" x="590" y="212">จุดเขียววิ่งบนเส้น P–V</text>
+            <text class="sub en" x="590" y="212">the green dot runs the P–V</text>
+            <text class="sub th" x="590" y="228">พร้อมกันเสมอ</text>
+            <text class="sub en" x="590" y="228">always together</text>
+
+            <!-- annotations -->
+            <text class="sub th" x="150" y="118">ช่วงนี้เหมือนแหล่งจ่ายกระแส</text>
+            <text class="sub en" x="150" y="118">here it acts like a current source</text>
+            <text class="sub th" x="150" y="134">กระแสเกือบคงที่</text>
+            <text class="sub en" x="150" y="134">the current barely changes</text>
+            <text class="sub th" x="454" y="232">ช่วงนี้เหมือน</text>
+            <text class="sub en" x="454" y="232">here, like a</text>
+            <text class="sub th" x="454" y="248">แหล่งจ่ายแรงดัน</text>
+            <text class="sub en" x="454" y="248">voltage source</text>
+
+            <text class="sub th" x="90" y="308">ถ้าโหลดดึงแรงดันต่ำเกินไป กระแสเต็มแต่แรงดันน้อย — กำลังน้อย</text>
+            <text class="sub en" x="90" y="308">draw too low a voltage and you get full current but little of it — low power</text>
+            <text class="sub th" x="90" y="326">ถ้าปล่อยแรงดันสูงเกินไป แรงดันเต็มแต่กระแสหมด — กำลังน้อยเช่นกัน</text>
+            <text class="sub en" x="90" y="326">let the voltage rise too far and the current vanishes — low power again</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 14.2</span><span class="en">Figure 14.2</span></b>
+          <span class="th"> เส้นโค้ง I–V และ P–V ของแผงเดียวกัน ในภาพเคลื่อนไหว
+            จุดสีดำกวาดไปตามเส้น I–V ขณะที่จุดสีเขียวกวาดไปตามเส้น P–V พร้อมกัน
+            สังเกตว่าเมื่อจุดดำเริ่มลงจากหัวเข่า จุดเขียวขึ้นถึงยอดพอดี แล้วร่วงลงอย่างรวดเร็ว —
+            นั่นคือเหตุผลที่การปล่อยให้แผงทำงานนอกจุด MPP เสียกำลังไปมากโดยไม่จำเป็น
+            <b>งานของ MPPT ในเครื่องควบคุมการประจุคือคอยขยับจุดทำงานให้อยู่ที่ยอดนี้ตลอดเวลา</b>
+            แม้เมฆจะบังหรือแผงจะร้อนขึ้นก็ตาม ซึ่งมันทำได้หลายสิบครั้งต่อวินาที</span>
+          <span class="en"> The I–V and P–V curves of one module. In the animation the black dot sweeps the
+            I–V curve while the green dot sweeps the P–V curve in step with it. Watch how the green dot
+            reaches its peak just as the black one starts down from the knee, then falls away sharply —
+            which is why letting a module work away from its MPP wastes so much for nothing. <b>The MPPT in
+            a charge controller exists to keep the operating point at that peak</b>, whatever the clouds or
+            the panel temperature do, adjusting it many times a second.</span></figcaption>
+      </figure>
+
+      <h3><span class="th">14.2.2 แสงและอุณหภูมิเปลี่ยนเส้นโค้งอย่างไร</span>
+          <span class="en">14.2.2 What light and temperature do to the curve</span></h3>
+      <p><span class="th">ค่าบนป้ายพิกัดของแผงวัดที่สภาวะมาตรฐาน (STC) คือ ความเข้มแสง 1000 W/m²
+        อุณหภูมิเซลล์ 25 °C ซึ่ง <b>แทบไม่เคยเกิดขึ้นจริงในประเทศไทย</b>
+        เพราะตอนที่แดดแรงถึง 1000 W/m² แผงก็ร้อนถึง 60–70 °C ไปแล้ว
+        การออกแบบจึงต้องรู้ว่าสองปัจจัยนี้ทำอะไรกับเส้นโค้ง และมันทำคนละอย่างกัน</span>
+        <span class="en">A module's nameplate is measured at standard test conditions: 1000 W/m² of
+        irradiance and a cell temperature of 25 °C — a combination that <b>practically never occurs in
+        Thailand</b>, because by the time the sun reaches 1000 W/m² the panel is already at 60–70 °C. Design
+        therefore requires knowing what each factor does to the curve, and they do quite different
+        things.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 310" role="img" width="720"
+               aria-label="How irradiance changes the current of a module, and how temperature changes its voltage">
+            <text class="cap th" x="200" y="26" text-anchor="middle">ก. ความเข้มแสงเปลี่ยน — กระแสเปลี่ยน</text>
+            <text class="cap en" x="200" y="26" text-anchor="middle">a. Change the light, and the current changes</text>
+            <text class="cap th" x="560" y="26" text-anchor="middle">ข. อุณหภูมิเปลี่ยน — แรงดันเปลี่ยน</text>
+            <text class="cap en" x="560" y="26" text-anchor="middle">b. Change the temperature, and the voltage changes</text>
+
+            <!-- ===== panel A ===== -->
+            <line class="axis" x1="70" y1="240" x2="340" y2="240"/>
+            <line class="axis" x1="70" y1="240" x2="70" y2="60"/>
+            <text class="sub" x="205" y="260" text-anchor="middle">V</text>
+            <text class="sub" x="58" y="70" text-anchor="end">I</text>
+
+            <path d="M70 80 L250 86 Q275 95 288 130 Q298 180 300 240"
+                  stroke="#fd5f00" stroke-width="2.5" fill="none"/>
+            <path d="M70 144 L250 150 Q274 158 286 186 Q295 214 297 240"
+                  stroke="#e8a33d" stroke-width="2.5" fill="none"/>
+            <path d="M70 192 L246 198 Q270 204 282 218 Q291 230 293 240"
+                  stroke="#b9c0d8" stroke-width="2.5" fill="none"/>
+            <text class="sub" x="118" y="74">1000 W/m²</text>
+            <text class="sub" x="118" y="138">600 W/m²</text>
+            <text class="sub" x="118" y="186">300 W/m²</text>
+
+            <text class="sub th" x="70" y="282">กระแสแปรผันตรงกับความเข้มแสง</text>
+            <text class="sub en" x="70" y="282">the current is proportional to the irradiance</text>
+            <text class="sub th" x="70" y="298">ส่วนแรงดันเปลี่ยนน้อยมาก</text>
+            <text class="sub en" x="70" y="298">while the voltage hardly moves</text>
+
+            <line x1="380" y1="20" x2="380" y2="300" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== panel B ===== -->
+            <line class="axis" x1="430" y1="240" x2="700" y2="240"/>
+            <line class="axis" x1="430" y1="240" x2="430" y2="60"/>
+            <text class="sub" x="565" y="260" text-anchor="middle">V</text>
+            <text class="sub" x="418" y="70" text-anchor="end">I</text>
+
+            <path d="M430 80 L610 86 Q635 95 648 130 Q658 180 660 240"
+                  stroke="#2b6cb0" stroke-width="2.5" fill="none"/>
+            <path d="M430 82 L588 88 Q613 97 626 132 Q636 182 638 240"
+                  stroke="#e8a33d" stroke-width="2.5" fill="none"/>
+            <path d="M430 84 L566 90 Q591 99 604 134 Q614 184 616 240"
+                  stroke="#d64545" stroke-width="2.5" fill="none"/>
+            <text class="sub" x="662" y="76" fill="#2b6cb0">25 °C</text>
+            <text class="sub" x="640" y="256" fill="#e8a33d">45 °C</text>
+            <text class="sub" x="586" y="256" fill="#d64545">65 °C</text>
+
+            <text class="sub th" x="430" y="282">แรงดันลดลงราว 0.3 % ต่อทุกองศาที่ร้อนขึ้น</text>
+            <text class="sub en" x="430" y="282">the voltage falls about 0.3 % for every degree hotter</text>
+            <text class="sub th" x="430" y="298">ส่วนกระแสแทบไม่เปลี่ยน — กำลังจึงลดลงตามแรงดัน</text>
+            <text class="sub en" x="430" y="298">the current barely changes, so the power follows the voltage down</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 14.3</span><span class="en">Figure 14.3</span></b>
+          <span class="th"> สองปัจจัยนี้ทำคนละอย่างกัน และต้องจำแยกกันให้ได้ —
+            <b>แสงคุมกระแส อุณหภูมิคุมแรงดัน</b> ผลในทางปฏิบัติที่สำคัญคือ
+            แผงที่ร้อนจัดกลางเที่ยงวันให้กำลังต่ำกว่าค่าบนป้ายราว 10–15 %
+            ซึ่งเป็นเหตุผลที่การติดตั้งต้องเว้นช่องว่างใต้แผงให้ลมพัดผ่านระบายความร้อนได้
+            และเป็นเหตุผลที่ระบบ <b>เกษตรโซลาร์</b> ซึ่งยกแผงสูงเหนือแปลงปลูก
+            มักให้ผลผลิตไฟฟ้าต่อแผงดีกว่าการติดตั้งแนบหลังคา</span>
+          <span class="en"> The two effects are quite separate and must be remembered apart:
+            <b>light governs the current, temperature governs the voltage</b>. The practical consequence
+            matters: a panel baking at midday delivers 10–15 % below its nameplate, which is why
+            installations leave an air gap underneath for cooling — and why <b>agrivoltaic</b> arrays,
+            raised high above a crop, often yield more per panel than ones laid flat against a
+            roof.</span></figcaption>
+      </figure>
+
+      <div class="equation">
+        \[ V_{oc}(T) = V_{oc,\text{STC}}\left[\,1 + \alpha_{V}\,(T - 25)\,\right] \]
+      </div>
+      <p class="eq-note"><span class="th">\(\alpha_V\) = สัมประสิทธิ์อุณหภูมิของแรงดัน มีค่าเป็นลบเสมอ
+        เช่น −0.27 %/°C</span>
+        <span class="en">\(\alpha_V\) = the voltage temperature coefficient, always negative, for instance
+        −0.27 %/°C</span></p>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 14.1</span><span class="en">Example 14.1</span></span>
+          <span class="th">คำนวณจำนวนแผงต่ออนุกรมให้เข้ากับอินเวอร์เตอร์</span>
+          <span class="en">Sizing a string to match the inverter</span></div>
+        <div class="example-body">
+          <p><span class="th">จะติดตั้งระบบบนหลังคาโรงคัดบรรจุ ใช้แผง 550 W ที่มีค่าตามป้ายพิกัด
+            \(V_{oc} = 49.5\) V, \(V_{mp} = 41.5\) V, \(\alpha_V = -0.27\) %/°C
+            อินเวอร์เตอร์รับแรงดันเข้าได้สูงสุด 1000 V และมีย่าน MPPT 200–850 V
+            อุณหภูมิเซลล์ต่ำสุดที่คาดไว้คือ 15 °C (เช้าตรู่ฤดูหนาว) และสูงสุด 65 °C (เที่ยงฤดูร้อน)
+            จงหา (ก) จำนวนแผงสูงสุดต่อหนึ่งสตริง (ข) ตรวจสอบว่าแรงดันทำงานอยู่ในย่าน MPPT ทั้งวันหรือไม่
+            และ (ค) กำลังติดตั้งของหนึ่งสตริง</span>
+            <span class="en">A system is to go on a packing-house roof using 550 W modules rated
+            \(V_{oc} = 49.5\) V, \(V_{mp} = 41.5\) V, \(\alpha_V = -0.27\) %/°C. The inverter accepts at most
+            1000 V and its MPPT window is 200–850 V. The lowest cell temperature expected is 15 °C on a cool
+            morning, the highest 65 °C at midday. Find (a) the greatest number of modules per string,
+            (b) whether the operating voltage stays inside the MPPT window all day, and (c) the installed
+            power of one string.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) กรณีเลวร้ายที่สุดสำหรับแรงดันสูงคือ <b>ตอนที่แผงเย็นที่สุด</b>
+              เพราะแรงดันเพิ่มขึ้นเมื่ออุณหภูมิลดลง — ข้อนี้ตรงข้ามกับสัญชาตญาณของหลายคน</span>
+              <span class="en">(a) The worst case for high voltage is when the panel is <b>coldest</b>,
+              because the voltage rises as the temperature falls — which is the opposite of what most people
+              expect.</span></p>
+            \[ V_{oc}(15°) = 49.5\left[\,1 + (-0.0027)(15 - 25)\,\right]
+               = 49.5\,(1.027) = 50.8\ \text{V} \]
+            \[ N_{\max} = \frac{1000}{50.8} = 19.7 \quad\Rightarrow\quad 19\ \text{แผง / modules} \]
+            <p><span class="th">ตรวจ: \(19 \times 50.8 = 965\) V ซึ่งต่ำกว่า 1000 V ✓
+              แต่ถ้าใช้ 20 แผงจะได้ 1016 V ซึ่ง <b>เกินพิกัดและอาจทำลายอินเวอร์เตอร์ในเช้าวันที่อากาศเย็น</b></span>
+              <span class="en">Check: \(19 \times 50.8 = 965\) V, safely under 1000 ✓. Twenty modules would
+              give 1016 V, <b>over the limit and capable of destroying the inverter on a cold
+              morning</b>.</span></p>
+
+            <p><span class="th">(ข) ตรวจย่าน MPPT ทั้งสองปลาย — ใช้ \(V_{mp}\) ไม่ใช่ \(V_{oc}\)
+              เพราะขณะทำงานจริงแผงอยู่ที่จุด MPP</span>
+              <span class="en">(b) Check both ends of the MPPT window, using \(V_{mp}\) rather than
+              \(V_{oc}\), since in service the module sits at its MPP.</span></p>
+            \[ V_{mp}(15°) = 41.5\,(1.027) = 42.6\ \text{V}
+               \quad\Rightarrow\quad 19 \times 42.6 = 810\ \text{V} \quad ✓ \]
+            \[ V_{mp}(65°) = 41.5\left[\,1 + (-0.0027)(40)\,\right] = 41.5\,(0.892) = 37.0\ \text{V}
+               \quad\Rightarrow\quad 19 \times 37.0 = 703\ \text{V} \quad ✓ \]
+            <p><span class="th">ทั้งสองค่าอยู่ในย่าน 200–850 V จึงใช้งานได้ตลอดวัน</span>
+              <span class="en">Both fall inside 200–850 V, so the string works all day.</span></p>
+
+            <p><span class="th">(ค) กำลังติดตั้งของหนึ่งสตริง</span>
+              <span class="en">(c) The installed power of one string</span></p>
+            \[ P_{\text{string}} = 19 \times 550 = 10\,450\ \text{W} = 10.45\ \text{kWp} \]
+
+            <div class="callout callout-agri mb-0">
+              <div class="callout-title">🌱 <span class="th">สิ่งที่ต้องจำจากตัวอย่างนี้</span>
+                <span class="en">What to take away</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">อันตรายอยู่ที่ <b>ความเย็น</b> ไม่ใช่ความร้อน
+                  ระบบที่ออกแบบโดยดูแค่ค่าบนป้ายพิกัดที่ 25 °C จะพังในเช้าที่อากาศเย็นที่สุดของปี
+                  ซึ่งเป็นวันที่ไม่มีใครเฝ้าดู</span>
+                  <span class="en">The danger is the <b>cold</b>, not the heat. A system designed from the
+                  25 °C nameplate alone fails on the coldest morning of the year — the one nobody is
+                  watching.</span></li>
+                <li><span class="th">แรงดันแกว่งจาก 703 V ถึง 810 V ตลอดวัน คิดเป็นช่วงกว้างถึง 15 %
+                  ซึ่งเป็นเหตุผลที่อินเวอร์เตอร์ต้องมีย่าน MPPT กว้าง ไม่ใช่จุดเดียว</span>
+                  <span class="en">The operating voltage swings from 703 V to 810 V over a day, a 15 % range —
+                  which is why an inverter needs a wide MPPT window rather than a single point.</span></li>
+                <li><span class="th">หน่วย <b>kWp</b> (กิโลวัตต์พีก) หมายถึงกำลังที่สภาวะ STC เท่านั้น
+                  ระบบ 10.45 kWp จะไม่เคยผลิตได้ถึง 10.45 kW จริงในประเทศไทย
+                  ค่าที่ได้จริงตอนเที่ยงมักอยู่ราว 8.5–9 kW</span>
+                  <span class="en">The unit <b>kWp</b>, kilowatt-peak, refers to STC only. A 10.45 kWp system
+                  will never actually produce 10.45 kW in Thailand; at midday it typically gives
+                  8.5–9 kW.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 14.3 -->
+    <section id="s3">
+      <h2><span class="num">14.3</span><span class="th">การเก็บพลังงานด้วยแบตเตอรี่</span>
+          <span class="en">Storing the energy: batteries</span></h2>
+
+      <p><span class="th">ปัญหาใหญ่ที่สุดของพลังงานแสงอาทิตย์ไม่ใช่การผลิต แต่คือ <b>เวลา</b> —
+        แผงผลิตไฟมากที่สุดตอนเที่ยง แต่ปั๊มน้ำอาจต้องทำงานตอนเย็น
+        และไฟส่องสว่างกับเซนเซอร์ต้องทำงานตลอดคืน
+        แบตเตอรี่จึงเป็นตัวเชื่อมช่องว่างของเวลานี้ และเป็นองค์ประกอบที่ <b>แพงที่สุดและอายุสั้นที่สุด</b>
+        ในระบบออฟกริด การเลือกแบตเตอรี่ผิดจึงทำให้ระบบที่ดูดีบนกระดาษกลายเป็นภาระในสามปี</span>
+        <span class="en">The hardest problem in solar is not generation but <b>timing</b>. The panels give
+        most at noon, yet the pump may be wanted at dusk, and the lights and sensors must run all night. The
+        battery bridges that gap — and it is the <b>most expensive and shortest-lived</b> part of an
+        off-grid system. Choose it badly and a scheme that looked fine on paper becomes a burden within
+        three years.</span></p>
+
+      <div class="equation">
+        \[ \text{ความจุเป็นพลังงาน / energy capacity:}\quad W = V \times \text{Ah} \]
+        \[ \text{พลังงานที่ใช้ได้จริง / usable energy:}\quad W_{\text{usable}} = V \times \text{Ah} \times \text{DoD} \]
+      </div>
+      <p class="eq-note"><span class="th">DoD (Depth of Discharge) = สัดส่วนที่ยอมให้คายประจุออกได้
+        โดยไม่ทำให้อายุสั้นลงเกินควร</span>
+        <span class="en">DoD, the depth of discharge — how far it may be emptied without unduly shortening
+        its life</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 700 320" role="img" width="700"
+               aria-label="How many charge-discharge cycles a lead-acid and a lithium iron phosphate battery survive at different depths of discharge">
+            <line class="axis" x1="90" y1="250" x2="570" y2="250"/>
+            <line class="axis" x1="90" y1="250" x2="90" y2="50"/>
+            <text class="sub th" x="330" y="274" text-anchor="middle">ระดับการคายประจุ DoD (%)</text>
+            <text class="sub en" x="330" y="274" text-anchor="middle">depth of discharge (%)</text>
+            <text class="sub th" x="70" y="150" text-anchor="middle" transform="rotate(-90 70 150)">จำนวนรอบที่ใช้ได้</text>
+            <text class="sub en" x="70" y="150" text-anchor="middle" transform="rotate(-90 70 150)">cycles of life</text>
+
+            <text class="sub" x="178" y="268" text-anchor="middle">20</text>
+            <text class="sub" x="310" y="268" text-anchor="middle">50</text>
+            <text class="sub" x="442" y="268" text-anchor="middle">80</text>
+            <text class="sub" x="530" y="268" text-anchor="middle">100</text>
+            <text class="sub" x="82" y="191" text-anchor="end">2000</text>
+            <text class="sub" x="82" y="127" text-anchor="end">4000</text>
+            <text class="sub" x="82" y="64"  text-anchor="end">6000</text>
+            <line x1="90" y1="187" x2="570" y2="187" stroke="#eef1f5" stroke-width="1"/>
+            <line x1="90" y1="123" x2="570" y2="123" stroke="#eef1f5" stroke-width="1"/>
+            <line x1="90" y1="60"  x2="570" y2="60"  stroke="#eef1f5" stroke-width="1"/>
+
+            <!-- LiFePO4 -->
+            <path d="M178 60 Q240 96 310 123 Q380 143 442 155 Q490 170 530 187"
+                  stroke="#2f855a" stroke-width="3" fill="none"/>
+            <!-- lead acid -->
+            <path d="M178 202 Q240 224 310 234 Q380 240 442 242 L530 245"
+                  stroke="#d64545" stroke-width="3" fill="none"/>
+
+            <!-- operating points used in Example 14.3 -->
+            <circle cx="442" cy="155" r="6" fill="#2f855a"/>
+            <text class="sub" x="452" y="146" fill="#2f855a">80 % · 3000 รอบ / cycles</text>
+            <circle cx="310" cy="234" r="6" fill="#d64545"/>
+            <text class="sub" x="320" y="228" fill="#d64545">50 % · 500 รอบ / cycles</text>
+
+            <!-- legend -->
+            <line x1="120" y1="86" x2="156" y2="86" stroke="#2f855a" stroke-width="3"/>
+            <text class="sub th" x="164" y="90">ลิเธียมเหล็กฟอสเฟต (LiFePO₄)</text>
+            <text class="sub en" x="164" y="90">lithium iron phosphate (LiFePO₄)</text>
+            <line x1="120" y1="108" x2="156" y2="108" stroke="#d64545" stroke-width="3"/>
+            <text class="sub th" x="164" y="112">ตะกั่ว–กรด ชนิดดีปไซเคิล</text>
+            <text class="sub en" x="164" y="112">deep-cycle lead-acid</text>
+
+            <text class="sub th" x="90" y="296">ยิ่งคายประจุลึก อายุยิ่งสั้น — แต่แบตตะกั่ว–กรดอ่อนไหวกว่ามาก</text>
+            <text class="sub en" x="90" y="296">the deeper the discharge the shorter the life — but lead-acid is far more sensitive</text>
+            <text class="sub th" x="90" y="312">แบตตะกั่ว–กรดที่คายประจุ 80 % ทุกคืน จะหมดอายุในไม่ถึงหนึ่งปี</text>
+            <text class="sub en" x="90" y="312">a lead-acid battery taken to 80 % every night is finished inside a year</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 14.4</span><span class="en">Figure 14.4</span></b>
+          <span class="th"> อายุของแบตเตอรี่เทียบกับระดับการคายประจุ
+            กราฟนี้อธิบายว่าทำไมการเลือกแบตเตอรี่จึงตัดสินไม่ได้จากราคาต่อแอมแปร์–ชั่วโมง
+            แบตตะกั่ว–กรด 100 Ah ที่ราคาถูกกว่า แต่ใช้ได้จริงเพียงครึ่งเดียวและอายุสั้นกว่าหกเท่า
+            ทำให้ต้นทุนต่อหน่วยพลังงานที่จ่ายออกมาได้จริง <b>แพงกว่า</b> ลิเธียมมาก
+            ดังที่จะคำนวณให้เห็นในตัวอย่างที่ 14.3</span>
+          <span class="en"> Battery life against depth of discharge. This graph is why a battery cannot be
+            chosen on price per ampere-hour. A 100 Ah lead-acid cell is cheaper, but only half of it is
+            usable and it lasts a sixth as long — so the cost per unit of energy it actually delivers is far
+            <b>higher</b> than lithium's, as Example 14.3 works out.</span></figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 14.2 เปรียบเทียบแบตเตอรี่สองชนิดที่ใช้ในระบบโซลาร์ฟาร์มขนาดเล็ก</span>
+            <span class="en">Table 14.2 The two battery types used in small farm solar systems</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">หัวข้อ</span><span class="en">Aspect</span></th>
+              <th><span class="th">ตะกั่ว–กรด (ดีปไซเคิล)</span><span class="en">Deep-cycle lead-acid</span></th>
+              <th><span class="th">ลิเธียมเหล็กฟอสเฟต</span><span class="en">Lithium iron phosphate</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">DoD ที่แนะนำ</span><span class="en">Recommended DoD</span></td>
+              <td class="num">50 %</td>
+              <td class="num">80–90 %</td>
+            </tr>
+            <tr>
+              <td><span class="th">อายุ (รอบ)</span><span class="en">Cycle life</span></td>
+              <td class="num">300–800</td>
+              <td class="num">3000–6000</td>
+            </tr>
+            <tr>
+              <td><span class="th">ประสิทธิภาพไป–กลับ</span><span class="en">Round-trip efficiency</span></td>
+              <td class="num">75–85 %</td>
+              <td class="num">92–96 %</td>
+            </tr>
+            <tr>
+              <td><span class="th">ราคาเริ่มต้นต่อ kWh</span><span class="en">Up-front cost per kWh</span></td>
+              <td class="num"><span class="th">ต่ำกว่าราว 3 เท่า</span><span class="en">about 3× lower</span></td>
+              <td class="num"><span class="th">สูงกว่า</span><span class="en">higher</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">น้ำหนักต่อ kWh</span><span class="en">Weight per kWh</span></td>
+              <td class="num">~30 kg</td>
+              <td class="num">~9 kg</td>
+            </tr>
+            <tr style="background:#fff6e5">
+              <td><span class="th">ทนความร้อน</span><span class="en">Tolerance of heat</span></td>
+              <td><span class="th">อายุลดครึ่งหนึ่งทุก 10 °C ที่สูงกว่า 25 °C</span>
+                  <span class="en">Life halves for every 10 °C above 25 °C</span></td>
+              <td><span class="th">ทนได้ดีกว่า แต่ห้ามประจุขณะอุณหภูมิต่ำกว่า 0 °C</span>
+                  <span class="en">More tolerant, but must never be charged below 0 °C</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">การดูแล</span><span class="en">Maintenance</span></td>
+              <td><span class="th">ชนิดเติมน้ำต้องตรวจระดับน้ำกลั่นทุกเดือน</span>
+                  <span class="en">Flooded types need their water checked monthly</span></td>
+              <td><span class="th">ไม่ต้องดูแล มีระบบ BMS ในตัว</span>
+                  <span class="en">None; a battery management system is built in</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">เหมาะกับ</span><span class="en">Suits</span></td>
+              <td><span class="th">ระบบสำรองที่ใช้นาน ๆ ครั้ง งบจำกัด</span>
+                  <span class="en">Standby duty used only occasionally, on a tight budget</span></td>
+              <td><span class="th">ระบบที่ใช้ทุกวัน เช่น สถานีตรวจวัดหรือระบบให้น้ำอัตโนมัติ</span>
+                  <span class="en">Daily cycling — monitoring stations, automatic irrigation</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 14.2</span><span class="en">Example 14.2</span></span>
+          <span class="th">ออกแบบระบบออฟกริดให้สถานีตรวจวัดกลางแปลง</span>
+          <span class="en">Sizing an off-grid supply for a field monitoring station</span></div>
+        <div class="example-body">
+          <p><span class="th">สถานีตรวจวัดกลางแปลงที่ไม่มีไฟฟ้าเข้าถึง มีโหลดดังนี้ —
+            ตัวควบคุมและเซนเซอร์ 5 W ทำงานตลอด 24 ชั่วโมง, เกตเวย์ LoRa 3 W ตลอด 24 ชั่วโมง,
+            วาล์วโซลินอยด์ 3 ตัว ตัวละ 12 W รวมเปิดวันละ 0.5 ชั่วโมง,
+            และกล้องตรวจการณ์ 4 W วันละ 12 ชั่วโมง
+            ระบบใช้ไฟ 12 V ต้องการสำรองไฟได้ 3 วันในช่วงฝนตกติดต่อกัน
+            ใช้แบตเตอรี่ LiFePO₄ ที่ DoD 80 % และประสิทธิภาพไป–กลับ 95 %
+            ตัวแปลงไฟมีประสิทธิภาพ 90 % พื้นที่นี้มีชั่วโมงแสงอาทิตย์เต็มที่เฉลี่ย 4.5 ชั่วโมงต่อวัน
+            และให้ใช้ตัวประกอบลดทอนรวมของแผง 0.75 จงหาขนาดแบตเตอรี่และขนาดแผงที่ต้องติดตั้ง</span>
+            <span class="en">A field monitoring station beyond the reach of mains power carries these loads:
+            a controller and sensors drawing 5 W continuously; a LoRa gateway at 3 W continuously; three
+            solenoid valves of 12 W each, open for a total of half an hour a day; and a 4 W camera running
+            12 hours. The system is 12 V and must survive three consecutive rainy days. It uses a LiFePO₄
+            battery at 80 % DoD with a round-trip efficiency of 95 %, and a converter that is 90 %
+            efficient. The site averages 4.5 peak sun hours a day; take the array's overall derating factor
+            as 0.75. Size the battery and the array.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th"><b>ขั้นที่ 1</b> รวมพลังงานที่โหลดใช้ต่อวัน — ใช้วิธีเดียวกับกิจกรรมที่ 1.1</span>
+              <span class="en"><b>Step 1</b> — total the daily load energy, exactly as in Activity 1.1</span></p>
+            \[ W_{\text{ควบคุม}} = 5 \times 24 = 120\ \text{Wh} \qquad
+               W_{\text{เกตเวย์}} = 3 \times 24 = 72\ \text{Wh} \]
+            \[ W_{\text{วาล์ว}} = 3 \times 12 \times 0.5 = 18\ \text{Wh} \qquad
+               W_{\text{กล้อง}} = 4 \times 12 = 48\ \text{Wh} \]
+            \[ W_{\text{โหลด}} = 120 + 72 + 18 + 48 = 258\ \text{Wh/day} \]
+
+            <p><span class="th"><b>ขั้นที่ 2</b> คิดย้อนผ่านตัวแปลงไฟ เพื่อหาพลังงานที่ต้องดึงจากแบตเตอรี่</span>
+              <span class="en"><b>Step 2</b> — work back through the converter to find what the battery must
+              give up</span></p>
+            \[ W_{\text{แบตเตอรี่}} = \frac{258}{0.90} = 287\ \text{Wh/day} \]
+
+            <p><span class="th"><b>ขั้นที่ 3</b> ขนาดแบตเตอรี่ ต้องเผื่อทั้งจำนวนวันสำรองและข้อจำกัด DoD</span>
+              <span class="en"><b>Step 3</b> — the battery, allowing for both the days of autonomy and the
+              DoD limit</span></p>
+            \[ W_{\text{ติดตั้ง}} = \frac{287 \times 3}{0.80} = 1076\ \text{Wh} \]
+            \[ \text{Ah} = \frac{1076}{12} = 89.7\ \text{Ah}
+               \quad\Rightarrow\quad \text{เลือก 100 Ah / choose 100 Ah} \]
+
+            <p><span class="th"><b>ขั้นที่ 4</b> ขนาดแผง ต้องเผื่อการสูญเสียไป–กลับของแบตเตอรี่ด้วย
+              เพราะพลังงานทุกหน่วยต้องผ่านแบตเตอรี่ก่อน</span>
+              <span class="en"><b>Step 4</b> — the array, allowing also for the battery's round-trip loss,
+              since every unit of energy passes through it first</span></p>
+            \[ W_{\text{แผงต้องผลิต}} = \frac{287}{0.95} = 302\ \text{Wh/day} \]
+            \[ P_{\text{แผง}} = \frac{302}{4.5} = 67\ \text{W}
+               \quad\Rightarrow\quad \frac{67}{0.75} = 90\ \text{W}
+               \quad\Rightarrow\quad \text{เลือกแผง 100 W / a 100 W module} \]
+
+            <div class="callout callout-agri mb-0">
+              <div class="callout-title">🌱 <span class="th">อ่านผลลัพธ์อย่างวิศวกร</span>
+                <span class="en">Reading the result like an engineer</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">โหลดที่กินพลังงานมากที่สุดคือ <b>ตัวควบคุมกับเกตเวย์</b> รวม 192 Wh
+                  คิดเป็น 74 % ของทั้งหมด ทั้งที่กำลังรวมเพียง 8 W —
+                  เพราะมันทำงาน 24 ชั่วโมง ส่วนวาล์วที่กำลังสูงถึง 36 W กลับใช้เพียง 18 Wh
+                  <b>เวลาสำคัญกว่ากำลัง</b> เสมอในการออกแบบระบบออฟกริด</span>
+                  <span class="en">The largest consumers are the <b>controller and gateway</b>, 192 Wh or
+                  74 % of the total, despite drawing only 8 W between them — because they run all day. The
+                  valves, at 36 W, use just 18 Wh. In off-grid design <b>hours matter more than
+                  watts</b>.</span></li>
+                <li><span class="th">ถ้าใช้แบตตะกั่ว–กรดแทน ที่ DoD เพียง 50 % จะต้องใช้ขนาด
+                  \(287 \times 3 / 0.50 / 12 = 143\) Ah คือใหญ่กว่า 43 %
+                  และหนักกว่าสามเท่า ซึ่งเป็นปัญหาจริงเมื่อต้องแบกไปติดตั้งกลางแปลง</span>
+                  <span class="en">With lead-acid at 50 % DoD the battery becomes
+                  \(287 \times 3 / 0.50 / 12 = 143\) Ah, 43 % larger and three times the weight — which
+                  matters when it has to be carried out into the field.</span></li>
+                <li><span class="th">ตัวประกอบลดทอน 0.75 ไม่ใช่ค่าที่เผื่อไว้มากเกินไป
+                  มันรวมทั้งฝุ่นบนแผง อุณหภูมิที่ทำให้กำลังตก (หัวข้อ 14.2) การสูญเสียในสาย
+                  และประสิทธิภาพของ MPPT เข้าไว้ด้วยกัน การใช้ค่า 0.9 เพราะ “อยากประหยัด”
+                  คือสาเหตุที่ระบบออฟกริดจำนวนมากไฟหมดในฤดูฝน</span>
+                  <span class="en">The 0.75 derating is not over-caution. It rolls together dust on the
+                  glass, the temperature loss of Section 14.2, the cable loss and the MPPT's own efficiency.
+                  Using 0.9 "to save money" is why so many off-grid systems run flat in the rainy
+                  season.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 14.3</span><span class="en">Example 14.3</span></span>
+          <span class="th">แบตเตอรี่แบบใดถูกกว่ากันจริง ๆ</span>
+          <span class="en">Which battery is actually cheaper</span></div>
+        <div class="example-body">
+          <p><span class="th">เปรียบเทียบสองทางเลือกสำหรับสถานีในตัวอย่างที่ 14.2 —
+            แบตตะกั่ว–กรดดีปไซเคิล 12 V 100 Ah ราคา 4 500 บาท ใช้ที่ DoD 50 % อายุ 500 รอบ
+            ประสิทธิภาพไป–กลับ 80 % กับแบต LiFePO₄ 12.8 V 100 Ah ราคา 13 000 บาท
+            ใช้ที่ DoD 80 % อายุ 3 000 รอบ ประสิทธิภาพไป–กลับ 95 %
+            จงหาต้นทุนต่อหน่วยพลังงานที่จ่ายออกมาได้จริงตลอดอายุการใช้งาน</span>
+            <span class="en">Compare two options for the station of Example 14.2: a deep-cycle lead-acid
+            12 V 100 Ah at 4,500 THB, used to 50 % DoD, lasting 500 cycles at 80 % round-trip efficiency;
+            and a LiFePO₄ 12.8 V 100 Ah at 13,000 THB, used to 80 % DoD, lasting 3,000 cycles at 95 %.
+            Find the cost per unit of energy each actually delivers over its whole life.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th"><b>ตะกั่ว–กรด</b></span><span class="en"><b>Lead-acid</b></span></p>
+            \[ W_{\text{ทั้งก้อน}} = 12 \times 100 = 1200\ \text{Wh} = 1.20\ \text{kWh} \]
+            \[ W_{\text{ต่อรอบ}} = 1.20 \times 0.50 \times 0.80 = 0.48\ \text{kWh} \]
+            \[ W_{\text{ตลอดอายุ}} = 0.48 \times 500 = 240\ \text{kWh} \]
+            \[ \text{ต้นทุน} = \frac{4500}{240} = 18.8\ \text{บาท/kWh} \]
+
+            <p><span class="th"><b>ลิเธียมเหล็กฟอสเฟต</b></span>
+              <span class="en"><b>Lithium iron phosphate</b></span></p>
+            \[ W_{\text{ทั้งก้อน}} = 12.8 \times 100 = 1280\ \text{Wh} = 1.28\ \text{kWh} \]
+            \[ W_{\text{ต่อรอบ}} = 1.28 \times 0.80 \times 0.95 = 0.973\ \text{kWh} \]
+            \[ W_{\text{ตลอดอายุ}} = 0.973 \times 3000 = 2918\ \text{kWh} \]
+            \[ \text{ต้นทุน} = \frac{13\,000}{2918} = 4.45\ \text{บาท/kWh} \]
+
+            <div class="callout callout-tip mb-0">
+              <div class="callout-title">💡 <span class="th">ข้อสรุปที่ขัดกับสัญชาตญาณ</span>
+                <span class="en">The counter-intuitive conclusion</span></div>
+              <p class="mb-0"><span class="th">แบตลิเธียมราคาเริ่มต้น <b>แพงกว่า 2.9 เท่า</b>
+                แต่ต้นทุนต่อหน่วยพลังงานที่จ่ายออกมาได้จริง <b>ถูกกว่า 4.2 เท่า</b>
+                เพราะใช้ได้ลึกกว่า อายุยาวกว่าหกเท่า และเสียพลังงานไป–กลับน้อยกว่า
+                ยิ่งไปกว่านั้น สถานีนี้ทำงานทุกวัน แบตตะกั่ว–กรดจะหมดอายุใน
+                \(500/365 = 1.4\) ปี ขณะที่ลิเธียมอยู่ได้ \(3000/365 = 8.2\) ปี
+                ค่าแรงและค่าเดินทางไปเปลี่ยนแบตกลางแปลงหกครั้งในแปดปี
+                ยังไม่ได้นับรวมในตัวเลขข้างบนเลย
+                <br><b>บทเรียน:</b> ในงานวิศวกรรม ราคาที่ต้องเปรียบเทียบคือต้นทุนตลอดอายุการใช้งาน
+                ไม่ใช่ราคาป้าย</span>
+                <span class="en">The lithium costs <b>2.9 times more</b> to buy, yet delivers energy at
+                <b>4.2 times less</b> — because it can be discharged deeper, lasts six times as long and
+                wastes less on the round trip. And since this station cycles daily, the lead-acid is
+                finished in \(500/365 = 1.4\) years while the lithium runs for \(3000/365 = 8.2\). The
+                labour and travel to replace a battery out in the field six times over eight years is not
+                even counted above. <br><b>The lesson:</b> in engineering the price to compare is the cost
+                over the whole life, not the one on the label.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 14.4 -->
+    <section id="s4">
+      <h2><span class="num">14.4</span><span class="th">ระบบออนกริดและออฟกริด</span>
+          <span class="en">On-grid and off-grid systems</span></h2>
+
+      <p><span class="th">เมื่อมีแผงและแบตเตอรี่แล้ว คำถามต่อไปคือจะจัดวางมันอย่างไร
+        ซึ่งมีสองสถาปัตยกรรมหลักที่ต่างกันโดยสิ้นเชิง และความต่างนั้นไม่ได้อยู่ที่แผง
+        แต่อยู่ที่ <b>สิ่งที่ทำหน้าที่เก็บพลังงานส่วนเกิน</b> — ระบบออนกริดใช้โครงข่ายไฟฟ้าของการไฟฟ้าเป็นที่พัก
+        ส่วนระบบออฟกริดต้องพกที่พักของตัวเองไปด้วยในรูปของแบตเตอรี่</span>
+        <span class="en">With panels and batteries understood, the question becomes how to arrange them.
+        There are two quite different architectures, and what separates them is not the panels but
+        <b>what holds the surplus energy</b>: an on-grid system uses the utility's network as its store, an
+        off-grid one must carry its own in the form of batteries.</span></p>
+
+      <figure>
+        <div class="figure-box is-animated" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 430" role="img" width="720"
+               aria-label="Block diagrams of an on-grid and an off-grid photovoltaic system, with the energy flow animated">
+            <defs>
+              <marker id="arG14" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="#fd5f00"/></marker>
+              <marker id="arB14" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="#2f855a"/></marker>
+            </defs>
+
+            <!-- ============ on-grid ============ -->
+            <text class="cap th" x="40" y="30">ก. ระบบออนกริด — ไม่มีแบตเตอรี่ ใช้โครงข่ายไฟฟ้าเป็นที่พักพลังงาน</text>
+            <text class="cap en" x="40" y="30">a. On-grid — no battery; the utility network is the store</text>
+
+            <rect x="40"  y="58" width="80"  height="52" rx="8" fill="#fff1e8" stroke="#fd5f00" stroke-width="2"/>
+            <text class="lbl th" x="80" y="82" text-anchor="middle">แผง PV</text>
+            <text class="lbl en" x="80" y="82" text-anchor="middle">PV array</text>
+            <text class="sub" x="80" y="98" text-anchor="middle">DC</text>
+
+            <rect x="160" y="58" width="110" height="52" rx="8" fill="#fff" stroke="#0d1128" stroke-width="2"/>
+            <text class="lbl th" x="215" y="80" text-anchor="middle">อินเวอร์เตอร์</text>
+            <text class="lbl en" x="215" y="80" text-anchor="middle">Grid-tie</text>
+            <text class="sub th" x="215" y="96" text-anchor="middle">ออนกริด · MPPT</text>
+            <text class="sub en" x="215" y="96" text-anchor="middle">inverter · MPPT</text>
+
+            <rect x="310" y="58" width="95"  height="52" rx="8" fill="#fff" stroke="#0d1128" stroke-width="2"/>
+            <text class="lbl th" x="357" y="80" text-anchor="middle">แผงจ่ายไฟ</text>
+            <text class="lbl en" x="357" y="80" text-anchor="middle">Panel board</text>
+            <text class="sub" x="357" y="96" text-anchor="middle">400/230 V</text>
+
+            <rect x="445" y="58" width="115" height="52" rx="8" fill="#eaf7ef" stroke="#2f855a" stroke-width="2"/>
+            <text class="lbl th" x="502" y="80" text-anchor="middle">โหลดในฟาร์ม</text>
+            <text class="lbl en" x="502" y="80" text-anchor="middle">Farm loads</text>
+            <text class="sub th" x="502" y="96" text-anchor="middle">ปั๊ม · ห้องเย็น</text>
+            <text class="sub en" x="502" y="96" text-anchor="middle">pumps · cold room</text>
+
+            <path class="flow-path" d="M120 84 H158"/>
+            <polygon points="152,79 162,84 152,89" fill="#fd5f00"/>
+            <path class="flow-path" d="M270 84 H308"/>
+            <polygon points="302,79 312,84 302,89" fill="#fd5f00"/>
+            <path class="flow-path" d="M405 84 H443"/>
+            <polygon points="437,79 447,84 437,89" fill="#fd5f00"/>
+
+            <rect x="310" y="150" width="95"  height="50" rx="8" fill="#fff" stroke="#0d1128" stroke-width="2"/>
+            <text class="lbl th" x="357" y="172" text-anchor="middle">มิเตอร์</text>
+            <text class="lbl en" x="357" y="172" text-anchor="middle">kWh meter</text>
+            <text class="sub th" x="357" y="188" text-anchor="middle">วัดสองทาง</text>
+            <text class="sub en" x="357" y="188" text-anchor="middle">bidirectional</text>
+
+            <rect x="445" y="150" width="115" height="50" rx="8" fill="#e9f2fb" stroke="#2b6cb0" stroke-width="2"/>
+            <text class="lbl th" x="502" y="172" text-anchor="middle">โครงข่ายไฟฟ้า</text>
+            <text class="lbl en" x="502" y="172" text-anchor="middle">The grid</text>
+            <text class="sub th" x="502" y="188" text-anchor="middle">กฟภ.</text>
+            <text class="sub en" x="502" y="188" text-anchor="middle">PEA</text>
+
+            <path class="flow-path flow-green" d="M357 110 V148"/>
+            <path class="flow-path flow-green" d="M405 175 H443"/>
+            <polygon points="437,170 447,175 437,180" fill="#2f855a"/>
+            <polygon points="352,142 357,152 362,142" fill="#2f855a"/>
+
+            <text class="sub th" x="580" y="128">ผลิตเกินก็ส่งออกขาย</text>
+            <text class="sub en" x="580" y="128">surplus is exported</text>
+            <text class="sub th" x="580" y="144">ผลิตไม่พอก็ซื้อเข้ามา</text>
+            <text class="sub en" x="580" y="144">a shortfall is bought in</text>
+            <text class="sub th" x="580" y="168">กลางคืนใช้ไฟจากกริด</text>
+            <text class="sub en" x="580" y="168">at night the grid supplies</text>
+            <text class="sub th" x="580" y="184">ทั้งหมด</text>
+            <text class="sub en" x="580" y="184">everything</text>
+
+            <text class="sub th" x="40" y="222">ไฟดับเมื่อใด อินเวอร์เตอร์ออนกริดจะหยุดทำงานทันทีเพื่อความปลอดภัยของช่างการไฟฟ้า (anti-islanding)</text>
+            <text class="sub en" x="40" y="222">when the grid fails the inverter shuts down at once, to protect the utility's linesmen (anti-islanding)</text>
+
+            <line x1="30" y1="244" x2="690" y2="244" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ============ off-grid ============ -->
+            <text class="cap th" x="40" y="272">ข. ระบบออฟกริด — ไม่มีสายจากการไฟฟ้า ต้องมีแบตเตอรี่เป็นที่พักพลังงานเอง</text>
+            <text class="cap en" x="40" y="272">b. Off-grid — no utility connection, so the battery must be the store</text>
+
+            <rect x="40"  y="300" width="80"  height="52" rx="8" fill="#fff1e8" stroke="#fd5f00" stroke-width="2"/>
+            <text class="lbl th" x="80" y="324" text-anchor="middle">แผง PV</text>
+            <text class="lbl en" x="80" y="324" text-anchor="middle">PV array</text>
+            <text class="sub" x="80" y="340" text-anchor="middle">DC</text>
+
+            <rect x="160" y="300" width="110" height="52" rx="8" fill="#fff" stroke="#0d1128" stroke-width="2"/>
+            <text class="lbl th" x="215" y="322" text-anchor="middle">เครื่องควบคุม</text>
+            <text class="lbl en" x="215" y="322" text-anchor="middle">Charge</text>
+            <text class="sub th" x="215" y="338" text-anchor="middle">การประจุ MPPT</text>
+            <text class="sub en" x="215" y="338" text-anchor="middle">controller · MPPT</text>
+
+            <rect x="310" y="300" width="90"  height="52" rx="8" fill="#eaf7ef" stroke="#2f855a" stroke-width="2"/>
+            <text class="lbl th" x="355" y="322" text-anchor="middle">แบตเตอรี่</text>
+            <text class="lbl en" x="355" y="322" text-anchor="middle">Battery</text>
+            <text class="sub" x="355" y="338" text-anchor="middle">12 V · 100 Ah</text>
+
+            <rect x="440" y="300" width="105" height="52" rx="8" fill="#fff" stroke="#0d1128" stroke-width="2"/>
+            <text class="lbl th" x="492" y="322" text-anchor="middle">อินเวอร์เตอร์</text>
+            <text class="lbl en" x="492" y="322" text-anchor="middle">Off-grid</text>
+            <text class="sub th" x="492" y="338" text-anchor="middle">ออฟกริด</text>
+            <text class="sub en" x="492" y="338" text-anchor="middle">inverter</text>
+
+            <rect x="585" y="300" width="105" height="52" rx="8" fill="#eaf7ef" stroke="#2f855a" stroke-width="2"/>
+            <text class="lbl th" x="637" y="322" text-anchor="middle">โหลด</text>
+            <text class="lbl en" x="637" y="322" text-anchor="middle">Loads</text>
+            <text class="sub th" x="637" y="338" text-anchor="middle">AC และ DC</text>
+            <text class="sub en" x="637" y="338" text-anchor="middle">AC and DC</text>
+
+            <path class="flow-path" d="M120 326 H158"/>
+            <polygon points="152,321 162,326 152,331" fill="#fd5f00"/>
+            <path class="flow-path" d="M270 326 H308"/>
+            <polygon points="302,321 312,326 302,331" fill="#fd5f00"/>
+            <path class="flow-path" d="M400 326 H438"/>
+            <polygon points="432,321 442,326 432,331" fill="#fd5f00"/>
+            <path class="flow-path" d="M545 326 H583"/>
+            <polygon points="577,321 587,326 577,331" fill="#fd5f00"/>
+
+            <text class="sub th" x="40" y="380">พลังงานทุกหน่วยต้องผ่านแบตเตอรี่ก่อน จึงเสียไป–กลับทุกครั้ง และแบตเตอรี่คือชิ้นส่วนที่หมดอายุก่อนเพื่อน</text>
+            <text class="sub en" x="40" y="380">every unit of energy passes through the battery, losing something each way — and the battery wears out first</text>
+            <text class="sub th" x="40" y="400">โหลด DC ที่ต่อตรงจากแบตเตอรี่ (เช่น ปั๊มบรัชเลสในบทที่ 12) ไม่ต้องผ่านอินเวอร์เตอร์ จึงประหยัดกว่า</text>
+            <text class="sub en" x="40" y="400">DC loads taken straight off the battery — such as the brushless pump of Chapter 12 — skip the inverter and save</text>
+            <text class="sub th" x="40" y="420">ระบบนี้ทำงานต่อได้แม้ไฟดับทั้งอำเภอ ซึ่งเป็นข้อได้เปรียบที่แท้จริงของออฟกริด</text>
+            <text class="sub en" x="40" y="420">it keeps working through a district-wide blackout, which is off-grid's real advantage</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 14.5</span><span class="en">Figure 14.5</span></b>
+          <span class="th"> สองสถาปัตยกรรมเทียบกัน ในภาพเคลื่อนไหว เส้นสีส้มคือพลังงานที่ไหลจากแผงไปยังโหลด
+            ส่วนเส้นสีเขียวในภาพบนคือการแลกเปลี่ยนกับโครงข่ายซึ่งไหลได้สองทาง
+            สังเกตว่าภาพล่างมีกล่องมากกว่าหนึ่งกล่อง (แบตเตอรี่) แต่ราคาของระบบต่างกันเกือบเท่าตัว
+            และทุกหน่วยพลังงานในระบบออฟกริดต้องผ่านแบตเตอรี่ ซึ่งเสียไป–กลับ 5–20 % ตามตารางที่ 14.2</span>
+          <span class="en"> The two architectures side by side. In the animation orange marks energy flowing
+            from the array to the loads, while the green in the upper diagram is the exchange with the grid,
+            which runs both ways. The lower diagram has only one extra box — the battery — yet costs nearly
+            twice as much, and every unit of energy in it must pass through that battery, losing the 5–20 %
+            of Table 14.2 on the round trip.</span></figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 14.3 เลือกสถาปัตยกรรมให้เหมาะกับงาน</span>
+            <span class="en">Table 14.3 Choosing the architecture to suit the job</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">หัวข้อ</span><span class="en">Aspect</span></th>
+              <th><span class="th">ออนกริด</span><span class="en">On-grid</span></th>
+              <th><span class="th">ออฟกริด</span><span class="en">Off-grid</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">แบตเตอรี่</span><span class="en">Battery</span></td>
+              <td><span class="th">ไม่ต้องมี</span><span class="en">None needed</span></td>
+              <td><span class="th">จำเป็น และเป็นค่าใช้จ่ายก้อนใหญ่ที่สุด</span><span class="en">Essential, and the largest single cost</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">ต้นทุนต่อ kWp</span><span class="en">Cost per kWp</span></td>
+              <td class="num">~25 000 <span class="th">บาท</span><span class="en">THB</span></td>
+              <td class="num">~45 000–60 000 <span class="th">บาท</span><span class="en">THB</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">เมื่อไฟดับ</span><span class="en">In a blackout</span></td>
+              <td><span class="th">หยุดทำงานทั้งระบบ (anti-islanding)</span><span class="en">Shuts down entirely (anti-islanding)</span></td>
+              <td><span class="th">ทำงานต่อได้ตามปกติ</span><span class="en">Carries on as normal</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">ประสิทธิภาพรวม</span><span class="en">Overall efficiency</span></td>
+              <td class="num">~96 %</td>
+              <td class="num">~75–85 %</td>
+            </tr>
+            <tr style="background:#eaf7ef">
+              <td><span class="th">เหมาะกับ</span><span class="en">Suits</span></td>
+              <td><span class="th">โรงคัดบรรจุ ห้องเย็น โรงสี — โหลดกลางวันที่มีไฟฟ้าเข้าถึงอยู่แล้ว</span>
+                  <span class="en">Packing houses, cold rooms, mills — daytime loads where mains already reaches</span></td>
+              <td><span class="th">สถานีตรวจวัดกลางแปลง ปั๊มบาดาลห่างไกล รั้วไฟฟ้า — ที่ที่ลากสายไม่คุ้ม</span>
+                  <span class="en">Field monitoring stations, remote boreholes, electric fences — where a line is not worth running</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">กฎเกณฑ์</span><span class="en">Regulation</span></td>
+              <td><span class="th">ต้องขออนุญาตเชื่อมต่อกับการไฟฟ้าก่อนเสมอ</span>
+                  <span class="en">Permission to connect must be obtained from the utility first</span></td>
+              <td><span class="th">ไม่ต้องขออนุญาต เพราะไม่ได้เชื่อมกับระบบใคร</span>
+                  <span class="en">No permission needed — it connects to nobody</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">⚠️ <span class="th">กฎที่ตัดสินใจได้ในประโยคเดียว</span>
+          <span class="en">The rule that decides it in one sentence</span></div>
+        <p class="mb-0"><span class="th">ถ้ามีสายไฟของการไฟฟ้าอยู่แล้ว <b>อย่าใส่แบตเตอรี่</b>
+          เพราะโครงข่ายทำหน้าที่เก็บพลังงานให้ฟรี มีประสิทธิภาพ 100 % และไม่มีวันหมดอายุ
+          ส่วนแบตเตอรี่เสียพลังงาน 5–20 % ทุกรอบ และต้องเปลี่ยนทุกไม่กี่ปี
+          แบตเตอรี่ในระบบออนกริดมีเหตุผลเพียงข้อเดียว คือเมื่อไฟดับบ่อยจนกระทบผลผลิต
+          เช่น ห้องเย็นที่เก็บผลไม้ส่งออก ซึ่งไฟดับสองชั่วโมงหมายถึงความเสียหายเป็นแสน</span>
+          <span class="en">If a utility line already reaches the site, <b>do not fit a battery</b>. The grid
+          stores energy for nothing, at 100 % efficiency, and never wears out; a battery loses 5–20 % every
+          cycle and must be replaced every few years. There is exactly one good reason for a battery on a
+          grid-connected farm: outages frequent enough to threaten the crop — a cold room holding fruit for
+          export, where two hours without power means losses in the hundreds of thousands.</span></p>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 14.4</span><span class="en">Example 14.4</span></span>
+          <span class="th">ระบบออนกริดบนหลังคาโรงคัดบรรจุคุ้มหรือไม่</span>
+          <span class="en">Is a rooftop system on the packing house worth it?</span></div>
+        <div class="example-body">
+          <p><span class="th">โรงคัดบรรจุผลไม้ติดตั้งระบบออนกริดขนาด 10 kWp ราคา 250 000 บาท
+            พื้นที่นี้ให้ผลผลิตไฟฟ้าเฉลี่ย 1 450 kWh ต่อ kWp ต่อปี
+            โรงงานทำงานกลางวันจึงใช้ไฟที่ผลิตได้เองถึง 80 % ส่วนที่เหลือ 20 % ขายคืนให้การไฟฟ้า
+            ค่าไฟที่ซื้อคือ 4.20 บาทต่อหน่วย ส่วนราคาขายคืนคือ 2.20 บาทต่อหน่วย
+            จงหา (ก) พลังงานที่ผลิตได้ต่อปี (ข) ผลประโยชน์รวมต่อปี (ค) ระยะเวลาคืนทุน
+            และ (ง) ถ้าใช้ไฟเองได้เพียง 40 % ผลจะต่างไปอย่างไร</span>
+            <span class="en">A fruit packing house installs a 10 kWp on-grid system costing 250,000 THB. The
+            site yields an average of 1,450 kWh per kWp per year. The plant works by day and so consumes
+            80 % of what it generates, exporting the other 20 %. Electricity bought costs 4.20 THB a unit;
+            exported power earns 2.20. Find (a) the annual generation, (b) the total annual benefit,
+            (c) the payback period, and (d) how it changes if only 40 % can be used on site.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) พลังงานที่ผลิตได้ต่อปี</span><span class="en">(a) Annual generation</span></p>
+            \[ W = 10\ \text{kWp} \times 1450\ \tfrac{\text{kWh}}{\text{kWp}\cdot\text{year}}
+               = 14\,500\ \text{kWh/year} \]
+
+            <p><span class="th">(ข) แยกคิดสองส่วน เพราะหน่วยที่ใช้เองกับหน่วยที่ขายมีมูลค่าไม่เท่ากัน —
+              หน่วยที่ใช้เองมีค่าเท่ากับค่าไฟที่ <b>ไม่ต้องจ่าย</b> ซึ่งสูงกว่าราคาขายคืนเกือบเท่าตัว</span>
+              <span class="en">(b) Treat the two parts separately, because a unit used on site and a unit
+              exported are not worth the same. A unit used on site is worth the bill you <b>avoid</b>, nearly
+              twice what the utility pays for an exported one.</span></p>
+            \[ W_{\text{ใช้เอง}} = 0.80 \times 14\,500 = 11\,600\ \text{kWh}
+               \quad\Rightarrow\quad 11\,600 \times 4.20 = 48\,720\ \text{บาท} \]
+            \[ W_{\text{ขายคืน}} = 0.20 \times 14\,500 = 2\,900\ \text{kWh}
+               \quad\Rightarrow\quad 2\,900 \times 2.20 = 6\,380\ \text{บาท} \]
+            \[ \text{ผลประโยชน์รวม} = 48\,720 + 6\,380 = 55\,100\ \text{บาท/ปี} \]
+
+            <p><span class="th">(ค) ระยะเวลาคืนทุนอย่างง่าย</span>
+              <span class="en">(c) Simple payback</span></p>
+            \[ t = \frac{250\,000}{55\,100} = 4.5\ \text{ปี / years} \]
+
+            <p><span class="th">(ง) ถ้าใช้ไฟเองได้เพียง 40 %</span>
+              <span class="en">(d) If only 40 % is used on site</span></p>
+            \[ (0.40)(14\,500)(4.20) + (0.60)(14\,500)(2.20) = 24\,360 + 19\,140 = 43\,500\ \text{บาท/ปี} \]
+            \[ t = \frac{250\,000}{43\,500} = 5.7\ \text{ปี / years} \]
+
+            <div class="callout callout-agri mb-0">
+              <div class="callout-title">🌱 <span class="th">บทเรียนสำหรับผู้ออกแบบ</span>
+                <span class="en">The design lesson</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">พลังงานที่ผลิตได้เท่ากันทุกประการ แต่คืนทุนต่างกัน 1.2 ปี
+                  เพียงเพราะ <b>จังหวะเวลาที่ใช้ไฟ</b> ไม่ตรงกับจังหวะที่ผลิตได้
+                  สิ่งที่ทำให้ระบบคุ้มขึ้นจึงไม่ใช่การเพิ่มแผง แต่คือการ
+                  <b>ย้ายโหลดมาไว้กลางวัน</b> เช่น ตั้งเวลาเดินห้องเย็นหรือเครื่องคัดให้ทำงานช่วงเที่ยง</span>
+                  <span class="en">The generation is identical, yet the payback differs by 1.2 years purely
+                  because of <b>when</b> the power is used. What improves the return is therefore not more
+                  panels but <b>moving load into the daylight</b> — scheduling the cold room or the grader to
+                  run around midday.</span></li>
+                <li><span class="th">อายุใช้งานของแผงคือ 25 ปี และของอินเวอร์เตอร์คือ 10–15 ปี
+                  ดังนั้นหลังคืนทุนที่ปีที่ 4.5 ยังเหลือเวลาอีกราว 20 ปีที่ได้ไฟฟ้าเกือบฟรี
+                  แต่ต้องเผื่องบเปลี่ยนอินเวอร์เตอร์หนึ่งครั้งไว้ด้วย</span>
+                  <span class="en">The panels last 25 years and the inverter 10–15, so after payback at year
+                  4.5 there are about twenty years of nearly free electricity — with a budget for one
+                  inverter replacement along the way.</span></li>
+                <li><span class="th">การคำนวณนี้ใช้ค่าไฟคงที่ 4.20 บาท ซึ่งเป็นสมมติฐานที่
+                  <b>อนุรักษ์นิยม</b> เพราะค่าไฟมีแนวโน้มสูงขึ้น ระบบจึงน่าจะคืนทุนเร็วกว่าที่คำนวณไว้</span>
+                  <span class="en">The calculation assumes electricity stays at 4.20 THB, which is a
+                  <b>conservative</b> assumption since tariffs tend to rise; the real payback is likely to be
+                  shorter.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 14.5 -->
+    <section id="s5">
+      <h2><span class="num">14.5</span><span class="th">การประยุกต์ในฟาร์ม</span>
+          <span class="en">Applications on the farm</span></h2>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <h4 class="mt-0">💧 <span class="th">ระบบสูบน้ำพลังงานแสงอาทิตย์</span>
+            <span class="en">Solar pumping</span></h4>
+          <p class="small mb-0"><span class="th">การประยุกต์ที่คุ้มค่าที่สุด เพราะ <b>ไม่ต้องใช้แบตเตอรี่เลย</b> —
+            ใช้ถังพักน้ำบนที่สูงเป็นตัวเก็บพลังงานแทน แดดแรงก็สูบมาก แดดอ่อนก็สูบน้อย
+            แต่ปริมาณน้ำในถังคือสิ่งที่พืชต้องการจริง ๆ ระบบนี้ใช้มอเตอร์บรัชเลสดีซีตามตัวอย่างที่ 12.5
+            ต่อตรงกับแผงผ่านตัวควบคุมที่มี MPPT ในตัว</span>
+            <span class="en">The most rewarding application of all, because it <b>needs no battery</b>: an
+            elevated tank does the storing instead. Strong sun pumps more, weak sun less, and what the crop
+            actually needs is water in the tank. Such systems use the brushless DC motor of Example 12.5,
+            coupled straight to the array through a controller with MPPT built in.</span></p>
+        </div>
+        <div class="card">
+          <h4 class="mt-0">📡 <span class="th">สถานีตรวจวัดและ IoT กลางแปลง</span>
+            <span class="en">Field sensing and IoT nodes</span></h4>
+          <p class="small mb-0"><span class="th">โหลดเพียงไม่กี่วัตต์แต่ต้องทำงานตลอด 24 ชั่วโมง
+            การลากสายไฟไปกลางแปลงมีต้นทุนหลักหมื่นต่อร้อยเมตร ในขณะที่ชุดโซลาร์ 100 W
+            พร้อมแบตเตอรี่ตามตัวอย่างที่ 14.2 ราคาไม่ถึงหมื่นบาทและติดตั้งเสร็จในวันเดียว
+            นี่คือกรณีที่ออฟกริดชนะขาดลอย</span>
+            <span class="en">A few watts, but around the clock. Running a cable out into a field costs tens
+            of thousands per hundred metres, whereas the 100 W kit with the battery of Example 14.2 costs
+            less than ten thousand and goes in inside a day. Here off-grid wins outright.</span></p>
+        </div>
+        <div class="card">
+          <h4 class="mt-0">❄️ <span class="th">ห้องเย็นและโรงคัดบรรจุ</span>
+            <span class="en">Cold rooms and packing houses</span></h4>
+          <p class="small mb-0"><span class="th">โหลดกลางวันล้วน ๆ ที่ตรงกับช่วงที่แผงผลิตได้มากที่สุดพอดี
+            จึงใช้ไฟที่ผลิตเองได้ในสัดส่วนสูงตามตัวอย่างที่ 14.4
+            และเป็นเหตุผลที่ระบบออนกริดบนหลังคาโรงคัดบรรจุคืนทุนเร็วกว่าบนหลังคาบ้านพักเสมอ</span>
+            <span class="en">A purely daytime load that coincides with the array's best hours, giving the
+            high self-consumption of Example 14.4 — and the reason a rooftop system on a packing house
+            always pays back faster than one on a dwelling.</span></p>
+        </div>
+        <div class="card">
+          <h4 class="mt-0">🌾 <span class="th">เกษตรโซลาร์ (agrivoltaics)</span>
+            <span class="en">Agrivoltaics</span></h4>
+          <p class="small mb-0"><span class="th">ยกแผงขึ้นสูงเหนือแปลงปลูก ให้พืชได้รับแสงที่ลอดผ่าน
+            ขณะที่แผงเก็บเกี่ยวส่วนที่เหลือ ใช้แผงสองหน้าตามตารางที่ 14.1 เพื่อรับแสงสะท้อนจากพื้นด้วย
+            ร่มเงาที่ได้ยังช่วยลดการคายน้ำของพืชในช่วงกลางวันที่ร้อนจัด
+            ซึ่งพืชหลายชนิดเช่นผักสลัดและกาแฟให้ผลผลิตดีขึ้นด้วยซ้ำ</span>
+            <span class="en">Raise the array high above the crop so that plants take the light that gets
+            through while the panels harvest the rest, using the bifacial modules of Table 14.1 to catch the
+            ground reflection too. The shade also cuts transpiration through the hottest hours — and several
+            crops, lettuce and coffee among them, actually yield better for it.</span></p>
+        </div>
+      </div>
+
+      <div class="callout callout-agri">
+        <div class="callout-title">🌱 <span class="th">ทั้งรายวิชามาบรรจบกันที่นี่</span>
+          <span class="en">Where the whole course meets</span></div>
+        <p class="mb-0"><span class="th">ระบบสูบน้ำโซลาร์หนึ่งชุดใช้ความรู้จากเกือบทุกบท —
+          <b>บทที่ 1</b> คำนวณพลังงานเป็น kWh · <b>บทที่ 2</b> เลือกขนาดสายและแรงดันตก ·
+          <b>บทที่ 3</b> ต่อแผงอนุกรม–ขนาน · <b>บทที่ 5</b> ตัวเก็บประจุกรองในตัวควบคุม ·
+          <b>บทที่ 12</b> มอเตอร์บรัชเลสและกฎความคล้ายของปั๊ม · <b>บทที่ 13</b> รอยต่อพีเอ็นและไดโอดกันย้อน ·
+          และ <b>บทที่ 14</b> ขนาดแผงกับแบตเตอรี่
+          นี่คือเหตุผลที่วิศวกรเกษตรอัจฉริยะต้องรู้ไฟฟ้าทั้งระบบ ไม่ใช่รู้เพียงส่วนใดส่วนหนึ่ง</span>
+          <span class="en">A single solar pumping system draws on nearly every chapter:
+          <b>Chapter 1</b> for the energy in kWh; <b>Chapter 2</b> for cable sizing and voltage drop;
+          <b>Chapter 3</b> for wiring modules in series and parallel; <b>Chapter 5</b> for the smoothing
+          capacitor in the controller; <b>Chapter 12</b> for the brushless motor and the pump's affinity
+          laws; <b>Chapter 13</b> for the PN junction and the blocking diode; and <b>Chapter 14</b> for
+          sizing the array and the battery. This is why an agri-intelligence engineer needs the whole of
+          electrical engineering, not one corner of it.</span></p>
+      </div>
+    </section>
+
+    <!-- =============================================== Summary -->
+    <section id="summary">
+      <h2><span class="num">📌</span><span class="th">สรุปบทเรียน</span><span class="en">Chapter summary</span></h2>
+      <div class="card">
+        <ul class="mb-0">
+          <li><span class="th">เซลล์แสงอาทิตย์คือรอยต่อพีเอ็นขนาดใหญ่ โฟตอนสร้างคู่อิเล็กตรอน–โฮล
+            แล้วสนามไฟฟ้าที่แถบพร่องแยกทั้งคู่ออกจากกัน เซลล์จึง <b>ไม่เก็บพลังงาน</b> แต่แปลงทันที</span>
+            <span class="en">A solar cell is a large PN junction: photons make electron-hole pairs and the
+            depletion field separates them. The cell <b>stores nothing</b> — it converts in the
+            instant.</span></li>
+          <li><span class="th">เส้นโค้ง I–V มีจุดกำลังสูงสุดเพียงจุดเดียว ซึ่ง MPPT มีหน้าที่ตามให้ทัน
+            โดย <b>แสงคุมกระแส อุณหภูมิคุมแรงดัน</b></span>
+            <span class="en">The I–V curve has exactly one maximum power point, which the MPPT must track;
+            <b>light governs the current, temperature governs the voltage</b>.</span></li>
+          <li><span class="th">แรงดันสูงสุดเกิดตอนแผง <b>เย็นที่สุด</b> ไม่ใช่ร้อนที่สุด
+            การคำนวณจำนวนแผงต่อสตริงจึงต้องใช้อุณหภูมิต่ำสุดของปีเป็นเกณฑ์</span>
+            <span class="en">The highest voltage occurs when the array is <b>coldest</b>, not hottest, so a
+            string must be sized on the lowest temperature of the year.</span></li>
+          <li><span class="th">ขนาดแบตเตอรี่ = พลังงานต่อวัน × จำนวนวันสำรอง ÷ DoD ÷ แรงดันระบบ
+            และต้องเลือกจาก <b>ต้นทุนต่อ kWh ตลอดอายุ</b> ไม่ใช่ราคาป้าย</span>
+            <span class="en">Battery size = daily energy × days of autonomy ÷ DoD ÷ system voltage — and the
+            choice must rest on the <b>cost per kWh over its life</b>, not the price on the
+            label.</span></li>
+          <li><span class="th">ถ้ามีไฟฟ้าจากการไฟฟ้าอยู่แล้ว ให้ใช้ออนกริดและไม่ต้องมีแบตเตอรี่
+            ส่วนออฟกริดเหมาะกับที่ที่ลากสายไม่คุ้ม และคุณค่าของมันคือทำงานต่อได้ตอนไฟดับ</span>
+            <span class="en">Where mains already reaches, go on-grid and fit no battery; off-grid belongs
+            where a line is not worth running, and its real value is carrying on through an
+            outage.</span></li>
+          <li><span class="th">ความคุ้มค่าของระบบออนกริดขึ้นกับสัดส่วนที่ใช้ไฟเองได้
+            การย้ายโหลดมากลางวันให้ผลตอบแทนดีกว่าการเพิ่มจำนวนแผง</span>
+            <span class="en">An on-grid system's return depends on self-consumption: moving load into
+            daylight pays better than adding panels.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Activity -->
+    <section id="activity">
+      <h2><span class="num">🧭</span><span class="th">กิจกรรมในชั้นเรียน</span>
+          <span class="en">Class activity</span></h2>
+
+      <div class="activity">
+        <div class="activity-head">
+          <h3><span class="th">กิจกรรมที่ 14.1 — เลือกและออกแบบระบบโซลาร์ให้สามสถานการณ์</span>
+              <span class="en">Activity 14.1 — Choosing and sizing a solar system for three situations</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">45 นาที</span><span class="en">45 minutes</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO3, CLO5</span><span class="en">CLO3, CLO5</span></span>
+          </div>
+        </div>
+        <div class="activity-body">
+          <p><span class="th"><b>สถานการณ์:</b> ฟาร์มแห่งหนึ่งมีงานสามอย่างที่อยากใช้พลังงานแสงอาทิตย์
+            แต่ละงานมีเงื่อนไขต่างกันโดยสิ้นเชิง แต่ละกลุ่มต้องตัดสินว่าแต่ละงานควรใช้สถาปัตยกรรมใด
+            แล้วคำนวณขนาดของอุปกรณ์หลัก</span>
+            <span class="en"><b>Scenario:</b> One farm has three jobs it would like to run on solar, each
+            under quite different conditions. Each group decides which architecture suits each job, then
+            sizes the main equipment.</span></p>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ใบงานกิจกรรมที่ 14.1</span>
+                <span class="en">Activity 14.1 worksheet</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">งาน</span><span class="en">The job</span></th>
+                  <th><span class="th">ออนกริดหรือออฟกริด · เพราะอะไร</span><span class="en">On- or off-grid, and why</span></th>
+                  <th><span class="th">ขนาดแผง (Wp)</span><span class="en">Array (Wp)</span></th>
+                  <th><span class="th">ขนาดแบตเตอรี่ (Ah)</span><span class="en">Battery (Ah)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>A.</b> <span class="th">ปั๊มบาดาลห่างจากตู้ไฟ 800 เมตร ต้องการน้ำ 12 m³/วัน
+                    ที่หัวยก 30 เมตร ใช้ตอนกลางวันเท่านั้น มีถังพักบนที่สูง</span>
+                    <span class="en">A borehole pump 800 m from the nearest board, wanting 12 m³ a day at
+                    30 m head, used only by day, with an elevated tank</span></td>
+                  <td><input type="text" aria-label="a1"></td><td><input type="text" aria-label="a2"></td><td><input type="text" aria-label="a3"></td>
+                </tr>
+                <tr>
+                  <td><b>B.</b> <span class="th">ห้องเย็นเก็บผลไม้ 3 kW ทำงาน 10 ชั่วโมงกลางวัน
+                    อยู่ติดโรงคัดบรรจุที่มีไฟ 3 เฟสอยู่แล้ว</span>
+                    <span class="en">A 3 kW cold room running ten daytime hours, next to a packing house
+                    that already has a three-phase supply</span></td>
+                  <td><input type="text" aria-label="b1"></td><td><input type="text" aria-label="b2"></td><td><input type="text" aria-label="b3"></td>
+                </tr>
+                <tr>
+                  <td><b>C.</b> <span class="th">รั้วไฟฟ้ากันสัตว์รอบแปลง 15 W ทำงานตลอด 24 ชั่วโมง
+                    ต้องสำรองไฟได้ 4 วัน เพราะอยู่ไกลและเข้าถึงยาก</span>
+                    <span class="en">A 15 W electric fence running around the clock, needing four days of
+                    autonomy because it is remote and hard to reach</span></td>
+                  <td><input type="text" aria-label="c1"></td><td><input type="text" aria-label="c2"></td><td><input type="text" aria-label="c3"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol class="steps">
+            <li><span class="th"><b>ตัดสินสถาปัตยกรรม</b> — ใช้กฎในหัวข้อ 14.4 เป็นเกณฑ์
+              และอธิบายว่าเหตุใดงาน A จึงไม่ต้องใช้แบตเตอรี่ทั้งที่อยู่ไกลจากสายไฟ</span>
+              <span class="en"><b>Decide the architecture</b> using the rule of Section 14.4, and explain why
+              job A needs no battery despite being far from any line.</span></li>
+            <li><span class="th"><b>คำนวณงาน A</b> — หากำลังไฮดรอลิกด้วยวิธีเดียวกับตัวอย่างที่ 12.5
+              (ประสิทธิภาพปั๊ม 55 % มอเตอร์ 90 % ตัวควบคุม 96 %) แล้วหาขนาดแผงที่ต้องติดตั้ง
+              โดยมีชั่วโมงแสงอาทิตย์ 5 ชั่วโมง และตัวประกอบลดทอน 0.75</span>
+              <span class="en"><b>Size job A</b> — find the hydraulic power as in Example 12.5 (pump 55 %,
+              motor 90 %, controller 96 %), then the array, taking five peak sun hours and a derating factor
+              of 0.75.</span></li>
+            <li><span class="th"><b>คำนวณงาน B</b> — หาพลังงานที่ห้องเย็นใช้ต่อวัน แล้วหาขนาดระบบ
+              ที่ผลิตพลังงานได้เท่ากันต่อปี โดยใช้ผลผลิต 1 450 kWh/kWp/ปี</span>
+              <span class="en"><b>Size job B</b> — find the cold room's daily energy, then the system that
+              generates as much over a year at 1,450 kWh/kWp.</span></li>
+            <li><span class="th"><b>คำนวณงาน C</b> — ใช้วิธีเดียวกับตัวอย่างที่ 14.2
+              ระบบ 12 V ใช้ LiFePO₄ ที่ DoD 80 % ประสิทธิภาพไป–กลับ 95 % และตัวแปลงไฟ 90 %</span>
+              <span class="en"><b>Size job C</b> — by the method of Example 14.2, on a 12 V system with
+              LiFePO₄ at 80 % DoD, 95 % round-trip and a 90 % converter.</span></li>
+            <li><span class="th"><b>อภิปราย</b> — งานใดคืนทุนเร็วที่สุด และงานใดที่ถ้าไม่ใช้โซลาร์แล้ว
+              จะมีต้นทุนแฝงสูงที่สุด (คิดรวมค่าลากสายไฟและค่าเดินทางไปดูแล) เตรียมนำเสนอ 3 นาที</span>
+              <span class="en"><b>Discuss</b> — which job pays back soonest, and which carries the highest
+              hidden cost if solar is not used, counting cable runs and travel to maintain it. Present in
+              three minutes.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">✅ <span class="th">เกณฑ์การประเมิน (10 คะแนน)</span>
+              <span class="en">Marking guide (10 marks)</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">เลือกสถาปัตยกรรมถูกต้องทั้งสามงานพร้อมเหตุผล — 3 คะแนน</span>
+                  <span class="en">The right architecture for all three, with reasons — 3 marks</span></li>
+              <li><span class="th">คำนวณขนาดแผงและแบตเตอรี่ถูกต้องพร้อมหน่วย — 4 คะแนน</span>
+                  <span class="en">Correct array and battery sizing with units — 4 marks</span></li>
+              <li><span class="th">อภิปรายต้นทุนแฝงได้อย่างมีเหตุผลและอ้างอิงตัวเลข — 3 คะแนน</span>
+                  <span class="en">A reasoned, number-backed discussion of the hidden costs — 3 marks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Laboratory -->
+    <section id="lab">
+      <h2><span class="num">🧪</span><span class="th">ปฏิบัติการที่ 14</span>
+          <span class="en">Laboratory 14</span></h2>
+
+      <div class="lab">
+        <div class="lab-head">
+          <h3><span class="th">ปฏิบัติการที่ 14 — วัดเส้นโค้ง I–V ของแผงและออกแบบระบบสูบน้ำโซลาร์</span>
+              <span class="en">Laboratory 14 — Measuring a module's I–V curve and designing a solar pump</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">2 ชั่วโมง</span><span class="en">2 hours</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO3, CLO5, CLO6</span><span class="en">CLO3, CLO5, CLO6</span></span>
+          </div>
+        </div>
+        <div class="lab-body">
+
+          <h4 class="mt-0"><span class="th">วัตถุประสงค์</span><span class="en">Objectives</span></h4>
+          <ol>
+            <li><span class="th">วัดเส้นโค้ง I–V ของแผงจริง หาจุดกำลังสูงสุดและตัวประกอบการเติม (fill factor)</span>
+                <span class="en">Measure a real module's I–V curve, and find its maximum power point and fill
+                factor.</span></li>
+            <li><span class="th">สังเกตผลของความเข้มแสงและมุมเอียงที่มีต่อกระแสและแรงดัน</span>
+                <span class="en">Observe how irradiance and tilt affect the current and the
+                voltage.</span></li>
+            <li><span class="th">ทดสอบผลของการบังแสงเพียงเซลล์เดียว และหน้าที่ของไดโอดบายพาส</span>
+                <span class="en">Test what shading a single cell does, and what the bypass diode is
+                for.</span></li>
+            <li><span class="th">เปรียบเทียบประสิทธิภาพของเครื่องควบคุมการประจุแบบ PWM กับแบบ MPPT</span>
+                <span class="en">Compare a PWM charge controller with an MPPT one.</span></li>
+          </ol>
+
+          <h4><span class="th">อุปกรณ์</span><span class="en">Equipment</span></h4>
+          <ul>
+            <li><span class="th">แผงเซลล์แสงอาทิตย์ 50–100 W พร้อมขาตั้งปรับมุมได้ · เครื่องวัดความเข้มแสง</span>
+                <span class="en">A 50–100 W module on an adjustable stand, and an irradiance meter</span></li>
+            <li><span class="th">ตัวต้านทานปรับค่าได้ (rheostat) 0–100 Ω พิกัด 100 W หรือชุดตัวต้านทานหลายค่า</span>
+                <span class="en">A 0–100 Ω, 100 W rheostat, or a set of fixed resistors</span></li>
+            <li><span class="th">มัลติมิเตอร์ 2 เครื่อง (วัดแรงดันและกระแสพร้อมกัน) · เทอร์มอมิเตอร์อินฟราเรด</span>
+                <span class="en">Two multimeters, to read voltage and current together, and an infrared
+                thermometer</span></li>
+            <li><span class="th">เครื่องควบคุมการประจุแบบ PWM และแบบ MPPT · แบตเตอรี่ 12 V · โหลดทดสอบ</span>
+                <span class="en">A PWM and an MPPT charge controller, a 12 V battery and a test load</span></li>
+            <li><span class="th">กระดาษทึบสำหรับบังแสงบางส่วนของแผง</span>
+                <span class="en">Opaque card for shading part of the module</span></li>
+          </ul>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">⚠️ <span class="th">ข้อควรระวัง</span>
+              <span class="en">Safety precautions</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">แผงเซลล์แสงอาทิตย์ <b>มีแรงดันออกมาทันทีที่โดนแสง ปิดสวิตช์ไม่ได้</b>
+                ต้องคลุมด้วยผ้าทึบก่อนต่อหรือแก้สายทุกครั้ง</span>
+                  <span class="en">A PV module <b>produces voltage the moment light falls on it and cannot be
+                  switched off</b>. Cover it with opaque cloth before making or changing any
+                  connection.</span></li>
+              <li><span class="th">ห้ามลัดวงจรขั้วแผงเพื่อ “ดูว่ามีไฟไหม” เพราะกระแสลัดวงจรไหลได้ต่อเนื่อง
+                และจะเกิดอาร์กกระแสตรงที่ดับเองไม่ได้</span>
+                  <span class="en">Never short the terminals "to see if it is working": the short-circuit
+                  current flows continuously and a DC arc will not extinguish itself.</span></li>
+              <li><span class="th">ตัวต้านทานปรับค่าจะร้อนจัดขณะรับกำลังจากแผง อย่าแตะจนกว่าจะเย็น</span>
+                  <span class="en">The rheostat gets very hot while absorbing the module's output — do not
+                  touch it until it has cooled.</span></li>
+              <li><span class="th">ทำการทดลองกลางแดดจัด ให้สวมหมวกและดื่มน้ำ ระวังอาการเพลียแดด</span>
+                  <span class="en">The work is done in full sun: wear a hat, drink water, and watch for heat
+                  exhaustion.</span></li>
+            </ul>
+          </div>
+
+          <h4><span class="th">ขั้นตอนการทดลอง</span><span class="en">Procedure</span></h4>
+
+          <p><b><span class="th">ตอนที่ 1: เส้นโค้ง I–V ของแผง</span>
+            <span class="en">Part 1: The module's I–V curve</span></b></p>
+          <ol class="steps">
+            <li><span class="th">วางแผงให้ตั้งฉากกับดวงอาทิตย์ บันทึกความเข้มแสงและอุณหภูมิหลังแผง</span>
+                <span class="en">Aim the module square at the sun, and record the irradiance and the
+                temperature of its back sheet.</span></li>
+            <li><span class="th">วัด \(V_{oc}\) โดยเปิดวงจร (ต่อโวลต์มิเตอร์อย่างเดียว) และวัด \(I_{sc}\)
+              โดยต่อแอมมิเตอร์คร่อมขั้วโดยตรง <b>เป็นเวลาสั้น ๆ เท่านั้น</b></span>
+                <span class="en">Measure \(V_{oc}\) on open circuit with the voltmeter alone, and
+                \(I_{sc}\) with the ammeter straight across the terminals — <b>briefly</b>.</span></li>
+            <li><span class="th">ต่อตัวต้านทานปรับค่าเป็นโหลด แล้วไล่ปรับค่าตั้งแต่ต่ำสุดไปสูงสุด
+              ประมาณ 10 จุด บันทึก V และ I ทุกจุด</span>
+                <span class="en">Connect the rheostat as the load and step it from minimum to maximum in
+                about ten steps, recording V and I at each.</span></li>
+            <li><span class="th">คำนวณ \(P = VI\) ทุกจุด แล้วเขียนกราฟ I–V และ P–V บนแกนเดียวกัน
+              เทียบกับรูปที่ 14.2 ระบุจุด MPP และอ่านค่า \(V_{mp}\) กับ \(I_{mp}\)</span>
+                <span class="en">Compute \(P = VI\) at every point, plot both the I–V and P–V curves on one
+                set of axes as in Figure 14.2, mark the MPP and read off \(V_{mp}\) and
+                \(I_{mp}\).</span></li>
+            <li><span class="th">คำนวณตัวประกอบการเติม \(FF = (V_{mp}I_{mp})/(V_{oc}I_{sc})\)
+              แผงที่ดีควรได้ 0.7–0.8</span>
+                <span class="en">Compute the fill factor \(FF = (V_{mp}I_{mp})/(V_{oc}I_{sc})\); a healthy
+                module gives 0.7–0.8.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 2: ผลของมุมเอียงและความเข้มแสง</span>
+            <span class="en">Part 2: Tilt and irradiance</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ตั้งโหลดไว้ที่จุด MPP ที่พบในตอนที่ 1 แล้วเอียงแผงเป็นมุม 0°, 15°, 30° และ 45°
+              จากแนวตั้งฉากกับแสง บันทึกความเข้มแสง V และ I ทุกมุม</span>
+                <span class="en">Set the load at the MPP found in Part 1, then tilt the module 0°, 15°, 30°
+                and 45° away from square-on, recording irradiance, V and I at each.</span></li>
+            <li><span class="th">เขียนกราฟกำลังเทียบกับมุม และเปรียบเทียบกับความเข้มแสงที่วัดได้
+              ทั้งสองแปรผันตามกันหรือไม่</span>
+                <span class="en">Plot power against angle and compare with the measured irradiance. Do the
+                two track each other?</span></li>
+            <li><span class="th">สังเกตว่าเมื่อความเข้มแสงลดลง <b>กระแสหรือแรงดัน</b> ที่เปลี่ยนมากกว่ากัน
+              ตรงกับรูปที่ 14.3 ก หรือไม่</span>
+                <span class="en">Note whether it is the <b>current or the voltage</b> that changes more as
+                the light falls, and check it against Figure 14.3 a.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 3: ผลของการบังแสงและไดโอดบายพาส</span>
+            <span class="en">Part 3: Shading and the bypass diode</span></b></p>
+          <ol class="steps">
+            <li><span class="th">กลับไปที่มุมตั้งฉาก วัดกำลังที่จุด MPP เป็นค่าอ้างอิง</span>
+                <span class="en">Return the module square-on and measure the MPP power as a
+                reference.</span></li>
+            <li><span class="th">ใช้กระดาษบัง <b>เพียงเซลล์เดียว</b> ให้มิดทั้งเซลล์ แล้ววัดกำลังอีกครั้ง
+              กำลังลดลงกี่เปอร์เซ็นต์ ทั้งที่บังไปเพียงหนึ่งในหกสิบของพื้นที่</span>
+                <span class="en">Shade <b>one cell only</b>, completely, and measure again. By what
+                percentage did the power fall — for one-sixtieth of the area?</span></li>
+            <li><span class="th">ขยายการบังให้ครอบคลุมครึ่งแผง วัดอีกครั้ง
+              แล้วอธิบายว่าเหตุใดไดโอดบายพาสในกล่องต่อสายจึงจำเป็น
+              และเชื่อมโยงกับหลักการไดโอดในบทที่ 13</span>
+                <span class="en">Extend the shading to half the module, measure again, then explain why the
+                bypass diodes in the junction box are necessary, relating it to the diode principles of
+                Chapter 13.</span></li>
+            <li><span class="th">อภิปราย: ในฟาร์มจริง อะไรบ้างที่ทำให้เกิดเงาบนแผง
+              และเหตุใดเงาจากใบไม้ใบเดียวจึงสร้างความเสียหายมากกว่าที่คิด</span>
+                <span class="en">Discuss: what casts shadows on a real farm's array, and why a single leaf
+                does more damage than one would expect.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 4: เครื่องควบคุมการประจุแบบ PWM เทียบกับ MPPT</span>
+            <span class="en">Part 4: PWM against MPPT charge controllers</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อแผงเข้ากับเครื่องควบคุมแบบ PWM และแบตเตอรี่ 12 V
+              วัดแรงดันและกระแสทั้งด้านเข้าและด้านออกของเครื่องควบคุม</span>
+                <span class="en">Connect the module through the PWM controller to the 12 V battery, and
+                measure voltage and current on both its input and output sides.</span></li>
+            <li><span class="th">ทำซ้ำด้วยเครื่องควบคุมแบบ MPPT ภายใต้แสงเดียวกัน</span>
+                <span class="en">Repeat with the MPPT controller under the same light.</span></li>
+            <li><span class="th">คำนวณกำลังที่ส่งเข้าแบตเตอรี่ของทั้งสองแบบ แล้วเทียบกับกำลังที่จุด MPP
+              ที่วัดได้ในตอนที่ 1 แบบใดดึงกำลังจากแผงได้ใกล้เคียง MPP มากกว่ากัน และมากกว่ากี่เปอร์เซ็นต์</span>
+                <span class="en">Compute the power delivered into the battery in each case and compare with
+                the MPP power from Part 1. Which gets closer to the MPP, and by how many per cent?</span></li>
+          </ol>
+
+          <h4><span class="th">ตารางบันทึกผล</span><span class="en">Results tables</span></h4>
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 1 — เส้นโค้ง I–V (ตอนที่ 1)</span>
+                <span class="en">Table 1 — The I–V curve (Part 1)</span></caption>
+              <thead>
+                <tr>
+                  <th class="num"><span class="th">จุดที่</span><span class="en">Point</span></th>
+                  <th class="num">V (V)</th><th class="num">I (A)</th><th class="num">P = VI (W)</th>
+                  <th class="num"><span class="th">ความเข้มแสง (W/m²)</span><span class="en">Irradiance (W/m²)</span></th>
+                  <th class="num"><span class="th">อุณหภูมิแผง (°C)</span><span class="en">Module temp (°C)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">V_oc</td><td><input type="text" aria-label="v0"></td><td class="num">0</td><td class="num">0</td><td><input type="text" aria-label="g0"></td><td><input type="text" aria-label="t0"></td></tr>
+                <tr><td class="num">1</td><td><input type="text" aria-label="v1"></td><td><input type="text" aria-label="i1"></td><td><input type="text" aria-label="p1"></td><td><input type="text" aria-label="g1"></td><td><input type="text" aria-label="t1"></td></tr>
+                <tr><td class="num">2</td><td><input type="text" aria-label="v2"></td><td><input type="text" aria-label="i2"></td><td><input type="text" aria-label="p2"></td><td><input type="text" aria-label="g2"></td><td><input type="text" aria-label="t2"></td></tr>
+                <tr><td class="num">3</td><td><input type="text" aria-label="v3"></td><td><input type="text" aria-label="i3"></td><td><input type="text" aria-label="p3"></td><td><input type="text" aria-label="g3"></td><td><input type="text" aria-label="t3"></td></tr>
+                <tr><td class="num">4</td><td><input type="text" aria-label="v4"></td><td><input type="text" aria-label="i4"></td><td><input type="text" aria-label="p4"></td><td><input type="text" aria-label="g4"></td><td><input type="text" aria-label="t4"></td></tr>
+                <tr><td class="num">5</td><td><input type="text" aria-label="v5"></td><td><input type="text" aria-label="i5"></td><td><input type="text" aria-label="p5"></td><td><input type="text" aria-label="g5"></td><td><input type="text" aria-label="t5"></td></tr>
+                <tr><td class="num">6</td><td><input type="text" aria-label="v6"></td><td><input type="text" aria-label="i6"></td><td><input type="text" aria-label="p6"></td><td><input type="text" aria-label="g6"></td><td><input type="text" aria-label="t6"></td></tr>
+                <tr><td class="num">I_sc</td><td class="num">0</td><td><input type="text" aria-label="i7"></td><td class="num">0</td><td><input type="text" aria-label="g7"></td><td><input type="text" aria-label="t7"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 2 — การบังแสงและเครื่องควบคุม (ตอนที่ 3–4)</span>
+                <span class="en">Table 2 — Shading and controllers (Parts 3–4)</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">สภาพการทดลอง</span><span class="en">Condition</span></th>
+                  <th class="num">V (V)</th><th class="num">I (A)</th><th class="num">P (W)</th>
+                  <th class="num"><span class="th">เทียบกับค่าอ้างอิง (%)</span><span class="en">Against reference (%)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="th">ไม่มีเงา (ค่าอ้างอิง)</span><span class="en">Unshaded (reference)</span></td>
+                  <td><input type="text" aria-label="s1"></td><td><input type="text" aria-label="s2"></td><td><input type="text" aria-label="s3"></td><td class="num">100</td></tr>
+                <tr><td><span class="th">บังหนึ่งเซลล์</span><span class="en">One cell shaded</span></td>
+                  <td><input type="text" aria-label="s4"></td><td><input type="text" aria-label="s5"></td><td><input type="text" aria-label="s6"></td><td><input type="text" aria-label="s7"></td></tr>
+                <tr><td><span class="th">บังครึ่งแผง</span><span class="en">Half the module shaded</span></td>
+                  <td><input type="text" aria-label="s8"></td><td><input type="text" aria-label="s9"></td><td><input type="text" aria-label="s10"></td><td><input type="text" aria-label="s11"></td></tr>
+                <tr><td><span class="th">ผ่านเครื่องควบคุม PWM</span><span class="en">Through the PWM controller</span></td>
+                  <td><input type="text" aria-label="s12"></td><td><input type="text" aria-label="s13"></td><td><input type="text" aria-label="s14"></td><td><input type="text" aria-label="s15"></td></tr>
+                <tr><td><span class="th">ผ่านเครื่องควบคุม MPPT</span><span class="en">Through the MPPT controller</span></td>
+                  <td><input type="text" aria-label="s16"></td><td><input type="text" aria-label="s17"></td><td><input type="text" aria-label="s18"></td><td><input type="text" aria-label="s19"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span class="th">คำถามท้ายปฏิบัติการ</span><span class="en">Questions</span></h4>
+          <ol>
+            <li><span class="th">กำลังสูงสุดที่วัดได้เทียบกับค่าบนป้ายพิกัดของแผงเป็นกี่เปอร์เซ็นต์
+              ให้อธิบายส่วนต่างด้วยความเข้มแสงและอุณหภูมิที่วัดได้จริง โดยใช้สมการในหัวข้อ 14.2</span>
+              <span class="en">What percentage of the nameplate power did you measure? Account for the
+              difference using the irradiance and temperature you recorded, and the equations of Section
+              14.2.</span></li>
+            <li><span class="th">ตัวประกอบการเติมที่คำนวณได้เป็นเท่าใด และค่านี้บอกอะไรเกี่ยวกับคุณภาพของแผง
+              ถ้าค่าต่ำกว่า 0.7 อาจเกิดจากสาเหตุใดได้บ้าง</span>
+              <span class="en">What fill factor did you obtain, what does it say about the module's quality,
+              and what could cause a value below 0.7?</span></li>
+            <li><span class="th">การบังเพียงเซลล์เดียวทำให้กำลังลดลงกี่เปอร์เซ็นต์
+              เหตุใดจึงลดลงมากกว่าสัดส่วนพื้นที่ที่ถูกบังมาก อธิบายโดยคิดว่าเซลล์ทั้งหมดต่ออนุกรมกัน
+              และกระแสในวงจรอนุกรมต้องเท่ากันทุกจุด (บทที่ 3)</span>
+              <span class="en">By how much did shading one cell cut the power, and why is that far more than
+              its share of the area? Explain from the fact that the cells are in series and a series circuit
+              carries one current throughout (Chapter 3).</span></li>
+            <li><span class="th">เครื่องควบคุมแบบ MPPT ดึงกำลังได้มากกว่าแบบ PWM กี่เปอร์เซ็นต์
+              และในกรณีใดที่ส่วนต่างนี้จะยิ่งมากขึ้น (พิจารณาแรงดันแผงเทียบกับแรงดันแบตเตอรี่)</span>
+              <span class="en">How much more power did the MPPT controller extract than the PWM one, and when
+              would that gap widen? Consider the module voltage against the battery voltage.</span></li>
+            <li><span class="th">ออกแบบ: จากค่าที่วัดได้จริงของแผงนี้ จงคำนวณว่าต้องใช้กี่แผง
+              เพื่อขับปั๊มบรัชเลสที่ต้องการกำลังไฟฟ้า 400 W โดยมีชั่วโมงแสงอาทิตย์ 5 ชั่วโมง
+              และต้องสูบน้ำให้ได้ 10 m³ ต่อวัน</span>
+              <span class="en">Design: from this module's measured output, work out how many would be needed
+              to drive a brushless pump requiring 400 W electrical, with five peak sun hours, to deliver
+              10 m³ of water a day.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">📄 <span class="th">การส่งรายงาน (20 คะแนน)</span>
+              <span class="en">Report submission (20 marks)</span></div>
+            <p class="mb-0"><span class="th">ส่งรายงานความยาวไม่เกิน 6 หน้า ประกอบด้วย วัตถุประสงค์
+              ตารางผลทั้งสองตารางที่กรอกครบพร้อมหน่วย กราฟ I–V และ P–V บนแกนเดียวกันพร้อมระบุจุด MPP
+              กราฟกำลังเทียบกับมุมเอียง ตัวอย่างการคำนวณตัวประกอบการเติมอย่างละเอียด
+              คำตอบของคำถามท้ายปฏิบัติการ และข้อสรุป ภายในสัปดาห์ถัดไป</span>
+              <span class="en">Submit a report of no more than six pages — objectives; both completed tables
+              with units; the I–V and P–V curves on one set of axes with the MPP marked; power against tilt
+              angle; a fully worked fill-factor calculation; answers to the questions; and a conclusion — by
+              the following week.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Post-test -->
+    <section id="posttest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบหลังเรียน</span>
+          <span class="en">Post-test</span></h2>
+      <p class="muted"><span class="th">ทำหลังอ่านเนื้อหาและทำปฏิบัติการแล้ว ควรได้อย่างน้อย 6 จาก 8 ข้อ</span>
+        <span class="en">Take this after the notes and the laboratory; aim for at least 6 out of 8.</span></p>
+
+      <section class="quiz" id="posttest-q" data-quiz="post" data-chapter="ch14">
+        <div class="quiz-head">
+          <h3><span class="th">หลังเรียน: บทที่ 14</span><span class="en">Post-test: Chapter 14</span></h3>
+          <p><span class="th">8 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">8 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="ต่ออนุกรมแรงดันบวกกัน จึงได้ 10 × 45 = 450 V ส่วนกระแสเท่ากับแผงเดียว (หัวข้อ 14.2)"
+               data-explain-en="In series the voltages add: 10 × 45 = 450 V, while the current stays that of one module (Section 14.2).">
+            <div class="q-text"><span class="th">ต่อแผง 10 แผงอนุกรมกัน แต่ละแผงมี V_oc = 45 V จะได้แรงดันรวมเท่าใด</span>
+              <span class="en">Ten modules of V_oc = 45 V each are connected in series. What is the total voltage?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>45 V</span></label>
+              <label class="opt" data-opt="b"><span>90 V</span></label>
+              <label class="opt" data-opt="c"><span>450 V</span></label>
+              <label class="opt" data-opt="d"><span>4.5 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="V_oc(T) = 40[1 + (−0.003)(10 − 25)] = 40(1 + 0.045) = 41.8 V แรงดันเพิ่มขึ้นเมื่อแผงเย็นลง จึงต้องใช้กรณีนี้ตรวจพิกัดอินเวอร์เตอร์"
+               data-explain-en="V_oc(T) = 40[1 + (−0.003)(10 − 25)] = 40(1.045) = 41.8 V. The voltage rises as the module cools, which is the case to check the inverter against.">
+            <div class="q-text"><span class="th">แผงมี V_oc = 40 V ที่ 25 °C และ α_V = −0.30 %/°C ในเช้าที่เซลล์เย็นถึง 10 °C V_oc จะเป็นเท่าใด</span>
+              <span class="en">A module has V_oc = 40 V at 25 °C with α_V = −0.30 %/°C. On a morning when the cells reach 10 °C, what is V_oc?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>38.2 V</span></label>
+              <label class="opt" data-opt="b"><span>41.8 V</span></label>
+              <label class="opt" data-opt="c"><span>40.0 V</span></label>
+              <label class="opt" data-opt="d"><span>44.5 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="เมื่อความเข้มแสงลดลง กระแสลดลงตามสัดส่วนโดยตรง ส่วนแรงดันเปลี่ยนเพียงเล็กน้อย ตรงข้ามกับผลของอุณหภูมิที่กระทบแรงดันเป็นหลัก (รูปที่ 14.3)"
+               data-explain-en="As irradiance falls the current falls in proportion while the voltage barely moves — the opposite of temperature, which acts mainly on the voltage (Figure 14.3).">
+            <div class="q-text"><span class="th">เมื่อเมฆบังทำให้ความเข้มแสงลดลงครึ่งหนึ่ง สิ่งใดเปลี่ยนแปลงมากที่สุด</span>
+              <span class="en">When cloud halves the irradiance, what changes most?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">แรงดันลดลงครึ่งหนึ่ง กระแสเท่าเดิม</span><span class="en">The voltage halves, the current is unchanged</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ทั้งแรงดันและกระแสลดลงครึ่งหนึ่ง</span><span class="en">Both halve</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ไม่มีอะไรเปลี่ยนแปลง</span><span class="en">Nothing changes</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">กระแสลดลงครึ่งหนึ่ง แรงดันเปลี่ยนเล็กน้อย</span><span class="en">The current halves, the voltage barely moves</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="Ah = (พลังงานต่อวัน × วันสำรอง) ÷ DoD ÷ แรงดันระบบ = (400 × 2) ÷ 0.8 ÷ 12 = 800/9.6 = 83.3 Ah"
+               data-explain-en="Ah = (daily energy × days) ÷ DoD ÷ system voltage = (400 × 2) ÷ 0.8 ÷ 12 = 83.3 Ah.">
+            <div class="q-text"><span class="th">ระบบ 12 V ใช้พลังงาน 400 Wh ต่อวัน ต้องสำรอง 2 วัน ที่ DoD 80 % ต้องใช้แบตเตอรี่กี่ Ah</span>
+              <span class="en">A 12 V system uses 400 Wh a day and needs two days of autonomy at 80 % DoD. What battery capacity is required?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>83 Ah</span></label>
+              <label class="opt" data-opt="b"><span>67 Ah</span></label>
+              <label class="opt" data-opt="c"><span>33 Ah</span></label>
+              <label class="opt" data-opt="d"><span>133 Ah</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="พลังงานที่จ่ายได้ตลอดอายุ = 1.28 × 0.8 × 3000 = 3072 kWh ต้นทุนต่อหน่วย = 12800/3072 = 4.17 บาท/kWh"
+               data-explain-en="Lifetime energy = 1.28 × 0.8 × 3000 = 3072 kWh, so the cost is 12,800/3072 = 4.17 THB per kWh.">
+            <div class="q-text"><span class="th">แบต LiFePO₄ ความจุ 1.28 kWh ราคา 12 800 บาท ใช้ที่ DoD 80 % อายุ 3 000 รอบ มีต้นทุนต่อหน่วยพลังงานเท่าใด</span>
+              <span class="en">A 1.28 kWh LiFePO₄ battery costs 12,800 THB, used to 80 % DoD for 3,000 cycles. What is its cost per kWh delivered?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>10.0 <span class="th">บาท/kWh</span><span class="en">THB/kWh</span></span></label>
+              <label class="opt" data-opt="b"><span>3.33 <span class="th">บาท/kWh</span><span class="en">THB/kWh</span></span></label>
+              <label class="opt" data-opt="c"><span>4.17 <span class="th">บาท/kWh</span><span class="en">THB/kWh</span></span></label>
+              <label class="opt" data-opt="d"><span>12.8 <span class="th">บาท/kWh</span><span class="en">THB/kWh</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="โครงข่ายไฟฟ้าทำหน้าที่เก็บพลังงานส่วนเกินให้โดยไม่มีการสูญเสียและไม่มีอายุใช้งาน การใส่แบตเตอรี่เพิ่มจึงเป็นการเพิ่มต้นทุนและการสูญเสียโดยไม่จำเป็น (หัวข้อ 14.4)"
+               data-explain-en="The grid stores the surplus at no loss and never wears out, so adding a battery merely adds cost and losses for nothing (Section 14.4).">
+            <div class="q-text"><span class="th">ฟาร์มที่มีไฟฟ้าจากการไฟฟ้าอยู่แล้ว ควรติดตั้งระบบแบบใด</span>
+              <span class="en">A farm that already has a utility supply should install which kind of system?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ออฟกริดพร้อมแบตเตอรี่ขนาดใหญ่</span><span class="en">Off-grid with a large battery</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ออนกริดโดยไม่ต้องมีแบตเตอรี่</span><span class="en">On-grid with no battery</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">ออฟกริดเพราะประหยัดกว่าเสมอ</span><span class="en">Off-grid, because it is always cheaper</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ไม่ควรติดตั้งระบบโซลาร์เลย</span><span class="en">No solar system at all</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="เซลล์ทุกเซลล์ในแผงต่ออนุกรมกัน กระแสในวงจรอนุกรมต้องเท่ากันทุกจุด (บทที่ 3) เซลล์ที่ถูกบังจึงจำกัดกระแสของทั้งแผง ไดโอดบายพาสจึงมีไว้เปิดทางให้กระแสข้ามกลุ่มเซลล์ที่มีเงาไปได้"
+               data-explain-en="All the cells are in series and a series circuit carries one current throughout (Chapter 3), so a shaded cell throttles the whole string. Bypass diodes give the current a path around the shaded group.">
+            <div class="q-text"><span class="th">เหตุใดการบังแสงเพียงเซลล์เดียวจึงทำให้กำลังของทั้งแผงลดลงอย่างมาก</span>
+              <span class="en">Why does shading one cell cut the whole module's output so severely?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เพราะเซลล์ที่ถูกบังลัดวงจร</span><span class="en">Because the shaded cell short-circuits</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เพราะแรงดันของแผงตกลงครึ่งหนึ่ง</span><span class="en">Because the module's voltage halves</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เพราะเซลล์ที่เหลือร้อนขึ้น</span><span class="en">Because the other cells get hotter</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เพราะเซลล์ต่ออนุกรมกัน กระแสต้องเท่ากันทุกจุด เซลล์ที่ถูกบังจึงจำกัดกระแสทั้งแผง</span><span class="en">Because the cells are in series and share one current, so the shaded cell throttles them all</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="หน่วยที่ใช้เองมีมูลค่าเท่ากับค่าไฟที่ไม่ต้องจ่าย (4.20 บาท) ส่วนหน่วยที่ขายคืนได้เพียงราคารับซื้อ (2.20 บาท) การย้ายโหลดมาทำงานกลางวันจึงเพิ่มผลตอบแทนโดยไม่ต้องเพิ่มแผงเลย (ตัวอย่างที่ 14.4)"
+               data-explain-en="A unit used on site is worth the bill avoided, 4.20 THB, while an exported unit earns only the buy-back rate of 2.20. Moving load into daylight therefore raises the return without adding a single panel (Example 14.4).">
+            <div class="q-text"><span class="th">วิธีใดเพิ่มผลตอบแทนของระบบออนกริดได้โดยไม่ต้องเพิ่มจำนวนแผง</span>
+              <span class="en">What raises an on-grid system's return without adding any panels?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ย้ายโหลดมาทำงานกลางวันให้ตรงกับช่วงที่ผลิตไฟได้</span><span class="en">Moving load into the daylight hours when the array generates</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ติดแบตเตอรี่เพิ่มเข้าไปในระบบ</span><span class="en">Adding a battery to the system</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เพิ่มแรงดันของอินเวอร์เตอร์</span><span class="en">Raising the inverter's voltage</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ลดมุมเอียงของแผงลงให้ราบกับหลังคา</span><span class="en">Laying the panels flatter against the roof</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== References -->
+    <section id="refs">
+      <h2><span class="num">📚</span><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></h2>
+      <ol class="references">
+        <li>Masters, G. M. (2013). <i>Renewable and Efficient Electric Power Systems</i> (2nd ed.),
+          Ch. 8–9. Wiley.
+          <span class="small muted">— <span class="th">ตำราหลักของบทนี้ อธิบายการออกแบบระบบอย่างเป็นขั้นตอน</span>
+          <span class="en">the principal text for this chapter, taking system design step by step</span></span></li>
+        <li>Messenger, R. A., &amp; Abtahi, A. (2017). <i>Photovoltaic Systems Engineering</i>
+          (4th ed.). CRC Press.</li>
+        <li>Luque, A., &amp; Hegedus, S. (Eds.). (2011).
+          <i>Handbook of Photovoltaic Science and Engineering</i> (2nd ed.). Wiley.</li>
+        <li>Duffie, J. A., &amp; Beckman, W. A. (2013).
+          <i>Solar Engineering of Thermal Processes</i> (4th ed.), Ch. 1–2. Wiley.
+          <span class="small muted">— <span class="th">ที่มาของค่าชั่วโมงแสงอาทิตย์เต็มที่และมุมเอียงที่เหมาะสม</span>
+          <span class="en">the source of peak sun hours and optimum tilt</span></span></li>
+        <li>International Electrotechnical Commission. (2021).
+          <i>IEC 61215: Terrestrial photovoltaic modules — Design qualification and type approval</i>.
+          IEC.</li>
+        <li>International Electrotechnical Commission. (2016).
+          <i>IEC 62548: Photovoltaic arrays — Design requirements</i>. IEC.
+          <span class="small muted">— <span class="th">ข้อกำหนดการคำนวณแรงดันสูงสุดของสตริงตามตัวอย่างที่ 14.1</span>
+          <span class="en">the rules for the maximum string voltage used in Example 14.1</span></span></li>
+        <li><span class="th">วิศวกรรมสถานแห่งประเทศไทย ในพระบรมราชูปถัมภ์ (วสท.). (2565).
+          <i>มาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย</i> (ฉบับปรับปรุงครั้งที่ 2),
+          บทว่าด้วยระบบผลิตไฟฟ้าจากพลังงานแสงอาทิตย์. กรุงเทพฯ: วสท.</span>
+          <span class="en">Engineering Institute of Thailand. (2022).
+          <i>Thailand Electrical Installation Standard</i> (2nd rev. ed.), the chapter on photovoltaic
+          installations. Bangkok: EIT.</span></li>
+        <li>Food and Agriculture Organization of the United Nations. (2018).
+          <i>Solar Powered Irrigation Systems (SPIS): Technology, Economy, Impacts</i>. FAO.</li>
+        <li>International Renewable Energy Agency. (2023).
+          <i>Renewable Power Generation Costs in 2022</i>. IRENA.</li>
+        <li>Dupraz, C., Marrou, H., Talbot, G., Dufour, L., Nogier, A., &amp; Ferard, Y. (2011).
+          Combining solar photovoltaic panels and food crops for optimising land use.
+          <i>Renewable Energy, 36</i>(10), 2725–2732.
+          <span class="small muted">— <span class="th">งานวิจัยตั้งต้นของแนวคิดเกษตรโซลาร์ในหัวข้อ 14.5</span>
+          <span class="en">the founding study behind the agrivoltaics of Section 14.5</span></span></li>
+      </ol>
+    </section>
+
+    <!-- =============================================== Chapter nav -->
+    <nav class="chapter-nav">
+      <a href="ch13.html">
+        <div class="dir">← <span class="th">บทก่อนหน้า</span><span class="en">Previous</span></div>
+        <div class="ttl"><span class="th">บทที่ 13 · อุปกรณ์อิเล็กทรอนิกส์พื้นฐาน</span>
+          <span class="en">Chapter 13 · Basic Electronic Devices</span></div>
+      </a>
+      <a href="../index.html#chapters" class="next">
+        <div class="dir"><span class="th">กลับสู่</span><span class="en">Back to</span> →</div>
+        <div class="ttl"><span class="th">สารบัญรายวิชา</span><span class="en">Course index</span></div>
+      </a>
+    </nav>
+
+  </main>
+</div>
+</div>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span><span class="th">บทที่ 14 — ระบบเซลล์แสงอาทิตย์เบื้องต้น</span>
+        <span class="en">Chapter 14 — Basic Photovoltaic Systems</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>
