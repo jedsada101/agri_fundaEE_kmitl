@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ 5 ตัวเก็บประจุและตัวเหนี่ยวนำในวงจรกระแสตรง | Fundamental of Electrical Engineering</title>
+<meta name="description" content="Chapter 5 — Capacitance and inductance in DC circuits: the transient response, time constants, and filter circuits for farm sensors.">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+<script src="../assets/js/mathjax-config.js"></script>
+<script defer src="../assets/vendor/mathjax/tex-svg.js"></script>
+<style>
+  .sys-fig text { font-family: var(--font-sans); }
+  .sys-fig .lbl { font-size: 12px; font-weight: 600; fill: #0d1128; }
+  .sys-fig .sub { font-size: 10.5px; fill: #6c757d; }
+  .sys-fig .cap { font-size: 11px; font-weight: 700; fill: #fd5f00; }
+  .sys-fig .wire { stroke: #0d1128; stroke-width: 2; fill: none; }
+  .sys-fig .sym  { stroke: #0d1128; stroke-width: 2; fill: #fff; }
+  .sys-fig .axis { stroke: #6c757d; stroke-width: 1.5; }
+  .sys-fig .node { fill: #fd5f00; }
+  .sys-fig .elec { fill: #fd5f00; }
+  .sys-fig .plate { stroke: #0d1128; stroke-width: 6; }
+
+  /* --- charging current flowing on to the plates --------------------- */
+  .cap-fig .flow { transform-box: view-box; animation: cap-flow 1.5s linear infinite; }
+  @keyframes cap-flow { from { transform: translateX(0); } to { transform: translateX(34px); } }
+
+  /* --- the RC transient: one dot walks the charge-then-discharge curve
+         while a tank beside it fills and empties on the same timeline.
+         The loop closes where the curve returns to zero, so it runs on
+         seamlessly. Paused, the curve and its markers still read.    --- */
+  .rc-fig .rc-dot, .rc-fig .rc-fill { transform-box: view-box; }
+  @keyframes rc-move {
+      0%   { transform: translate(0, 0); }
+      5%   { transform: translate(28px, -75px); }
+      10%  { transform: translate(55px, -120px); }
+      20%  { transform: translate(110px, -164px); }
+      30%  { transform: translate(165px, -181px); }
+      40%  { transform: translate(220px, -187px); }
+      50%  { transform: translate(275px, -189px); }
+      55%  { transform: translate(303px, -115px); }
+      60%  { transform: translate(330px, -69px); }
+      70%  { transform: translate(385px, -26px); }
+      80%  { transform: translate(440px, -9px); }
+      90%  { transform: translate(495px, -3px); }
+      100% { transform: translate(550px, -1px); }
+  }
+  @keyframes rc-tank {
+      0%   { transform: scaleY(0); }
+      5%   { transform: scaleY(0.393); }
+      10%  { transform: scaleY(0.632); }
+      20%  { transform: scaleY(0.865); }
+      30%  { transform: scaleY(0.950); }
+      40%  { transform: scaleY(0.982); }
+      50%  { transform: scaleY(0.993); }
+      55%  { transform: scaleY(0.603); }
+      60%  { transform: scaleY(0.365); }
+      70%  { transform: scaleY(0.134); }
+      80%  { transform: scaleY(0.049); }
+      90%  { transform: scaleY(0.018); }
+      100% { transform: scaleY(0.007); }
+  }
+  .rc-fig .rc-dot  { animation: rc-move 9s linear infinite; }
+  .rc-fig .rc-fill { transform-origin: 680px 260px;
+                     animation: rc-tank 9s linear infinite; }
+</style>
+</head>
+<body data-chapter="ch05">
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="../index.html#chapters"><span class="th">บทเรียนทั้งหมด</span><span class="en">All chapters</span></a></li>
+      <li><a href="#pretest"><span class="th">Pre-test</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการ</span><span class="en">Laboratory</span></a></li>
+      <li><a href="ch06.html" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">บทถัดไป</span><span class="en">Next</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a> ·
+      <a href="../index.html#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a> ·
+      <span class="th">บทที่ 5</span><span class="en">Chapter 5</span>
+    </div>
+    <span class="eyebrow"><span class="th">สัปดาห์ที่ 5 · บทที่ 5</span><span class="en">Week 5 · Chapter 5</span></span>
+    <h1><span class="th">ตัวเก็บประจุและตัวเหนี่ยวนำ<br>ในวงจรกระแสตรง</span>
+        <span class="en">Capacitance and Inductance<br>in DC Circuits</span></h1>
+    <p class="lead">
+      <span class="th">จนถึงบทที่ 4 วงจรของเราตอบสนอง <b>ทันที</b> — เปลี่ยนแรงดันเมื่อใด กระแสเปลี่ยนตามเมื่อนั้น
+        เพราะสมการของตัวต้านทานไม่มีอนุพันธ์ แต่ตัวเก็บประจุและตัวเหนี่ยวนำมีอนุพันธ์อยู่ในสมการนิยาม
+        วงจรจึงต้องใช้ <b>เวลา</b> ในการเปลี่ยนสถานะ และช่วงเวลานั้นเองคือสิ่งที่ทำให้เกิดทั้งปัญหา
+        (วาล์วเปิดช้า แรงดันพุ่งตอนตัดวงจร) และทางแก้ (วงจรกรองสัญญาณเซนเซอร์ให้สะอาด)</span>
+      <span class="en">Up to Chapter 4 our circuits responded <b>instantly</b>: change the voltage and the
+        current changed with it, because a resistor's equation has no derivative in it. Capacitance and
+        inductance do have derivatives in their defining equations, so those circuits need <b>time</b> to
+        change state. That interval is the source of both the troubles — a valve that opens late, a spike
+        when a coil is switched off — and the cures, such as the filter that cleans up a sensor
+        signal.</span>
+    </p>
+    <div class="hero-meta">
+      <span>⏱ <strong>2+2</strong> <span class="th">ชั่วโมง</span><span class="en">hours</span></span>
+      <span>📘 <span class="th">หัวข้อหลัก</span><span class="en">Main topics</span> <strong>4</strong></span>
+      <span>🧪 <span class="th">ปฏิบัติการที่ 5</span><span class="en">Laboratory 5</span></span>
+      <span>📝 <span class="th">Pre / Post-test</span><span class="en">Pre / post-test</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+<div class="chapter-layout">
+
+  <!-- ============================================================= TOC -->
+  <aside class="toc">
+    <div class="toc-title"><span class="th">สารบัญบทเรียน</span><span class="en">On this page</span></div>
+    <ul>
+      <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
+      <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#s1"><span class="th">5.1 ตัวเก็บประจุ</span><span class="en">5.1 Capacitance</span></a></li>
+      <li><a href="#s2"><span class="th">5.2 ผลตอบสนองชั่วครู่ของวงจร RC</span><span class="en">5.2 The RC transient</span></a></li>
+      <li><a href="#s3"><span class="th">5.3 ตัวเหนี่ยวนำและวงจร RL</span><span class="en">5.3 Inductance and RL</span></a></li>
+      <li><a href="#s4"><span class="th">5.4 การประยุกต์: วงจรกรองสัญญาณ</span><span class="en">5.4 Filter circuits</span></a></li>
+      <li><a href="#summary"><span class="th">สรุปบทเรียน</span><span class="en">Summary</span></a></li>
+      <li><a href="#activity"><span class="th">กิจกรรมในชั้นเรียน</span><span class="en">Class activity</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการที่ 5</span><span class="en">Laboratory 5</span></a></li>
+      <li><a href="#posttest"><span class="th">แบบทดสอบหลังเรียน</span><span class="en">Post-test</span></a></li>
+      <li><a href="#refs"><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ==================================================== CHAPTER BODY -->
+  <main class="chapter-body">
+
+    <!-- ---------------------------------------------------- Objectives -->
+    <section id="objectives">
+      <div class="callout callout-objective">
+        <div class="callout-title">🎯 <span class="th">จุดประสงค์การเรียนรู้</span>
+          <span class="en">Learning objectives</span></div>
+        <p><span class="th">เมื่อเรียนจบบทนี้ นักศึกษาจะสามารถ</span>
+           <span class="en">After this chapter you will be able to:</span></p>
+        <ol>
+          <li><span class="th">อธิบายว่าตัวเก็บประจุและตัวเหนี่ยวนำเก็บพลังงานไว้ในรูปใด
+            และคำนวณพลังงานที่เก็บไว้ได้</span>
+            <span class="en">say in what form a capacitor and an inductor store energy, and compute how much
+            each holds;</span></li>
+          <li><span class="th">คำนวณค่าคงตัวเวลาของวงจร RC และ RL และใช้กฎ 5 เท่าของค่าคงตัวเวลา
+            ประมาณเวลาที่วงจรเข้าสู่สภาวะคงตัว</span>
+            <span class="en">compute the time constant of an RC or RL circuit and use the five-time-constant
+            rule to estimate when it has settled;</span></li>
+          <li><span class="th">เขียนและใช้สมการการประจุ–คายประจุแบบเอ็กซ์โพเนนเชียล
+            เพื่อหาค่าแรงดันหรือกระแสที่เวลาใด ๆ</span>
+            <span class="en">write and use the exponential charging and discharging equations to find the
+            voltage or current at any instant;</span></li>
+          <li><span class="th">อธิบายว่าเหตุใดตัวเก็บประจุต่ออนุกรม–ขนานจึงให้ผลตรงข้ามกับตัวต้านทาน</span>
+            <span class="en">explain why capacitors in series and parallel behave in the opposite way to
+            resistors;</span></li>
+          <li><span class="th">ออกแบบวงจรกรองความถี่ต่ำผ่านสำหรับสัญญาณเซนเซอร์ในฟาร์ม
+            และคำนวณความถี่ตัดกับเวลาตอบสนองที่ต้องแลกกัน</span>
+            <span class="en">design a low-pass filter for a farm sensor signal, computing both the cut-off
+            frequency and the response time traded against it;</span></li>
+          <li><span class="th">อธิบายผลของค่าคงตัวเวลาต่อการทำงานของวาล์วโซลินอยด์
+            ทั้งจังหวะเปิดและจังหวะปิด</span>
+            <span class="en">explain how the time constant affects a solenoid valve, both as it opens and as
+            it closes.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ Pre-test -->
+    <section id="pretest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบก่อนเรียน</span>
+          <span class="en">Pre-test</span></h2>
+      <p class="muted"><span class="th">ทำก่อนเริ่มอ่านเนื้อหา เพื่อสำรวจความรู้เดิมของตนเอง</span>
+        <span class="en">Take this before reading, to see what you already know.</span></p>
+
+      <section class="quiz" id="pretest-q" data-quiz="pre" data-chapter="ch05">
+        <div class="quiz-head">
+          <h3><span class="th">ก่อนเรียน: บทที่ 5</span><span class="en">Pre-test: Chapter 5</span></h3>
+          <p><span class="th">5 ข้อ · ปรนัย · ตรวจคำตอบได้ทันที</span>
+             <span class="en">5 multiple-choice questions · marked instantly</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="b"
+               data-explain-th="ตัวเก็บประจุเก็บพลังงานไว้ในสนามไฟฟ้าระหว่างแผ่นตัวนำ ส่วนตัวเหนี่ยวนำเก็บไว้ในสนามแม่เหล็กรอบขดลวด ทั้งคู่ไม่ได้เปลี่ยนพลังงานเป็นความร้อนเหมือนตัวต้านทาน (หัวข้อ 5.1 และ 5.3)"
+               data-explain-en="A capacitor stores energy in the electric field between its plates; an inductor stores it in the magnetic field around its coil. Neither turns it into heat the way a resistor does (Sections 5.1 and 5.3).">
+            <div class="q-text"><span class="th">ตัวเก็บประจุเก็บพลังงานไว้ในรูปใด</span>
+              <span class="en">In what form does a capacitor store energy?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ความร้อนในแผ่นตัวนำ</span><span class="en">Heat in its plates</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">สนามไฟฟ้าระหว่างแผ่นตัวนำ</span><span class="en">An electric field between its plates</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">สนามแม่เหล็กรอบตัวมัน</span><span class="en">A magnetic field around it</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">พลังงานเคมีเหมือนแบตเตอรี่</span><span class="en">Chemical energy, as in a battery</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="ค่าคงตัวเวลาของวงจร RC คือ τ = RC = 10 000 × 100×10⁻⁹ = 10⁻³ วินาที = 1 มิลลิวินาที (หัวข้อ 5.2)"
+               data-explain-en="The RC time constant is τ = RC = 10,000 × 100×10⁻⁹ = 10⁻³ s = 1 ms (Section 5.2).">
+            <div class="q-text"><span class="th">วงจร RC ที่มี R = 10 kΩ และ C = 100 nF มีค่าคงตัวเวลาเท่าใด</span>
+              <span class="en">What is the time constant of an RC circuit with R = 10 kΩ and C = 100 nF?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>1 µs</span></label>
+              <label class="opt" data-opt="b"><span>100 µs</span></label>
+              <label class="opt" data-opt="c"><span>1 ms</span></label>
+              <label class="opt" data-opt="d"><span>1 s</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="หลังเวลาผ่านไปหนึ่งค่าคงตัวเวลา แรงดันคร่อมตัวเก็บประจุขึ้นไปถึง 63.2 % ของค่าสุดท้าย ซึ่งเป็นค่าที่มาจาก 1 − e⁻¹ (หัวข้อ 5.2)"
+               data-explain-en="After one time constant the capacitor voltage has reached 63.2 % of its final value, the number 1 − e⁻¹ (Section 5.2).">
+            <div class="q-text"><span class="th">เมื่อประจุตัวเก็บประจุผ่านตัวต้านทาน หลังเวลาผ่านไปหนึ่งค่าคงตัวเวลา แรงดันขึ้นไปถึงกี่เปอร์เซ็นต์ของค่าสุดท้าย</span>
+              <span class="en">Charging a capacitor through a resistor, what percentage of the final voltage is reached after one time constant?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>63 %</span></label>
+              <label class="opt" data-opt="b"><span>50 %</span></label>
+              <label class="opt" data-opt="c"><span>90 %</span></label>
+              <label class="opt" data-opt="d"><span>100 %</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="ในสภาวะคงตัวของวงจรกระแสตรง ตัวเก็บประจุประจุเต็มแล้วจึงไม่มีกระแสไหลผ่าน เปรียบเสมือนวงจรเปิด ส่วนตัวเหนี่ยวนำกลับประพฤติตัวเหมือนลวดธรรมดา (หัวข้อ 5.2 และ 5.3)"
+               data-explain-en="In the DC steady state a fully charged capacitor passes no current and behaves as an open circuit, while an inductor behaves like plain wire (Sections 5.2 and 5.3).">
+            <div class="q-text"><span class="th">ในสภาวะคงตัวของวงจรกระแสตรง ตัวเก็บประจุประพฤติตัวอย่างไร</span>
+              <span class="en">In the DC steady state, how does a capacitor behave?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">เหมือนลวดธรรมดา</span><span class="en">Like plain wire</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">เหมือนตัวต้านทานค่าคงที่</span><span class="en">Like a fixed resistor</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เหมือนแหล่งจ่ายกระแส</span><span class="en">Like a current source</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">เหมือนวงจรเปิด ไม่มีกระแสไหลผ่าน</span><span class="en">Like an open circuit, passing no current</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="วงจรกรองความถี่ต่ำผ่านยอมให้สัญญาณที่เปลี่ยนช้า (เช่น ความชื้นดินที่เปลี่ยนเป็นนาที) ผ่านไปได้ แต่ลดทอนสัญญาณรบกวนความถี่สูงจากมอเตอร์และอินเวอร์เตอร์ลง (หัวข้อ 5.4)"
+               data-explain-en="A low-pass filter passes slowly changing signals, such as soil moisture over minutes, while attenuating the high-frequency noise from motors and inverters (Section 5.4).">
+            <div class="q-text"><span class="th">วงจรกรองความถี่ต่ำผ่าน (low-pass filter) ทำหน้าที่อะไรกับสัญญาณเซนเซอร์</span>
+              <span class="en">What does a low-pass filter do to a sensor signal?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span><span class="th">ขยายสัญญาณให้แรงขึ้น</span><span class="en">Amplifies it</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ยอมให้สัญญาณที่เปลี่ยนช้าผ่าน แต่ตัดสัญญาณรบกวนความถี่สูงทิ้ง</span><span class="en">Passes the slow changes and removes high-frequency noise</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">เปลี่ยนสัญญาณอนาล็อกเป็นดิจิทัล</span><span class="en">Converts it from analogue to digital</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ตัดสัญญาณที่เปลี่ยนช้าทิ้ง เหลือเฉพาะความถี่สูง</span><span class="en">Removes the slow changes, leaving only the high frequencies</span></span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== 5.1 -->
+    <section id="s1">
+      <h2><span class="num">5.1</span><span class="th">ตัวเก็บประจุ</span>
+          <span class="en">Capacitance</span></h2>
+
+      <p><span class="th">ตัวเก็บประจุคือแผ่นตัวนำสองแผ่นวางใกล้กันโดยมีฉนวนคั่น
+        เมื่อต่อเข้ากับแหล่งจ่าย ประจุบวกจะสะสมที่แผ่นหนึ่งและประจุลบที่อีกแผ่นหนึ่ง
+        โดย <b>ไม่มีประจุตัวใดข้ามฉนวนไปได้เลย</b> สิ่งที่เก็บไว้จึงไม่ใช่ประจุที่ไหลผ่าน
+        แต่คือ <b>สนามไฟฟ้า</b> ระหว่างแผ่นทั้งสอง ความสามารถในการเก็บนี้เรียกว่าความจุไฟฟ้า</span>
+        <span class="en">A capacitor is two conducting plates close together with an insulator between them.
+        Connect it to a supply and positive charge gathers on one plate, negative on the other, while
+        <b>no charge whatever crosses the insulator</b>. What is stored is therefore not charge in transit
+        but the <b>electric field</b> between the plates. The ability to store it is the
+        capacitance:</span></p>
+
+      <div class="equation">
+        \[ C = \frac{Q}{V} \qquad\qquad C = \frac{\varepsilon A}{d} \qquad\qquad W = \tfrac{1}{2}CV^{2} \]
+      </div>
+      <p class="eq-note"><span class="th">\(C\) หน่วยฟารัด (F), \(\varepsilon\) = สภาพยอมของฉนวน,
+        \(A\) = พื้นที่แผ่น, \(d\) = ระยะห่างระหว่างแผ่น</span>
+        <span class="en">\(C\) in farads (F), \(\varepsilon\) = permittivity of the insulator,
+        \(A\) = plate area, \(d\) = plate separation</span></p>
+
+      <figure>
+        <div class="figure-box is-animated cap-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 330" role="img" width="720"
+               aria-label="A capacitor being charged from a battery, with charge gathering on the plates and an electric field between them">
+            <defs>
+              <clipPath id="cw1"><rect x="150" y="82" width="270" height="16"/></clipPath>
+              <clipPath id="cw2"><rect x="480" y="242" width="180" height="16"/></clipPath>
+            </defs>
+
+            <!-- battery -->
+            <path class="wire" d="M90 90 V130"/>
+            <line x1="68"  y1="130" x2="112" y2="130" stroke="#0d1128" stroke-width="3"/>
+            <line x1="79"  y1="142" x2="101" y2="142" stroke="#0d1128" stroke-width="3"/>
+            <line x1="68"  y1="154" x2="112" y2="154" stroke="#0d1128" stroke-width="3"/>
+            <line x1="79"  y1="166" x2="101" y2="166" stroke="#0d1128" stroke-width="3"/>
+            <path class="wire" d="M90 166 V250"/>
+            <text class="lbl" x="50" y="148" text-anchor="middle">V</text>
+
+            <!-- top wire to the left plate -->
+            <path class="wire" d="M90 90 H420"/>
+            <g clip-path="url(#cw1)"><g class="flow">
+              <circle class="elec" cx="150" cy="90" r="6"/><circle class="elec" cx="184" cy="90" r="6"/>
+              <circle class="elec" cx="218" cy="90" r="6"/><circle class="elec" cx="252" cy="90" r="6"/>
+              <circle class="elec" cx="286" cy="90" r="6"/><circle class="elec" cx="320" cy="90" r="6"/>
+              <circle class="elec" cx="354" cy="90" r="6"/><circle class="elec" cx="388" cy="90" r="6"/>
+              <circle class="elec" cx="422" cy="90" r="6"/>
+            </g></g>
+            <text class="cap" x="250" y="76">I</text>
+
+            <!-- capacitor -->
+            <path class="wire" d="M420 90 V120"/>
+            <line class="plate" x1="420" y1="120" x2="420" y2="220"/>
+            <line class="plate" x1="452" y1="120" x2="452" y2="220"/>
+            <path class="wire" d="M452 90 V120"/>
+            <path class="wire" d="M420 220 V250"/>
+            <path class="wire" d="M452 220 V250"/>
+            <rect x="424" y="120" width="24" height="100" fill="#eef1f5"/>
+
+            <!-- accumulated charge -->
+            <g class="lbl" fill="#d64545">
+              <text x="408" y="136" text-anchor="middle">+</text>
+              <text x="408" y="158" text-anchor="middle">+</text>
+              <text x="408" y="180" text-anchor="middle">+</text>
+              <text x="408" y="202" text-anchor="middle">+</text>
+            </g>
+            <g class="lbl" fill="#2b6cb0">
+              <text x="464" y="136" text-anchor="middle">−</text>
+              <text x="464" y="158" text-anchor="middle">−</text>
+              <text x="464" y="180" text-anchor="middle">−</text>
+              <text x="464" y="202" text-anchor="middle">−</text>
+            </g>
+
+            <!-- field lines between the plates -->
+            <g stroke="#fd5f00" stroke-width="1.5" opacity=".7">
+              <line x1="424" y1="136" x2="446" y2="136"/><polygon points="446,132 452,136 446,140" fill="#fd5f00"/>
+              <line x1="424" y1="158" x2="446" y2="158"/><polygon points="446,154 452,158 446,162" fill="#fd5f00"/>
+              <line x1="424" y1="180" x2="446" y2="180"/><polygon points="446,176 452,180 446,184" fill="#fd5f00"/>
+              <line x1="424" y1="202" x2="446" y2="202"/><polygon points="446,198 452,202 446,206" fill="#fd5f00"/>
+            </g>
+
+            <!-- dimension marks -->
+            <line x1="420" y1="238" x2="452" y2="238" stroke="#6c757d" stroke-width="1"/>
+            <text class="sub" x="436" y="252" text-anchor="middle">d</text>
+            <line x1="470" y1="120" x2="470" y2="220" stroke="#6c757d" stroke-width="1"/>
+            <text class="sub" x="482" y="174">A</text>
+
+            <!-- return wire -->
+            <path class="wire" d="M90 250 H660"/>
+            <path class="wire" d="M660 250 V170"/>
+            <path class="wire" d="M452 250 H660"/>
+            <g clip-path="url(#cw2)"><g class="flow">
+              <circle class="elec" cx="480" cy="250" r="6"/><circle class="elec" cx="514" cy="250" r="6"/>
+              <circle class="elec" cx="548" cy="250" r="6"/><circle class="elec" cx="582" cy="250" r="6"/>
+              <circle class="elec" cx="616" cy="250" r="6"/><circle class="elec" cx="650" cy="250" r="6"/>
+            </g></g>
+
+            <text class="sub th" x="520" y="140">ไม่มีประจุข้ามฉนวน</text>
+            <text class="sub en" x="520" y="140">no charge crosses the gap</text>
+            <text class="sub th" x="520" y="156">แต่มีกระแสไหลในวงจรภายนอก</text>
+            <text class="sub en" x="520" y="156">yet current flows in the outside circuit</text>
+            <text class="sub th" x="520" y="172">ตราบใดที่ยังประจุไม่เต็ม</text>
+            <text class="sub en" x="520" y="172">for as long as it is still filling</text>
+
+            <text class="sub th" x="60" y="292">พื้นที่แผ่นมาก หรือระยะห่างน้อย ย่อมเก็บประจุได้มากที่แรงดันเท่ากัน — นั่นคือ C = εA/d</text>
+            <text class="sub en" x="60" y="292">larger plates, or a smaller gap, hold more charge at the same voltage — which is C = εA/d</text>
+            <text class="sub th" x="60" y="312">เมื่อประจุเต็มแล้ว กระแสจะหยุดสนิท และตัวเก็บประจุกลายเป็นวงจรเปิดสำหรับไฟตรง</text>
+            <text class="sub en" x="60" y="312">once full the current stops entirely, and the capacitor is an open circuit to direct current</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 5.1</span><span class="en">Figure 5.1</span></b>
+          <span class="th"> ตัวเก็บประจุขณะกำลังถูกประจุ ลูกศรสีส้มระหว่างแผ่นคือสนามไฟฟ้าที่เก็บพลังงานไว้
+            <b>ข้อที่ต้องเข้าใจให้ชัด:</b> มีกระแสไหลในวงจรภายนอกจริง ทั้งที่ไม่มีประจุตัวใดข้ามฉนวนเลย
+            เพราะประจุที่มาสะสมบนแผ่นหนึ่งผลักประจุออกจากอีกแผ่นหนึ่งด้วยแรงทางไฟฟ้า
+            <br><i>หมายเหตุ:</i> ภาพเคลื่อนไหวแสดงเฉพาะ <b>ช่วงกำลังประจุ</b> เท่านั้น
+            ในความเป็นจริง เมื่อแรงดันคร่อมตัวเก็บประจุขึ้นไปเท่ากับแรงดันแหล่งจ่าย กระแสจะลดลงจนเป็นศูนย์
+            ซึ่งเป็นเรื่องของหัวข้อถัดไป</span>
+          <span class="en"> A capacitor in the act of charging; the orange arrows between the plates are the
+            electric field in which the energy is held. <b>The point to be clear about:</b> current really
+            does flow in the external circuit even though no charge crosses the insulator, because charge
+            arriving on one plate electrically repels charge off the other. <br><i>Note:</i> the animation
+            shows only the <b>charging phase</b>. In reality, as the capacitor's voltage rises to meet the
+            supply's the current falls away to nothing — which is the subject of the next
+            section.</span></figcaption>
+      </figure>
+
+      <h3><span class="th">5.1.1 ต่ออนุกรมและขนาน — ตรงข้ามกับตัวต้านทาน</span>
+          <span class="en">5.1.1 In series and parallel — the opposite of resistors</span></h3>
+      <p><span class="th">ตัวเก็บประจุที่ต่อ <b>ขนาน</b> กันเท่ากับการเพิ่มพื้นที่แผ่น ความจุจึงบวกกัน
+        ส่วนการต่อ <b>อนุกรม</b> เท่ากับการเพิ่มระยะห่างระหว่างแผ่น ความจุรวมจึงลดลง
+        ซึ่งเป็นภาพกลับกันกับตัวต้านทานในบทที่ 3 พอดี — และนี่เป็นจุดที่นักศึกษาสับสนบ่อยที่สุด
+        วิธีจำที่ไม่มีวันผิดคือย้อนกลับไปที่ \(C = \varepsilon A/d\) แล้วถามว่าการต่อแบบนี้
+        ทำให้ \(A\) เพิ่มหรือ \(d\) เพิ่ม</span>
+        <span class="en">Capacitors in <b>parallel</b> amount to enlarging the plate area, so their
+        capacitances add; in <b>series</b> they amount to widening the gap, so the total falls. This is the
+        exact mirror of resistors in Chapter 3 — and the commonest source of confusion. The infallible way
+        to remember is to go back to \(C = \varepsilon A/d\) and ask whether the connection increases
+        \(A\) or increases \(d\).</span></p>
+
+      <div class="equation">
+        \[ \text{ขนาน / parallel:}\quad C_{\text{eq}} = C_1 + C_2 + \cdots + C_n \]
+        \[ \text{อนุกรม / series:}\quad \frac{1}{C_{\text{eq}}} = \frac{1}{C_1} + \frac{1}{C_2}
+           + \cdots + \frac{1}{C_n} \]
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 5.1 ตัวเก็บประจุที่พบในระบบไฟฟ้าฟาร์ม</span>
+            <span class="en">Table 5.1 Capacitors met in farm electrical systems</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">ชนิด</span><span class="en">Type</span></th>
+              <th class="num"><span class="th">ช่วงค่า</span><span class="en">Range</span></th>
+              <th><span class="th">หน้าที่ในฟาร์ม</span><span class="en">What it does on the farm</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b><span class="th">อิเล็กโทรไลต์</span><span class="en">Electrolytic</span></b></td>
+              <td class="num">1 µF – 10 mF</td>
+              <td><span class="th">กรองแรงดันในแหล่งจ่ายไฟ (ตัวอย่างที่ 13.1) <b>มีขั้ว ต่อกลับขั้วจะระเบิด</b></span>
+                  <span class="en">Smoothing in power supplies (Example 13.1). <b>Polarised — reversed, it bursts</b></span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">ฟิล์ม</span><span class="en">Film</span></b></td>
+              <td class="num">1 nF – 10 µF</td>
+              <td><span class="th">วงจรกรองสัญญาณ ไม่มีขั้ว ทนแรงดันสูง อายุยาว</span>
+                  <span class="en">Signal filtering; unpolarised, high-voltage, long-lived</span></td>
+            </tr>
+            <tr>
+              <td><b><span class="th">เซรามิก</span><span class="en">Ceramic</span></b></td>
+              <td class="num">1 pF – 1 µF</td>
+              <td><span class="th">ตัดสัญญาณรบกวนความถี่สูงใกล้ขาไอซี ราคาถูกมาก</span>
+                  <span class="en">Decoupling noise right at an IC's pins; very cheap</span></td>
+            </tr>
+            <tr style="background:#fff6e5">
+              <td><b><span class="th">สตาร์ตมอเตอร์</span><span class="en">Motor start</span></b></td>
+              <td class="num">5 – 100 µF</td>
+              <td><span class="th">สร้างเฟสที่สองให้มอเตอร์เหนี่ยวนำหนึ่งเฟส (บทที่ 12) ทนไฟ 230 V AC ได้</span>
+                  <span class="en">Creating the second phase for a single-phase induction motor (Chapter 12), rated for 230 V AC</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =============================================== 5.2 -->
+    <section id="s2">
+      <h2><span class="num">5.2</span><span class="th">ผลตอบสนองชั่วครู่ของวงจร RC</span>
+          <span class="en">The RC transient response</span></h2>
+
+      <p><span class="th">ต่อตัวเก็บประจุที่ยังว่างเข้ากับแหล่งจ่ายผ่านตัวต้านทาน แล้วถามว่าเกิดอะไรขึ้น
+        ในวินาทีแรก แรงดันคร่อมตัวเก็บประจุยังเป็นศูนย์ ตัวต้านทานจึงรับแรงดันทั้งหมดไว้
+        กระแสจึงสูงสุดที่ \(V/R\) แต่เมื่อประจุสะสมขึ้น แรงดันคร่อมตัวเก็บประจุก็สูงขึ้น
+        เหลือแรงดันให้ตัวต้านทานน้อยลง กระแสจึงค่อย ๆ ลดลง
+        <b>ยิ่งประจุเต็ม ยิ่งประจุได้ช้าลง</b> — พฤติกรรมแบบนี้ให้เส้นโค้งเอ็กซ์โพเนนเชียลเสมอ</span>
+        <span class="en">Connect an empty capacitor to a supply through a resistor and ask what happens. In
+        the first instant the capacitor's voltage is still zero, so the resistor takes the whole supply and
+        the current is at its greatest, \(V/R\). As charge gathers the capacitor's voltage rises, leaving
+        less across the resistor, and the current falls away. <b>The fuller it gets, the more slowly it
+        fills</b> — and behaviour of that kind always produces an exponential curve.</span></p>
+
+      <div class="equation">
+        \[ v_C(t) = V\left(1 - e^{-t/\tau}\right) \qquad
+           i(t) = \frac{V}{R}\,e^{-t/\tau} \qquad
+           \tau = RC \]
+      </div>
+      <p class="eq-note"><span class="th">\(\tau\) เรียกว่าค่าคงตัวเวลา มีหน่วยเป็นวินาที
+        (ตรวจได้ว่า Ω × F = วินาที)</span>
+        <span class="en">\(\tau\) is the time constant, measured in seconds — check that Ω × F does indeed
+        give seconds</span></p>
+
+      <figure>
+        <div class="figure-box is-animated rc-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 340" role="img" width="720"
+               aria-label="The charging and discharging curve of a capacitor, with a marker tracing it and a tank beside it filling and emptying in step">
+            <!-- axes -->
+            <line class="axis" x1="90" y1="260" x2="650" y2="260"/>
+            <line class="axis" x1="90" y1="260" x2="90" y2="56"/>
+            <polygon points="650,256 660,260 650,264" fill="#6c757d"/>
+            <polygon points="86,62 90,52 94,62" fill="#6c757d"/>
+            <text class="sub th" x="370" y="300" text-anchor="middle">เวลา (หน่วยเป็นค่าคงตัวเวลา τ)</text>
+            <text class="sub en" x="370" y="300" text-anchor="middle">time, in units of the time constant τ</text>
+            <text class="sub" x="80" y="68" text-anchor="end">v_C</text>
+
+            <!-- reference levels -->
+            <line x1="90" y1="70"  x2="650" y2="70"  stroke="#eef1f5" stroke-width="1"/>
+            <line x1="90" y1="140" x2="365" y2="140" stroke="#eef1f5" stroke-width="1"/>
+            <text class="sub" x="80" y="74"  text-anchor="end">V</text>
+            <text class="sub" x="80" y="144" text-anchor="end">63 %</text>
+
+            <!-- tick marks -->
+            <g stroke="#6c757d" stroke-width="1">
+              <line x1="145" y1="260" x2="145" y2="266"/><line x1="200" y1="260" x2="200" y2="266"/>
+              <line x1="255" y1="260" x2="255" y2="266"/><line x1="310" y1="260" x2="310" y2="266"/>
+              <line x1="365" y1="260" x2="365" y2="266"/><line x1="420" y1="260" x2="420" y2="266"/>
+              <line x1="475" y1="260" x2="475" y2="266"/><line x1="530" y1="260" x2="530" y2="266"/>
+              <line x1="585" y1="260" x2="585" y2="266"/><line x1="640" y1="260" x2="640" y2="266"/>
+            </g>
+            <text class="sub" x="145" y="278" text-anchor="middle">1τ</text>
+            <text class="sub" x="255" y="278" text-anchor="middle">3τ</text>
+            <text class="sub" x="365" y="278" text-anchor="middle">5τ</text>
+            <text class="sub" x="475" y="278" text-anchor="middle">7τ</text>
+            <text class="sub" x="640" y="278" text-anchor="middle">10τ</text>
+
+            <!-- charging half -->
+            <path d="M90 260 Q104 218 118 185 Q131 160 145 140 Q172 112 200 96
+                     Q228 85 255 80 Q282 75 310 73 L365 71"
+                  stroke="#fd5f00" stroke-width="3" fill="none"/>
+            <!-- discharging half -->
+            <path d="M365 71 Q379 108 393 145 Q406 170 420 191 Q448 217 475 234
+                     Q502 245 530 251 Q557 255 585 257 L640 259"
+                  stroke="#2b6cb0" stroke-width="3" fill="none"/>
+
+            <!-- switch event marker -->
+            <line x1="365" y1="56" x2="365" y2="266" stroke="#6c757d" stroke-width="1" stroke-dasharray="4 4"/>
+            <text class="cap th" x="365" y="48" text-anchor="middle">สับสวิตช์ไปคายประจุ</text>
+            <text class="cap en" x="365" y="48" text-anchor="middle">switch over to discharge</text>
+
+            <!-- the walking marker -->
+            <circle class="rc-dot" cx="90" cy="260" r="8" fill="#0d1128"/>
+
+            <!-- key points -->
+            <circle cx="145" cy="140" r="4.5" fill="#fd5f00"/>
+            <circle cx="255" cy="80"  r="4.5" fill="#fd5f00"/>
+            <circle cx="365" cy="71"  r="4.5" fill="#fd5f00"/>
+            <text class="sub" x="255" y="70" text-anchor="middle">95 %</text>
+            <text class="sub" x="374" y="62">99 %</text>
+            <circle cx="420" cy="191" r="4.5" fill="#2b6cb0"/>
+            <text class="sub" x="430" y="186" fill="#2b6cb0">37 %</text>
+
+            <!-- the tank -->
+            <rect x="666" y="70" width="28" height="190" fill="none" stroke="#0d1128" stroke-width="2"/>
+            <rect class="rc-fill" x="666" y="70" width="28" height="190" fill="#fd5f00" opacity=".75"/>
+            <text class="sub th" x="680" y="60" text-anchor="middle">ประจุ</text>
+            <text class="sub en" x="680" y="60" text-anchor="middle">charge</text>
+            <text class="sub th" x="680" y="278" text-anchor="middle">ในตัว C</text>
+            <text class="sub en" x="680" y="278" text-anchor="middle">held in C</text>
+
+            <text class="sub th" x="90" y="322">ทั้งสองฝั่งใช้ค่าคงตัวเวลาเดียวกัน — ประจุเต็ม 99 % ใน 5τ และคายจนเหลือ 1 % ใน 5τ เช่นกัน</text>
+            <text class="sub en" x="90" y="322">both halves share one time constant — 99 % full in 5τ, and down to 1 % in another 5τ</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 5.2</span><span class="en">Figure 5.2</span></b>
+          <span class="th"> การประจุและคายประจุของตัวเก็บประจุ ในภาพเคลื่อนไหว
+            จุดสีดำเดินไปตามเส้นโค้ง ขณะที่ถังด้านขวาเติมและลดระดับพร้อมกันในจังหวะเดียวกัน
+            สังเกตว่าตอนเริ่มต้นเส้นโค้งชันมาก แล้วค่อย ๆ แบนลง —
+            <b>ช่วง 1τ แรกได้ไปแล้วถึง 63 % แต่ต้องใช้เวลาอีกถึง 4τ กว่าจะได้อีก 36 % ที่เหลือ</b>
+            นี่คือเหตุผลที่วิศวกรใช้กฎ 5τ เป็นเกณฑ์ว่า “เต็มแล้ว” ในทางปฏิบัติ
+            เพราะการรอให้เต็ม 100 % จริง ๆ ต้องใช้เวลาเป็นอนันต์</span>
+          <span class="en"> A capacitor charging and then discharging. In the animation the black marker
+            walks the curve while the tank at the right fills and empties in step with it. Note how steep
+            the curve is at first and how it flattens: <b>the first 1τ gets 63 % of the way, yet the
+            remaining 36 % takes another 4τ</b>. This is why engineers treat 5τ as "full" for practical
+            purposes — waiting for a true 100 % would take forever.</span></figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 5.2 ค่าที่ควรจำขึ้นใจ</span>
+            <span class="en">Table 5.2 The numbers worth memorising</span></caption>
+          <thead>
+            <tr>
+              <th class="num"><span class="th">เวลา</span><span class="en">Time</span></th>
+              <th class="num"><span class="th">ประจุไปแล้ว</span><span class="en">Charged to</span></th>
+              <th class="num"><span class="th">คายเหลือ</span><span class="en">Discharged to</span></th>
+              <th><span class="th">ใช้เมื่อใด</span><span class="en">When it matters</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="num">1τ</td><td class="num">63.2 %</td><td class="num">36.8 %</td>
+              <td><span class="th">นิยามของค่าคงตัวเวลา</span><span class="en">the definition of the time constant</span></td></tr>
+            <tr><td class="num">2τ</td><td class="num">86.5 %</td><td class="num">13.5 %</td>
+              <td><span class="th">—</span><span class="en">—</span></td></tr>
+            <tr><td class="num">3τ</td><td class="num">95.0 %</td><td class="num">5.0 %</td>
+              <td><span class="th">เกณฑ์หยาบ ๆ สำหรับงานที่ไม่ต้องแม่นมาก</span><span class="en">a rough rule where precision is not critical</span></td></tr>
+            <tr style="background:#eaf7ef"><td class="num">5τ</td><td class="num">99.3 %</td><td class="num">0.7 %</td>
+              <td><span class="th"><b>เกณฑ์มาตรฐานว่า “เข้าสู่สภาวะคงตัวแล้ว”</b></span><span class="en"><b>the standard rule for "settled"</b></span></td></tr>
+            <tr><td class="num">7τ</td><td class="num">99.91 %</td><td class="num">0.09 %</td>
+              <td><span class="th">งานวัดที่ต้องการความแม่นยำระดับ 0.1 %</span><span class="en">measurements needing 0.1 % accuracy</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 5.1</span><span class="en">Example 5.1</span></span>
+          <span class="th">ต้องรอนานเท่าใดก่อนอ่านค่าเซนเซอร์</span>
+          <span class="en">How long to wait before reading the sensor</span></div>
+        <div class="example-body">
+          <p><span class="th">ตัวควบคุมในโรงเรือนอ่านเซนเซอร์ความชื้นดินหลายตัวสลับกันผ่านมัลติเพล็กเซอร์
+            วงจรแบ่งแรงดันของเซนเซอร์ให้ความต้านทานขาออกประมาณ 10 kΩ (ดูตัวอย่างที่ 3.5)
+            และมีตัวเก็บประจุกรองสัญญาณ 100 nF ต่ออยู่ที่ขาเข้าของ ADC
+            หลังจากมัลติเพล็กเซอร์สลับช่องแล้ว จงหา (ก) ค่าคงตัวเวลา
+            (ข) เวลาที่ต้องรอจึงจะอ่านค่าได้แม่นยำถึงระดับ 0.1 %
+            และ (ค) ถ้าโปรแกรมเมอร์เขียนให้อ่านทันทีหลังสลับช่อง จะได้ค่าผิดไปเท่าใด</span>
+            <span class="en">A greenhouse controller reads several soil-moisture sensors in turn through a
+            multiplexer. The sensor divider has an output resistance of about 10 kΩ (see Example 3.5) and a
+            100 nF filter capacitor sits at the ADC input. After the multiplexer switches channel, find
+            (a) the time constant, (b) how long to wait for a reading accurate to 0.1 %, and (c) how far out
+            the reading would be if the programmer sampled immediately after switching.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) ค่าคงตัวเวลา</span><span class="en">(a) The time constant</span></p>
+            \[ \tau = RC = (10 \times 10^{3})(100 \times 10^{-9}) = 1 \times 10^{-3}\ \text{s} = 1\ \text{ms} \]
+
+            <p><span class="th">(ข) ความแม่นยำ 0.1 % หมายถึงต้องให้แรงดันขึ้นไปถึง 99.9 %
+              ซึ่งจากตารางที่ 5.2 ต้องรอ 7τ</span>
+              <span class="en">(b) An accuracy of 0.1 % means reaching 99.9 % of the final value, which from
+              Table 5.2 takes 7τ:</span></p>
+            \[ t = 7\tau = 7 \times 1\ \text{ms} = 7\ \text{ms} \]
+
+            <p><span class="th">(ค) ถ้าอ่านทันทีที่ \(t = 0\) แรงดันยังเป็นค่าเดิมของช่องก่อนหน้า
+              แต่สมมติว่าโปรแกรมรอเพียง 1 ms (คือ 1τ) ตามที่คิดว่า “น่าจะพอ”</span>
+              <span class="en">(c) Sampling at \(t = 0\) simply reads the previous channel. Suppose instead
+              the program waits 1 ms — one time constant — thinking that ought to do:</span></p>
+            \[ v_C(1\tau) = V\left(1 - e^{-1}\right) = 0.632\,V \]
+            <p><span class="th">ถ้าค่าที่ถูกต้องคือ 2.75 V (ดินชื้น จากตัวอย่างที่ 3.5)
+              จะอ่านได้เพียง \(0.632 \times 2.75 = 1.74\) V ซึ่งตัวควบคุมจะแปลว่าดิน <b>แห้ง</b>
+              แล้วสั่งรดน้ำทั้งที่ดินชื้นอยู่แล้ว</span>
+              <span class="en">If the true value were 2.75 V — wet soil, from Example 3.5 — the reading would
+              be only \(0.632 \times 2.75 = 1.74\) V, which the controller would interpret as <b>dry</b> and
+              irrigate soil that is already wet.</span></p>
+
+            <div class="callout callout-agri mb-0">
+              <div class="callout-title">🌱 <span class="th">บทเรียนสำหรับคนเขียนโปรแกรม</span>
+                <span class="en">A lesson for whoever writes the firmware</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">บั๊กชนิดนี้ <b>หาสาเหตุยากมาก</b> เพราะฮาร์ดแวร์ไม่ได้เสียเลย
+                  โปรแกรมก็ไม่ได้ผิดไวยากรณ์ ค่าที่อ่านได้ก็ดูสมเหตุสมผล เพียงแต่ผิด
+                  และจะผิดมากขึ้นเมื่อความต้านทานของเซนเซอร์สูงขึ้น คือตอนดินแห้งพอดี</span>
+                  <span class="en">A fault of this kind is <b>very hard to trace</b>: nothing is broken, the
+                  code compiles, and the readings look plausible — they are merely wrong, and most wrong when
+                  the sensor's resistance is highest, which is exactly when the soil is dry.</span></li>
+                <li><span class="th">แก้ได้สองทาง — ใส่ <code>delay(10)</code> หลังสลับช่อง
+                  หรือลดค่าตัวเก็บประจุลง แต่การลดค่า C จะทำให้กรองสัญญาณรบกวนได้แย่ลง
+                  ซึ่งเป็นการแลกเปลี่ยนที่จะกล่าวถึงในหัวข้อ 5.4</span>
+                  <span class="en">Two cures: put a <code>delay(10)</code> after switching, or make the
+                  capacitor smaller — though a smaller C filters noise less well, the trade-off taken up in
+                  Section 5.4.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 5.3 -->
+    <section id="s3">
+      <h2><span class="num">5.3</span><span class="th">ตัวเหนี่ยวนำและวงจร RL</span>
+          <span class="en">Inductance and the RL circuit</span></h2>
+
+      <p><span class="th">ตัวเหนี่ยวนำคือขดลวดที่พันรอบแกน เมื่อกระแสไหลผ่านจะเกิดสนามแม่เหล็กรอบตัวมัน
+        และพลังงานถูกเก็บไว้ในสนามนั้น ประเด็นสำคัญคือ <b>สนามแม่เหล็กจะเปลี่ยนแปลงทันทีทันใดไม่ได้</b>
+        เพราะการเปลี่ยนฟลักซ์ทำให้เกิดแรงเคลื่อนเหนี่ยวนำที่ต้านการเปลี่ยนแปลงนั้นเอง ตามกฎของฟาราเดย์ในบทที่ 12
+        ผลก็คือ <b>กระแสที่ไหลผ่านตัวเหนี่ยวนำเปลี่ยนแปลงทันทีไม่ได้</b>
+        ซึ่งเป็นคู่ตรงข้ามกับตัวเก็บประจุที่ <b>แรงดัน</b> เปลี่ยนทันทีไม่ได้</span>
+        <span class="en">An inductor is a coil wound on a core. Pass a current through it and a magnetic
+        field appears around it, holding energy. The crucial point is that <b>a magnetic field cannot
+        change instantly</b>, because any change of flux induces an e.m.f. opposing that very change, by
+        Faraday's law from Chapter 12. The consequence is that <b>the current through an inductor cannot
+        change instantly</b> — the exact counterpart of a capacitor, across which the <b>voltage</b> cannot
+        change instantly.</span></p>
+
+      <div class="equation">
+        \[ v_L = L\,\frac{di}{dt} \qquad\qquad
+           i(t) = \frac{V}{R}\left(1 - e^{-t/\tau}\right) \qquad\qquad
+           \tau = \frac{L}{R} \qquad\qquad W = \tfrac{1}{2}LI^{2} \]
+      </div>
+      <p class="eq-note"><span class="th">สังเกตว่าค่าคงตัวเวลาของวงจร RL คือ \(L/R\) ไม่ใช่ \(LR\) —
+        <b>ความต้านทานที่มากขึ้นทำให้วงจร RL เร็วขึ้น</b> ซึ่งตรงข้ามกับวงจร RC</span>
+        <span class="en">Note that the RL time constant is \(L/R\), not \(LR\): <b>more resistance makes an
+        RL circuit faster</b>, the opposite of an RC circuit</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 700 300" role="img" width="700"
+               aria-label="The rising current in a solenoid coil after it is switched on, with the pull-in threshold marked">
+            <line class="axis" x1="90" y1="240" x2="610" y2="240"/>
+            <line class="axis" x1="90" y1="240" x2="90" y2="56"/>
+            <polygon points="610,236 620,240 610,244" fill="#6c757d"/>
+            <polygon points="86,62 90,52 94,62" fill="#6c757d"/>
+            <text class="sub th" x="350" y="284" text-anchor="middle">เวลาหลังจ่ายไฟให้คอยล์ (หน่วย τ = L/R)</text>
+            <text class="sub en" x="350" y="284" text-anchor="middle">time after the coil is energised, in units of τ = L/R</text>
+            <text class="sub" x="80" y="66" text-anchor="end">i</text>
+
+            <!-- levels -->
+            <line x1="90" y1="70"  x2="610" y2="70"  stroke="#eef1f5" stroke-width="1"/>
+            <text class="sub" x="80" y="74" text-anchor="end">0.40 A</text>
+            <line x1="90" y1="121" x2="540" y2="121" stroke="#d64545" stroke-width="1.5" stroke-dasharray="6 4"/>
+            <text class="sub" x="80" y="125" text-anchor="end" fill="#d64545">0.28 A</text>
+
+            <!-- ticks -->
+            <g stroke="#6c757d" stroke-width="1">
+              <line x1="180" y1="240" x2="180" y2="246"/><line x1="270" y1="240" x2="270" y2="246"/>
+              <line x1="360" y1="240" x2="360" y2="246"/><line x1="450" y1="240" x2="450" y2="246"/>
+              <line x1="540" y1="240" x2="540" y2="246"/>
+            </g>
+            <text class="sub" x="180" y="258" text-anchor="middle">1τ</text>
+            <text class="sub" x="270" y="258" text-anchor="middle">2τ</text>
+            <text class="sub" x="360" y="258" text-anchor="middle">3τ</text>
+            <text class="sub" x="450" y="258" text-anchor="middle">4τ</text>
+            <text class="sub" x="540" y="258" text-anchor="middle">5τ</text>
+
+            <!-- the current curve -->
+            <path d="M90 240 Q112 202 135 173 Q158 150 180 133 Q225 108 270 93
+                     Q315 84 360 79 Q405 75 450 73 L540 71"
+                  stroke="#fd5f00" stroke-width="3" fill="none"/>
+
+            <!-- pull-in point -->
+            <circle cx="198" cy="121" r="6" fill="#d64545"/>
+            <line x1="198" y1="121" x2="198" y2="240" stroke="#d64545" stroke-width="1" stroke-dasharray="4 4"/>
+            <text class="cap" x="210" y="112" fill="#d64545">วาล์วเปิดตรงนี้</text>
+            <text class="cap en" x="210" y="112" fill="#d64545">the valve opens here</text>
+            <text class="sub" x="198" y="258" text-anchor="middle" fill="#d64545">1.2τ</text>
+
+            <!-- annotations -->
+            <text class="sub th" x="300" y="150">กระแสต้องไต่ขึ้นถึง 70 % ของค่าสุดท้าย</text>
+            <text class="sub en" x="300" y="150">the current must climb to 70 % of its final value</text>
+            <text class="sub th" x="300" y="166">แรงดึงของคอยล์จึงจะพอเอาชนะสปริง</text>
+            <text class="sub en" x="300" y="166">before the coil can overcome the spring</text>
+
+            <text class="sub th" x="90" y="300">แรงดันจ่ายเข้าคอยล์ทันทีที่สับสวิตช์ แต่กระแสต้องใช้เวลา — และแรงดึงขึ้นกับกระแส ไม่ใช่แรงดัน</text>
+            <text class="sub en" x="90" y="300">the voltage arrives the instant the switch closes, but the current takes time — and the pull depends on current, not voltage</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 5.3</span><span class="en">Figure 5.3</span></b>
+          <span class="th"> กระแสในคอยล์ของวาล์วโซลินอยด์หลังจ่ายไฟ เส้นโค้งมีรูปร่างเดียวกับการประจุตัวเก็บประจุ
+            แต่สิ่งที่ไต่ขึ้นคือ <b>กระแส</b> ไม่ใช่แรงดัน
+            เส้นประสีแดงคือระดับกระแสที่แรงดึงแม่เหล็กเพียงพอจะเอาชนะสปริงและดึงแกนวาล์วให้เปิด
+            ซึ่งเกิดขึ้นที่ราว 1.2τ หลังสับสวิตช์ ไม่ใช่ทันที
+            ตัวเลขนี้คำนวณในตัวอย่างที่ 5.3</span>
+          <span class="en"> The current in a solenoid valve's coil after switch-on. The curve has the same
+            shape as a charging capacitor's, but what climbs is the <b>current</b>, not the voltage. The red
+            dashed line is the current at which the magnetic pull finally overcomes the spring and draws the
+            armature open — which happens about 1.2τ after the switch closes, not instantly. Example 5.3
+            works out the figure.</span></figcaption>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 5.3 องค์ประกอบทั้งสามเทียบกัน — ความเป็นคู่ตรงข้ามของ L กับ C</span>
+            <span class="en">Table 5.3 The three elements compared — the duality of L and C</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">หัวข้อ</span><span class="en">Aspect</span></th>
+              <th><span class="th">ตัวต้านทาน R</span><span class="en">Resistor R</span></th>
+              <th><span class="th">ตัวเก็บประจุ C</span><span class="en">Capacitor C</span></th>
+              <th><span class="th">ตัวเหนี่ยวนำ L</span><span class="en">Inductor L</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">สมการนิยาม</span><span class="en">Defining equation</span></td>
+              <td>\(v = iR\)</td><td>\(i = C\,dv/dt\)</td><td>\(v = L\,di/dt\)</td>
+            </tr>
+            <tr>
+              <td><span class="th">เก็บพลังงานไว้ใน</span><span class="en">Stores energy in</span></td>
+              <td><span class="th">ไม่เก็บ — เปลี่ยนเป็นความร้อน</span><span class="en">nothing — it becomes heat</span></td>
+              <td><span class="th">สนามไฟฟ้า</span><span class="en">an electric field</span></td>
+              <td><span class="th">สนามแม่เหล็ก</span><span class="en">a magnetic field</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">พลังงานที่เก็บ</span><span class="en">Energy held</span></td>
+              <td>—</td><td>\(\tfrac{1}{2}CV^{2}\)</td><td>\(\tfrac{1}{2}LI^{2}\)</td>
+            </tr>
+            <tr style="background:#eaf7ef">
+              <td><span class="th">สิ่งที่เปลี่ยนทันทีไม่ได้</span><span class="en">What cannot change instantly</span></td>
+              <td><span class="th">— เปลี่ยนได้ทั้งคู่</span><span class="en">— either may</span></td>
+              <td><b><span class="th">แรงดัน</span><span class="en">its voltage</span></b></td>
+              <td><b><span class="th">กระแส</span><span class="en">its current</span></b></td>
+            </tr>
+            <tr>
+              <td><span class="th">ในสภาวะคงตัว DC</span><span class="en">In the DC steady state</span></td>
+              <td><span class="th">เป็นตัวต้านทานตามปกติ</span><span class="en">an ordinary resistance</span></td>
+              <td><span class="th">วงจรเปิด</span><span class="en">an open circuit</span></td>
+              <td><span class="th">ลวดธรรมดา</span><span class="en">plain wire</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">ค่าคงตัวเวลา</span><span class="en">Time constant</span></td>
+              <td>—</td><td>\(\tau = RC\)</td><td>\(\tau = L/R\)</td>
+            </tr>
+            <tr>
+              <td><span class="th">ต่อขนาน</span><span class="en">In parallel</span></td>
+              <td><span class="th">ลดลง</span><span class="en">falls</span></td>
+              <td><span class="th">บวกกัน</span><span class="en">they add</span></td>
+              <td><span class="th">ลดลง</span><span class="en">falls</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 5.2</span><span class="en">Example 5.2</span></span>
+          <span class="th">พลังงานที่เก็บไว้ — และเหตุผลที่ต้องคายประจุก่อนแตะ</span>
+          <span class="en">The energy stored — and why you discharge before touching</span></div>
+        <div class="example-body">
+          <p><span class="th">จงเปรียบเทียบพลังงานที่เก็บไว้ในสามกรณีที่พบจริงในตู้ควบคุมฟาร์ม
+            (ก) คอยล์วาล์วโซลินอยด์ \(L = 120\) mH ขณะมีกระแส 0.40 A (จากตัวอย่างที่ 13.2)
+            (ข) ตัวเก็บประจุสตาร์ตมอเตอร์ 25 µF ที่แรงดันยอด 230 V
+            (ค) ตัวเก็บประจุกรองในแหล่งจ่ายไฟ 4700 µF ที่ 25 V (จากตัวอย่างที่ 13.1)</span>
+            <span class="en">Compare the energy stored in three cases that occur in a real farm control
+            cabinet: (a) a solenoid valve coil of \(L = 120\) mH carrying 0.40 A, from Example 13.2;
+            (b) a 25 µF motor-start capacitor at a peak of 230 V; and (c) the 4700 µF smoothing capacitor at
+            25 V, from Example 13.1.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            \[ \text{(ก)}\quad W = \tfrac{1}{2}LI^{2}
+               = \tfrac{1}{2}(0.120)(0.40)^{2} = 9.6\ \text{mJ} \]
+            \[ \text{(ข)}\quad W = \tfrac{1}{2}CV^{2}
+               = \tfrac{1}{2}(25\times10^{-6})(230)^{2} = 0.66\ \text{J} \]
+            \[ \text{(ค)}\quad W = \tfrac{1}{2}CV^{2}
+               = \tfrac{1}{2}(4700\times10^{-6})(25)^{2} = 1.47\ \text{J} \]
+
+            <div class="callout callout-danger mb-0">
+              <div class="callout-title">⚠️ <span class="th">ตัวเลขเหล่านี้หมายความว่าอย่างไรในทางปฏิบัติ</span>
+                <span class="en">What these numbers mean in practice</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">คอยล์วาล์วเก็บพลังงานเพียง 9.6 mJ ซึ่งน้อยมาก
+                  แต่ปล่อยออกมาใน <b>ไม่กี่ไมโครวินาที</b> จึงเกิดแรงดัน 4800 V ตามตัวอย่างที่ 13.2 —
+                  <b>อันตรายอยู่ที่อัตราการปล่อย ไม่ใช่ปริมาณพลังงาน</b></span>
+                  <span class="en">The valve coil holds only 9.6 mJ, a trifle — but it releases it in
+                  <b>a few microseconds</b>, which is how 4800 V appeared in Example 13.2. <b>The danger lies
+                  in the rate of release, not the quantity.</b></span></li>
+                <li><span class="th">ตัวเก็บประจุกรอง 1.47 J คือพลังงานที่พอจะทำให้เกิดประกายไฟรุนแรง
+                  และเชื่อมปลายไขควงติดกับขั้วได้ นี่คือเหตุผลของคำเตือนในปฏิบัติการที่ 13
+                  ที่ให้คายประจุผ่านตัวต้านทาน 1 kΩ ก่อนแตะทุกครั้ง
+                  และห้ามลัดวงจรด้วยไขควงเด็ดขาด</span>
+                  <span class="en">The 1.47 J in the smoothing capacitor is enough for a violent spark and to
+                  weld a screwdriver tip to the terminals. That is the reason for the warning in Laboratory
+                  13: always discharge through a 1 kΩ resistor before touching, and never short it with a
+                  screwdriver.</span></li>
+                <li><span class="th">ตัวเก็บประจุสตาร์ตมอเตอร์ยังคงเก็บพลังงาน 0.66 J ไว้ <b>หลังถอดปลั๊กแล้ว</b>
+                  และอาจค้างอยู่นานหลายนาทีถ้าไม่มีตัวต้านทานคายประจุ
+                  มอเตอร์ที่ออกแบบดีจะมีตัวต้านทานคายประจุคร่อมไว้เสมอ แต่ของราคาถูกมักไม่มี</span>
+                  <span class="en">A motor-start capacitor still holds its 0.66 J <b>after the plug is
+                  pulled</b>, and may keep it for minutes unless a bleed resistor is fitted. Well-made motors
+                  always have one across the capacitor; cheap ones often do not.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 5.3</span><span class="en">Example 5.3</span></span>
+          <span class="th">วาล์วโซลินอยด์เปิดช้ากว่าที่สั่งเท่าใด</span>
+          <span class="en">How late does the solenoid valve actually open?</span></div>
+        <div class="example-body">
+          <p><span class="th">วาล์วโซลินอยด์ในระบบน้ำหยดจากตัวอย่างที่ 13.2 ใช้ไฟ 24 V
+            คอยล์มี \(L = 120\) mH และ \(R = 60\ \Omega\) ผู้ผลิตระบุว่าแกนวาล์วจะถูกดึงให้เปิด
+            เมื่อกระแสถึง 70 % ของค่าสุดท้าย จงหา (ก) กระแสสุดท้าย (ข) ค่าคงตัวเวลา
+            (ค) เวลาตั้งแต่สับสวิตช์จนวาล์วเปิดจริง และ (ง) เปรียบเทียบกับเวลาปิดวาล์ว</span>
+            <span class="en">The drip-irrigation solenoid valve of Example 13.2 runs on 24 V with
+            \(L = 120\) mH and \(R = 60\ \Omega\). The manufacturer states the armature pulls in when the
+            current reaches 70 % of its final value. Find (a) the final current, (b) the time constant,
+            (c) the delay from switch-on until the valve actually opens, and (d) how that compares with the
+            closing time.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) เมื่อเข้าสู่สภาวะคงตัว ตัวเหนี่ยวนำเป็นเพียงลวดธรรมดา
+              กระแสจึงถูกกำหนดโดยความต้านทานของคอยล์เท่านั้น</span>
+              <span class="en">(a) In the steady state the inductor is just wire, so the current is set by
+              the coil's resistance alone:</span></p>
+            \[ I_f = \frac{V}{R} = \frac{24}{60} = 0.40\ \text{A} \]
+
+            <p><span class="th">(ข) ค่าคงตัวเวลา</span><span class="en">(b) The time constant</span></p>
+            \[ \tau = \frac{L}{R} = \frac{0.120}{60} = 2\ \text{ms} \]
+
+            <p><span class="th">(ค) หาเวลาที่กระแสถึง 70 % ของ \(I_f\) โดยแก้สมการหา \(t\)</span>
+              <span class="en">(c) Solve for the time at which the current reaches 70 % of \(I_f\):</span></p>
+            \[ 0.70 = 1 - e^{-t/\tau} \quad\Rightarrow\quad e^{-t/\tau} = 0.30 \]
+            \[ t = -\tau\ln(0.30) = (2\ \text{ms})(1.204) = 2.41\ \text{ms} \]
+
+            <p><span class="th">(ง) จากตัวอย่างที่ 13.2 เวลาที่กระแสสลายตัวหมดหลังตัดวงจร
+              (ผ่านไดโอดฟลายแบ็ก) คือราว \(5\tau = 10\) ms</span>
+              <span class="en">(d) From Example 13.2, the current takes about \(5\tau = 10\) ms to die away
+              through the flyback diode after switch-off:</span></p>
+
+            <div class="callout callout-agri mb-0">
+              <div class="callout-title">🌱 <span class="th">ความไม่สมมาตรที่ต้องรู้</span>
+                <span class="en">An asymmetry worth knowing</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">วาล์ว <b>เปิดใน 2.4 ms แต่ปิดใน 10 ms</b> — ช้ากว่าสี่เท่า
+                  เพราะตอนเปิดมีแรงดัน 24 V คอยผลักกระแสขึ้น แต่ตอนปิดมีเพียงไดโอดที่คร่อมไว้
+                  ซึ่งปล่อยให้กระแสค่อย ๆ สลายไปเอง</span>
+                  <span class="en">The valve <b>opens in 2.4 ms but closes in 10 ms</b>, four times slower,
+                  because on the way up the full 24 V drives the current, while on the way down only the
+                  flyback diode is there, letting it decay at its own pace.</span></li>
+                <li><span class="th">สำหรับระบบให้น้ำ ความหน่วงระดับมิลลิวินาทีไม่มีความหมายเลย
+                  แต่สำหรับ <b>เครื่องคัดแยกผลผลิตที่ใช้ลมเป่าผลักผลไม้ที่วิ่งบนสายพาน 10 ลูกต่อวินาที</b>
+                  ความหน่วง 10 ms คือ 10 % ของช่วงเวลาระหว่างผลไม้สองลูก ซึ่งทำให้เป่าผิดลูกได้
+                  งานแบบนี้จึงต้องใช้วาล์วที่ออกแบบให้ \(\tau\) ต่ำ และใช้ซีเนอร์ช่วยเร่งการคายพลังงาน</span>
+                  <span class="en">For irrigation a few milliseconds mean nothing. But on a <b>grading line
+                  where air jets flick fruit off a belt at ten a second</b>, 10 ms is a tenth of the gap
+                  between items and the wrong fruit gets blown. Such work needs valves designed for a small
+                  \(\tau\), with a Zener to hurry the energy out.</span></li>
+                <li><span class="th">สังเกตว่า \(\tau = L/R\) จึงลดค่าคงตัวเวลาได้โดย <b>เพิ่ม</b> ความต้านทาน
+                  ซึ่งฟังดูขัดสามัญสำนึก แต่ถูกต้อง — วาล์วความเร็วสูงจึงมักใช้คอยล์ความต้านทานสูง
+                  ขับด้วยแรงดันสูงกว่าในจังหวะแรก แล้วลดลงมาในภายหลัง</span>
+                  <span class="en">Note that \(\tau = L/R\), so the way to shorten it is to <b>increase</b>
+                  the resistance — which sounds wrong but is not. High-speed valves therefore use
+                  high-resistance coils, driven at a higher voltage for the first instant and then backed
+                  off.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 5.4 -->
+    <section id="s4">
+      <h2><span class="num">5.4</span><span class="th">การประยุกต์: วงจรกรองสัญญาณ</span>
+          <span class="en">Putting it to work: filter circuits</span></h2>
+
+      <p><span class="th">ในบทที่ 1 เราเตือนไว้ว่าสายสัญญาณเซนเซอร์ที่เดินคู่ไปกับสายมอเตอร์
+        จะรับสัญญาณรบกวนเข้ามาจนค่าที่อ่านได้กระโดด ตอนนี้เรามีเครื่องมือแก้ปัญหานั้นแล้ว
+        หลักการง่ายมาก — ตัวเก็บประจุใช้ <b>เวลา</b> ในการเปลี่ยนแรงดัน
+        สัญญาณที่เปลี่ยนเร็วกว่าค่าคงตัวเวลาจึงผ่านไปไม่ได้ ส่วนสัญญาณที่เปลี่ยนช้ากว่าผ่านไปได้สบาย
+        ความชื้นดินเปลี่ยนในหน่วยนาที ส่วนสัญญาณรบกวนจากอินเวอร์เตอร์เปลี่ยนในหน่วยไมโครวินาที
+        ทั้งสองจึงแยกออกจากกันได้ด้วยตัวเก็บประจุตัวเดียวกับตัวต้านทานตัวเดียว</span>
+        <span class="en">In Chapter 1 we warned that a sensor cable run alongside a motor cable picks up
+        noise until the readings jump about. We now have the tool to deal with it, and the principle is
+        simple: a capacitor takes <b>time</b> to change its voltage, so anything changing faster than the
+        time constant cannot get through, while anything slower passes freely. Soil moisture changes over
+        minutes and inverter noise over microseconds, so the two can be separated by a single resistor and
+        a single capacitor.</span></p>
+
+      <div class="equation">
+        \[ f_c = \frac{1}{2\pi RC} = \frac{1}{2\pi\tau} \qquad\qquad
+           \frac{V_{\text{out}}}{V_{\text{in}}} = \frac{1}{\sqrt{1 + (f/f_c)^{2}}} \]
+      </div>
+      <p class="eq-note"><span class="th">\(f_c\) คือความถี่ตัด ซึ่งเป็นจุดที่สัญญาณถูกลดทอนลงเหลือ
+        70.7 % หรือ −3 dB</span>
+        <span class="en">\(f_c\) is the cut-off frequency, where the signal has been reduced to 70.7 %, or
+        −3 dB</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 720 300" role="img" width="720"
+               aria-label="A noisy sensor signal before and after a low-pass filter, and the filter's frequency response">
+            <text class="cap th" x="200" y="26" text-anchor="middle">ก. สัญญาณก่อนและหลังผ่านวงจรกรอง</text>
+            <text class="cap en" x="200" y="26" text-anchor="middle">a. The signal before and after the filter</text>
+            <text class="cap th" x="550" y="26" text-anchor="middle">ข. การตอบสนองต่อความถี่</text>
+            <text class="cap en" x="550" y="26" text-anchor="middle">b. The frequency response</text>
+
+            <!-- ===== panel A ===== -->
+            <line class="axis" x1="60" y1="155" x2="350" y2="155" stroke-dasharray="3 3" opacity=".5"/>
+            <polyline points="60,118 74,93 88,100 102,78 116,90 130,72 144,90 158,78 172,100
+                              186,93 200,118 214,111 228,136 242,126 256,147 270,132 284,147
+                              298,126 312,136 326,111 340,118"
+                      stroke="#d64545" stroke-width="2" fill="none"/>
+            <text class="sub th" x="60" y="58">สัญญาณดิบจากเซนเซอร์</text>
+            <text class="sub en" x="60" y="58">raw from the sensor</text>
+            <text class="sub th" x="60" y="72" fill="#d64545">มีสัญญาณรบกวนจากอินเวอร์เตอร์ปนมา</text>
+            <text class="sub en" x="60" y="72" fill="#d64545">with inverter noise riding on it</text>
+
+            <line class="axis" x1="60" y1="255" x2="350" y2="255" stroke-dasharray="3 3" opacity=".5"/>
+            <polyline points="60,210 74,201 88,192 102,186 116,182 130,180 144,182 158,186
+                              172,192 186,201 200,210 214,219 228,228 242,234 256,239 270,240
+                              284,239 298,234 312,228 326,219 340,210"
+                      stroke="#2f855a" stroke-width="3" fill="none"/>
+            <text class="sub th" x="60" y="282" fill="#2f855a">หลังผ่าน RC — เหลือเฉพาะการเปลี่ยนแปลงที่ช้า ซึ่งคือค่าความชื้นจริง</text>
+            <text class="sub en" x="60" y="282" fill="#2f855a">after the RC — only the slow change remains, which is the real moisture</text>
+
+            <line x1="376" y1="20" x2="376" y2="292" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== panel B ===== -->
+            <line class="axis" x1="400" y1="240" x2="706" y2="240"/>
+            <line class="axis" x1="400" y1="240" x2="400" y2="60"/>
+            <text class="sub" x="400" y="256" text-anchor="middle">1</text>
+            <text class="sub" x="460" y="256" text-anchor="middle">10</text>
+            <text class="sub" x="520" y="256" text-anchor="middle">100</text>
+            <text class="sub" x="580" y="256" text-anchor="middle">1k</text>
+            <text class="sub" x="640" y="256" text-anchor="middle">10k</text>
+            <text class="sub" x="700" y="256" text-anchor="middle">100k</text>
+            <text class="sub th" x="553" y="274" text-anchor="middle">ความถี่ (Hz)</text>
+            <text class="sub en" x="553" y="274" text-anchor="middle">frequency (Hz)</text>
+            <text class="sub" x="392" y="84"  text-anchor="end">0 dB</text>
+            <text class="sub" x="392" y="164" text-anchor="end">−40</text>
+            <line x1="400" y1="80"  x2="706" y2="80"  stroke="#eef1f5" stroke-width="1"/>
+            <line x1="400" y1="160" x2="706" y2="160" stroke="#eef1f5" stroke-width="1"/>
+
+            <path d="M400 80 L461 80 L700 239" stroke="#fd5f00" stroke-width="3" fill="none"/>
+
+            <line x1="461" y1="86" x2="461" y2="240" stroke="#6c757d" stroke-width="1" stroke-dasharray="4 4"/>
+            <circle cx="461" cy="86" r="5" fill="#fd5f00"/>
+            <text class="cap" x="466" y="74">f_c = 10.6 Hz</text>
+
+            <circle cx="502" cy="107" r="5" fill="#2b6cb0"/>
+            <text class="sub" x="510" y="104" fill="#2b6cb0">50 Hz · −13.7 dB</text>
+            <circle cx="658" cy="211" r="5" fill="#2f855a"/>
+            <text class="sub" x="600" y="228" fill="#2f855a">20 kHz · −65.5 dB</text>
+
+            <text class="sub th" x="400" y="292">ทุก ๆ สิบเท่าของความถี่ สัญญาณถูกลดทอนลงอีก 20 dB คือเหลือหนึ่งในสิบ</text>
+            <text class="sub en" x="400" y="292">every tenfold rise in frequency costs another 20 dB — a further factor of ten</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 5.4</span><span class="en">Figure 5.4</span></b>
+          <span class="th"> ซ้าย: สัญญาณเดียวกันก่อนและหลังผ่านวงจรกรอง
+            เส้นสีแดงคือสิ่งที่เซนเซอร์ส่งมาจริง เส้นสีเขียวคือสิ่งที่ ADC ควรได้อ่าน
+            ขวา: การตอบสนองต่อความถี่ของวงจรกรองในตัวอย่างที่ 5.4
+            ซึ่งอธิบายว่าทำไมสัญญาณรบกวนจาก PWM ที่ 20 kHz (บทที่ 13) จึงหายไปเกือบหมด
+            ขณะที่การเปลี่ยนแปลงของความชื้นดินซึ่งช้ากว่า 1 Hz ผ่านไปได้เต็มที่</span>
+          <span class="en"> Left: one signal before and after the filter — the red trace is what the sensor
+            actually sends, the green what the ADC ought to read. Right: the frequency response of the
+            filter designed in Example 5.4, which explains why PWM noise at 20 kHz (Chapter 13) all but
+            vanishes while a moisture change slower than 1 Hz passes through
+            untouched.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 5.4</span><span class="en">Example 5.4</span></span>
+          <span class="th">ออกแบบวงจรกรองให้สัญญาณเซนเซอร์ความชื้นดิน</span>
+          <span class="en">Designing the filter for a soil-moisture signal</span></div>
+        <div class="example-body">
+          <p><span class="th">สายสัญญาณของเซนเซอร์ความชื้นดินเดินผ่านท่อเดียวกับสายมอเตอร์ปั๊ม
+            จึงรับสัญญาณรบกวนสองแหล่งเข้ามา คือคลื่น 50 Hz จากระบบไฟฟ้า
+            และสัญญาณสวิตชิ่ง 20 kHz จากอินเวอร์เตอร์ที่ควบคุมพัดลม
+            ส่วนสัญญาณที่ต้องการวัดจริงเปลี่ยนแปลงช้ามาก คือในหน่วยนาที
+            จงออกแบบวงจรกรองความถี่ต่ำผ่านที่ \(f_c \approx 10\) Hz โดยใช้ \(R = 10\ \text{k}\Omega\)
+            แล้วหา (ก) ค่า C (ข) การลดทอนที่ 50 Hz และที่ 20 kHz
+            และ (ค) เวลาที่ต้องรอก่อนอ่านค่า เทียบกับตัวอย่างที่ 5.1</span>
+            <span class="en">A soil-moisture sensor's cable shares a conduit with the pump motor's, so it
+            picks up two kinds of noise: 50 Hz from the mains and 20 kHz switching from the inverter driving
+            the fans. The signal actually wanted changes over minutes. Design a low-pass filter with
+            \(f_c \approx 10\) Hz using \(R = 10\ \text{k}\Omega\), then find (a) the capacitor, (b) the
+            attenuation at 50 Hz and at 20 kHz, and (c) the settling time to allow, compared with Example
+            5.1.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">(ก) จากสูตรความถี่ตัด แก้หา C</span>
+              <span class="en">(a) Rearranging the cut-off formula for C:</span></p>
+            \[ RC = \frac{1}{2\pi f_c} = \frac{1}{2\pi (10)} = 0.0159\ \text{s} \]
+            \[ C = \frac{0.0159}{10 \times 10^{3}} = 1.59\ \mu\text{F}
+               \quad\Rightarrow\quad \text{เลือกค่ามาตรฐาน 1.5 µF / take the standard 1.5 µF} \]
+            \[ f_c = \frac{1}{2\pi (10^{4})(1.5\times10^{-6})} = 10.6\ \text{Hz} \]
+
+            <p><span class="th">(ข) การลดทอนที่ความถี่รบกวนทั้งสอง</span>
+              <span class="en">(b) The attenuation at each noise frequency:</span></p>
+            \[ \text{ที่ 50 Hz:}\quad \frac{V_{\text{out}}}{V_{\text{in}}}
+               = \frac{1}{\sqrt{1 + (50/10.6)^{2}}} = \frac{1}{\sqrt{1 + 22.2}} = 0.208 \]
+            \[ \text{ที่ 20 kHz:}\quad \frac{V_{\text{out}}}{V_{\text{in}}}
+               = \frac{1}{\sqrt{1 + (1885)^{2}}} = 5.3\times10^{-4} \]
+            <p><span class="th">สัญญาณ 50 Hz เหลือ 21 % และสัญญาณ 20 kHz เหลือเพียง 0.05 %
+              คือหายไปเกือบหมด</span>
+              <span class="en">The 50 Hz noise is cut to 21 % and the 20 kHz to 0.05 % — all but
+              eliminated.</span></p>
+
+            <p><span class="th">(ค) ค่าคงตัวเวลาของวงจรนี้</span>
+              <span class="en">(c) This circuit's time constant:</span></p>
+            \[ \tau = RC = (10^{4})(1.5\times10^{-6}) = 15\ \text{ms}
+               \quad\Rightarrow\quad 7\tau = 105\ \text{ms} \]
+
+            <div class="callout callout-warn mb-0">
+              <div class="callout-title">⚖️ <span class="th">การแลกเปลี่ยนที่หลีกเลี่ยงไม่ได้</span>
+                <span class="en">The trade-off you cannot avoid</span></div>
+              <ul class="mb-0 small">
+                <li><span class="th">ตัวเก็บประจุ 1.5 µF กรองสัญญาณรบกวนได้ดีกว่า 100 nF ในตัวอย่างที่ 5.1 มาก
+                  แต่ทำให้ต้องรอนานขึ้นจาก 7 ms เป็น 105 ms ก่อนอ่านค่าได้
+                  <b>กรองดีขึ้นแลกด้วยตอบสนองช้าลง เสมอ — เป็นค่าคงตัวเวลาเดียวกันที่ควบคุมทั้งสองอย่าง</b></span>
+                  <span class="en">The 1.5 µF filters far better than the 100 nF of Example 5.1, but the wait
+                  before sampling grows from 7 ms to 105 ms. <b>Better filtering always costs response time —
+                  one and the same time constant governs both.</b></span></li>
+                <li><span class="th">ในงานนี้การแลกเปลี่ยนนั้นคุ้มอย่างยิ่ง เพราะความชื้นดินเปลี่ยนในหน่วยนาที
+                  การรอ 105 ms จึงไม่มีความหมายเลย แต่ถ้าเป็นเซนเซอร์นับผลผลิตบนสายพานที่ต้องตอบสนองใน 5 ms
+                  วงจรกรองนี้จะทำให้พลาดทุกลูก <b>ความถี่ตัดต้องเลือกจากความเร็วของสิ่งที่วัด ไม่ใช่จากความแรงของสัญญาณรบกวน</b></span>
+                  <span class="en">Here the trade is overwhelmingly worth it: soil moisture changes over
+                  minutes, so 105 ms is nothing. But a sensor counting produce on a belt and needing to
+                  respond within 5 ms would miss every item. <b>Choose the cut-off from the speed of what you
+                  are measuring, not from the strength of the noise.</b></span></li>
+                <li><span class="th">ถ้าจำเป็นต้องทั้งกรองดีและตอบสนองเร็วพร้อมกัน ต้องเปลี่ยนไปใช้วงจรกรองอันดับสูงขึ้น
+                  ซึ่งลดทอนได้ชันกว่า 20 dB ต่อสิบเท่า โดยยังคงความถี่ตัดไว้ที่เดิม — เป็นเนื้อหาของวิชาอิเล็กทรอนิกส์ต่อไป</span>
+                  <span class="en">Where both are genuinely needed, the answer is a higher-order filter,
+                  which falls away more steeply than 20 dB per decade while keeping the same cut-off — a
+                  topic for a later electronics course.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-agri">
+        <div class="callout-title">🌱 <span class="th">ที่อื่นที่ค่าคงตัวเวลาทำงานอยู่ในฟาร์ม</span>
+          <span class="en">Where else the time constant is at work on a farm</span></div>
+        <ul class="mb-0">
+          <li><span class="th"><b>วงจรกรองแหล่งจ่ายไฟ</b> — ตัวเก็บประจุ 4700 µF ในตัวอย่างที่ 13.1
+            คือวงจรกรองเช่นกัน เพียงแต่ใช้ความต้านทานของโหลดเป็น R และต้องมี \(\tau\) ยาวกว่าคาบของคลื่น
+            กระเพื่อม 10 ms จึงจะกรองได้เรียบ</span>
+            <span class="en"><b>Power-supply smoothing</b> — the 4700 µF of Example 13.1 is a filter too,
+            using the load's resistance as its R, and its \(\tau\) must be longer than the 10 ms ripple
+            period for the output to come out flat.</span></li>
+          <li><span class="th"><b>วงจรกันสวิตช์เด้ง (debounce)</b> — สวิตช์ลูกลอยในถังพักน้ำสั่นขึ้นลงหลายสิบครั้ง
+            ในเสี้ยววินาทีขณะระดับน้ำแกว่ง ตัวควบคุมจึงนับเป็นหลายครั้ง วงจร RC ที่มี \(\tau\) ราว 10 ms
+            แก้ปัญหานี้ได้ด้วยชิ้นส่วนสองชิ้น</span>
+            <span class="en"><b>Switch debouncing</b> — a float switch in a tank chatters dozens of times in
+            a fraction of a second as the water sloshes, and the controller counts every one. An RC with
+            \(\tau\) around 10 ms cures it with two components.</span></li>
+          <li><span class="th"><b>การหน่วงเวลาสตาร์ตมอเตอร์</b> — ตู้ควบคุมที่มีมอเตอร์หลายตัวใช้วงจร RC
+            หน่วงให้แต่ละตัวสตาร์ตไม่พร้อมกัน เพื่อไม่ให้กระแสพุ่งรวมกันจนเบรกเกอร์ตัด (บทที่ 12)</span>
+            <span class="en"><b>Staggered motor starting</b> — a cabinet with several motors uses RC delays
+            so they do not all start at once and trip the breaker on the combined surge
+            (Chapter 12).</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Summary -->
+    <section id="summary">
+      <h2><span class="num">📌</span><span class="th">สรุปบทเรียน</span><span class="en">Chapter summary</span></h2>
+      <div class="card">
+        <ul class="mb-0">
+          <li><span class="th">ตัวเก็บประจุเก็บพลังงานไว้ในสนามไฟฟ้า \(W = \tfrac{1}{2}CV^2\)
+            ส่วนตัวเหนี่ยวนำเก็บไว้ในสนามแม่เหล็ก \(W = \tfrac{1}{2}LI^2\)
+            ทั้งคู่ต่างจากตัวต้านทานที่เปลี่ยนพลังงานเป็นความร้อนทิ้งไป</span>
+            <span class="en">A capacitor stores energy in an electric field, \(W = \tfrac{1}{2}CV^2\), an
+            inductor in a magnetic one, \(W = \tfrac{1}{2}LI^2\) — unlike a resistor, which turns it into
+            heat and loses it.</span></li>
+          <li><span class="th"><b>แรงดัน</b> คร่อมตัวเก็บประจุเปลี่ยนทันทีไม่ได้ และ <b>กระแส</b>
+            ผ่านตัวเหนี่ยวนำก็เปลี่ยนทันทีไม่ได้ ทั้งสองข้อนี้คือที่มาของพฤติกรรมชั่วครู่ทั้งหมด</span>
+            <span class="en">A capacitor's <b>voltage</b> cannot change instantly, nor can an inductor's
+            <b>current</b>. Those two facts account for every transient in this chapter.</span></li>
+          <li><span class="th">ค่าคงตัวเวลาคือ \(\tau = RC\) สำหรับวงจร RC และ \(\tau = L/R\) สำหรับวงจร RL
+            สังเกตว่าความต้านทานที่มากขึ้นทำให้ RC ช้าลงแต่ทำให้ RL เร็วขึ้น</span>
+            <span class="en">The time constant is \(\tau = RC\) for an RC circuit and \(\tau = L/R\) for an
+            RL one — note that more resistance slows the first but speeds the second.</span></li>
+          <li><span class="th">ใช้กฎ <b>5τ</b> เป็นเกณฑ์ว่าเข้าสู่สภาวะคงตัวแล้ว (99.3 %)
+            และใช้ 7τ เมื่อต้องการความแม่นยำระดับ 0.1 % เช่นงานวัดด้วย ADC</span>
+            <span class="en">Use the <b>5τ</b> rule for "settled", 99.3 %, and 7τ where 0.1 % accuracy is
+            needed, as in ADC measurements.</span></li>
+          <li><span class="th">ในสภาวะคงตัว DC ตัวเก็บประจุเป็นวงจรเปิด ส่วนตัวเหนี่ยวนำเป็นลวดธรรมดา
+            ซึ่งทำให้หาค่าสุดท้ายของวงจรได้ง่ายก่อนจะคำนวณช่วงชั่วครู่</span>
+            <span class="en">In the DC steady state a capacitor is an open circuit and an inductor is plain
+            wire — which makes the final values easy to find before working out the transient.</span></li>
+          <li><span class="th">วงจรกรองความถี่ต่ำผ่านมี \(f_c = 1/(2\pi RC)\)
+            และการกรองที่ดีขึ้นย่อมแลกมาด้วยการตอบสนองที่ช้าลงเสมอ
+            เพราะเป็นค่าคงตัวเวลาตัวเดียวกันที่กำหนดทั้งสองอย่าง</span>
+            <span class="en">A low-pass filter has \(f_c = 1/(2\pi RC)\), and better filtering is always
+            bought with slower response, because one time constant sets both.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Activity -->
+    <section id="activity">
+      <h2><span class="num">🧭</span><span class="th">กิจกรรมในชั้นเรียน</span>
+          <span class="en">Class activity</span></h2>
+
+      <div class="activity">
+        <div class="activity-head">
+          <h3><span class="th">กิจกรรมที่ 5.1 — จัดงบเวลาให้ตัวควบคุมอ่านเซนเซอร์ครบทุกตัว</span>
+              <span class="en">Activity 5.1 — Budgeting the controller's time to read every sensor</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">45 นาที</span><span class="en">45 minutes</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO2, CLO5</span><span class="en">CLO2, CLO5</span></span>
+          </div>
+        </div>
+        <div class="activity-body">
+          <p><span class="th"><b>สถานการณ์:</b> ตัวควบคุมโรงเรือนต้องอ่านเซนเซอร์ 8 ช่องสลับกันผ่านมัลติเพล็กเซอร์
+            แล้วตัดสินใจสั่งงานใหม่ทุก ๆ <b>1 วินาที</b> เซนเซอร์แต่ละชนิดมีความเร็วของสิ่งที่วัดต่างกัน
+            จึงต้องการความถี่ตัดไม่เท่ากัน ทุกช่องใช้ \(R = 10\ \text{k}\Omega\) เหมือนกันหมด
+            แต่ละกลุ่มต้องเลือกตัวเก็บประจุให้ทุกช่อง แล้วตรวจว่าเวลารวมพอกับรอบ 1 วินาทีหรือไม่</span>
+            <span class="en"><b>Scenario:</b> A greenhouse controller must read eight channels in turn
+            through a multiplexer and take a fresh decision every <b>one second</b>. Each kind of sensor
+            watches something changing at a different rate and so wants a different cut-off. Every channel
+            uses the same \(R = 10\ \text{k}\Omega\). Each group must choose a capacitor for every channel
+            and check that the total time fits inside the one-second loop.</span></p>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ใบงานกิจกรรมที่ 5.1</span>
+                <span class="en">Activity 5.1 worksheet</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">ช่องสัญญาณ</span><span class="en">Channel</span></th>
+                  <th class="num"><span class="th">จำนวน</span><span class="en">How many</span></th>
+                  <th class="num"><span class="th">f_c ที่ต้องการ</span><span class="en">Cut-off wanted</span></th>
+                  <th class="num">C</th>
+                  <th class="num">τ</th>
+                  <th class="num"><span class="th">เวลารอ 7τ</span><span class="en">Wait, 7τ</span></th>
+                  <th class="num"><span class="th">เวลารวม</span><span class="en">Total</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="th">ความชื้นดิน — เปลี่ยนเป็นนาที</span><span class="en">Soil moisture — changes over minutes</span></td>
+                  <td class="num">3</td><td class="num">10 Hz</td>
+                  <td><input type="text" aria-label="a1"></td><td><input type="text" aria-label="a2"></td>
+                  <td><input type="text" aria-label="a3"></td><td><input type="text" aria-label="a4"></td>
+                </tr>
+                <tr>
+                  <td><span class="th">ระดับน้ำในถัง — สัญญาณรบกวนจากปั๊มแรง</span><span class="en">Tank level — heavy pump noise</span></td>
+                  <td class="num">1</td><td class="num">5 Hz</td>
+                  <td><input type="text" aria-label="b1"></td><td><input type="text" aria-label="b2"></td>
+                  <td><input type="text" aria-label="b3"></td><td><input type="text" aria-label="b4"></td>
+                </tr>
+                <tr>
+                  <td><span class="th">ความเข้มแสง — ต้องจับเมฆผ่านให้ทัน</span><span class="en">Light level — must catch a passing cloud</span></td>
+                  <td class="num">4</td><td class="num">100 Hz</td>
+                  <td><input type="text" aria-label="c1"></td><td><input type="text" aria-label="c2"></td>
+                  <td><input type="text" aria-label="c3"></td><td><input type="text" aria-label="c4"></td>
+                </tr>
+                <tr>
+                  <td colspan="6"><b><span class="th">เวลารวมทั้งรอบ</span><span class="en">Total for one scan</span></b></td>
+                  <td><input type="text" aria-label="tot"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol class="steps">
+            <li><span class="th"><b>คำนวณ C</b> ของแต่ละช่องจาก \(f_c = 1/(2\pi RC)\)
+              แล้วปัดเป็นค่ามาตรฐานที่หาซื้อได้ (1.5, 2.2, 3.3, 4.7 µF และ 0.1, 0.15, 0.22 µF)</span>
+              <span class="en"><b>Compute C</b> for each channel from \(f_c = 1/(2\pi RC)\), then round to a
+              value you can actually buy: 1.5, 2.2, 3.3, 4.7 µF, or 0.1, 0.15, 0.22 µF.</span></li>
+            <li><span class="th"><b>หา τ และเวลารอ 7τ</b> ของแต่ละช่อง แล้วคูณด้วยจำนวนช่อง</span>
+              <span class="en"><b>Find τ and the 7τ wait</b> for each, and multiply by how many channels of
+              that kind there are.</span></li>
+            <li><span class="th"><b>รวมเวลาทั้งรอบ</b> แล้วตอบว่าพอกับรอบ 1 วินาทีหรือไม่ เหลือเวลาเท่าใด
+              ให้ตัวควบคุมไปคำนวณและสั่งงาน</span>
+              <span class="en"><b>Total the scan</b> and say whether it fits inside one second, and how much
+              is left for the controller to compute and act.</span></li>
+            <li><span class="th"><b>ถ้าไม่พอ</b> — เสนอวิธีแก้อย่างน้อยสองวิธี
+              (ลองคิดถึงการลด R แทนการลด C, การไม่อ่านทุกช่องทุกรอบ, และการใช้มัลติเพล็กเซอร์หลายตัวขนานกัน)</span>
+              <span class="en"><b>If it does not fit</b>, propose at least two remedies — consider lowering R
+              rather than C, not reading every channel every cycle, and running several multiplexers in
+              parallel.</span></li>
+            <li><span class="th"><b>อภิปราย</b> ถ้าเจ้าของฟาร์มขอเพิ่มเซนเซอร์ความชื้นดินอีก 6 ตัว
+              จะเกิดอะไรขึ้นกับรอบการทำงาน และคุณจะตอบเขาว่าอย่างไร เตรียมนำเสนอ 3 นาที</span>
+              <span class="en"><b>Discuss:</b> if the owner asks for six more soil-moisture sensors, what
+              happens to the loop, and what will you tell them? Present in three minutes.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">✅ <span class="th">เกณฑ์การประเมิน (10 คะแนน)</span>
+              <span class="en">Marking guide (10 marks)</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">คำนวณ C, τ และเวลารอได้ถูกต้องทุกช่องพร้อมหน่วย — 4 คะแนน</span>
+                  <span class="en">Correct C, τ and wait for every channel, with units — 4 marks</span></li>
+              <li><span class="th">รวมเวลาและตัดสินได้ถูกต้องว่าพอหรือไม่ — 3 คะแนน</span>
+                  <span class="en">Correct total and verdict on whether it fits — 3 marks</span></li>
+              <li><span class="th">เสนอวิธีแก้ที่เป็นไปได้จริงและอธิบายผลกระทบได้ — 3 คะแนน</span>
+                  <span class="en">Workable remedies with their consequences explained — 3 marks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Laboratory -->
+    <section id="lab">
+      <h2><span class="num">🧪</span><span class="th">ปฏิบัติการที่ 5</span>
+          <span class="en">Laboratory 5</span></h2>
+
+      <div class="lab">
+        <div class="lab-head">
+          <h3><span class="th">ปฏิบัติการที่ 5 — วัดการประจุ–คายประจุ และวงจรกรองสัญญาณเซนเซอร์</span>
+              <span class="en">Laboratory 5 — Charging, discharging, and a sensor filter</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">2 ชั่วโมง</span><span class="en">2 hours</span></span>
+            <span>👥 <span class="th">กลุ่มละ 2–3 คน</span><span class="en">Groups of 2–3</span></span>
+            <span>🎯 <span class="th">CLO2, CLO6</span><span class="en">CLO2, CLO6</span></span>
+          </div>
+        </div>
+        <div class="lab-body">
+
+          <h4 class="mt-0"><span class="th">วัตถุประสงค์</span><span class="en">Objectives</span></h4>
+          <ol>
+            <li><span class="th">วัดเส้นโค้งการประจุและคายประจุด้วยนาฬิกาจับเวลา แล้วหาค่า τ จากจุด 63 %</span>
+                <span class="en">Measure the charging and discharging curves with a stopwatch, and find τ
+                from the 63 % point.</span></li>
+            <li><span class="th">ตรวจสอบกฎการต่อตัวเก็บประจุอนุกรมและขนานจากการวัดค่า τ ที่เปลี่ยนไป</span>
+                <span class="en">Verify the series and parallel capacitor rules from the change in
+                τ.</span></li>
+            <li><span class="th">วัดผลตอบสนองชั่วครู่ที่เร็วด้วยออสซิลโลสโคปและสัญญาณสี่เหลี่ยม</span>
+                <span class="en">Measure a fast transient with the oscilloscope and a square wave.</span></li>
+            <li><span class="th">สังเกตผลของวงจรกรองต่อสัญญาณที่มีสัญญาณรบกวนปนอยู่</span>
+                <span class="en">Observe what a filter does to a signal with noise on it.</span></li>
+          </ol>
+
+          <h4><span class="th">อุปกรณ์</span><span class="en">Equipment</span></h4>
+          <ul>
+            <li><span class="th">แหล่งจ่ายไฟกระแสตรง 12 V · มัลติมิเตอร์ · นาฬิกาจับเวลา · ออสซิลโลสโคป</span>
+                <span class="en">A 12 V DC supply, a multimeter, a stopwatch and an oscilloscope</span></li>
+            <li><span class="th">เครื่องกำเนิดสัญญาณที่ให้คลื่นสี่เหลี่ยมและคลื่นไซน์ได้</span>
+                <span class="en">A function generator able to produce square and sine waves</span></li>
+            <li><span class="th">ตัวเก็บประจุ 470 µF (25 V) สองตัว · 100 nF สองตัว · 1.5 µF หนึ่งตัว</span>
+                <span class="en">Two 470 µF (25 V) capacitors, two 100 nF, and one 1.5 µF</span></li>
+            <li><span class="th">ตัวต้านทาน 100 kΩ, 10 kΩ, 4.7 kΩ และ 1 kΩ · สวิตช์โยกสองทาง</span>
+                <span class="en">Resistors of 100 kΩ, 10 kΩ, 4.7 kΩ and 1 kΩ, and a two-way toggle switch</span></li>
+          </ul>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">⚠️ <span class="th">ข้อควรระวัง</span>
+              <span class="en">Safety precautions</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th"><b>คายประจุตัวเก็บประจุผ่านตัวต้านทาน 1 kΩ ก่อนแตะขาทุกครั้ง</b>
+                ตามที่คำนวณไว้ในตัวอย่างที่ 5.2 พลังงานที่เก็บไว้มากพอจะทำให้เกิดประกายไฟรุนแรง</span>
+                  <span class="en"><b>Discharge every capacitor through the 1 kΩ resistor before touching its
+                  leads.</b> As Example 5.2 showed, the stored energy is quite enough for a violent
+                  spark.</span></li>
+              <li><span class="th">ตรวจขั้วของตัวเก็บประจุอิเล็กโทรไลต์ทุกครั้งก่อนจ่ายไฟ ต่อกลับขั้วจะระเบิด</span>
+                  <span class="en">Check the polarity of every electrolytic capacitor before switching on;
+                  reversed, they burst.</span></li>
+              <li><span class="th">อย่าใช้แรงดันเกินพิกัดที่พิมพ์บนตัวเก็บประจุ (25 V)</span>
+                  <span class="en">Never exceed the voltage printed on the capacitor, here 25 V.</span></li>
+            </ul>
+          </div>
+
+          <h4><span class="th">ขั้นตอนการทดลอง</span><span class="en">Procedure</span></h4>
+
+          <p><b><span class="th">ตอนที่ 1: วัดเส้นโค้งการประจุด้วยนาฬิกาจับเวลา</span>
+            <span class="en">Part 1: The charging curve by stopwatch</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อ \(R = 100\ \text{k}\Omega\) อนุกรมกับ \(C = 470\ \mu\text{F}\)
+              เข้ากับแหล่งจ่าย 12 V ผ่านสวิตช์ <b>คำนวณ τ ที่คาดไว้ก่อนเริ่ม</b></span>
+                <span class="en">Wire \(R = 100\ \text{k}\Omega\) in series with \(C = 470\ \mu\text{F}\)
+                across the 12 V supply through a switch, and <b>compute the expected τ before you
+                begin</b>.</span></li>
+            <li><span class="th">คายประจุตัวเก็บประจุให้หมดก่อน แล้วสับสวิตช์พร้อมกดจับเวลา
+              อ่านแรงดันคร่อมตัวเก็บประจุทุก 10 วินาที จนถึง 240 วินาที</span>
+                <span class="en">Empty the capacitor first, then throw the switch and start the stopwatch
+                together, reading the capacitor voltage every 10 s up to 240 s.</span></li>
+            <li><span class="th">เขียนกราฟแรงดันเทียบกับเวลา แล้วหาเวลาที่แรงดันถึง 63 % ของค่าสุดท้าย
+              (คือ \(0.632 \times 12 = 7.58\) V) ค่านั้นคือ τ ที่วัดได้</span>
+                <span class="en">Plot voltage against time and find when it reaches 63 % of the final value,
+                \(0.632 \times 12 = 7.58\) V. That is the measured τ.</span></li>
+            <li><span class="th">เปรียบเทียบ τ ที่วัดได้กับ \(RC\) ที่คำนวณไว้ คลาดเคลื่อนกี่เปอร์เซ็นต์</span>
+                <span class="en">Compare the measured τ with the calculated \(RC\); by what percentage do
+                they differ?</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 2: การคายประจุ และกฎการต่อตัวเก็บประจุ</span>
+            <span class="en">Part 2: Discharging, and the capacitor rules</span></b></p>
+          <ol class="steps">
+            <li><span class="th">สับสวิตช์ให้ตัวเก็บประจุคายผ่านตัวต้านทานตัวเดิม
+              วัดแรงดันทุก 10 วินาที แล้วหาเวลาที่เหลือ 37 % ซึ่งคือ τ อีกครั้ง
+              ค่าเท่ากับตอนประจุหรือไม่</span>
+                <span class="en">Switch the capacitor to discharge through the same resistor, reading every
+                10 s, and find when 37 % remains — τ again. Is it the same as when charging?</span></li>
+            <li><span class="th">ต่อตัวเก็บประจุ 470 µF อีกตัวหนึ่ง <b>ขนาน</b> กับตัวเดิม
+              ทำนายก่อนว่า τ จะเปลี่ยนไปอย่างไร แล้ววัดจริง</span>
+                <span class="en">Connect a second 470 µF <b>in parallel</b> with the first. Predict what τ
+                will do, then measure it.</span></li>
+            <li><span class="th">เปลี่ยนเป็นต่อ <b>อนุกรม</b> ทำนายแล้ววัดอีกครั้ง
+              ผลยืนยันสูตรในหัวข้อ 5.1.1 หรือไม่</span>
+                <span class="en">Now put them <b>in series</b>, predict and measure again. Do the results
+                confirm the formulas of Section 5.1.1?</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 3: ผลตอบสนองที่เร็วบนออสซิลโลสโคป</span>
+            <span class="en">Part 3: Fast transients on the oscilloscope</span></b></p>
+          <ol class="steps">
+            <li><span class="th">ต่อ \(R = 10\ \text{k}\Omega\) กับ \(C = 100\ \text{nF}\)
+              ป้อนคลื่นสี่เหลี่ยม 100 Hz จากเครื่องกำเนิดสัญญาณ แล้วดูรูปคลื่นคร่อมตัวเก็บประจุ</span>
+                <span class="en">Wire \(R = 10\ \text{k}\Omega\) with \(C = 100\ \text{nF}\), feed a 100 Hz
+                square wave from the generator, and watch the waveform across the capacitor.</span></li>
+            <li><span class="th">วัด τ จากหน้าจอโดยหาเวลาที่รูปคลื่นขึ้นถึง 63 % ของขั้นบันได
+              เทียบกับ \(RC = 1\) ms ที่คำนวณได้</span>
+                <span class="en">Measure τ off the screen by finding where the trace reaches 63 % of the
+                step, and compare with the calculated \(RC = 1\) ms.</span></li>
+            <li><span class="th">ค่อย ๆ เพิ่มความถี่ของคลื่นสี่เหลี่ยมขึ้นเป็น 1 kHz และ 10 kHz
+              สังเกตว่ารูปคลื่นคร่อมตัวเก็บประจุเปลี่ยนไปอย่างไร และอธิบายว่าทำไม</span>
+                <span class="en">Raise the square wave to 1 kHz and then 10 kHz, note how the capacitor's
+                waveform changes, and explain why.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 4: วงจรกรองทำงานจริง</span>
+            <span class="en">Part 4: The filter at work</span></b></p>
+          <ol class="steps">
+            <li><span class="th">สร้างวงจรกรองตามตัวอย่างที่ 5.4 คือ \(R = 10\ \text{k}\Omega\)
+              กับ \(C = 1.5\ \mu\text{F}\) คำนวณ \(f_c\) ที่คาดไว้</span>
+                <span class="en">Build the filter of Example 5.4, \(R = 10\ \text{k}\Omega\) with
+                \(C = 1.5\ \mu\text{F}\), and compute the expected \(f_c\).</span></li>
+            <li><span class="th">ป้อนคลื่นไซน์แอมพลิจูดคงที่ แล้วกวาดความถี่จาก 1 Hz ถึง 1 kHz
+              วัดแอมพลิจูดขาออกที่ความถี่ 1, 5, 10, 20, 50, 100, 500 และ 1000 Hz</span>
+                <span class="en">Feed a sine of constant amplitude and sweep from 1 Hz to 1 kHz, measuring
+                the output amplitude at 1, 5, 10, 20, 50, 100, 500 and 1000 Hz.</span></li>
+            <li><span class="th">เขียนกราฟอัตราส่วนขาออกต่อขาเข้าเทียบกับความถี่
+              หาความถี่ที่อัตราส่วนเหลือ 0.707 แล้วเทียบกับ \(f_c\) ที่คำนวณไว้</span>
+                <span class="en">Plot the output-to-input ratio against frequency, find where it falls to
+                0.707, and compare with the calculated \(f_c\).</span></li>
+            <li><span class="th">ตั้งเครื่องกำเนิดสัญญาณให้เป็นคลื่นไซน์ 2 Hz แล้วใช้ช่องที่สองซ้อนคลื่น 5 kHz
+              แอมพลิจูดเล็ก ๆ ลงไป (จำลองสัญญาณเซนเซอร์ที่มีสัญญาณรบกวน)
+              ดูรูปคลื่นก่อนและหลังผ่านวงจรกรองพร้อมกันบนสองช่องของสโคป
+              แล้วถ่ายภาพหน้าจอไว้ประกอบรายงาน</span>
+                <span class="en">Set the generator to a 2 Hz sine with a small 5 kHz component added, to
+                imitate a noisy sensor signal, and view the waveforms before and after the filter together
+                on two scope channels. Photograph the screen for the report.</span></li>
+          </ol>
+
+          <h4><span class="th">ตารางบันทึกผล</span><span class="en">Results tables</span></h4>
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 1 — การประจุและคายประจุ (ตอนที่ 1–2)</span>
+                <span class="en">Table 1 — Charging and discharging (Parts 1–2)</span></caption>
+              <thead>
+                <tr>
+                  <th class="num"><span class="th">เวลา (s)</span><span class="en">Time (s)</span></th>
+                  <th class="num">0</th><th class="num">20</th><th class="num">40</th><th class="num">60</th>
+                  <th class="num">90</th><th class="num">120</th><th class="num">180</th><th class="num">240</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="th">ประจุ v_C (V)</span><span class="en">Charging v_C (V)</span></td>
+                  <td><input type="text" aria-label="c0"></td><td><input type="text" aria-label="c1"></td>
+                  <td><input type="text" aria-label="c2"></td><td><input type="text" aria-label="c3"></td>
+                  <td><input type="text" aria-label="c4"></td><td><input type="text" aria-label="c5"></td>
+                  <td><input type="text" aria-label="c6"></td><td><input type="text" aria-label="c7"></td></tr>
+                <tr><td><span class="th">คายประจุ v_C (V)</span><span class="en">Discharging v_C (V)</span></td>
+                  <td><input type="text" aria-label="d0"></td><td><input type="text" aria-label="d1"></td>
+                  <td><input type="text" aria-label="d2"></td><td><input type="text" aria-label="d3"></td>
+                  <td><input type="text" aria-label="d4"></td><td><input type="text" aria-label="d5"></td>
+                  <td><input type="text" aria-label="d6"></td><td><input type="text" aria-label="d7"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางที่ 2 — ค่า τ ที่วัดได้ และการตอบสนองต่อความถี่ (ตอนที่ 2–4)</span>
+                <span class="en">Table 2 — Measured τ and frequency response (Parts 2–4)</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">รายการ</span><span class="en">Quantity</span></th>
+                  <th class="num"><span class="th">ทำนาย</span><span class="en">Predicted</span></th>
+                  <th class="num"><span class="th">วัดได้</span><span class="en">Measured</span></th>
+                  <th class="num"><span class="th">คลาดเคลื่อน (%)</span><span class="en">Deviation (%)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>τ · 470 µF <span class="th">ตัวเดียว (s)</span><span class="en">alone (s)</span></td>
+                  <td><input type="text" aria-label="t1"></td><td><input type="text" aria-label="t2"></td><td><input type="text" aria-label="t3"></td></tr>
+                <tr><td>τ · <span class="th">สองตัวขนาน (s)</span><span class="en">two in parallel (s)</span></td>
+                  <td><input type="text" aria-label="t4"></td><td><input type="text" aria-label="t5"></td><td><input type="text" aria-label="t6"></td></tr>
+                <tr><td>τ · <span class="th">สองตัวอนุกรม (s)</span><span class="en">two in series (s)</span></td>
+                  <td><input type="text" aria-label="t7"></td><td><input type="text" aria-label="t8"></td><td><input type="text" aria-label="t9"></td></tr>
+                <tr><td>τ · <span class="th">จากสโคป 10 kΩ + 100 nF (ms)</span><span class="en">from the scope, 10 kΩ + 100 nF (ms)</span></td>
+                  <td><input type="text" aria-label="t10"></td><td><input type="text" aria-label="t11"></td><td><input type="text" aria-label="t12"></td></tr>
+                <tr><td>f_c <span class="th">ของวงจรกรอง (Hz)</span><span class="en">of the filter (Hz)</span></td>
+                  <td><input type="text" aria-label="t13"></td><td><input type="text" aria-label="t14"></td><td><input type="text" aria-label="t15"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4><span class="th">คำถามท้ายปฏิบัติการ</span><span class="en">Questions</span></h4>
+          <ol>
+            <li><span class="th">ค่า τ ที่วัดได้ต่างจาก \(RC\) ที่คำนวณกี่เปอร์เซ็นต์
+              ให้ระบุสาเหตุอย่างน้อยสามข้อ (พิจารณาความคลาดเคลื่อนของตัวเก็บประจุอิเล็กโทรไลต์
+              ซึ่งมักอยู่ที่ −20 % ถึง +80 % ความต้านทานขาเข้าของโวลต์มิเตอร์ตามบทที่ 2
+              และความคลาดเคลื่อนของการจับเวลาด้วยมือ)</span>
+              <span class="en">By what percentage did the measured τ differ from \(RC\)? Give at least three
+              reasons, considering that electrolytic capacitors are often specified −20 % to +80 %, the
+              voltmeter's input resistance from Chapter 2, and the error in timing by hand.</span></li>
+            <li><span class="th">ค่า τ ตอนประจุกับตอนคายประจุเท่ากันหรือไม่ และเหตุใดจึงควรเท่ากันในทางทฤษฎี</span>
+              <span class="en">Was τ the same when charging as when discharging, and why should it be in
+              theory?</span></li>
+            <li><span class="th">การต่อตัวเก็บประจุขนานทำให้ τ เพิ่มหรือลด และผลนี้ตรงข้ามกับการต่อตัวต้านทานขนาน
+              อย่างไร อธิบายโดยย้อนกลับไปที่ \(C = \varepsilon A/d\)</span>
+              <span class="en">Did paralleling the capacitors raise or lower τ, and how is that the opposite
+              of paralleling resistors? Explain from \(C = \varepsilon A/d\).</span></li>
+            <li><span class="th">เมื่อเพิ่มความถี่ของคลื่นสี่เหลี่ยมในตอนที่ 3 รูปคลื่นคร่อมตัวเก็บประจุ
+              ค่อย ๆ กลายเป็นรูปสามเหลี่ยมแล้วแบนลง เหตุใดจึงเป็นเช่นนั้น
+              และเชื่อมโยงกับการตอบสนองต่อความถี่ในตอนที่ 4 อย่างไร</span>
+              <span class="en">As the square wave's frequency rose in Part 3 the capacitor's waveform became
+              triangular and then flattened. Why, and how does that connect with the frequency response of
+              Part 4?</span></li>
+            <li><span class="th">ออกแบบ: เซนเซอร์วัดอัตราการไหลของน้ำให้สัญญาณพัลส์ 50 พัลส์ต่อวินาที
+              ต้องการกรองสัญญาณรบกวนออกโดยไม่ทำให้พัลส์หายไป จงเลือก \(f_c\) ที่เหมาะสม
+              แล้วคำนวณ R และ C พร้อมอธิบายเหตุผลของการเลือก</span>
+              <span class="en">Design: a flow sensor gives 50 pulses a second and its signal must be cleaned
+              without losing the pulses. Choose a suitable \(f_c\), compute R and C, and justify your
+              choice.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">📄 <span class="th">การส่งรายงาน (20 คะแนน)</span>
+              <span class="en">Report submission (20 marks)</span></div>
+            <p class="mb-0"><span class="th">ส่งรายงานความยาวไม่เกิน 6 หน้า ประกอบด้วย วัตถุประสงค์
+              กราฟการประจุและคายประจุบนแกนเดียวกันพร้อมระบุจุด 63 % และ 37 %
+              ตารางผลทั้งสองตารางที่กรอกครบพร้อมหน่วย กราฟการตอบสนองต่อความถี่พร้อมระบุ \(f_c\)
+              ภาพหน้าจอสโคปก่อนและหลังผ่านวงจรกรอง ตัวอย่างการคำนวณอย่างละเอียด 1 ชุด
+              คำตอบของคำถามท้ายปฏิบัติการ และข้อสรุป ภายในสัปดาห์ถัดไป</span>
+              <span class="en">Submit a report of no more than six pages — objectives; the charging and
+              discharging curves on one set of axes with the 63 % and 37 % points marked; both completed
+              tables with units; the frequency response with \(f_c\) identified; the scope photographs
+              before and after the filter; one fully worked calculation; answers to the questions; and a
+              conclusion — by the following week.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Post-test -->
+    <section id="posttest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบหลังเรียน</span>
+          <span class="en">Post-test</span></h2>
+      <p class="muted"><span class="th">ทำหลังอ่านเนื้อหาและทำปฏิบัติการแล้ว ควรได้อย่างน้อย 6 จาก 8 ข้อ</span>
+        <span class="en">Take this after the notes and the laboratory; aim for at least 6 out of 8.</span></p>
+
+      <section class="quiz" id="posttest-q" data-quiz="post" data-chapter="ch05">
+        <div class="quiz-head">
+          <h3><span class="th">หลังเรียน: บทที่ 5</span><span class="en">Post-test: Chapter 5</span></h3>
+          <p><span class="th">8 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">8 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="τ = RC = 47×10³ × 22×10⁻⁶ = 1.03 วินาที"
+               data-explain-en="τ = RC = 47×10³ × 22×10⁻⁶ = 1.03 s.">
+            <div class="q-text"><span class="th">วงจร RC ที่มี R = 47 kΩ และ C = 22 µF มีค่าคงตัวเวลาเท่าใด</span>
+              <span class="en">What is the time constant of an RC circuit with R = 47 kΩ and C = 22 µF?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>1.03 ms</span></label>
+              <label class="opt" data-opt="b"><span>10.3 ms</span></label>
+              <label class="opt" data-opt="c"><span>1.03 s</span></label>
+              <label class="opt" data-opt="d"><span>10.3 s</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="หลังหนึ่งค่าคงตัวเวลา แรงดันขึ้นไปถึง 63.2 % ของค่าสุดท้าย คือ 0.632 × 24 = 15.2 V"
+               data-explain-en="After one time constant the voltage has reached 63.2 % of its final value: 0.632 × 24 = 15.2 V.">
+            <div class="q-text"><span class="th">ประจุตัวเก็บประจุจากแหล่งจ่าย 24 V หลังผ่านไปหนึ่งค่าคงตัวเวลา แรงดันคร่อมตัวเก็บประจุเป็นเท่าใด</span>
+              <span class="en">Charging from a 24 V supply, what is the capacitor voltage after one time constant?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>24.0 V</span></label>
+              <label class="opt" data-opt="b"><span>15.2 V</span></label>
+              <label class="opt" data-opt="c"><span>12.0 V</span></label>
+              <label class="opt" data-opt="d"><span>8.8 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="เกณฑ์ที่ใช้กันคือ 5τ ซึ่งให้ 99.3 % ดังนั้น 5 × 20 ms = 100 ms"
+               data-explain-en="The accepted rule is 5τ, giving 99.3 %, so 5 × 20 ms = 100 ms.">
+            <div class="q-text"><span class="th">วงจรที่มี τ = 20 ms ต้องใช้เวลาเท่าใดจึงถือว่าเข้าสู่สภาวะคงตัวแล้ว</span>
+              <span class="en">With τ = 20 ms, how long before the circuit is considered settled?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>20 ms</span></label>
+              <label class="opt" data-opt="b"><span>40 ms</span></label>
+              <label class="opt" data-opt="c"><span>60 ms</span></label>
+              <label class="opt" data-opt="d"><span>100 ms</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="ตัวเก็บประจุต่อขนานกันจะบวกกัน (เหมือนเพิ่มพื้นที่แผ่น) จึงได้ 10 + 22 = 32 µF ซึ่งตรงข้ามกับตัวต้านทาน"
+               data-explain-en="Capacitors in parallel add, as if the plate area had grown: 10 + 22 = 32 µF — the opposite of resistors.">
+            <div class="q-text"><span class="th">ตัวเก็บประจุ 10 µF และ 22 µF ต่อขนานกัน ได้ความจุรวมเท่าใด</span>
+              <span class="en">What is the total capacitance of 10 µF and 22 µF in parallel?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>32 µF</span></label>
+              <label class="opt" data-opt="b"><span>6.9 µF</span></label>
+              <label class="opt" data-opt="c"><span>12 µF</span></label>
+              <label class="opt" data-opt="d"><span>220 µF</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="W = ½CV² = ½ × 470×10⁻⁶ × 12² = 0.5 × 470×10⁻⁶ × 144 = 33.8 mJ"
+               data-explain-en="W = ½CV² = 0.5 × 470×10⁻⁶ × 144 = 33.8 mJ.">
+            <div class="q-text"><span class="th">ตัวเก็บประจุ 470 µF ที่ประจุจนถึง 12 V เก็บพลังงานไว้เท่าใด</span>
+              <span class="en">How much energy does a 470 µF capacitor charged to 12 V hold?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>5.6 mJ</span></label>
+              <label class="opt" data-opt="b"><span>2.8 mJ</span></label>
+              <label class="opt" data-opt="c"><span>33.8 mJ</span></label>
+              <label class="opt" data-opt="d"><span>67.7 mJ</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="ค่าคงตัวเวลาของวงจร RL คือ τ = L/R = 0.250/50 = 5 ms สังเกตว่าเป็นการหาร ไม่ใช่การคูณเหมือนวงจร RC"
+               data-explain-en="The RL time constant is τ = L/R = 0.250/50 = 5 ms — note that it is a division, not the multiplication of the RC case.">
+            <div class="q-text"><span class="th">คอยล์ที่มี L = 250 mH และ R = 50 Ω มีค่าคงตัวเวลาเท่าใด</span>
+              <span class="en">What is the time constant of a coil with L = 250 mH and R = 50 Ω?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>12.5 s</span></label>
+              <label class="opt" data-opt="b"><span>5 ms</span></label>
+              <label class="opt" data-opt="c"><span>200 ms</span></label>
+              <label class="opt" data-opt="d"><span>12.5 ms</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="เมื่อประจุเต็มแล้ว แรงดันคร่อมตัวเก็บประจุเท่ากับแหล่งจ่าย จึงไม่มีแรงดันเหลือให้ตัวต้านทาน กระแสจึงเป็นศูนย์ ตัวเก็บประจุจึงเทียบได้กับวงจรเปิดสำหรับไฟตรง"
+               data-explain-en="Once fully charged its voltage equals the supply's, leaving none across the resistor, so the current is zero — the capacitor is an open circuit to DC.">
+            <div class="q-text"><span class="th">หลังจากตัวเก็บประจุในวงจร RC ประจุเต็มแล้ว กระแสในวงจรเป็นเท่าใด</span>
+              <span class="en">Once the capacitor in an RC circuit is fully charged, what is the current?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>V/R <span class="th">คงที่ตลอด</span><span class="en">, unchanged</span></span></label>
+              <label class="opt" data-opt="b"><span><span class="th">ครึ่งหนึ่งของค่าเริ่มต้น</span><span class="en">Half its initial value</span></span></label>
+              <label class="opt" data-opt="c"><span><span class="th">63 % ของค่าเริ่มต้น</span><span class="en">63 % of its initial value</span></span></label>
+              <label class="opt" data-opt="d"><span><span class="th">ศูนย์ — ตัวเก็บประจุเป็นวงจรเปิดสำหรับไฟตรง</span><span class="en">Zero — the capacitor is an open circuit to DC</span></span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="f_c = 1/(2πRC) = 1/(2π × 4700 × 100×10⁻⁹) = 1/(2.95×10⁻³) = 339 Hz"
+               data-explain-en="f_c = 1/(2πRC) = 1/(2π × 4700 × 100×10⁻⁹) = 339 Hz.">
+            <div class="q-text"><span class="th">วงจรกรองความถี่ต่ำผ่านที่ใช้ R = 4.7 kΩ และ C = 100 nF มีความถี่ตัดเท่าใด</span>
+              <span class="en">What is the cut-off frequency of a low-pass filter with R = 4.7 kΩ and C = 100 nF?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>339 Hz</span></label>
+              <label class="opt" data-opt="b"><span>47 Hz</span></label>
+              <label class="opt" data-opt="c"><span>2.13 kHz</span></label>
+              <label class="opt" data-opt="d"><span>470 Hz</span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== References -->
+    <section id="refs">
+      <h2><span class="num">📚</span><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></h2>
+      <ol class="references">
+        <li>Boylestad, R. L. (2016). <i>Introductory Circuit Analysis</i> (13th ed.), Ch. 10–11.
+          Pearson.</li>
+        <li>Alexander, C. K., &amp; Sadiku, M. N. O. (2020). <i>Fundamentals of Electric Circuits</i>
+          (7th ed.), Ch. 6–7. McGraw-Hill.
+          <span class="small muted">— <span class="th">บทที่ 7 ครอบคลุมผลตอบสนองชั่วครู่อย่างละเอียด</span>
+          <span class="en">Chapter 7 covers the transient response in detail</span></span></li>
+        <li>Nilsson, J. W., &amp; Riedel, S. A. (2019). <i>Electric Circuits</i> (11th ed.), Ch. 6–7.
+          Pearson.</li>
+        <li>Irwin, J. D., &amp; Nelms, R. M. (2021). <i>Basic Engineering Circuit Analysis</i>
+          (12th ed.), Ch. 6–7. Wiley.</li>
+        <li>Hughes, E., Hiley, J., Brown, K., &amp; Smith, I. M. (2016).
+          <i>Hughes Electrical and Electronic Technology</i> (12th ed.), Ch. 4–5 and 8. Pearson.</li>
+        <li>Horowitz, P., &amp; Hill, W. (2015). <i>The Art of Electronics</i> (3rd ed.), Ch. 1.
+          Cambridge University Press.
+          <span class="small muted">— <span class="th">หัวข้อ 1.4 อธิบายวงจร RC และวงจรกรองแบบใช้งานได้จริง</span>
+          <span class="en">§1.4 treats RC circuits and filters as a practitioner uses them</span></span></li>
+        <li>Pallás-Areny, R., &amp; Webster, J. G. (2012). <i>Sensors and Signal Conditioning</i>
+          (2nd ed.), Ch. 3. Wiley.
+          <span class="small muted">— <span class="th">การเลือกความถี่ตัดให้เหมาะกับสัญญาณเซนเซอร์</span>
+          <span class="en">choosing a cut-off to suit a sensor signal</span></span></li>
+        <li>International Electrotechnical Commission. (2016).
+          <i>IEC 60384-1: Fixed capacitors for use in electronic equipment</i>. IEC.
+          <span class="small muted">— <span class="th">ที่มาของพิกัดและค่าความคลาดเคลื่อนของตัวเก็บประจุ</span>
+          <span class="en">where capacitor ratings and tolerances come from</span></span></li>
+        <li><span class="th">วิศวกรรมสถานแห่งประเทศไทย ในพระบรมราชูปถัมภ์ (วสท.). (2565).
+          <i>มาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย</i> (ฉบับปรับปรุงครั้งที่ 2). กรุงเทพฯ: วสท.</span>
+          <span class="en">Engineering Institute of Thailand. (2022).
+          <i>Thailand Electrical Installation Standard</i> (2nd rev. ed.). Bangkok: EIT.</span></li>
+        <li>American Society of Agricultural and Biological Engineers. (2018).
+          <i>ASABE EP505: Measuring Soil Water Content with Electrical Resistance Sensors</i>. ASABE.</li>
+      </ol>
+    </section>
+
+    <!-- =============================================== Chapter nav -->
+    <nav class="chapter-nav">
+      <a href="ch04.html">
+        <div class="dir">← <span class="th">บทก่อนหน้า</span><span class="en">Previous</span></div>
+        <div class="ttl"><span class="th">บทที่ 4 · กฎของเคอร์ชอฟฟ์</span>
+          <span class="en">Chapter 4 · Kirchhoff's Laws</span></div>
+      </a>
+      <a href="ch06.html" class="next">
+        <div class="dir"><span class="th">บทถัดไป</span><span class="en">Next chapter</span> →</div>
+        <div class="ttl"><span class="th">บทที่ 6 · ระบบไฟฟ้ากระแสสลับ</span>
+          <span class="en">Chapter 6 · The AC System</span></div>
+      </a>
+    </nav>
+
+  </main>
+</div>
+</div>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span><span class="th">บทที่ 5 — ตัวเก็บประจุและตัวเหนี่ยวนำในวงจรกระแสตรง</span>
+        <span class="en">Chapter 5 — Capacitance and Inductance in DC Circuits</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>
