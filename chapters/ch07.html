@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>บทที่ 7 กำลังไฟฟ้ากระแสสลับ | Fundamental of Electrical Engineering</title>
+<meta name="description" content="Chapter 7 — Instantaneous and real power, rms values, apparent and reactive power, the power triangle, and power-factor correction.">
+<meta name="author" content="Jedsada Saijai">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<script>
+  try {
+    var l = localStorage.getItem('fee.lang');
+    if (l === 'en' || l === 'th') document.documentElement.setAttribute('lang', l);
+  } catch (e) {}
+</script>
+<script src="../assets/js/mathjax-config.js"></script>
+<script defer src="../assets/vendor/mathjax/tex-svg.js"></script>
+<style>
+  .sys-fig text { font-family: var(--font-sans); }
+  .sys-fig .lbl { font-size: 12px; font-weight: 600; fill: #0d1128; }
+  .sys-fig .sub { font-size: 10.5px; fill: #6c757d; }
+  .sys-fig .cap { font-size: 11px; font-weight: 700; fill: #fd5f00; }
+  .sys-fig .wire { stroke: #0d1128; stroke-width: 2; fill: none; }
+  .sys-fig .sym  { stroke: #0d1128; stroke-width: 2; fill: #fff; }
+  .sys-fig .axis { stroke: #6c757d; stroke-width: 1.5; }
+  .sys-fig .node { fill: #fd5f00; }
+  .sys-fig .vwave { stroke: #fd5f00; stroke-width: 3; fill: none; }
+  .sys-fig .iwave { stroke: #2b6cb0; stroke-width: 2.5; fill: none; stroke-dasharray: 7 4; }
+  .sys-fig .pwave { stroke: #6b21a8; stroke-width: 2.5; fill: none; }
+  .sys-fig .pfill-in  { fill: rgba(253,95,0,.20); stroke: none; }
+  .sys-fig .pfill-out { fill: rgba(43,108,176,.28); stroke: none; }
+  .sys-fig .meanline  { stroke: #6b21a8; stroke-width: 1.6; stroke-dasharray: 6 4; }
+
+  /* --- Fig 7.1 : the shading of p = v·i is painted in as a cursor sweeps
+         across, so you can watch the shaded area go negative and come
+         back. The three curves themselves are always drawn in full, so
+         the figure reads correctly the moment it is paused. ----------- */
+  @keyframes pw-sweep  { from { transform: scaleX(0); }      to { transform: scaleX(1); } }
+  @keyframes pw-cursor { from { transform: translateX(0); }   to { transform: translateX(600px); } }
+  .pw-fig .sweep  { transform-box: view-box; transform-origin: 60px 0;
+                    animation: pw-sweep  5s linear infinite; }
+  .pw-fig .cursor { transform-box: view-box; animation: pw-cursor 5s linear infinite; }
+
+  /* --- Fig 7.2 : two identical heaters, one on AC and one on DC, warming
+         to the very same temperature. The DC charge marches one way; the
+         AC charge sloshes to and fro yet heats just as hard, which is the
+         whole idea behind the rms value. --------------------------- */
+  @keyframes rms-march { to      { stroke-dashoffset: -32; } }
+  @keyframes rms-slosh { 0%,100% { stroke-dashoffset: 0; } 50% { stroke-dashoffset: -16; } }
+  @keyframes rms-heat  { 0%      { transform: scaleY(.05); } 55%,100% { transform: scaleY(1); } }
+  .rms-fig .dcflow { animation: rms-march 1.2s linear infinite; }
+  .rms-fig .acosc  { animation: rms-slosh 1.2s ease-in-out infinite; }
+  .rms-fig .merc   { transform-box: view-box; animation: rms-heat 4.2s ease-out infinite; }
+  .rms-fig .m-ac   { transform-origin: 151px 232px; }
+  .rms-fig .m-dc   { transform-origin: 311px 232px; }
+
+  /* --- Fig 7.3 : real power leaves the source and never comes back;
+         reactive power swings out and in twice per cycle, carrying no
+         net energy but filling the cable all the same. -------------- */
+  @keyframes pq-march { to      { stroke-dashoffset: -36; } }
+  @keyframes pq-slosh { 0%,100% { stroke-dashoffset: 0; } 50% { stroke-dashoffset: -18; } }
+  .pq-fig .pflow { animation: pq-march 1.1s linear infinite; }
+  .pq-fig .qosc  { animation: pq-slosh 1.6s ease-in-out infinite; }
+
+  /* --- Fig 7.4 : the same motor before and after correction. Both feeders
+         carry dashes of identical spacing but different timing — 1.20 s
+         against 1.65 s, the true ratio 8.83 A : 6.42 A — so the corrected
+         cable visibly carries less. Reactive power still swings, but only
+         around the short loop between the capacitor and the motor. --- */
+  @keyframes pfc-march { to { stroke-dashoffset: -36; } }
+  .pfc-fig .c-before { animation: pfc-march 1.20s linear infinite; }
+  .pfc-fig .c-after  { animation: pfc-march 1.65s linear infinite; }
+  .pfc-fig .qswing   { animation: pq-slosh  1.60s ease-in-out infinite; }
+</style>
+</head>
+<body data-chapter="ch07">
+
+<!-- ============================================================ TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span><span class="th">คณะวิศวกรรมศาสตร์ สจล.</span><span class="en">School of Engineering, KMITL</span></span>
+    <span class="sep">|</span>
+    <span><b>3(2-2-5)</b>&nbsp;<span class="th">หน่วยกิต · ทฤษฎี 2 ชม. ปฏิบัติ 2 ชม.</span><span class="en">credits · 2 h lecture, 2 h lab</span></span>
+    <span class="right"><span class="th">ภาคการศึกษา 1/2569 · 16 สัปดาห์</span><span class="en">Semester 1/2026 · 16 weeks</span></span>
+  </div>
+</div>
+
+<!-- ======================================================== NAVIGATION -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">⚡</span>
+      <span class="brand-text"><span class="th">พื้นฐาน<span class="hi">วิศวกรรมไฟฟ้า</span></span><span class="en">Fundamental of <span class="hi">Electrical Engineering</span></span><small>Agri-Intelligence Engineering</small></span>
+    </a>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a></li>
+      <li><a href="../index.html#chapters"><span class="th">บทเรียนทั้งหมด</span><span class="en">All chapters</span></a></li>
+      <li><a href="#pretest"><span class="th">Pre-test</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการ</span><span class="en">Laboratory</span></a></li>
+      <li><a href="ch08.html" class="btn btn-primary btn-sm" style="color:#fff">
+        <span class="th">บทถัดไป</span><span class="en">Next</span> →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================================== HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html"><span class="th">หน้าแรก</span><span class="en">Home</span></a> ·
+      <a href="../index.html#chapters"><span class="th">บทเรียน</span><span class="en">Chapters</span></a> ·
+      <span class="th">บทที่ 7</span><span class="en">Chapter 7</span>
+    </div>
+    <span class="eyebrow"><span class="th">สัปดาห์ที่ 7 · บทที่ 7</span><span class="en">Week 7 · Chapter 7</span></span>
+    <h1><span class="th">กำลังไฟฟ้ากระแสสลับ</span>
+        <span class="en">Alternating-Current Power</span></h1>
+    <p class="lead">
+      <span class="th">ในวงจรไฟตรง กำลังไฟฟ้าคือ \(P = VI\) จบเรื่อง แต่ในวงจรไฟสลับ
+        การคูณแรงดันกับกระแสให้คำตอบที่ <b>ไม่ใช่กำลังที่คุณต้องจ่ายเงินซื้อ</b>
+        และไม่ใช่กำลังที่กลายเป็นงานด้วย บทนี้จะแยกให้เห็นชัดว่ากำลังไฟฟ้ากระแสสลับมีสามชนิด
+        ชนิดไหนที่มิเตอร์บันทึก ชนิดไหนที่ทำให้สายไฟร้อนโดยไม่ได้งานอะไรเลย
+        และเหตุใดตัวเก็บประจุราคาไม่กี่ร้อยบาทจึงลดกระแสในสายป้อนของฟาร์มได้ถึงหนึ่งในสี่</span>
+      <span class="en">In a DC circuit, power is \(P = VI\) and there is nothing more to say. In an AC
+        circuit, multiplying voltage by current gives a number that is <b>neither what you are billed for
+        nor what does the work</b>. This chapter separates the three kinds of AC power: which one the meter
+        records, which one heats your cables for no return, and why a capacitor costing a few hundred baht
+        can cut a farm feeder's current by a quarter.</span>
+    </p>
+    <div class="hero-meta">
+      <span>⏱ <strong>2+2</strong> <span class="th">ชั่วโมง</span><span class="en">hours</span></span>
+      <span>📘 <span class="th">หัวข้อหลัก</span><span class="en">Main topics</span> <strong>4</strong></span>
+      <span>🧪 <span class="th">ปฏิบัติการที่ 7</span><span class="en">Laboratory 7</span></span>
+      <span>📝 <span class="th">Pre / Post-test</span><span class="en">Pre / post-test</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+<div class="chapter-layout">
+
+  <!-- ============================================================= TOC -->
+  <aside class="toc">
+    <div class="toc-title"><span class="th">สารบัญบทเรียน</span><span class="en">On this page</span></div>
+    <ul>
+      <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
+      <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
+      <li><a href="#s1"><span class="th">7.1 กำลังชั่วขณะและกำลังจริง</span><span class="en">7.1 Instantaneous and real power</span></a></li>
+      <li><a href="#s2"><span class="th">7.2 ค่าอาร์เอ็มเอส</span><span class="en">7.2 The rms value</span></a></li>
+      <li><a href="#s3"><span class="th">7.3 กำลังสามชนิดและสามเหลี่ยมกำลัง</span><span class="en">7.3 Three powers, one triangle</span></a></li>
+      <li><a href="#s4"><span class="th">7.4 ตัวประกอบกำลังและการแก้</span><span class="en">7.4 Power factor and its correction</span></a></li>
+      <li><a href="#summary"><span class="th">สรุปบทเรียน</span><span class="en">Summary</span></a></li>
+      <li><a href="#activity"><span class="th">กิจกรรมในชั้นเรียน</span><span class="en">Class activity</span></a></li>
+      <li><a href="#lab"><span class="th">ปฏิบัติการที่ 7</span><span class="en">Laboratory 7</span></a></li>
+      <li><a href="#posttest"><span class="th">แบบทดสอบหลังเรียน</span><span class="en">Post-test</span></a></li>
+      <li><a href="#refs"><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></a></li>
+    </ul>
+  </aside>
+
+  <!-- ==================================================== CHAPTER BODY -->
+  <main class="chapter-body">
+
+    <!-- ---------------------------------------------------- Objectives -->
+    <section id="objectives">
+      <div class="callout callout-objective">
+        <div class="callout-title">🎯 <span class="th">จุดประสงค์การเรียนรู้</span>
+          <span class="en">Learning objectives</span></div>
+        <p><span class="th">เมื่อเรียนจบบทนี้ นักศึกษาจะสามารถ</span>
+           <span class="en">After this chapter you will be able to:</span></p>
+        <ol>
+          <li><span class="th">เขียนกำลังชั่วขณะ \(p(t) = v(t)i(t)\) ของโหลดไฟสลับ
+            อธิบายได้ว่าเหตุใดจึงกระเพื่อมด้วยความถี่สองเท่า และเหตุใดบางช่วงจึงมีค่าติดลบ</span>
+            <span class="en">write the instantaneous power \(p(t) = v(t)i(t)\) of an AC load, and explain why
+            it pulsates at twice the supply frequency and why part of it is negative;</span></li>
+          <li><span class="th">อธิบายที่มาของค่าอาร์เอ็มเอสจากหลักความสมมูลทางความร้อน
+            และคำนวณค่าอาร์เอ็มเอสของสัญญาณไซน์และสัญญาณพัลส์ได้</span>
+            <span class="en">explain where the rms value comes from, on the principle of equal heating, and
+            compute it for both sinusoidal and pulsed waveforms;</span></li>
+          <li><span class="th">คำนวณกำลังปรากฏ \(S\) กำลังจริง \(P\) และกำลังรีแอคทีฟ \(Q\)
+            พร้อมระบุหน่วยที่ถูกต้องของแต่ละชนิด</span>
+            <span class="en">compute apparent power \(S\), real power \(P\) and reactive power \(Q\), and give
+            the correct unit for each;</span></li>
+          <li><span class="th">เขียนสามเหลี่ยมกำลังของโหลดหนึ่งตัว และรวมโหลดหลายตัวเข้าด้วยกัน
+            โดยบวก \(P\) กับ \(P\) และ \(Q\) กับ \(Q\) แยกกัน</span>
+            <span class="en">draw the power triangle of a single load, and combine several loads by adding
+            \(P\) to \(P\) and \(Q\) to \(Q\) separately;</span></li>
+          <li><span class="th">อธิบายความหมายทางกายภาพของตัวประกอบกำลัง
+            และคำนวณขนาดตัวเก็บประจุที่ต้องใช้เพื่อแก้ตัวประกอบกำลังให้ถึงค่าเป้าหมาย</span>
+            <span class="en">explain what power factor physically means, and size the capacitor needed to
+            correct it to a target value;</span></li>
+          <li><span class="th">ประเมินผลของการแก้ตัวประกอบกำลังต่อกระแสในสายป้อน กำลังสูญเสียในสาย
+            และค่าไฟฟ้าของฟาร์ม</span>
+            <span class="en">assess what correction does to feeder current, cable losses and a farm's
+            electricity bill.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ------------------------------------------------------ Pre-test -->
+    <section id="pretest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบก่อนเรียน</span>
+          <span class="en">Pre-test</span></h2>
+      <p class="muted"><span class="th">ทำก่อนอ่านเนื้อหา เพื่อดูว่าตัวเองรู้อะไรอยู่แล้ว ไม่มีผลต่อคะแนน</span>
+        <span class="en">Take this before reading, to see what you already know; it does not count towards
+        your mark.</span></p>
+
+      <section class="quiz" id="pretest-q" data-quiz="pre" data-chapter="ch07">
+        <div class="quiz-head">
+          <h3><span class="th">ก่อนเรียน: บทที่ 7</span><span class="en">Pre-test: Chapter 7</span></h3>
+          <p><span class="th">5 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">5 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="กำลังจริงมีหน่วยวัตต์ (W) กำลังปรากฏมีหน่วยโวลต์-แอมแปร์ (VA) และกำลังรีแอคทีฟมีหน่วยวาร์ (var) ทั้งสามมีมิติเดียวกันแต่ใช้หน่วยต่างกันเพื่อไม่ให้สับสน"
+               data-explain-en="Real power is in watts (W), apparent power in volt-amperes (VA) and reactive power in vars (var). All three share one dimension but are given different unit names to keep them apart.">
+            <div class="q-text"><span class="th">กำลังไฟฟ้าที่กลายเป็นงานหรือความร้อนจริง ๆ มีหน่วยเป็นอะไร</span>
+              <span class="en">What is the unit of the power that actually becomes work or heat?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>VA</span></label>
+              <label class="opt" data-opt="b"><span>var</span></label>
+              <label class="opt" data-opt="c"><span>W</span></label>
+              <label class="opt" data-opt="d"><span>VAh</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="ผลคูณของแรงดันกับกระแสที่มิเตอร์อ่านได้ คือกำลังปรากฏ S = VI = 230 × 10 = 2300 VA ซึ่งจะเท่ากับกำลังจริงเฉพาะเมื่อตัวประกอบกำลังเป็น 1 เท่านั้น"
+               data-explain-en="The product of the measured voltage and current is the apparent power, S = VI = 230 × 10 = 2300 VA. It equals the real power only when the power factor is 1.">
+            <div class="q-text"><span class="th">โหลดตัวหนึ่งต่อกับไฟ 230 V และแอมป์มิเตอร์อ่านได้ 10 A ผลคูณ 230 × 10 = 2300 คือปริมาณใด</span>
+              <span class="en">A load on a 230 V supply draws 10 A on the ammeter. What quantity is the product 230 × 10 = 2300?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span class="th">กำลังจริง 2300 W</span><span class="en">real power, 2300 W</span></label>
+              <label class="opt" data-opt="b"><span class="th">กำลังปรากฏ 2300 VA</span><span class="en">apparent power, 2300 VA</span></label>
+              <label class="opt" data-opt="c"><span class="th">กำลังรีแอคทีฟ 2300 var</span><span class="en">reactive power, 2300 var</span></label>
+              <label class="opt" data-opt="d"><span class="th">พลังงาน 2300 J</span><span class="en">energy, 2300 J</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="ตัวประกอบกำลังคือโคไซน์ของมุมระหว่างเฟเซอร์แรงดันกับเฟเซอร์กระแส ซึ่งในบทที่ 6 เราเห็นว่าเท่ากับมุมของอิมพีแดนซ์พอดี"
+               data-explain-en="The power factor is the cosine of the angle between the voltage and current phasors — which Chapter 6 showed is exactly the angle of the impedance.">
+            <div class="q-text"><span class="th">ตัวประกอบกำลังคือค่าใด</span>
+              <span class="en">What is the power factor?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span class="th">โคไซน์ของมุมระหว่างแรงดันกับกระแส</span><span class="en">the cosine of the angle between voltage and current</span></label>
+              <label class="opt" data-opt="b"><span class="th">อัตราส่วนของแรงดันต่อกระแส</span><span class="en">the ratio of voltage to current</span></label>
+              <label class="opt" data-opt="c"><span class="th">ไซน์ของมุมระหว่างแรงดันกับกระแส</span><span class="en">the sine of the angle between voltage and current</span></label>
+              <label class="opt" data-opt="d"><span class="th">อัตราส่วนของความถี่ต่อ 50 Hz</span><span class="en">the ratio of the frequency to 50 Hz</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="มิเตอร์กิโลวัตต์-ชั่วโมงบันทึกพลังงานที่มาจากกำลังจริงเท่านั้น กำลังรีแอคทีฟไหลออกไปแล้วไหลกลับมา จึงไม่ถูกบันทึกเป็นพลังงาน แต่การไฟฟ้าอาจคิดค่าปรับแยกถ้าตัวประกอบกำลังต่ำเกินเกณฑ์"
+               data-explain-en="A kilowatt-hour meter records only the energy from real power. Reactive power flows out and back again, so no energy is registered — though the utility may levy a separate penalty if the power factor falls too low.">
+            <div class="q-text"><span class="th">มิเตอร์ไฟฟ้าแบบกิโลวัตต์-ชั่วโมงที่ติดหน้าบ้าน บันทึกกำลังชนิดใด</span>
+              <span class="en">Which kind of power does the kilowatt-hour meter on the wall record?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span class="th">กำลังปรากฏ</span><span class="en">apparent power</span></label>
+              <label class="opt" data-opt="b"><span class="th">กำลังรีแอคทีฟ</span><span class="en">reactive power</span></label>
+              <label class="opt" data-opt="c"><span class="th">ทั้งสามชนิดรวมกัน</span><span class="en">all three added together</span></label>
+              <label class="opt" data-opt="d"><span class="th">กำลังจริง</span><span class="en">real power</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="มอเตอร์เป็นโหลดเหนี่ยวนำ กระแสตามหลังแรงดัน ส่วนตัวเก็บประจุทำให้กระแสนำหน้า กระแสรีแอคทีฟของทั้งสองจึงมีทิศตรงข้ามและหักล้างกัน ทำให้กระแสในสายลดลง"
+               data-explain-en="A motor is an inductive load whose current lags, while a capacitor's current leads. Their reactive currents therefore oppose and cancel, so the current in the cable falls.">
+            <div class="q-text"><span class="th">เหตุใดการต่อตัวเก็บประจุขนานกับมอเตอร์จึงลดกระแสในสายป้อนได้</span>
+              <span class="en">Why does connecting a capacitor in parallel with a motor reduce the current in the feeder?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span class="th">เพราะตัวเก็บประจุเก็บกระแสส่วนเกินไว้</span><span class="en">because the capacitor stores the surplus current</span></label>
+              <label class="opt" data-opt="b"><span class="th">เพราะกระแสของตัวเก็บประจุหักล้างกับกระแสรีแอคทีฟของมอเตอร์</span><span class="en">because the capacitor's current cancels the motor's reactive current</span></label>
+              <label class="opt" data-opt="c"><span class="th">เพราะตัวเก็บประจุลดแรงดันที่มอเตอร์ได้รับ</span><span class="en">because the capacitor lowers the voltage at the motor</span></label>
+              <label class="opt" data-opt="d"><span class="th">เพราะตัวเก็บประจุทำให้มอเตอร์หมุนเร็วขึ้น</span><span class="en">because the capacitor makes the motor turn faster</span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== 7.1 -->
+    <section id="s1">
+      <h2><span class="num">7.1</span><span class="th">กำลังไฟฟ้าชั่วขณะและกำลังจริง</span>
+          <span class="en">Instantaneous power and real power</span></h2>
+
+      <p><span class="th">กำลังไฟฟ้าที่จุดใดก็ตามในวงจร ณ ขณะเวลาหนึ่ง คือผลคูณของแรงดันกับกระแสที่จุดนั้น
+        ข้อนี้เป็นจริงทั้งในวงจรไฟตรงและไฟสลับ ไม่มีข้อยกเว้น</span>
+        <span class="en">The power at any point in a circuit at any instant is the product of the voltage and
+        the current there. That is true of DC and AC alike, without exception:</span></p>
+
+      <div class="equation">
+        \[ p(t) = v(t)\,i(t) \]
+      </div>
+
+      <p><span class="th">ความยุ่งยากเริ่มต้นเมื่อนำสองปริมาณที่เป็นคลื่นไซน์และ <b>ไม่ตรงเฟสกัน</b>
+        มาคูณกัน ให้แรงดันเป็น \(v = V_m \sin\omega t\) และกระแสตามหลังอยู่มุม \(\theta\)
+        คือ \(i = I_m \sin(\omega t - \theta)\) เมื่อคูณกันแล้วใช้เอกลักษณ์ตรีโกณมิติจัดรูป จะได้</span>
+        <span class="en">The difficulty begins when the two quantities are sinusoids <b>out of step with each
+        other</b>. Let the voltage be \(v = V_m \sin\omega t\) and the current lag it by \(\theta\), so that
+        \(i = I_m \sin(\omega t - \theta)\). Multiplying and tidying with a trigonometric identity
+        gives:</span></p>
+
+      <div class="equation">
+        \[ p(t) = \frac{V_m I_m}{2}\Big[\cos\theta - \cos(2\omega t - \theta)\Big] \]
+      </div>
+      <p class="eq-note"><span class="th">พจน์แรกเป็นค่าคงที่ พจน์ที่สองแกว่งด้วยความถี่ \(2\omega\)
+        คือ <b>สองเท่าของความถี่แหล่งจ่าย</b></span>
+        <span class="en">The first term is constant; the second swings at \(2\omega\) — <b>twice the supply
+        frequency</b></span></p>
+
+      <p><span class="th">สมการนี้บอกความจริงสามข้อที่สำคัญมาก และทั้งสามข้อมองเห็นได้ในรูปที่ 7.1</span>
+        <span class="en">This one equation tells us three important things, all three visible in
+        Figure 7.1:</span></p>
+
+      <ol>
+        <li><span class="th"><b>กำลังกระเพื่อมด้วยความถี่สองเท่า</b> ไฟบ้าน 50 Hz ส่งกำลังเป็นจังหวะ 100 ครั้งต่อวินาที
+          ไม่ใช่ 50 ครั้ง นี่คือเหตุผลที่หลอดไฟบางชนิดกะพริบที่ 100 Hz
+          และเป็นเหตุผลที่มอเตอร์หนึ่งเฟสสั่นและมีเสียงฮัมที่ 100 Hz</span>
+          <span class="en"><b>Power pulsates at twice the frequency.</b> A 50 Hz supply delivers power in
+          100 pulses a second, not 50. This is why some lamps flicker at 100 Hz, and why single-phase
+          motors buzz and hum at 100 Hz.</span></li>
+        <li><span class="th"><b>ค่าเฉลี่ยของกำลังไม่ใช่ \(V_m I_m/2\) แต่มี \(\cos\theta\) คูณอยู่</b>
+          เพราะค่าเฉลี่ยของพจน์โคไซน์ที่แกว่งนั้นเป็นศูนย์ จึงเหลือแต่พจน์แรก</span>
+          <span class="en"><b>The average is not \(V_m I_m/2\) but carries a factor \(\cos\theta\),</b>
+          because the average of the swinging cosine term is zero and only the first term
+          survives.</span></li>
+        <li><span class="th"><b>ถ้า \(\theta\) ไม่เป็นศูนย์ กำลังจะติดลบเป็นบางช่วง</b>
+          ค่าติดลบหมายความว่าพลังงาน <b>ไหลกลับ</b> จากโหลดไปหาแหล่งจ่าย
+          ซึ่งเป็นพลังงานที่สนามแม่เหล็กหรือสนามไฟฟ้าเก็บไว้ในครึ่งรอบก่อนแล้วคืนออกมา</span>
+          <span class="en"><b>If \(\theta\) is not zero, the power goes negative for part of every
+          half-cycle.</b> Negative power means energy flowing <b>back</b> from the load to the source — the
+          energy a magnetic or electric field took in earlier and is now returning.</span></li>
+      </ol>
+
+      <figure>
+        <div class="figure-box is-animated pw-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 400" role="img" width="720"
+               aria-label="Voltage and current waveforms with the current lagging, and below them the instantaneous power, which pulses at double frequency and dips below zero in every half cycle">
+            <defs>
+              <clipPath id="p71-above"><rect x="58" y="196" width="604" height="114"/></clipPath>
+              <clipPath id="p71-below"><rect x="58" y="310" width="604" height="40"/></clipPath>
+              <clipPath id="p71-sweep"><rect class="sweep" x="60" y="196" width="600" height="154"/></clipPath>
+            </defs>
+
+            <text class="cap th" x="60" y="26">ก. แรงดันและกระแส — กระแสตามหลัง 60°</text>
+            <text class="cap en" x="60" y="26">a. Voltage and current — the current lags by 60°</text>
+
+            <!-- ===== upper panel : v and i ===== -->
+            <line class="axis" x1="52" y1="110" x2="672" y2="110"/>
+            <text class="sub" x="44" y="114" text-anchor="end">0</text>
+            <polyline class="vwave" fill="none" points="60,110 66,101.2 72,92.6 78,84.2 84,76.3 90,68.9 96,62.1 102,56.1 108,50.9 114,46.7 120,43.4 126,41.2 132,40.1 138,40.1 144,41.2 150,43.4 156,46.7 162,50.9 168,56.1 174,62.1 180,68.9 186,76.3 192,84.2 198,92.6 204,101.2 210,110 216,118.8 222,127.4 228,135.8 234,143.7 240,151.1 246,157.9 252,163.9 258,169.1 264,173.3 270,176.6 276,178.8 282,179.9 288,179.9 294,178.8 300,176.6 306,173.3 312,169.1 318,163.9 324,157.9 330,151.1 336,143.7 342,135.8 348,127.4 354,118.8 360,110 366,101.2 372,92.6 378,84.2 384,76.3 390,68.9 396,62.1 402,56.1 408,50.9 414,46.7 420,43.4 426,41.2 432,40.1 438,40.1 444,41.2 450,43.4 456,46.7 462,50.9 468,56.1 474,62.1 480,68.9 486,76.3 492,84.2 498,92.6 504,101.2 510,110 516,118.8 522,127.4 528,135.8 534,143.7 540,151.1 546,157.9 552,163.9 558,169.1 564,173.3 570,176.6 576,178.8 582,179.9 588,179.9 594,178.8 600,176.6 606,173.3 612,169.1 618,163.9 624,157.9 630,151.1 636,143.7 642,135.8 648,127.4 654,118.8 660,110"/>
+            <polyline class="iwave" fill="none" points="60,157.6 66,153.8 72,149.3 78,144.2 84,138.5 90,132.4 96,125.9 102,119.2 108,112.3 114,105.4 120,98.6 126,91.9 132,85.5 138,79.6 144,74.1 150,69.1 156,64.8 162,61.3 168,58.4 174,56.5 180,55.3 186,55 192,55.6 198,57 204,59.3 210,62.4 216,66.2 222,70.7 228,75.8 234,81.5 240,87.6 246,94.1 252,100.8 258,107.7 264,114.6 270,121.4 276,128.1 282,134.5 288,140.4 294,145.9 300,150.9 306,155.2 312,158.7 318,161.6 324,163.5 330,164.7 336,165 342,164.4 348,163 354,160.7 360,157.6 366,153.8 372,149.3 378,144.2 384,138.5 390,132.4 396,125.9 402,119.2 408,112.3 414,105.4 420,98.6 426,91.9 432,85.5 438,79.6 444,74.1 450,69.1 456,64.8 462,61.3 468,58.4 474,56.5 480,55.3 486,55 492,55.6 498,57 504,59.3 510,62.4 516,66.2 522,70.7 528,75.8 534,81.5 540,87.6 546,94.1 552,100.8 558,107.7 564,114.6 570,121.4 576,128.1 582,134.5 588,140.4 594,145.9 600,150.9 606,155.2 612,158.7 618,161.6 624,163.5 630,164.7 636,165 642,164.4 648,163 654,160.7 660,157.6"/>
+            <line x1="60" y1="36" x2="60" y2="184" stroke="#e4e7ec" stroke-width="1"/>
+            <line x1="360" y1="36" x2="360" y2="184" stroke="#e4e7ec" stroke-width="1"/>
+            <line x1="660" y1="36" x2="660" y2="184" stroke="#e4e7ec" stroke-width="1"/>
+            <text class="sub" x="210" y="196" text-anchor="middle">T = 20 ms</text>
+            <text class="sub" x="510" y="196" text-anchor="middle">2T</text>
+
+            <text class="cap th" x="60" y="222">ข. กำลังชั่วขณะ p = v i — กระเพื่อม 4 รอบในเวลาที่แรงดันครบ 2 รอบ</text>
+            <text class="cap en" x="60" y="222">b. Instantaneous power p = v i — four pulses while the voltage does two</text>
+
+            <!-- ===== lower panel : p ===== -->
+            <g clip-path="url(#p71-sweep)">
+              <path class="pfill-in" clip-path="url(#p71-above)"
+                    d="M60,310 L60,310 66,322 72,331.3 78,337.4 84,339.9 90,338.7 96,333.7 102,325.4 108,314.2 114,300.9 120,286.3 126,271.2 132,256.7 138,243.7 144,233 150,225.2 156,220.8 162,220.2 168,223.3 174,230 180,239.9 186,252.2 192,266.3 198,281.3 204,296.1 210,310 216,322 222,331.3 228,337.4 234,339.9 240,338.7 246,333.7 252,325.4 258,314.2 264,300.9 270,286.3 276,271.2 282,256.7 288,243.7 294,233 300,225.2 306,220.8 312,220.2 318,223.3 324,230 330,239.9 336,252.2 342,266.3 348,281.3 354,296.1 360,310 366,322 372,331.3 378,337.4 384,339.9 390,338.7 396,333.7 402,325.4 408,314.2 414,300.9 420,286.3 426,271.2 432,256.7 438,243.7 444,233 450,225.2 456,220.8 462,220.2 468,223.3 474,230 480,239.9 486,252.2 492,266.3 498,281.3 504,296.1 510,310 516,322 522,331.3 528,337.4 534,339.9 540,338.7 546,333.7 552,325.4 558,314.2 564,300.9 570,286.3 576,271.2 582,256.7 588,243.7 594,233 600,225.2 606,220.8 612,220.2 618,223.3 624,230 630,239.9 636,252.2 642,266.3 648,281.3 654,296.1 660,310 Z"/>
+              <path class="pfill-out" clip-path="url(#p71-below)"
+                    d="M60,310 L60,310 66,322 72,331.3 78,337.4 84,339.9 90,338.7 96,333.7 102,325.4 108,314.2 114,300.9 120,286.3 126,271.2 132,256.7 138,243.7 144,233 150,225.2 156,220.8 162,220.2 168,223.3 174,230 180,239.9 186,252.2 192,266.3 198,281.3 204,296.1 210,310 216,322 222,331.3 228,337.4 234,339.9 240,338.7 246,333.7 252,325.4 258,314.2 264,300.9 270,286.3 276,271.2 282,256.7 288,243.7 294,233 300,225.2 306,220.8 312,220.2 318,223.3 324,230 330,239.9 336,252.2 342,266.3 348,281.3 354,296.1 360,310 366,322 372,331.3 378,337.4 384,339.9 390,338.7 396,333.7 402,325.4 408,314.2 414,300.9 420,286.3 426,271.2 432,256.7 438,243.7 444,233 450,225.2 456,220.8 462,220.2 468,223.3 474,230 480,239.9 486,252.2 492,266.3 498,281.3 504,296.1 510,310 516,322 522,331.3 528,337.4 534,339.9 540,338.7 546,333.7 552,325.4 558,314.2 564,300.9 570,286.3 576,271.2 582,256.7 588,243.7 594,233 600,225.2 606,220.8 612,220.2 618,223.3 624,230 630,239.9 636,252.2 642,266.3 648,281.3 654,296.1 660,310 Z"/>
+            </g>
+            <line class="axis" x1="52" y1="310" x2="672" y2="310"/>
+            <text class="sub" x="44" y="314" text-anchor="end">0</text>
+            <polyline class="pwave" fill="none" points="60,310 66,322 72,331.3 78,337.4 84,339.9 90,338.7 96,333.7 102,325.4 108,314.2 114,300.9 120,286.3 126,271.2 132,256.7 138,243.7 144,233 150,225.2 156,220.8 162,220.2 168,223.3 174,230 180,239.9 186,252.2 192,266.3 198,281.3 204,296.1 210,310 216,322 222,331.3 228,337.4 234,339.9 240,338.7 246,333.7 252,325.4 258,314.2 264,300.9 270,286.3 276,271.2 282,256.7 288,243.7 294,233 300,225.2 306,220.8 312,220.2 318,223.3 324,230 330,239.9 336,252.2 342,266.3 348,281.3 354,296.1 360,310 366,322 372,331.3 378,337.4 384,339.9 390,338.7 396,333.7 402,325.4 408,314.2 414,300.9 420,286.3 426,271.2 432,256.7 438,243.7 444,233 450,225.2 456,220.8 462,220.2 468,223.3 474,230 480,239.9 486,252.2 492,266.3 498,281.3 504,296.1 510,310 516,322 522,331.3 528,337.4 534,339.9 540,338.7 546,333.7 552,325.4 558,314.2 564,300.9 570,286.3 576,271.2 582,256.7 588,243.7 594,233 600,225.2 606,220.8 612,220.2 618,223.3 624,230 630,239.9 636,252.2 642,266.3 648,281.3 654,296.1 660,310"/>
+            <line class="meanline" x1="60" y1="280" x2="660" y2="280"/>
+            <text class="lbl" x="666" y="284" fill="#6b21a8">P</text>
+
+            <!-- the negative lobes, called out once -->
+            <text class="sub" x="85" y="356" text-anchor="middle" fill="#2b6cb0">↑</text>
+            <text class="sub th" x="150" y="368">พลังงานไหลกลับไปหาแหล่งจ่าย</text>
+            <text class="sub en" x="150" y="368">energy flowing back to the source</text>
+
+            <!-- the sweeping cursor -->
+            <line class="cursor" x1="60" y1="196" x2="60" y2="350" stroke="#fd5f00" stroke-width="1.6"/>
+
+            <!-- legend -->
+            <line x1="60" y1="390" x2="92" y2="390" stroke="#fd5f00" stroke-width="3"/>
+            <text class="sub th" x="100" y="394">แรงดัน v</text>
+            <text class="sub en" x="100" y="394">voltage v</text>
+            <line x1="190" y1="390" x2="222" y2="390" stroke="#2b6cb0" stroke-width="2.5" stroke-dasharray="7 4"/>
+            <text class="sub th" x="230" y="394">กระแส i</text>
+            <text class="sub en" x="230" y="394">current i</text>
+            <line x1="310" y1="390" x2="342" y2="390" stroke="#6b21a8" stroke-width="2.5"/>
+            <text class="sub th" x="350" y="394">กำลัง p = v i</text>
+            <text class="sub en" x="350" y="394">power p = v i</text>
+            <text class="sub th" x="470" y="394">เส้นประม่วง = ค่าเฉลี่ย คือกำลังจริง P</text>
+            <text class="sub en" x="470" y="394">the dashed purple line is the average — the real power P</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 7.1</span><span class="en">Figure 7.1</span></b>
+          <span class="th"> เส้นโค้งกำลังสีม่วงไม่ได้แกว่งรอบศูนย์ แต่แกว่งรอบเส้นประซึ่งอยู่สูงกว่าศูนย์
+            ความสูงของเส้นประนั้นคือ <b>กำลังจริง \(P\)</b> ที่โหลดได้ใช้งานจริง
+            สังเกตพื้นที่สีน้ำเงินใต้เส้นศูนย์ — ช่วงนั้นกำลังมีค่าติดลบ คือพลังงาน
+            <b>ไหลย้อนกลับจากโหลดไปหาแหล่งจ่าย</b>
+            <br>ยิ่งมุม \(\theta\) มาก พื้นที่สีน้ำเงินยิ่งโต และเส้นประยิ่งเตี้ยลง
+            ที่ \(\theta = 90^{\circ}\) พอดี (โหลดเป็นตัวเหนี่ยวนำหรือตัวเก็บประจุล้วน)
+            พื้นที่บวกกับพื้นที่ลบจะเท่ากัน เส้นประตกลงมาอยู่ที่ศูนย์
+            นั่นคือ <b>ไม่มีกำลังจริงเลย</b> แม้กระแสจะไหลเต็มสายอยู่ตลอดเวลา
+            <br>สังเกตด้วยว่าเส้นโค้งกำลังครบ 4 รอบ ในเวลาที่แรงดันครบเพียง 2 รอบ</span>
+          <span class="en"> The purple power curve does not swing about zero but about the dashed line above
+            it, and the height of that line is the <b>real power \(P\)</b> the load actually uses. Note the
+            blue areas below the zero line: there the power is negative, with energy <b>flowing back out of
+            the load into the source</b>. <br>The larger the angle \(\theta\), the larger those blue areas
+            grow and the lower the dashed line falls. At \(\theta = 90^{\circ}\) exactly — a pure inductor
+            or capacitor — the positive and negative areas are equal, the dashed line sits on zero, and
+            there is <b>no real power at all</b>, even though current fills the cable the whole time.
+            <br>Note too that the power curve completes four cycles while the voltage completes only
+            two.</span></figcaption>
+      </figure>
+
+      <div class="equation">
+        \[ P = \frac{V_m I_m}{2}\cos\theta = V_{\text{rms}} I_{\text{rms}} \cos\theta \]
+      </div>
+      <p class="eq-note"><span class="th">กำลังจริง มีหน่วยเป็นวัตต์ (W) — นี่คือกำลังที่กลายเป็นงาน
+        เป็นความร้อน และเป็นตัวเลขที่มิเตอร์บันทึกเพื่อออกใบเสร็จ</span>
+        <span class="en">Real power, in watts (W) — the power that becomes work and heat, and the figure the
+        meter records for your bill</span></p>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 7.1</span><span class="en">Example 7.1</span></span>
+          <span class="th">กำลังของมอเตอร์ปั๊มน้ำ และช่วงที่พลังงานไหลกลับ</span>
+          <span class="en">The pump motor's power, and when energy flows backwards</span></div>
+        <div class="example-body">
+          <p><span class="th">มอเตอร์ปั๊มน้ำในตัวอย่างที่ 6.3 ต่อกับไฟ 230 V 50 Hz กินกระแส 8.83 A
+            ตามหลังแรงดันอยู่ 46.3° จงเขียนสมการกำลังชั่วขณะ หากำลังจริง
+            หาค่ากำลังที่เวลา \(t = 5\) ms และหาว่าในหนึ่งรอบมีช่วงเวลารวมกี่มิลลิวินาที
+            ที่พลังงานไหลกลับไปหาแหล่งจ่าย</span>
+            <span class="en">The pump motor of Example 6.3 runs on a 230 V, 50 Hz supply, drawing 8.83 A
+            lagging the voltage by 46.3°. Write its instantaneous power, find the real power, evaluate the
+            power at \(t = 5\) ms, and find for how many milliseconds in each cycle energy flows back into
+            the supply.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th"><b>ขั้นที่ 1</b> หาค่ายอดของทั้งสองปริมาณ
+              (ค่าที่โจทย์ให้เป็นค่าอาร์เอ็มเอส ตามที่มิเตอร์อ่านได้)</span>
+              <span class="en"><b>Step 1</b> Find both peak values; the figures given are rms, as a meter
+              reads them:</span></p>
+            \[ V_m = \sqrt{2}\,(230) = 325\ \text{V} \qquad
+               I_m = \sqrt{2}\,(8.83) = 12.49\ \text{A} \]
+
+            <p><span class="th"><b>ขั้นที่ 2</b> แทนลงในสมการกำลังชั่วขณะ โดย
+              \(V_m I_m/2 = (325)(12.49)/2 = 2030\) และ \(\omega = 314\) rad/s</span>
+              <span class="en"><b>Step 2</b> Substitute into the instantaneous-power expression, with
+              \(V_m I_m/2 = (325)(12.49)/2 = 2030\) and \(\omega = 314\) rad/s:</span></p>
+            \[ p(t) = 2030\Big[\cos 46.3^{\circ} - \cos(628t - 46.3^{\circ})\Big]\ \text{W} \]
+            \[ p(t) = 2030\Big[0.691 - \cos(628t - 46.3^{\circ})\Big]\ \text{W} \]
+
+            <p><span class="th"><b>ขั้นที่ 3</b> กำลังจริงคือค่าเฉลี่ย ซึ่งก็คือพจน์คงที่
+              เพราะค่าเฉลี่ยของพจน์โคไซน์เป็นศูนย์</span>
+              <span class="en"><b>Step 3</b> The real power is the average, which is just the constant term,
+              since the cosine averages to zero:</span></p>
+            \[ P = (2030)(0.691) = 1403\ \text{W} \]
+
+            <p><span class="th">ตรวจทานด้วยเส้นทางอื่น กำลังจริงทั้งหมดต้องไปลงที่ความต้านทานของขดลวด
+              \(R = 18\ \Omega\) เท่านั้น</span>
+              <span class="en">Check by another route: all the real power must end up in the winding
+              resistance \(R = 18\ \Omega\) and nowhere else:</span></p>
+            \[ P = I^{2}R = (8.83)^{2}(18) = (77.97)(18) = 1403\ \text{W}\ \checkmark \]
+
+            <p><span class="th"><b>ขั้นที่ 4</b> ที่เวลา \(t = 5\) ms ซึ่งคือหนึ่งในสี่ของรอบ
+              มุมของแรงดันคือ \(\omega t = 90^{\circ}\)</span>
+              <span class="en"><b>Step 4</b> At \(t = 5\) ms, a quarter of a cycle, the voltage angle is
+              \(\omega t = 90^{\circ}\):</span></p>
+            \[ v = 325\sin 90^{\circ} = 325\ \text{V} \]
+            \[ i = 12.49\sin(90^{\circ} - 46.3^{\circ}) = 12.49\sin 43.7^{\circ} = 8.63\ \text{A} \]
+            \[ p = (325)(8.63) = 2805\ \text{W} \]
+
+            <p><span class="th"><b>ขั้นที่ 5</b> กำลังมีค่าติดลบเมื่อ
+              \(\cos(2\omega t - \theta) &gt; \cos\theta\) ซึ่งเป็นจริงเมื่อ
+              \(|2\omega t - \theta| &lt; \theta\) นั่นคือ \(\omega t\) อยู่ระหว่าง \(0\) ถึง \(\theta\)</span>
+              <span class="en"><b>Step 5</b> The power is negative when
+              \(\cos(2\omega t - \theta) &gt; \cos\theta\), which holds while
+              \(|2\omega t - \theta| &lt; \theta\) — that is, while \(\omega t\) lies between \(0\) and
+              \(\theta\):</span></p>
+            \[ \text{ช่วงติดลบต่อครึ่งรอบ} = \frac{46.3^{\circ}}{360^{\circ}} \times 20\ \text{ms}
+               = 2.57\ \text{ms} \]
+            \[ \text{รวมต่อหนึ่งรอบ} = 2 \times 2.57 = 5.14\ \text{ms}
+               \quad\text{คิดเป็น } \frac{5.14}{20} = 25.7\ \% \]
+
+            <div class="callout callout-note mb-0">
+              <div class="callout-title">📌 <span class="th">อ่านคำตอบให้เป็น</span>
+                <span class="en">Reading the answer properly</span></div>
+              <p class="mb-0"><span class="th">ในหนึ่งวินาที มอเตอร์ตัวนี้ <b>คืนพลังงานกลับให้ระบบไฟฟ้า
+                100 ครั้ง</b> ครั้งละ 2.57 ms รวมเป็นเวลา 257 ms หรือราวหนึ่งในสี่ของเวลาทั้งหมด
+                พลังงานที่คืนกลับนั้นไม่ได้หายไปไหน แต่ก็ไม่ได้ทำงานอะไร
+                มันเพียงวิ่งออกไปสร้างสนามแม่เหล็กในขดลวดแล้ววิ่งกลับมา
+                <br>เรื่องสำคัญคือ <b>การวิ่งไปกลับนั้นใช้สายไฟเส้นเดียวกับพลังงานที่ทำงานจริง</b>
+                สายไฟจึงต้องรับกระแสเต็ม 8.83 A แม้ว่ากำลังที่เป็นประโยชน์จะมีเพียง 1403 W
+                ในขณะที่ผลคูณ \(230 \times 8.83 = 2031\) ดูเหมือนควรจะเป็น 2031 W
+                ส่วนต่าง 628 หน่วยนั้นคือสิ่งที่หัวข้อ 7.3 เรียกว่า <b>กำลังรีแอคทีฟ</b>
+                <br>อีกข้อที่ควรสังเกต: ค่ากำลังสูงสุด \(2030(0.691+1) = 3432\) W
+                สูงกว่ากำลังจริงถึง 2.4 เท่า นี่คือเหตุผลที่อุปกรณ์อิเล็กทรอนิกส์กำลัง
+                เช่นอินเวอร์เตอร์ในบทที่ 12 ต้องออกแบบให้ทนค่ายอด ไม่ใช่แค่ค่าเฉลี่ย</span>
+                <span class="en">In one second this motor <b>hands energy back to the supply 100 times</b>,
+                for 2.57 ms each time — 257 ms in all, about a quarter of the time. That energy is not lost,
+                but neither does it do anything: it runs out to build a magnetic field in the winding, and
+                runs back again. <br>What matters is that <b>the round trip uses the same cable as the
+                energy that does the work</b>. The cable must carry the full 8.83 A even though only 1403 W
+                is useful, while the product \(230 \times 8.83 = 2031\) looks as though it ought to be
+                2031 W. Those missing 628 units are what Section 7.3 will call <b>reactive power</b>.
+                <br>One more thing worth noticing: the peak power, \(2030(0.691+1) = 3432\) W, is 2.4 times
+                the real power. This is why power electronics such as the inverters of Chapter 12 must be
+                designed for the peak and not merely the average.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 7.2 -->
+    <section id="s2">
+      <h2><span class="num">7.2</span><span class="th">ค่าอาร์เอ็มเอส</span>
+          <span class="en">The rms value</span></h2>
+
+      <p><span class="th">เราใช้คำว่า "ไฟบ้าน 230 โวลต์" มาตั้งแต่บทแรกโดยยังไม่ได้อธิบายว่า
+        ตัวเลขนั้นมาจากไหน แรงดันที่แกว่งขึ้นลงตลอดเวลาระหว่าง +325 V กับ −325 V
+        จะเรียกว่า "230 โวลต์" ได้อย่างไร ค่าเฉลี่ยของมันเป็นศูนย์พอดี
+        ส่วนค่ายอดคือ 325 V ไม่ใช่ 230 V เช่นกัน</span>
+        <span class="en">We have spoken of "230-volt mains" since the first chapter without saying where
+        that number comes from. How can a voltage that swings endlessly between +325 V and −325 V be called
+        "230 volts"? Its average is exactly zero, and its peak is 325 V, not 230 V.</span></p>
+
+      <p><span class="th">คำตอบมาจากคำถามทางวิศวกรรมที่ตรงไปตรงมาว่า
+        <b>ไฟสลับนี้ให้ความร้อนได้เท่ากับไฟตรงกี่โวลต์</b>
+        เพราะสิ่งที่เราสนใจจริง ๆ คือความสามารถในการทำงาน ไม่ใช่ตัวเลขบนกราฟ
+        ความร้อนที่เกิดในตัวต้านทานเป็นไปตาม \(p = v^2/R\) ซึ่งมี \(v\) <b>ยกกำลังสอง</b>
+        อยู่ การยกกำลังสองทำให้ค่าลบกลายเป็นบวก ครึ่งรอบที่แรงดันติดลบจึงให้ความร้อนเท่ากับครึ่งรอบที่เป็นบวก</span>
+        <span class="en">The answer comes from a plainly engineering question: <b>how many volts of DC would
+        heat as hard as this alternating supply does?</b> What we care about is the ability to do work, not
+        a number on a graph. Heating in a resistor follows \(p = v^2/R\), in which \(v\) is
+        <b>squared</b> — and squaring turns negatives into positives, so the negative half-cycle heats
+        exactly as much as the positive one.</span></p>
+
+      <p><span class="th">จึงนิยามค่าอาร์เอ็มเอส (root-mean-square) ตามชื่อของมันตรง ๆ คือ
+        <b>ราก</b> ของ <b>ค่าเฉลี่ย</b> ของ <b>กำลังสอง</b> อ่านย้อนจากหลังไปหน้าตามลำดับการคำนวณ</span>
+        <span class="en">Hence the root-mean-square value, named after exactly how it is computed, read from
+        the back forwards: the <b>root</b> of the <b>mean</b> of the <b>square</b>.</span></p>
+
+      <div class="equation">
+        \[ V_{\text{rms}} = \sqrt{\frac{1}{T}\int_{0}^{T} v^{2}(t)\,\mathrm{d}t} \]
+      </div>
+
+      <p><span class="th">สำหรับคลื่นไซน์ ค่าเฉลี่ยของ \(\sin^2\) ตลอดหนึ่งรอบเท่ากับ \(1/2\) พอดี
+        (ดูได้จากรูปที่ 7.2 ข.) จึงได้ผลลัพธ์ที่ใช้กันจนคุ้นเคย</span>
+        <span class="en">For a sinusoid the mean of \(\sin^2\) over one cycle is exactly \(1/2\), as
+        Figure 7.2b shows, which gives the familiar result:</span></p>
+
+      <div class="equation">
+        \[ V_{\text{rms}} = \frac{V_m}{\sqrt{2}} = 0.707\,V_m \qquad\qquad
+           V_m = \sqrt{2}\,V_{\text{rms}} = 1.414\,V_{\text{rms}} \]
+      </div>
+      <p class="eq-note"><span class="th">เฉพาะคลื่นไซน์เท่านั้น — สัญญาณรูปอื่นมีตัวคูณคนละค่า ดูตารางที่ 7.1</span>
+        <span class="en">For sinusoids only — other waveforms have different factors; see Table 7.1</span></p>
+
+      <figure>
+        <div class="figure-box is-animated rms-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 320" role="img" width="720"
+               aria-label="Two identical heaters, one on alternating current and one on 230 volts of direct current, warming to the very same temperature; beside them the sine wave, its square, and the mean of that square">
+            <text class="cap th" x="20" y="24">ก. ความร้อนเท่ากัน จึงเรียกว่าเท่ากัน</text>
+            <text class="cap en" x="20" y="24">a. Equal heating, and so called equal</text>
+            <text class="cap th" x="390" y="24">ข. รากของค่าเฉลี่ยของกำลังสอง</text>
+            <text class="cap en" x="390" y="24">b. The root of the mean of the square</text>
+
+            <!-- ===== unit 1 : AC, centre x = 100 ===== -->
+            <circle cx="48" cy="92" r="16" fill="#fff" stroke="#0d1128" stroke-width="2"/>
+            <path d="M38 92 C41.3 84 44.7 84 48 92 C51.3 100 54.7 100 58 92"
+                  stroke="#fd5f00" stroke-width="2" fill="none"/>
+            <text class="lbl" x="48" y="62" text-anchor="middle">230 V</text>
+            <text class="sub th" x="48" y="130" text-anchor="middle">กระแสสลับ</text>
+            <text class="sub en" x="48" y="130" text-anchor="middle">alternating</text>
+
+            <path class="acosc" d="M48 76 L48 56 L108 56 L108 128" stroke="#fd5f00"
+                  stroke-width="2.5" fill="none" stroke-dasharray="8 8"/>
+            <path d="M108 172 L108 208 L48 208 L48 108" stroke="#0d1128" stroke-width="2" fill="none"/>
+
+            <rect x="86" y="128" width="44" height="44" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <path d="M92 150 l7 -10 7 20 7 -20 7 20 6 -10" stroke="#e11d48" stroke-width="2" fill="none"/>
+            <text class="sub th" x="108" y="188" text-anchor="middle">ฮีตเตอร์ 10 Ω</text>
+            <text class="sub en" x="108" y="188" text-anchor="middle">10 Ω heater</text>
+
+            <rect x="144" y="96" width="14" height="140" rx="7" fill="#fff" stroke="#0d1128" stroke-width="1.8"/>
+            <rect class="merc m-ac" x="147" y="104" width="8" height="128" fill="#e11d48"/>
+            <circle cx="151" cy="236" r="11" fill="#e11d48" stroke="#0d1128" stroke-width="1.8"/>
+            <line x1="160" y1="108" x2="170" y2="108" stroke="#6c757d" stroke-width="1.4"/>
+            <text class="sub" x="174" y="112">80 °C</text>
+
+            <!-- ===== unit 2 : DC, centre x = 260 ===== -->
+            <circle cx="208" cy="92" r="16" fill="#fff" stroke="#0d1128" stroke-width="2"/>
+            <line x1="200" y1="87" x2="216" y2="87" stroke="#2b6cb0" stroke-width="2.5"/>
+            <line x1="203" y1="97" x2="213" y2="97" stroke="#2b6cb0" stroke-width="2"/>
+            <text class="lbl" x="208" y="62" text-anchor="middle">230 V</text>
+            <text class="sub th" x="208" y="130" text-anchor="middle">กระแสตรง</text>
+            <text class="sub en" x="208" y="130" text-anchor="middle">direct</text>
+
+            <path class="dcflow" d="M208 76 L208 56 L268 56 L268 128" stroke="#2b6cb0"
+                  stroke-width="2.5" fill="none" stroke-dasharray="8 8"/>
+            <path d="M268 172 L268 208 L208 208 L208 108" stroke="#0d1128" stroke-width="2" fill="none"/>
+
+            <rect x="246" y="128" width="44" height="44" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <path d="M252 150 l7 -10 7 20 7 -20 7 20 6 -10" stroke="#e11d48" stroke-width="2" fill="none"/>
+            <text class="sub th" x="268" y="188" text-anchor="middle">ฮีตเตอร์ 10 Ω</text>
+            <text class="sub en" x="268" y="188" text-anchor="middle">10 Ω heater</text>
+
+            <rect x="304" y="96" width="14" height="140" rx="7" fill="#fff" stroke="#0d1128" stroke-width="1.8"/>
+            <rect class="merc m-dc" x="307" y="104" width="8" height="128" fill="#e11d48"/>
+            <circle cx="311" cy="236" r="11" fill="#e11d48" stroke="#0d1128" stroke-width="1.8"/>
+            <line x1="320" y1="108" x2="330" y2="108" stroke="#6c757d" stroke-width="1.4"/>
+            <text class="sub" x="334" y="112">80 °C</text>
+
+            <text class="sub th" x="20" y="276">ประจุฝั่งซ้ายวิ่งไป–กลับ ฝั่งขวาวิ่งทางเดียว</text>
+            <text class="sub en" x="20" y="276">the charge on the left runs to and fro, on the right one way only</text>
+            <text class="sub th" x="20" y="296">แต่เทอร์โมมิเตอร์ทั้งสองขึ้นถึงขีดเดียวกัน</text>
+            <text class="sub en" x="20" y="296">yet both thermometers reach the very same mark</text>
+            <text class="sub th" x="20" y="312">ไฟสลับนั้นจึง "มีค่าเท่ากับ" 230 V ไฟตรง</text>
+            <text class="sub en" x="20" y="312">so that alternating supply "is" 230 V</text>
+
+            <line x1="362" y1="16" x2="362" y2="312" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== panel b : v and v-squared ===== -->
+            <line class="axis" x1="386" y1="118" x2="694" y2="118"/>
+            <text class="sub" x="382" y="122" text-anchor="end">0</text>
+            <polyline class="vwave" fill="none" points="400,118 407,110.8 414,103.8 421,97.1 428,91 435,85.5 442,80.8 449,77 456,74.3 463,72.6 470,72 477,72.6 484,74.3 491,77 498,80.8 505,85.5 512,91 519,97.1 526,103.8 533,110.8 540,118 547,125.2 554,132.2 561,138.9 568,145 575,150.5 582,155.2 589,159 596,161.7 603,163.4 610,164 617,163.4 624,161.7 631,159 638,155.2 645,150.5 652,145 659,138.9 666,132.2 673,125.2 680,118"/>
+            <line x1="400" y1="72" x2="690" y2="72" stroke="#6c757d" stroke-width="1" stroke-dasharray="4 3"/>
+            <text class="sub" x="694" y="76">V_m</text>
+            <line x1="400" y1="85.5" x2="690" y2="85.5" stroke="#e11d48" stroke-width="1.6" stroke-dasharray="6 4"/>
+            <text class="lbl" x="694" y="90" fill="#e11d48">V_rms</text>
+            <text class="lbl" x="470" y="62" text-anchor="middle" fill="#fd5f00">v</text>
+
+            <line class="axis" x1="386" y1="268" x2="694" y2="268"/>
+            <text class="sub" x="382" y="272" text-anchor="end">0</text>
+            <path fill="rgba(107,33,168,.16)" stroke="none"
+                  d="M400,268 L400,268 407,266.6 414,262.7 421,256.5 428,248.7 435,240 442,231.3 449,223.5 456,217.3 463,213.4 470,212 477,213.4 484,217.3 491,223.5 498,231.3 505,240 512,248.7 519,256.5 526,262.7 533,266.6 540,268 547,266.6 554,262.7 561,256.5 568,248.7 575,240 582,231.3 589,223.5 596,217.3 603,213.4 610,212 617,213.4 624,217.3 631,223.5 638,231.3 645,240 652,248.7 659,256.5 666,262.7 673,266.6 680,268 Z"/>
+            <polyline class="pwave" fill="none" points="400,268 407,266.6 414,262.7 421,256.5 428,248.7 435,240 442,231.3 449,223.5 456,217.3 463,213.4 470,212 477,213.4 484,217.3 491,223.5 498,231.3 505,240 512,248.7 519,256.5 526,262.7 533,266.6 540,268 547,266.6 554,262.7 561,256.5 568,248.7 575,240 582,231.3 589,223.5 596,217.3 603,213.4 610,212 617,213.4 624,217.3 631,223.5 638,231.3 645,240 652,248.7 659,256.5 666,262.7 673,266.6 680,268 Z"/>
+            <line class="meanline" x1="400" y1="240" x2="690" y2="240"/>
+            <text class="lbl" x="694" y="244" fill="#6b21a8">½V_m²</text>
+            <text class="lbl" x="470" y="204" text-anchor="middle" fill="#6b21a8">v²</text>
+
+            <line x1="372" y1="240" x2="372" y2="86" stroke="#e11d48" stroke-width="1.8"/>
+            <polygon points="368,94 372,82 376,94" fill="#e11d48"/>
+            <text class="sub th" x="378" y="168" fill="#e11d48">ถอดราก</text>
+            <text class="sub en" x="378" y="168" fill="#e11d48">take the root</text>
+
+            <text class="sub th" x="390" y="296">v² ไม่เคยติดลบ ค่าเฉลี่ยจึงไม่เป็นศูนย์ แต่เท่ากับครึ่งหนึ่งของค่ายอด</text>
+            <text class="sub en" x="390" y="296">v² is never negative, so its mean is not zero but half the peak</text>
+            <text class="sub th" x="390" y="312">ถอดรากของค่าเฉลี่ยนั้นจะได้ 0.707 V_m พอดี</text>
+            <text class="sub en" x="390" y="312">the root of that mean is exactly 0.707 V_m</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 7.2</span><span class="en">Figure 7.2</span></b>
+          <span class="th"> ซ้าย: นิยามของค่าอาร์เอ็มเอสไม่ใช่เรื่องคณิตศาสตร์ล้วน ๆ แต่เป็นข้อตกลงทางวิศวกรรม
+            ฮีตเตอร์สองตัวที่เหมือนกันทุกประการ ตัวหนึ่งต่อไฟสลับ อีกตัวต่อไฟตรง 230 V
+            ทั้งคู่ร้อนขึ้นถึงอุณหภูมิเดียวกัน แม้ประจุในสายจะเคลื่อนที่คนละแบบโดยสิ้นเชิง
+            <b>เราจึงเรียกไฟสลับนั้นว่า 230 V</b>
+            <br>ขวา: ที่มาของตัวเลข 0.707 เมื่อยกกำลังสอง เส้นโค้งจะอยู่เหนือศูนย์ตลอดเวลา
+            และแกว่งรอบเส้นประซึ่งอยู่กึ่งกลางระหว่างศูนย์กับค่ายอด นั่นคือค่าเฉลี่ยเท่ากับ
+            \(\tfrac{1}{2}V_m^2\) เมื่อถอดรากจึงได้ \(V_m/\sqrt{2}\)
+            <br>สังเกตว่าเส้นโค้ง \(v^2\) กระเพื่อมสองรอบในขณะที่ \(v\) กระเพื่อมรอบเดียว
+            ซึ่งเป็นเหตุผลเดียวกับที่กำลังในรูปที่ 7.1 มีความถี่เป็นสองเท่า</span>
+          <span class="en"> Left: the rms value is not a purely mathematical definition but an engineering
+            agreement. Two identical heaters, one on the alternating supply and one on 230 V of direct
+            current, come to the same temperature, though the charge in their cables moves in entirely
+            different ways. <b>That is why we call the alternating supply 230 V.</b> <br>Right: where 0.707
+            comes from. Squared, the curve never goes below zero and swings about the dashed line halfway
+            between zero and the peak — a mean of \(\tfrac{1}{2}V_m^2\), whose root is \(V_m/\sqrt{2}\).
+            <br>Notice that \(v^2\) completes two cycles while \(v\) completes one, for the same reason that
+            the power in Figure 7.1 runs at double frequency.</span></figcaption>
+      </figure>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">⚠️ <span class="th">0.707 ใช้ได้กับคลื่นไซน์เท่านั้น</span>
+          <span class="en">The 0.707 belongs to sinusoids alone</span></div>
+        <p class="mb-0"><span class="th">นักศึกษาจำนวนมากจำ "หารด้วยรากสอง" ไปใช้กับทุกสัญญาณ ซึ่งผิด
+          ตัวประกอบนั้นมาจากการที่ค่าเฉลี่ยของ \(\sin^2\) เท่ากับ \(1/2\) พอดี
+          สัญญาณรูปอื่นให้ค่าเฉลี่ยคนละค่า จึงมีตัวประกอบคนละตัว ดังตารางที่ 7.1
+          <br>เรื่องนี้สำคัญมากในงานเกษตรอัจฉริยะ เพราะอุปกรณ์สมัยใหม่แทบทุกชิ้น —
+          อินเวอร์เตอร์ขับปั๊ม ชุดหรี่ไฟ LED ปลูกพืช วงจร PWM ขับฮีตเตอร์เพาะกล้า —
+          ล้วนสร้างสัญญาณที่ <b>ไม่ใช่คลื่นไซน์</b> ทั้งสิ้น
+          มัลติมิเตอร์ราคาถูกที่เขียนว่า "AC" ส่วนใหญ่วัดค่าเฉลี่ยแล้วคูณ 1.11
+          โดยสมมติเอาว่าสัญญาณเป็นไซน์ เมื่อนำไปวัดสัญญาณ PWM จึงอ่านผิดได้ถึงหลายสิบเปอร์เซ็นต์
+          ต้องใช้มิเตอร์ที่ระบุว่า <b>true RMS</b> เท่านั้น</span>
+          <span class="en">Many students carry "divide by root two" across to every waveform, which is
+          wrong. That factor exists only because the mean of \(\sin^2\) happens to be \(1/2\); other shapes
+          have other means and therefore other factors, as Table 7.1 sets out. <br>This matters a great deal
+          in smart-agriculture work, because almost every modern device — the inverter driving a pump, the
+          dimmer on an LED grow-light, the PWM circuit under a seedling heating mat — produces a waveform
+          that is <b>not</b> a sinusoid. Most cheap multimeters marked "AC" measure the average and multiply
+          by 1.11, assuming a sine; on a PWM signal they can be tens of per cent out. Use a meter marked
+          <b>true RMS</b>.</span></p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 7.1 ค่าอาร์เอ็มเอสของสัญญาณรูปต่าง ๆ ที่มีค่ายอด \(V_m\)</span>
+            <span class="en">Table 7.1 The rms value of common waveforms of peak \(V_m\)</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">รูปสัญญาณ</span><span class="en">Waveform</span></th>
+              <th class="num"><span class="th">ค่าอาร์เอ็มเอส</span><span class="en">rms value</span></th>
+              <th class="num"><span class="th">ตัวประกอบ</span><span class="en">Factor</span></th>
+              <th><span class="th">พบที่ไหนในงานฟาร์ม</span><span class="en">Where it turns up on a farm</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">ไซน์</span><span class="en">Sine</span></td>
+              <td class="num">\(V_m/\sqrt{2}\)</td><td class="num">0.707</td>
+              <td><span class="th">ไฟบ้านและไฟสายส่งทั้งหมด</span><span class="en">all mains and distribution supplies</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">สี่เหลี่ยมสมมาตร ±\(V_m\)</span><span class="en">Symmetric square, ±\(V_m\)</span></td>
+              <td class="num">\(V_m\)</td><td class="num">1.000</td>
+              <td><span class="th">อินเวอร์เตอร์ราคาประหยัดแบบ modified sine</span><span class="en">cheap modified-sine inverters</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">พัลส์ PWM 0 ถึง \(V_m\) ดิวตี้ \(D\)</span><span class="en">PWM pulse, 0 to \(V_m\), duty \(D\)</span></td>
+              <td class="num">\(V_m\sqrt{D}\)</td><td class="num">\(\sqrt{D}\)</td>
+              <td><span class="th">ชุดหรี่ไฟ LED · แผ่นทำความร้อนเพาะกล้า · ขับมอเตอร์ DC</span><span class="en">LED dimmers, heating mats, DC motor drives</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">ไซน์เรียงกระแสครึ่งคลื่น</span><span class="en">Half-wave rectified sine</span></td>
+              <td class="num">\(V_m/2\)</td><td class="num">0.500</td>
+              <td><span class="th">วงจรเรียงกระแสไดโอดตัวเดียว (บทที่ 13)</span><span class="en">single-diode rectifiers (Chapter 13)</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">ไซน์เรียงกระแสเต็มคลื่น</span><span class="en">Full-wave rectified sine</span></td>
+              <td class="num">\(V_m/\sqrt{2}\)</td><td class="num">0.707</td>
+              <td><span class="th">วงจรบริดจ์ในอะแดปเตอร์ทุกตัว (บทที่ 13)</span><span class="en">the bridge in every adaptor (Chapter 13)</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">สามเหลี่ยมหรือฟันเลื่อย</span><span class="en">Triangle or sawtooth</span></td>
+              <td class="num">\(V_m/\sqrt{3}\)</td><td class="num">0.577</td>
+              <td><span class="th">กระแสริปเปิลในตัวเหนี่ยวนำของคอนเวอร์เตอร์</span><span class="en">inductor ripple current in converters</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 7.2</span><span class="en">Example 7.2</span></span>
+          <span class="th">แผ่นทำความร้อนเพาะกล้าที่ควบคุมด้วย PWM</span>
+          <span class="en">A PWM-controlled seedling heating mat</span></div>
+        <div class="example-body">
+          <p><span class="th">แผ่นทำความร้อนสำหรับถาดเพาะกล้ามีความต้านทาน \(R = 4.8\ \Omega\)
+            ต่อกับแหล่งจ่าย 24 V ผ่านมอสเฟตที่สวิตช์แบบ PWM (แบบเดียวกับรูปที่ 13.8)
+            จงหา (ก) กำลังเมื่อเปิดเต็มที่ (ข) กำลังและกระแสอาร์เอ็มเอสที่ดิวตี้ไซเคิล 40 %
+            และ (ค) ดิวตี้ไซเคิลที่ทำให้ได้กำลัง 75 W</span>
+            <span class="en">A seedling-tray heating mat of resistance \(R = 4.8\ \Omega\) is fed from a
+            24 V supply through a MOSFET switching under PWM, as in Figure 13.8. Find (a) the power when
+            fully on, (b) the power and rms current at a duty cycle of 40 %, and (c) the duty cycle that
+            gives 75 W.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th"><b>(ก) เปิดเต็มที่</b> เป็นวงจรไฟตรงธรรมดาตามบทที่ 3</span>
+              <span class="en"><b>(a) Fully on</b> — an ordinary DC circuit, as in Chapter 3:</span></p>
+            \[ P_{\text{เต็ม}} = \frac{V^{2}}{R} = \frac{24^{2}}{4.8} = \frac{576}{4.8} = 120\ \text{W} \]
+
+            <p><span class="th"><b>(ข) ที่ดิวตี้ 40 %</b> แรงดันเป็นพัลส์สลับระหว่าง 24 V กับ 0 V
+              ใช้ตัวประกอบ \(\sqrt{D}\) จากตารางที่ 7.1</span>
+              <span class="en"><b>(b) At 40 % duty</b> the voltage is a pulse between 24 V and 0 V, so take
+              the factor \(\sqrt{D}\) from Table 7.1:</span></p>
+            \[ V_{\text{rms}} = V_m\sqrt{D} = 24\sqrt{0.40} = (24)(0.632) = 15.18\ \text{V} \]
+            \[ P = \frac{V_{\text{rms}}^{2}}{R} = \frac{15.18^{2}}{4.8} = \frac{230.4}{4.8} = 48.0\ \text{W} \]
+            \[ I_{\text{rms}} = \frac{V_{\text{rms}}}{R} = \frac{15.18}{4.8} = 3.16\ \text{A} \]
+
+            <p><span class="th">ตรวจทานอีกทางหนึ่ง กำลังเฉลี่ยต้องเท่ากับกำลังเต็มคูณด้วยเศษส่วนของเวลาที่เปิด</span>
+              <span class="en">Check the other way round: the average power must be the full power times the
+              fraction of time the switch is closed:</span></p>
+            \[ P = D \times P_{\text{เต็ม}} = (0.40)(120) = 48\ \text{W}\ \checkmark \]
+
+            <p><span class="th"><b>(ค) ต้องการ 75 W</b> จาก \(P = D \times 120\) จะได้</span>
+              <span class="en"><b>(c) For 75 W</b>, from \(P = D \times 120\):</span></p>
+            \[ D = \frac{75}{120} = 0.625 = 62.5\ \% \]
+            \[ V_{\text{rms}} = 24\sqrt{0.625} = (24)(0.791) = 18.98\ \text{V}
+               \quad\Rightarrow\quad \frac{18.98^{2}}{4.8} = 75.0\ \text{W}\ \checkmark \]
+
+            <div class="callout callout-warn mb-0">
+              <div class="callout-title">⚠️ <span class="th">กับดักที่นักศึกษาตกบ่อยที่สุดในข้อนี้</span>
+                <span class="en">The trap students fall into here</span></div>
+              <p class="mb-0"><span class="th">การคิดว่า "ดิวตี้ 40 % ก็คือแรงดัน 40 % ของ 24 V เท่ากับ 9.6 V"
+                <b>ผิด</b> เพราะ 9.6 V คือค่า <b>เฉลี่ย</b> ไม่ใช่ค่าอาร์เอ็มเอส
+                ถ้าใช้ 9.6 V ไปคำนวณกำลังจะได้ \(9.6^2/4.8 = 19.2\) W
+                ซึ่งต่ำกว่าความจริงถึง <b>2.5 เท่า</b> แผ่นทำความร้อนจะร้อนกว่าที่คำนวณไว้มาก
+                และมอสเฟตที่เลือกไว้ตามตัวเลขผิดนั้นอาจพังได้
+                <br>กฎที่ต้องจำคือ <b>กำลังแปรตามดิวตี้โดยตรง แต่แรงดันอาร์เอ็มเอสแปรตามรากของดิวตี้</b>
+                การลดดิวตี้ลงครึ่งหนึ่งจึงลดกำลังลงครึ่งหนึ่ง แต่ลดแรงดันอาร์เอ็มเอสลงเพียง 29 %
+                <br>ข้อควรระวังในการวัด: มัลติมิเตอร์ธรรมดาที่วัดกระแสตรงจะอ่านค่าเฉลี่ย
+                \(0.40 \times 5 = 2.0\) A แต่กระแสอาร์เอ็มเอสจริงคือ 3.16 A
+                ความร้อนในสายไฟและในมอสเฟตเป็นไปตาม \(I_{\text{rms}}^2R\) จึงสูงกว่าที่มิเตอร์บอกถึง
+                \((3.16/2.0)^2 = 2.5\) เท่า — ต้องเลือกขนาดสายและฮีตซิงก์จากค่าอาร์เอ็มเอสเสมอ</span>
+                <span class="en">Thinking "40 % duty means 40 % of 24 V, so 9.6 V" is <b>wrong</b>: 9.6 V is
+                the <b>average</b>, not the rms. Using it gives \(9.6^2/4.8 = 19.2\) W, low by a factor of
+                <b>2.5</b>. The mat would run far hotter than calculated, and a MOSFET chosen on that figure
+                could fail. <br>The rule to remember is that <b>power scales with duty, but rms voltage
+                scales with the square root of duty</b>. Halving the duty halves the power but drops the rms
+                voltage by only 29 %. <br>A measurement warning as well: an ordinary meter on DC current
+                reads the average, \(0.40 \times 5 = 2.0\) A, while the true rms current is 3.16 A. Heating
+                in the cable and in the MOSFET follows \(I_{\text{rms}}^2R\) and is therefore
+                \((3.16/2.0)^2 = 2.5\) times what the meter suggests. Always size conductors and heatsinks
+                from the rms value.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 7.3 -->
+    <section id="s3">
+      <h2><span class="num">7.3</span><span class="th">กำลังสามชนิดและสามเหลี่ยมกำลัง</span>
+          <span class="en">Three powers, one triangle</span></h2>
+
+      <p><span class="th">ตัวอย่างที่ 7.1 ทิ้งคำถามไว้ข้อหนึ่ง มอเตอร์กินกระแส 8.83 A จากไฟ 230 V
+        ผลคูณคือ 2031 แต่กำลังจริงมีเพียง 1403 W ส่วนต่าง 628 หน่วยนั้นคืออะไร
+        และมันมีหน่วยว่าอะไร</span>
+        <span class="en">Example 7.1 left a question hanging. The motor draws 8.83 A from 230 V, a product of
+        2031, yet the real power is only 1403 W. What are the 628 units of difference, and what unit are
+        they in?</span></p>
+
+      <p><span class="th">คำตอบคือวงจรไฟฟ้ากระแสสลับมีกำลังสามชนิดที่ต้องแยกให้ออกจากกัน
+        ทั้งสามมีมิติทางฟิสิกส์เดียวกันคือโวลต์คูณแอมแปร์ แต่ <b>ตั้งชื่อหน่วยให้ต่างกันโดยเจตนา</b>
+        เพื่อไม่ให้สับสนว่ากำลังใดคือกำลังใด</span>
+        <span class="en">The answer is that an AC circuit carries three distinct kinds of power. All three
+        have the same physical dimension, volts times amperes, but are <b>deliberately given different unit
+        names</b> so that nobody confuses one for another.</span></p>
+
+      <div class="equation">
+        \[ S = V_{\text{rms}} I_{\text{rms}} \qquad\quad
+           P = S\cos\theta \qquad\quad
+           Q = S\sin\theta \]
+        \[ S = \sqrt{P^{2} + Q^{2}} \qquad\quad
+           \theta = \tan^{-1}\!\frac{Q}{P} \qquad\quad
+           \text{pf} = \cos\theta = \frac{P}{S} \]
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 7.2 กำลังสามชนิดในวงจรไฟฟ้ากระแสสลับ</span>
+            <span class="en">Table 7.2 The three powers of an AC circuit</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">ชนิด</span><span class="en">Kind</span></th>
+              <th class="num"><span class="th">สัญลักษณ์</span><span class="en">Symbol</span></th>
+              <th class="num"><span class="th">หน่วย</span><span class="en">Unit</span></th>
+              <th><span class="th">ความหมายทางกายภาพ</span><span class="en">What it physically is</span></th>
+              <th><span class="th">ใครสนใจ</span><span class="en">Who cares about it</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">กำลังจริง</span><span class="en">Real power</span></td>
+              <td class="num">\(P\)</td>
+              <td class="num"><span class="th">วัตต์ (W)</span><span class="en">watt (W)</span></td>
+              <td><span class="th">พลังงานที่กลายเป็นงานหรือความร้อนจริง ไปแล้วไม่กลับ</span>
+                <span class="en">energy that becomes work or heat and never returns</span></td>
+              <td><span class="th">มิเตอร์ kWh และใบเสร็จค่าไฟ</span>
+                <span class="en">the kWh meter and your bill</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">กำลังรีแอคทีฟ</span><span class="en">Reactive power</span></td>
+              <td class="num">\(Q\)</td>
+              <td class="num"><span class="th">วาร์ (var)</span><span class="en">var</span></td>
+              <td><span class="th">พลังงานที่แกว่งไปสร้างสนามแล้วไหลกลับ สุทธิเป็นศูนย์</span>
+                <span class="en">energy that swings out to build a field and flows back; net zero</span></td>
+              <td><span class="th">วิศวกรที่ต้องเลือกขนาดสายและหม้อแปลง</span>
+                <span class="en">the engineer sizing cables and transformers</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">กำลังปรากฏ</span><span class="en">Apparent power</span></td>
+              <td class="num">\(S\)</td>
+              <td class="num"><span class="th">โวลต์-แอมแปร์ (VA)</span><span class="en">volt-ampere (VA)</span></td>
+              <td><span class="th">ผลคูณของสิ่งที่มิเตอร์อ่านได้จริง คือ \(V\) คูณ \(I\) ตรง ๆ</span>
+                <span class="en">the product of what the meters read, \(V\) times \(I\)</span></td>
+              <td><span class="th">ผู้ผลิตอุปกรณ์ — พิกัดหม้อแปลงและเครื่องกำเนิดเป็น kVA เสมอ</span>
+                <span class="en">equipment makers — transformers and generators are always rated in kVA</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">💡 <span class="th">เหตุใดหม้อแปลงจึงมีพิกัดเป็น kVA ไม่ใช่ kW</span>
+          <span class="en">Why transformers are rated in kVA and not kW</span></div>
+        <p class="mb-0"><span class="th">สิ่งที่ทำให้ขดลวดของหม้อแปลงไหม้คือ <b>ความร้อนจากกระแส</b>
+          ตาม \(I^2R\) และสิ่งที่ทำให้แกนเหล็กอิ่มตัวคือ <b>แรงดัน</b>
+          ทั้งสองอย่างนี้ไม่สนใจเลยว่ากระแสที่ไหลผ่านจะมีเฟสตรงกับแรงดันหรือไม่
+          หม้อแปลง 100 kVA จึงจ่ายโหลดความต้านทานล้วนได้ 100 kW
+          แต่จ่ายโหลดที่มีตัวประกอบกำลัง 0.7 ได้เพียง 70 kW เท่านั้น
+          ทั้งที่ทำงานหนักเท่ากันและร้อนเท่ากัน
+          <br>นี่คือเหตุผลทางการเงินข้อแรกของการแก้ตัวประกอบกำลัง — <b>มันคืนความสามารถในการจ่ายโหลด
+          ให้กับหม้อแปลงและสายที่มีอยู่แล้ว</b> โดยไม่ต้องลงทุนเปลี่ยนใหม่</span>
+          <span class="en">What burns a transformer's winding is <b>the heat of the current</b>, \(I^2R\),
+          and what saturates its core is <b>the voltage</b>. Neither cares in the least whether that current
+          is in phase with the voltage. A 100 kVA transformer will therefore supply 100 kW of purely
+          resistive load but only 70 kW at a power factor of 0.7 — working just as hard, and running just
+          as hot, for less useful output. <br>This is the first financial argument for power-factor
+          correction: <b>it gives back capacity in the transformer and cables you already own</b>, with no
+          new investment.</span></p>
+      </div>
+
+      <figure>
+        <div class="figure-box is-animated pq-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 330" role="img" width="720"
+               aria-label="The impedance triangle of Chapter 6 multiplied by the square of the current to give the power triangle, and beside it real power flowing one way down the feeder while reactive power swings back and forth">
+            <text class="cap th" x="20" y="24">ก. สามเหลี่ยมอิมพีแดนซ์ คูณ I² กลายเป็นสามเหลี่ยมกำลัง</text>
+            <text class="cap en" x="20" y="24">a. The impedance triangle times I² is the power triangle</text>
+            <text class="cap th" x="400" y="24">ข. กำลังสองชนิดบนสายเส้นเดียวกัน</text>
+            <text class="cap en" x="400" y="24">b. Two kinds of power in one cable</text>
+
+            <!-- ===== impedance triangle ===== -->
+            <line x1="45" y1="170" x2="125" y2="170" stroke="#fd5f00" stroke-width="3"/>
+            <text class="lbl" x="85" y="188" text-anchor="middle" fill="#fd5f00">R</text>
+            <line x1="125" y1="170" x2="125" y2="110" stroke="#2b6cb0" stroke-width="3"/>
+            <text class="lbl" x="133" y="144" fill="#2b6cb0">X</text>
+            <line x1="45" y1="170" x2="125" y2="110" stroke="#0d1128" stroke-width="3"/>
+            <text class="lbl" x="58" y="132" fill="#0d1128">|Z|</text>
+            <path d="M72 170 A27 27 0 0 0 66 156" stroke="#2f855a" stroke-width="1.8" fill="none"/>
+            <text class="sub" x="76" y="162" fill="#2f855a">θ</text>
+            <text class="sub th" x="85" y="208" text-anchor="middle">หน่วยเป็นโอห์ม</text>
+            <text class="sub en" x="85" y="208" text-anchor="middle">in ohms</text>
+
+            <line x1="150" y1="140" x2="196" y2="140" stroke="#6b21a8" stroke-width="2"/>
+            <polygon points="192,135 204,140 192,145" fill="#6b21a8"/>
+            <text class="lbl" x="173" y="130" text-anchor="middle" fill="#6b21a8">× I²</text>
+
+            <!-- ===== power triangle ===== -->
+            <line x1="215" y1="196" x2="335" y2="196" stroke="#fd5f00" stroke-width="3.5"/>
+            <text class="lbl" x="275" y="214" text-anchor="middle" fill="#fd5f00">P = I²R</text>
+            <line x1="335" y1="196" x2="335" y2="106" stroke="#2b6cb0" stroke-width="3.5"/>
+            <text class="lbl" x="343" y="154" fill="#2b6cb0">Q = I²X</text>
+            <line x1="215" y1="196" x2="335" y2="106" stroke="#0d1128" stroke-width="3.5"/>
+            <text class="lbl" x="228" y="140" fill="#0d1128">S = I²|Z|</text>
+            <path d="M255 196 A40 40 0 0 0 246 176" stroke="#2f855a" stroke-width="1.8" fill="none"/>
+            <text class="sub" x="262" y="184" fill="#2f855a">θ</text>
+            <text class="sub th" x="275" y="234" text-anchor="middle">มุม θ ตัวเดิมเป๊ะ เพราะคูณทุกด้านด้วยจำนวนเดียวกัน</text>
+            <text class="sub en" x="275" y="234" text-anchor="middle">the very same θ — every side was multiplied alike</text>
+            <text class="sub th" x="275" y="252" text-anchor="middle">แต่หน่วยกลายเป็น W, var และ VA ตามลำดับ</text>
+            <text class="sub en" x="275" y="252" text-anchor="middle">but the units are now W, var and VA</text>
+
+            <line x1="376" y1="16" x2="376" y2="318" stroke="#e4e7ec" stroke-width="1"/>
+
+            <!-- ===== panel b : source, feeder, motor ===== -->
+            <circle cx="424" cy="150" r="22" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <path d="M410 150 C414.7 141 419.3 141 424 150 C428.7 159 433.3 159 438 150"
+                  stroke="#fd5f00" stroke-width="2" fill="none"/>
+            <text class="sub th" x="424" y="192" text-anchor="middle">แหล่งจ่าย</text>
+            <text class="sub en" x="424" y="192" text-anchor="middle">supply</text>
+
+            <circle cx="666" cy="150" r="26" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <text class="lbl" x="666" y="156" text-anchor="middle">M</text>
+            <text class="sub th" x="666" y="196" text-anchor="middle">มอเตอร์</text>
+            <text class="sub en" x="666" y="196" text-anchor="middle">motor</text>
+
+            <path class="pflow" d="M448 114 L632 114" stroke="#fd5f00" stroke-width="3.5"
+                  fill="none" stroke-dasharray="9 9"/>
+            <polygon points="630,108 644,114 630,120" fill="#fd5f00"/>
+            <text class="lbl" x="452" y="102" fill="#fd5f00">P</text>
+            <text class="sub th" x="476" y="102">1403 W — ไหลทางเดียว ไปแล้วไม่กลับ</text>
+            <text class="sub en" x="476" y="102">1403 W — one way only, and never back</text>
+
+            <path class="qosc" d="M452 186 L628 186" stroke="#2b6cb0" stroke-width="3.5"
+                  fill="none" stroke-dasharray="9 9"/>
+            <polygon points="452,180 438,186 452,192" fill="#2b6cb0"/>
+            <polygon points="628,180 642,186 628,192" fill="#2b6cb0"/>
+            <text class="lbl" x="452" y="216" fill="#2b6cb0">Q</text>
+            <text class="sub th" x="476" y="216">1468 var — แกว่งออกแล้วกลับ 100 ครั้งต่อวินาที</text>
+            <text class="sub en" x="476" y="216">1468 var — out and back, 100 times a second</text>
+
+            <rect x="410" y="248" width="286" height="62" rx="6" fill="#fff8f3" stroke="#fd5f00" stroke-width="1.4"/>
+            <text class="sub th" x="424" y="268">สายเส้นเดียวกันต้องรับทั้งสองอย่างพร้อมกัน</text>
+            <text class="sub en" x="424" y="268">one cable has to carry both at once</text>
+            <text class="sub th" x="424" y="286">จึงต้องมีพิกัด 2031 VA ไม่ใช่ 1403 W</text>
+            <text class="sub en" x="424" y="286">so it must be rated for 2031 VA, not 1403 W</text>
+            <text class="sub th" x="424" y="304">ส่วนมิเตอร์บันทึกเฉพาะเส้นสีส้มเท่านั้น</text>
+            <text class="sub en" x="424" y="304">while the meter records only the orange one</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 7.3</span><span class="en">Figure 7.3</span></b>
+          <span class="th"> ซ้าย: สามเหลี่ยมกำลังไม่ใช่ของใหม่ มันคือสามเหลี่ยมอิมพีแดนซ์ในรูปที่ 6.4
+            ที่ถูกคูณทุกด้านด้วย \(I^2\) เท่านั้นเอง มุม \(\theta\) จึงเป็นค่าเดิมทุกประการ
+            และนี่คือเหตุผลที่ตัวประกอบกำลังของโหลดอ่านได้จากมุมของอิมพีแดนซ์โดยตรง
+            <br>ขวา: ความแตกต่างที่แท้จริงระหว่าง \(P\) กับ \(Q\) อยู่ที่ <b>ทิศทางการไหล</b>
+            เส้นสีส้มเดินหน้าไปทางเดียวตลอด ส่วนเส้นสีน้ำเงินแกว่งไปกลับอยู่กับที่ ไม่ได้พาพลังงานไปไหนสุทธิ
+            แต่ทั้งสองใช้ทองแดงเส้นเดียวกัน กระแสจึงบวกกันแบบเวกเตอร์และทำให้สายร้อนด้วยกันทั้งคู่
+            <br>ถ้าหยุดภาพ จะเห็นว่าเส้นประทั้งสองเส้นมีระยะห่างเท่ากัน — ปริมาณประจุที่ไหลไม่ต่างกัน
+            ต่างกันแค่ว่าเส้นหนึ่งไปถึงปลายทาง อีกเส้นหนึ่งไม่ไปไหน</span>
+          <span class="en"> Left: the power triangle is nothing new. It is the impedance triangle of
+            Figure 6.4 with every side multiplied by \(I^2\), so \(\theta\) is unchanged — which is why a
+            load's power factor can be read straight off the angle of its impedance. <br>Right: the real
+            difference between \(P\) and \(Q\) is <b>which way they travel</b>. The orange line advances
+            steadily and never returns; the blue one swings to and fro on the spot, carrying no energy
+            anywhere on balance. Both use the same copper, so their currents add as vectors and both heat
+            the cable. <br>Pause the figure and the two dashed lines are spaced identically: just as much
+            charge is moving in each. The difference is only that one of them arrives.</span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 7.3</span><span class="en">Example 7.3</span></span>
+          <span class="th">สามเหลี่ยมกำลังของมอเตอร์ปั๊มน้ำ</span>
+          <span class="en">The pump motor's power triangle</span></div>
+        <div class="example-body">
+          <p><span class="th">จากมอเตอร์ตัวเดิม (230 V, 8.83 A, ตามหลัง 46.3°) จงหากำลังทั้งสามชนิด
+            แล้วตรวจสอบว่าสอดคล้องกับค่า \(R = 18\ \Omega\) และ \(X_L = 18.85\ \Omega\) ในบทที่ 6 หรือไม่</span>
+            <span class="en">For the same motor — 230 V, 8.83 A, lagging by 46.3° — find all three powers,
+            and check them against the \(R = 18\ \Omega\) and \(X_L = 18.85\ \Omega\) of
+            Chapter 6.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th"><b>กำลังปรากฏ</b> คือผลคูณของสิ่งที่มิเตอร์สองตัวอ่านได้ ไม่ต้องสนใจมุมเลย</span>
+              <span class="en"><b>Apparent power</b> is simply the product of what two meters read, with no
+              regard to angle:</span></p>
+            \[ S = V_{\text{rms}} I_{\text{rms}} = (230)(8.83) = 2031\ \text{VA} \]
+
+            <p><span class="th"><b>กำลังจริง</b> คือส่วนที่อยู่ในเฟสเดียวกับแรงดัน</span>
+              <span class="en"><b>Real power</b> is the part in phase with the voltage:</span></p>
+            \[ P = S\cos\theta = (2031)(\cos 46.3^{\circ}) = (2031)(0.691) = 1403\ \text{W} \]
+
+            <p><span class="th"><b>กำลังรีแอคทีฟ</b> คือส่วนที่ตั้งฉาก หาได้จากพีทาโกรัสหรือจากไซน์ก็ได้</span>
+              <span class="en"><b>Reactive power</b> is the perpendicular part, by Pythagoras or by
+              sine:</span></p>
+            \[ Q = \sqrt{S^{2} - P^{2}} = \sqrt{2031^{2} - 1403^{2}}
+               = \sqrt{4\,124\,961 - 1\,968\,409} = \sqrt{2\,156\,552} = 1468\ \text{var} \]
+
+            <p><span class="th"><b>ตรวจทานจากพารามิเตอร์ของวงจร</b> กำลังจริงทั้งหมดเกิดที่ความต้านทาน
+              และกำลังรีแอคทีฟทั้งหมดเกิดที่รีแอคแตนซ์</span>
+              <span class="en"><b>Check against the circuit parameters:</b> all the real power arises in the
+              resistance, and all the reactive power in the reactance:</span></p>
+            \[ P = I^{2}R = (8.83)^{2}(18) = 1403\ \text{W}\ \checkmark \]
+            \[ Q = I^{2}X_L = (8.83)^{2}(18.85) = (77.97)(18.85) = 1470\ \text{var} \]
+
+            <div class="callout callout-note mb-0">
+              <div class="callout-title">📌 <span class="th">เรื่องเล็ก ๆ ที่ต้องเข้าใจ: 1468 กับ 1470</span>
+                <span class="en">A small point worth understanding: 1468 against 1470</span></div>
+              <p class="mb-0"><span class="th">สองวิธีให้คำตอบต่างกัน 2 var คิดเป็น 0.14 %
+                ซึ่ง <b>ไม่ใช่ความผิดพลาด</b> แต่เป็นผลจากการปัดเศษที่สะสมมาตลอดทาง
+                ตั้งแต่ \(|Z| = 26.06\) ในบทที่ 6 มาจนถึง \(\cos 46.3^{\circ} = 0.691\) ในข้อนี้
+                ถ้าคำนวณด้วยค่าเต็มความละเอียดของเครื่องคิดเลขตลอดทาง ทั้งสองวิธีจะให้ 1468 var เท่ากัน
+                <br>ในงานวิศวกรรมจริง ความต่าง 0.14 % ไม่มีความหมายใด ๆ เพราะความคลาดเคลื่อนของ
+                มิเตอร์ที่ดีก็ยังอยู่ที่ราว 0.5 % และค่า \(R\) ของขดลวดก็เปลี่ยนตามอุณหภูมิได้หลายเปอร์เซ็นต์
+                ตามที่คำนวณไว้ในตัวอย่างที่ 3.1 สิ่งที่ต้องระวังคือ <b>อย่าปัดเศษกลางทางแล้วนำไปคูณต่อ
+                หลายชั้น</b> ให้เก็บค่าเต็มไว้ในเครื่องคิดเลขจนถึงคำตอบสุดท้ายเสมอ
+                <br><b>สรุปสามเหลี่ยม:</b> \(S = 2031\) VA, \(P = 1403\) W, \(Q = 1468\) var
+                และ pf = 1403/2031 = 0.691 ตรงกับค่าที่หาได้จากมุมอิมพีแดนซ์ในบทที่ 6 พอดี</span>
+                <span class="en">The two routes differ by 2 var, or 0.14 %. That is <b>not an error</b> but
+                rounding accumulated along the way, from \(|Z| = 26.06\) in Chapter 6 through
+                \(\cos 46.3^{\circ} = 0.691\) here. Carry full calculator precision throughout and both give
+                1468 var. <br>In practice 0.14 % means nothing: a good meter is accurate to about 0.5 %, and
+                the winding's \(R\) shifts by several per cent with temperature, as Example 3.1 showed. What
+                does matter is <b>never to round in the middle and then multiply through several more
+                steps</b>. Keep the full value in the calculator until the last line. <br><b>The triangle:</b>
+                \(S = 2031\) VA, \(P = 1403\) W, \(Q = 1468\) var, and pf = 1403/2031 = 0.691 — exactly the
+                figure the impedance angle gave in Chapter 6.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p><span class="th">เมื่อมีโหลดหลายตัวต่อขนานกัน จะเกิดคำถามว่ารวมกันอย่างไร
+        คำตอบคือ <b>ห้ามบวก \(S\) กับ \(S\) เด็ดขาด</b> เพราะ \(S\) ของแต่ละตัวมีมุมต่างกัน
+        แต่ให้ <b>บวก \(P\) กับ \(P\) และบวก \(Q\) กับ \(Q\) แยกกัน</b> แล้วจึงรวมกลับเป็น \(S\)
+        ในขั้นสุดท้าย วิธีนี้ง่ายกว่าการรวมกระแสแบบเฟเซอร์ในบทที่ 6 มาก
+        เพราะไม่ต้องยุ่งกับมุมเลยจนถึงขั้นตอนสุดท้าย</span>
+        <span class="en">With several loads in parallel the question is how to combine them. The answer is
+        that you must <b>never add \(S\) to \(S\)</b>, since each has its own angle. Instead <b>add \(P\) to
+        \(P\) and \(Q\) to \(Q\) separately</b>, and only recombine into \(S\) at the end. This is far
+        easier than the phasor addition of currents in Chapter 6, because no angle enters until the last
+        step.</span></p>
+
+      <div class="equation">
+        \[ P_T = P_1 + P_2 + \cdots \qquad\qquad Q_T = Q_1 + Q_2 + \cdots \]
+        \[ S_T = \sqrt{P_T^{2} + Q_T^{2}} \qquad\qquad I_T = \frac{S_T}{V} \]
+      </div>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 7.4</span><span class="en">Example 7.4</span></span>
+          <span class="th">รวมโหลดทั้งตู้ควบคุมโรงเรือน</span>
+          <span class="en">Totalling a whole greenhouse control panel</span></div>
+        <div class="example-body">
+          <p><span class="th">ตู้ควบคุมโรงเรือนเดียวกับกิจกรรมที่ 6.1 จ่ายไฟ 230 V 50 Hz ให้โหลดสี่ชุด
+            จงหากำลังทั้งสามชนิดรวม ตัวประกอบกำลังของทั้งตู้ และกระแสที่ไหลผ่านเบรกเกอร์หลัก</span>
+            <span class="en">The greenhouse panel of Activity 6.1 feeds four loads from a 230 V, 50 Hz
+            supply. Find the total of each power, the panel's overall power factor, and the current through
+            the main breaker.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th">หา \(S\) ของแต่ละโหลดจาก \(S = VI\) แล้วแยกเป็น \(P = S\,\text{pf}\)
+              และ \(Q = S\sin\theta\) โดย \(\sin\theta = \sqrt{1 - \text{pf}^2}\)</span>
+              <span class="en">Find each load's \(S\) from \(S = VI\), then split it into
+              \(P = S\,\text{pf}\) and \(Q = S\sin\theta\), with
+              \(\sin\theta = \sqrt{1 - \text{pf}^2}\):</span></p>
+
+            <div class="table-wrap">
+              <table>
+                <caption><span class="th">ตารางที่ 7.3 การแยกกำลังของโหลดแต่ละชุด</span>
+                  <span class="en">Table 7.3 Each load resolved into P and Q</span></caption>
+                <thead>
+                  <tr>
+                    <th><span class="th">โหลด</span><span class="en">Load</span></th>
+                    <th class="num">I (A)</th><th class="num">pf</th>
+                    <th class="num">S (VA)</th><th class="num">P (W)</th><th class="num">Q (var)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="th">ฮีตเตอร์เพาะกล้า 3 kW</span><span class="en">3 kW seedling heater</span></td>
+                    <td class="num">13.04</td><td class="num">1.00</td>
+                    <td class="num">3000</td><td class="num">3000</td><td class="num">0</td>
+                  </tr>
+                  <tr>
+                    <td><span class="th">ปั๊มน้ำเพื่อการชลประทาน</span><span class="en">Irrigation pump</span></td>
+                    <td class="num">8.70</td><td class="num">0.75</td>
+                    <td class="num">2001</td><td class="num">1501</td><td class="num">1323</td>
+                  </tr>
+                  <tr>
+                    <td><span class="th">พัดลมระบายอากาศ 2 ตัว</span><span class="en">Two ventilation fans</span></td>
+                    <td class="num">8.40</td><td class="num">0.68</td>
+                    <td class="num">1932</td><td class="num">1314</td><td class="num">1416</td>
+                  </tr>
+                  <tr>
+                    <td><span class="th">ชุดไฟ LED ปลูกพืช</span><span class="en">LED grow-light array</span></td>
+                    <td class="num">1.80</td><td class="num">0.95</td>
+                    <td class="num">414</td><td class="num">393</td><td class="num">129</td>
+                  </tr>
+                  <tr>
+                    <td><b><span class="th">รวม (บวก P และ Q แยกกัน)</span><span class="en">Total — P and Q added separately</span></b></td>
+                    <td class="num">—</td><td class="num">0.908</td>
+                    <td class="num"><b>6838</b></td><td class="num"><b>6208</b></td><td class="num"><b>2868</b></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><span class="th">รวม \(P\) และ \(Q\) แยกกันก่อน แล้วจึงหา \(S\) ในขั้นสุดท้าย</span>
+              <span class="en">Add \(P\) and \(Q\) separately first, and only then find \(S\):</span></p>
+            \[ P_T = 3000 + 1501 + 1314 + 393 = 6208\ \text{W} \]
+            \[ Q_T = 0 + 1323 + 1416 + 129 = 2868\ \text{var} \]
+            \[ S_T = \sqrt{6208^{2} + 2868^{2}} = \sqrt{38\,539\,264 + 8\,225\,424} = 6838\ \text{VA} \]
+            \[ \text{pf} = \frac{P_T}{S_T} = \frac{6208}{6838} = 0.908 \ \text{lagging}
+               \qquad \theta = \cos^{-1}(0.908) = 24.8^{\circ} \]
+            \[ I_T = \frac{S_T}{V} = \frac{6838}{230} = 29.73\ \text{A} \]
+
+            <div class="callout callout-tip mb-0">
+              <div class="callout-title">💡 <span class="th">คำตอบเดียวกับที่ได้จากการรวมเฟเซอร์</span>
+                <span class="en">The same answer the phasor sum gave</span></div>
+              <p class="mb-0"><span class="th">กระแส 29.73 A ตรงกับที่กิจกรรมที่ 6.1 ให้รวมเฟเซอร์ของกระแสทั้งสี่
+                แต่วิธีในบทนี้ <b>ไม่ต้องแตะมุมสักครั้งเดียวจนถึงบรรทัดสุดท้าย</b>
+                นี่คือเหตุผลที่วิศวกรออกแบบระบบไฟฟ้าทำงานด้วย \(P\) และ \(Q\) มากกว่าด้วยเฟเซอร์กระแส
+                <br>เทียบกับผลบวกขนาดตรง ๆ ของผู้รับเหมา (13.04 + 8.70 + 8.40 + 1.80 = 31.94 A)
+                จะเห็นว่าสูงเกินจริงไป 2.21 A หรือ 7.4 % ซึ่งพอจะทำให้เลือกเบรกเกอร์ผิดขนาดได้
+                เพราะ \(1.25 \times 29.73 = 37.2\) A เลือกเบรกเกอร์ 40 A ได้พอดี
+                ส่วน \(1.25 \times 31.94 = 39.9\) A ก็ยังได้ 40 A เช่นกัน — กรณีนี้โชคดีที่ตัดสินใจตรงกัน
+                แต่ถ้าโหลดใหญ่กว่านี้อีกนิดเดียว ความต่างนั้นจะดันให้ต้องข้ามไปขนาด 50 A โดยไม่จำเป็น
+                <br>สิ่งที่น่าสนใจกว่าคือ \(Q_T = 2868\) var นั้นคือกำลังที่วิ่งไปกลับในสายโดยไม่ได้งานอะไร
+                ถ้ากำจัดมันได้หมด กระแสจะเหลือเพียง 6208/230 = <b>27.0 A</b>
+                ซึ่งเป็นประเด็นของหัวข้อถัดไป</span>
+                <span class="en">The 29.73 A matches what Activity 6.1 obtained by summing four current
+                phasors — but the method here <b>never touches an angle until the final line</b>. This is
+                why power-system engineers work in \(P\) and \(Q\) rather than in current phasors.
+                <br>Against the contractor's arithmetic sum, 13.04 + 8.70 + 8.40 + 1.80 = 31.94 A, that is
+                2.21 A or 7.4 % too high — enough to mislead a breaker choice. Here
+                \(1.25 \times 29.73 = 37.2\) A and \(1.25 \times 31.94 = 39.9\) A both land on a 40 A
+                breaker, so the two happen to agree; but with a slightly larger panel the difference would
+                push the wrong answer up to 50 A for no reason. <br>More interesting is that the
+                \(Q_T = 2868\) var is power shuttling up and down the cable for no return. Remove it
+                entirely and the current would fall to 6208/230 = <b>27.0 A</b> — which is the subject of the
+                next section.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== 7.4 -->
+    <section id="s4">
+      <h2><span class="num">7.4</span><span class="th">ตัวประกอบกำลังและการแก้ตัวประกอบกำลัง</span>
+          <span class="en">Power factor and its correction</span></h2>
+
+      <p><span class="th">ตัวประกอบกำลังคืออัตราส่วน \(P/S\) ซึ่งอ่านความหมายได้ตรงตัวว่า
+        <b>กำลังที่มิเตอร์วัดได้นั้น มีกี่เปอร์เซ็นต์ที่กลายเป็นงานจริง</b>
+        โหลด pf = 0.7 หมายความว่าสายไฟกับหม้อแปลงต้องทำงานเต็มที่เพื่อส่งกำลัง 100 หน่วย
+        แต่มีเพียง 70 หน่วยที่สูบน้ำ หมุนพัดลม หรือให้ความร้อนได้จริง</span>
+        <span class="en">The power factor is the ratio \(P/S\), which reads directly as <b>the percentage of
+        the power the meters see that actually becomes work</b>. A load at pf 0.7 means the cable and
+        transformer work flat out to deliver 100 units, of which only 70 pump water, turn a fan or make
+        heat.</span></p>
+
+      <div class="table-wrap">
+        <table>
+          <caption><span class="th">ตารางที่ 7.4 ตัวประกอบกำลังโดยทั่วไปของอุปกรณ์ในงานเกษตร</span>
+            <span class="en">Table 7.4 Typical power factors of agricultural equipment</span></caption>
+          <thead>
+            <tr>
+              <th><span class="th">อุปกรณ์</span><span class="en">Equipment</span></th>
+              <th class="num">pf</th>
+              <th><span class="th">หมายเหตุ</span><span class="en">Note</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="th">ฮีตเตอร์ · หลอดไส้ · องค์ทำความร้อนทุกชนิด</span><span class="en">Heaters, incandescent lamps, any heating element</span></td>
+              <td class="num">1.00</td>
+              <td><span class="th">ความต้านทานล้วน ไม่มี Q เลย</span><span class="en">purely resistive; no Q at all</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">ไฟ LED ปลูกพืช ไดรเวอร์คุณภาพดี</span><span class="en">LED grow-light, good driver</span></td>
+              <td class="num">0.95–0.99</td>
+              <td><span class="th">มีวงจรแก้ตัวประกอบกำลังในตัว มองหาคำว่า "active PFC"</span><span class="en">has active PFC built in; look for that label</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">ไฟ LED ไดรเวอร์ราคาถูก</span><span class="en">LED, cheap driver</span></td>
+              <td class="num">0.50–0.70</td>
+              <td><span class="th">ประหยัดวัตต์แต่ไม่ประหยัดแอมแปร์ — ถ้าติดหลายร้อยดวงจะเป็นปัญหา</span><span class="en">saves watts but not amperes; with hundreds fitted it becomes a problem</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">มอเตอร์เหนี่ยวนำหนึ่งเฟส ที่โหลดเต็มพิกัด</span><span class="en">Single-phase induction motor, full load</span></td>
+              <td class="num">0.70–0.80</td>
+              <td><span class="th">ปั๊มน้ำและพัดลมส่วนใหญ่ในฟาร์ม</span><span class="en">most farm pumps and fans</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">มอเตอร์เหนี่ยวนำหนึ่งเฟส ที่โหลดเพียงหนึ่งในสี่</span><span class="en">Single-phase induction motor, quarter load</span></td>
+              <td class="num">0.30–0.50</td>
+              <td><span class="th">ผลของการเลือกมอเตอร์ใหญ่เกินงาน — ดูคำเตือนข้างล่าง</span><span class="en">what oversizing does; see the warning below</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">มอเตอร์เหนี่ยวนำสามเฟส ที่โหลดเต็มพิกัด</span><span class="en">Three-phase induction motor, full load</span></td>
+              <td class="num">0.85–0.90</td>
+              <td><span class="th">ดีกว่าหนึ่งเฟสอย่างชัดเจน เป็นเหตุผลหนึ่งของบทที่ 8</span><span class="en">clearly better than single-phase; one reason for Chapter 8</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">มอเตอร์ที่ขับด้วยอินเวอร์เตอร์</span><span class="en">Inverter-fed motor</span></td>
+              <td class="num">0.95–0.99</td>
+              <td><span class="th">วัดที่ด้านขาเข้าของอินเวอร์เตอร์ ซึ่งมีวงจร PFC อยู่ (บทที่ 12)</span><span class="en">measured at the inverter's input, where the PFC sits (Chapter 12)</span></td>
+            </tr>
+            <tr>
+              <td><span class="th">หม้อแปลงเชื่อมไฟฟ้า</span><span class="en">Welding transformer</span></td>
+              <td class="num">0.35–0.60</td>
+              <td><span class="th">แย่ที่สุดในโรงซ่อมบำรุงฟาร์ม แต่ใช้งานเป็นช่วง ๆ</span><span class="en">the worst in the farm workshop, but used only intermittently</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-warn">
+        <div class="callout-title">⚠️ <span class="th">มอเตอร์ใหญ่เกินงาน คือสาเหตุอันดับหนึ่งของตัวประกอบกำลังต่ำในฟาร์ม</span>
+          <span class="en">An oversized motor is the commonest cause of poor power factor on a farm</span></div>
+        <p class="mb-0"><span class="th">กระแสรีแอคทีฟของมอเตอร์เหนี่ยวนำเกิดจากการสร้างสนามแม่เหล็กในช่องอากาศ
+          ซึ่งต้องสร้างเท่าเดิม <b>ไม่ว่าจะมีโหลดหรือไม่</b> ส่วนกระแสที่เป็นกำลังจริงนั้นแปรตามโหลด
+          เมื่อโหลดน้อย ตัวเศษเล็กลงแต่ตัวส่วนแทบไม่เปลี่ยน ตัวประกอบกำลังจึงตกลงอย่างรวดเร็ว
+          <br>ผู้รับเหมาที่ติดตั้งปั๊ม 3 kW ในงานที่ต้องการเพียง 1 kW โดยคิดว่า "เผื่อไว้ดีกว่า"
+          ได้สร้างโหลดที่มี pf ประมาณ 0.4 ขึ้นมา ซึ่งกินกระแสมากกว่าปั๊ม 1 kW ที่เลือกถูกขนาดเสียด้วยซ้ำ
+          <b>การเลือกขนาดให้พอดีกับงานจึงเป็นการแก้ตัวประกอบกำลังที่ถูกที่สุดและได้ผลที่สุด</b>
+          ถูกกว่าการซื้อตัวเก็บประจุมาแก้ทีหลังอย่างเทียบกันไม่ได้</span>
+          <span class="en">An induction motor's reactive current goes into magnetising its air gap, and that
+          field must be built <b>whether the motor is loaded or not</b>, while the real-power current follows
+          the load. At light load the numerator shrinks and the denominator barely moves, so the power factor
+          collapses. <br>A contractor who fits a 3 kW pump to a 1 kW duty, on the principle that spare
+          capacity cannot hurt, has created a load at roughly pf 0.4 — one that draws more current than a
+          correctly sized 1 kW pump would. <b>Sizing equipment to the job is therefore the cheapest and most
+          effective power-factor correction there is</b>, and incomparably cheaper than buying capacitors to
+          repair it afterwards.</span></p>
+      </div>
+
+      <h3><span class="th">7.4.1 การแก้ด้วยตัวเก็บประจุ</span>
+          <span class="en">7.4.1 Correction with a capacitor</span></h3>
+
+      <p><span class="th">ในบทที่ 6 เราเห็นว่ากระแสของตัวเหนี่ยวนำ <b>ตามหลัง</b> แรงดัน 90°
+        ส่วนกระแสของตัวเก็บประจุ <b>นำหน้า</b> 90° ทั้งสองจึงมีทิศตรงข้ามกันพอดี
+        พูดในภาษาของบทนี้คือ ตัวเหนี่ยวนำ <b>ใช้</b> กำลังรีแอคทีฟ ส่วนตัวเก็บประจุ <b>จ่าย</b>
+        กำลังรีแอคทีฟ วางไว้ข้างกันจึงหักล้างกันได้</span>
+        <span class="en">Chapter 6 showed that an inductor's current <b>lags</b> the voltage by 90° while a
+        capacitor's <b>leads</b> by 90°, so the two are exactly opposed. In this chapter's language, an
+        inductor <b>consumes</b> reactive power and a capacitor <b>supplies</b> it; put side by side, they
+        cancel.</span></p>
+
+      <div class="equation">
+        \[ Q_C = P\big(\tan\theta_1 - \tan\theta_2\big) \]
+        \[ C = \frac{Q_C}{\omega V^{2}} \]
+      </div>
+      <p class="eq-note"><span class="th">\(\theta_1\) คือมุมเดิม \(\theta_2\) คือมุมเป้าหมาย
+        สังเกตว่า \(P\) ไม่เปลี่ยน — ตัวเก็บประจุไม่ได้ลดงานที่โหลดทำ มันลดแต่กำลังรีแอคทีฟ</span>
+        <span class="en">\(\theta_1\) is the present angle, \(\theta_2\) the target. Note that \(P\) never
+        changes: the capacitor does not reduce the work the load does, only the reactive power</span></p>
+
+      <figure>
+        <div class="figure-box is-animated pfc-fig" data-anim="running">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false">
+            <span class="anim-pause"><span class="th">⏸ หยุดภาพเคลื่อนไหว</span><span class="en">⏸ Pause</span></span>
+            <span class="anim-play"><span class="th">▶ เล่นภาพเคลื่อนไหว</span><span class="en">▶ Play</span></span>
+          </button>
+          <svg class="sys-fig" viewBox="0 0 720 392" role="img" width="720"
+               aria-label="The same pump motor before and after a capacitor is fitted: the feeder dashes move more slowly afterwards because it carries less current, and the reactive power now swings only around the short loop between capacitor and motor">
+            <text class="cap th" x="20" y="22">ก. ก่อนแก้ — สายรับกระแส 8.83 A และ Q แกว่งตลอดความยาวสาย</text>
+            <text class="cap en" x="20" y="22">a. Before — the feeder carries 8.83 A and Q swings its whole length</text>
+
+            <!-- ===== panel a ===== -->
+            <circle cx="60" cy="100" r="20" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <path d="M47 100 C51.3 92 55.7 92 60 100 C64.3 108 68.7 108 73 100"
+                  stroke="#fd5f00" stroke-width="2" fill="none"/>
+            <text class="sub" x="60" y="140" text-anchor="middle">230 V</text>
+
+            <path class="c-before" d="M84 76 L512 76" stroke="#fd5f00" stroke-width="3.5"
+                  fill="none" stroke-dasharray="9 9"/>
+            <polygon points="510,70 524,76 510,82" fill="#fd5f00"/>
+            <path d="M514 124 L84 124" stroke="#0d1128" stroke-width="2" fill="none"/>
+            <path d="M80 76 L60 76 L60 80" stroke="#0d1128" stroke-width="2" fill="none"/>
+            <path d="M60 120 L60 124 L84 124" stroke="#0d1128" stroke-width="2" fill="none"/>
+            <text class="lbl" x="250" y="66" fill="#fd5f00">8.83 A</text>
+            <text class="sub th" x="310" y="66">กระแสเต็มสาย</text>
+            <text class="sub en" x="310" y="66">the cable is full</text>
+
+            <circle cx="540" cy="100" r="26" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <text class="lbl" x="540" y="106" text-anchor="middle">M</text>
+            <text class="sub th" x="540" y="144" text-anchor="middle">ปั๊มน้ำ pf 0.691</text>
+            <text class="sub en" x="540" y="144" text-anchor="middle">pump, pf 0.691</text>
+
+            <path class="qswing" d="M100 164 L500 164" stroke="#2b6cb0" stroke-width="3.5"
+                  fill="none" stroke-dasharray="9 9"/>
+            <polygon points="100,158 86,164 100,170" fill="#2b6cb0"/>
+            <polygon points="500,158 514,164 500,170" fill="#2b6cb0"/>
+            <text class="sub th" x="180" y="184" fill="#2b6cb0">Q = 1468 var แกว่งจากแหล่งจ่ายถึงมอเตอร์ทุกครึ่งรอบ</text>
+            <text class="sub en" x="180" y="184" fill="#2b6cb0">Q = 1468 var swings from source to motor every half cycle</text>
+
+            <line x1="605" y1="150" x2="665" y2="150" stroke="#fd5f00" stroke-width="3"/>
+            <line x1="665" y1="150" x2="665" y2="87" stroke="#2b6cb0" stroke-width="3"/>
+            <line x1="605" y1="150" x2="665" y2="87" stroke="#0d1128" stroke-width="3"/>
+            <text class="sub" x="635" y="164" text-anchor="middle" fill="#fd5f00">P 1403</text>
+            <text class="sub" x="670" y="118" fill="#2b6cb0">Q 1468</text>
+            <text class="sub" x="596" y="112" text-anchor="end" fill="#0d1128">S 2031</text>
+
+            <line x1="20" y1="200" x2="700" y2="200" stroke="#e4e7ec" stroke-width="1"/>
+            <text class="cap th" x="20" y="222">ข. หลังแก้ด้วยตัวเก็บประจุ 60 µF — สายรับเพียง 6.43 A</text>
+            <text class="cap en" x="20" y="222">b. After a 60 µF capacitor — the feeder carries only 6.43 A</text>
+
+            <!-- ===== panel b ===== -->
+            <circle cx="60" cy="300" r="20" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <path d="M47 300 C51.3 292 55.7 292 60 300 C64.3 308 68.7 308 73 300"
+                  stroke="#fd5f00" stroke-width="2" fill="none"/>
+            <text class="sub" x="60" y="340" text-anchor="middle">230 V</text>
+
+            <path class="c-after" d="M84 276 L512 276" stroke="#fd5f00" stroke-width="3.5"
+                  fill="none" stroke-dasharray="9 9"/>
+            <polygon points="510,270 524,276 510,282" fill="#fd5f00"/>
+            <path d="M514 324 L84 324" stroke="#0d1128" stroke-width="2" fill="none"/>
+            <path d="M80 276 L60 276 L60 280" stroke="#0d1128" stroke-width="2" fill="none"/>
+            <path d="M60 320 L60 324 L84 324" stroke="#0d1128" stroke-width="2" fill="none"/>
+            <text class="lbl" x="250" y="266" fill="#fd5f00">6.43 A</text>
+            <text class="sub th" x="310" y="266">เส้นประเดินช้าลงอย่างเห็นได้ชัด</text>
+            <text class="sub en" x="310" y="266">the dashes visibly march more slowly</text>
+
+            <line x1="472" y1="276" x2="472" y2="294" stroke="#0d1128" stroke-width="2"/>
+            <line x1="461" y1="294" x2="483" y2="294" stroke="#2f855a" stroke-width="3"/>
+            <line x1="461" y1="303" x2="483" y2="303" stroke="#2f855a" stroke-width="3"/>
+            <line x1="472" y1="303" x2="472" y2="324" stroke="#0d1128" stroke-width="2"/>
+            <text class="lbl" x="440" y="302" text-anchor="end" fill="#2f855a">60 µF</text>
+
+            <circle cx="540" cy="300" r="26" fill="#fff" stroke="#0d1128" stroke-width="2.5"/>
+            <text class="lbl" x="540" y="306" text-anchor="middle">M</text>
+            <text class="sub th" x="540" y="344" text-anchor="middle">ปั๊มตัวเดิม ทำงานเท่าเดิม</text>
+            <text class="sub en" x="540" y="344" text-anchor="middle">same pump, same work</text>
+
+            <path class="qswing" d="M486 364 L504 364" stroke="#2b6cb0" stroke-width="3.5"
+                  fill="none" stroke-dasharray="9 9"/>
+            <polygon points="486,358 474,364 486,370" fill="#2b6cb0"/>
+            <polygon points="504,358 516,364 504,370" fill="#2b6cb0"/>
+            <text class="sub th" x="150" y="368" fill="#2b6cb0">Q แกว่งอยู่แค่ระหว่างตัวเก็บประจุกับมอเตอร์ — สายยาวทั้งเส้นไม่ต้องรับอีกแล้ว</text>
+            <text class="sub en" x="150" y="368" fill="#2b6cb0">Q now swings only between capacitor and motor; the long feeder is spared</text>
+
+            <line x1="605" y1="350" x2="665" y2="350" stroke="#fd5f00" stroke-width="3"/>
+            <line x1="665" y1="350" x2="665" y2="330" stroke="#2b6cb0" stroke-width="3"/>
+            <line x1="605" y1="350" x2="665" y2="330" stroke="#0d1128" stroke-width="3"/>
+            <text class="sub" x="635" y="364" text-anchor="middle" fill="#fd5f00">P 1403</text>
+            <text class="sub" x="670" y="344" fill="#2b6cb0">Q 471</text>
+            <text class="sub" x="600" y="326" text-anchor="end" fill="#0d1128">S 1480</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 7.4</span><span class="en">Figure 7.4</span></b>
+          <span class="th"> ปั๊มน้ำตัวเดิม สูบน้ำได้เท่าเดิม กินกำลังจริงเท่าเดิม 1403 W ทุกประการ
+            สิ่งเดียวที่เปลี่ยนคือ <b>กำลังรีแอคทีฟไม่ต้องเดินทางมาจากแหล่งจ่ายอีกแล้ว</b>
+            แต่ถูกจ่ายจากตัวเก็บประจุที่อยู่ห่างจากมอเตอร์เพียงไม่กี่เมตร
+            <br>เส้นประสีส้มในสองแผงมีระยะห่างเท่ากันแต่เดินด้วยความเร็วต่างกัน คือ 1.20 วินาทีต่อรอบ
+            กับ 1.65 วินาทีต่อรอบ อัตราส่วนนั้นคือ 8.83 : 6.43 ตามกระแสจริง
+            สายเส้นเดียวกันจึงลำเลียงกำลังจริงชุดเดิมได้โดยร้อนน้อยลงมาก
+            <br>สังเกตสามเหลี่ยมกำลังทางขวา ด้าน \(P\) ยาวเท่าเดิมเสมอ มีเพียงด้าน \(Q\) ที่หดสั้นลง
+            และเมื่อ \(Q\) หด ด้าน \(S\) จึงหดตามไปด้วย — <b>นั่นคือความจุที่คืนกลับมาให้หม้อแปลง</b></span>
+          <span class="en"> The same pump, moving the same water, drawing the same 1403 W of real power. The
+            one thing that has changed is that <b>the reactive power no longer travels from the source</b>
+            but comes from a capacitor a few metres from the motor. <br>The orange dashes in the two panels
+            are spaced identically but march at different speeds, 1.20 s per cycle against 1.65 s — a ratio
+            of 8.83 : 6.43, the true currents. The same cable carries the same real power while running far
+            cooler. <br>Note the triangles on the right: side \(P\) is always the same length and only \(Q\)
+            shortens — and as \(Q\) shortens, so does \(S\). <b>That shortening is the capacity handed back
+            to the transformer.</b></span></figcaption>
+      </figure>
+
+      <div class="example">
+        <div class="example-head"><span class="badge">
+          <span class="th">ตัวอย่างที่ 7.5</span><span class="en">Example 7.5</span></span>
+          <span class="th">เลือกตัวเก็บประจุแก้ตัวประกอบกำลังให้ปั๊มน้ำ</span>
+          <span class="en">Sizing a correction capacitor for the pump</span></div>
+        <div class="example-body">
+          <p><span class="th">ปั๊มน้ำตัวเดิม (\(P = 1403\) W, \(Q = 1468\) var, pf = 0.691, 230 V 50 Hz)
+            อยู่ปลายสายป้อน 4 mm² ยาว 120 เมตร ซึ่งมีความต้านทานไปกลับรวม 1.2 Ω
+            จงหา (ก) ตัวเก็บประจุที่ต้องใช้เพื่อแก้ตัวประกอบกำลังเป็น 0.95
+            (ข) กระแสและกำลังสูญเสียในสายก่อนและหลังแก้ และ (ค) ผลที่ได้จริงเมื่อใช้ตัวเก็บประจุ
+            ขนาดมาตรฐาน 60 µF</span>
+            <span class="en">The same pump — \(P = 1403\) W, \(Q = 1468\) var, pf 0.691, on 230 V at 50 Hz —
+            sits at the end of a 120 m run of 4 mm² cable whose total there-and-back resistance is 1.2 Ω.
+            Find (a) the capacitor needed to correct the power factor to 0.95, (b) the current and cable
+            loss before and after, and (c) what a standard 60 µF capacitor actually achieves.</span></p>
+          <div class="solution">
+            <div class="solution-label"><span class="th">วิธีทำ</span><span class="en">Solution</span></div>
+
+            <p><span class="th"><b>(ก) ขั้นที่ 1</b> หามุมเดิมและมุมเป้าหมาย</span>
+              <span class="en"><b>(a) Step 1</b> Find the present and target angles:</span></p>
+            \[ \theta_1 = \cos^{-1}(0.691) = 46.3^{\circ} \quad\Rightarrow\quad \tan\theta_1 = 1.046 \]
+            \[ \theta_2 = \cos^{-1}(0.950) = 18.2^{\circ} \quad\Rightarrow\quad \tan\theta_2 = 0.329 \]
+
+            <p><span class="th"><b>ขั้นที่ 2</b> หากำลังรีแอคทีฟที่ตัวเก็บประจุต้องจ่าย</span>
+              <span class="en"><b>Step 2</b> Find the reactive power the capacitor must supply:</span></p>
+            \[ Q_C = P(\tan\theta_1 - \tan\theta_2) = 1403(1.046 - 0.329) = 1403(0.717) = 1006\ \text{var} \]
+
+            <p><span class="th"><b>ขั้นที่ 3</b> แปลงเป็นความจุ</span>
+              <span class="en"><b>Step 3</b> Convert that into a capacitance:</span></p>
+            \[ C = \frac{Q_C}{\omega V^{2}} = \frac{1006}{(314.16)(230)^{2}}
+               = \frac{1006}{16.62\times10^{6}} = 60.5\times10^{-6}\ \text{F} = 60.5\ \mu\text{F} \]
+
+            <p><span class="th"><b>(ข) กระแสและกำลังสูญเสีย</b> ก่อนแก้</span>
+              <span class="en"><b>(b) Current and loss</b> before correction:</span></p>
+            \[ I_1 = 8.83\ \text{A} \qquad
+               P_{\text{สูญเสีย},1} = I_1^{2}R_{\text{สาย}} = (8.83)^{2}(1.2) = 93.6\ \text{W} \]
+
+            <p><span class="th">หลังแก้เป็น pf = 0.95 กำลังจริงไม่เปลี่ยน จึงหา \(S\) ใหม่จาก \(P/\text{pf}\)</span>
+              <span class="en">After correcting to pf 0.95 the real power is unchanged, so the new \(S\)
+              follows from \(P/\text{pf}\):</span></p>
+            \[ S_2 = \frac{P}{\text{pf}_2} = \frac{1403}{0.95} = 1477\ \text{VA}
+               \qquad I_2 = \frac{S_2}{V} = \frac{1477}{230} = 6.42\ \text{A} \]
+            \[ P_{\text{สูญเสีย},2} = (6.42)^{2}(1.2) = 49.5\ \text{W} \]
+
+            <p><span class="th">กระแสลดลง \((8.83-6.42)/8.83 = 27.3\ \%\) และกำลังสูญเสียลดลง</span>
+              <span class="en">The current falls by \((8.83-6.42)/8.83 = 27.3\ \%\), and the loss falls
+              by:</span></p>
+            \[ \frac{93.6 - 49.5}{93.6} = 47.1\ \% \qquad\text{หรือ / or}\qquad
+               1 - \left(\frac{6.42}{8.83}\right)^{2} = 1 - 0.529 = 0.471 \]
+
+            <p><span class="th"><b>(ค) ใช้ของจริงขนาด 60 µF</b> ซึ่งเป็นค่ามาตรฐานที่หาซื้อได้
+              จะได้กำลังรีแอคทีฟจริงเท่าใด</span>
+              <span class="en"><b>(c) With a real 60 µF unit</b>, a standard purchasable value, the actual
+              reactive power supplied is:</span></p>
+            \[ Q_C = \omega C V^{2} = (314.16)(60\times10^{-6})(230)^{2} = 997\ \text{var} \]
+            \[ Q_{\text{ใหม่}} = 1468 - 997 = 471\ \text{var} \]
+            \[ S = \sqrt{1403^{2} + 471^{2}} = \sqrt{1\,968\,409 + 221\,841} = 1480\ \text{VA} \]
+            \[ \text{pf} = \frac{1403}{1480} = 0.948 \qquad I = \frac{1480}{230} = 6.43\ \text{A} \]
+
+            <div class="callout callout-note mb-0">
+              <div class="callout-title">📌 <span class="th">ประโยชน์ที่ได้จริง และประโยชน์ที่หลายคนเข้าใจผิด</span>
+                <span class="en">What you really gain, and what many people wrongly expect</span></div>
+              <p class="mb-0"><span class="th"><b>ได้จริงข้อที่ 1 — สายเย็นลงและประหยัดพลังงาน</b>
+                กำลังสูญเสียลดจาก 93.6 W เหลือ 49.5 W ประหยัดได้ 44.1 W ตลอดเวลาที่ปั๊มทำงาน
+                ถ้าปั๊มเดิน 6 ชั่วโมงต่อวัน 120 วันต่อฤดู จะประหยัดได้
+                \(44.1 \times 720 = 31.8\) kWh ต่อฤดู
+                <br><b>ได้จริงข้อที่ 2 — คืนความจุให้ระบบ</b> กำลังปรากฏลดจาก 2031 VA เหลือ 1480 VA
+                หม้อแปลงและสายชุดเดิมจึงรับปั๊มเพิ่มได้อีกตัวโดยไม่ต้องลงทุนเปลี่ยน
+                ในทางปฏิบัติข้อนี้มักมีมูลค่าสูงกว่าค่าไฟที่ประหยัดได้หลายเท่า
+                <br><b>ได้จริงข้อที่ 3 — หลีกเลี่ยงค่าปรับ</b> การไฟฟ้าคิดค่าปรับเมื่อตัวประกอบกำลังต่ำกว่าเกณฑ์
+                รายละเอียดของอัตราค่าไฟฟ้าจะกล่าวถึงในบทที่ 10
+                <br><b>ที่เข้าใจผิดกันบ่อย — แรงดันตกไม่ได้ลดลงอย่างที่คิด</b>
+                แรงดันตกในสายที่เป็นความต้านทานล้วนมีค่าประมาณ \(I R\cos\theta\)
+                ซึ่งเท่ากับ \((P/V)R\) และ \(P\) นั้น <b>ไม่เปลี่ยน</b> คำนวณดูจะได้
+                \(8.83 \times 1.2 \times 0.691 = 7.32\) V ก่อนแก้ และ
+                \(6.42 \times 1.2 \times 0.95 = 7.32\) V หลังแก้ — เท่ากันพอดี
+                การแก้ตัวประกอบกำลังช่วยลดแรงดันตกได้เฉพาะเมื่อสายมี <b>รีแอคแตนซ์</b> มากพอ
+                ซึ่งเกิดกับสายป้อนที่ยาวมากหรือสายขนาดใหญ่ ต้องแยกให้ออกระหว่างสองกรณีนี้</span>
+                <span class="en"><b>Real gain 1 — a cooler cable and less energy.</b> The loss falls from
+                93.6 W to 49.5 W, saving 44.1 W for as long as the pump runs. At six hours a day for 120 days
+                a season that is \(44.1 \times 720 = 31.8\) kWh per season. <br><b>Real gain 2 — capacity
+                handed back.</b> The apparent power falls from 2031 VA to 1480 VA, so the same transformer
+                and cable will now take another pump with no new investment. In practice this is often worth
+                several times the energy saved. <br><b>Real gain 3 — avoiding penalties.</b> The utility
+                charges a penalty below a threshold power factor; the tariff details come in Chapter 10.
+                <br><b>The common misconception — voltage drop does not fall as much as people expect.</b>
+                The drop along a purely resistive cable is approximately \(I R\cos\theta\), which equals
+                \((P/V)R\), and \(P\) <b>does not change</b>. Work it out:
+                \(8.83 \times 1.2 \times 0.691 = 7.32\) V before, and
+                \(6.42 \times 1.2 \times 0.95 = 7.32\) V after — identical. Correction reduces voltage drop
+                only where the cable has appreciable <b>reactance</b>, as on very long or very large feeders.
+                Keep the two cases distinct.</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-danger">
+        <div class="callout-title">⚠️ <span class="th">ห้ามแก้เกิน และห้ามลืมปลดตัวเก็บประจุ</span>
+          <span class="en">Never over-correct, and never leave the capacitor connected</span></div>
+        <ul class="mb-0">
+          <li><span class="th"><b>อย่าแก้จนถึง pf = 1.00</b> ในทางปฏิบัติตั้งเป้าที่ 0.92–0.95 เท่านั้น
+            เพราะโหลดของฟาร์มเปลี่ยนตลอดเวลา ถ้าออกแบบให้พอดีที่โหลดเต็ม
+            เมื่อโหลดเบาลงตัวเก็บประจุจะจ่าย \(Q\) เกิน ทำให้ตัวประกอบกำลัง <b>นำหน้า</b>
+            ซึ่งก็ทำให้กระแสสูงขึ้นอีกเช่นกัน และการไฟฟ้าหลายแห่งคิดค่าปรับกรณีนำหน้าด้วย</span>
+            <span class="en"><b>Do not correct all the way to pf 1.00.</b> Aim for 0.92–0.95. A farm's load
+            changes constantly, and a bank sized for full load will over-supply \(Q\) at light load, giving a
+            <b>leading</b> power factor — which raises the current again, and which many utilities also
+            penalise.</span></li>
+          <li><span class="th"><b>อันตรายที่ต้องรู้: การกระตุ้นตัวเอง</b>
+            ถ้าตัวเก็บประจุยังต่ออยู่กับมอเตอร์ในขณะที่ตัดไฟจากแหล่งจ่าย
+            มอเตอร์ที่ยังหมุนด้วยแรงเฉื่อยจะทำงานเป็นเครื่องกำเนิดไฟฟ้าโดยใช้ตัวเก็บประจุเป็นแหล่งกระตุ้น
+            สร้างแรงดันได้สูงกว่าพิกัดหลายเท่า ทำลายฉนวนของขดลวดและอาจทำให้ผู้ที่คิดว่า
+            "ตัดเบรกเกอร์แล้วปลอดภัย" ถูกไฟดูด
+            <br>ด้วยเหตุนี้ ตัวเก็บประจุแก้ตัวประกอบกำลังจึงต้องต่อ <b>ผ่านคอนแทกเตอร์ที่ปลดพร้อมมอเตอร์</b>
+            และต้องมีตัวต้านทานคายประจุ ห้ามต่อถาวรคร่อมขั้วมอเตอร์โดยตรง</span>
+            <span class="en"><b>A hazard to know about: self-excitation.</b> If the capacitor is still
+            connected to the motor when the supply is switched off, the coasting motor becomes a generator
+            using that capacitor as its excitation, and can produce several times rated voltage — wrecking
+            the winding insulation and able to shock anyone who believes that opening the breaker made the
+            machine safe. <br>For this reason a correction capacitor must be switched <b>through a contactor
+            that drops out with the motor</b>, and fitted with discharge resistors. It must never be left
+            permanently across the motor terminals.</span></li>
+          <li><span class="th"><b>ตัวเก็บประจุไม่แก้ฮาร์มอนิก</b> ถ้าตัวประกอบกำลังต่ำเพราะรูปคลื่นกระแสเพี้ยน
+            (เช่นจากไดรเวอร์ LED ราคาถูกหรืออินเวอร์เตอร์ที่ไม่มี PFC)
+            การใส่ตัวเก็บประจุอาจทำให้เกิดเรโซแนนซ์กับตัวเหนี่ยวนำของหม้อแปลงและทำให้แย่ลงกว่าเดิม
+            กรณีนั้นต้องใช้ฟิลเตอร์ฮาร์มอนิกหรือเปลี่ยนอุปกรณ์ต้นเหตุ</span>
+            <span class="en"><b>Capacitors do not fix harmonics.</b> Where the poor power factor comes from a
+            distorted current waveform — a cheap LED driver, an inverter with no PFC front end — adding
+            capacitance can resonate with the transformer's inductance and make matters worse. That case
+            calls for a harmonic filter, or for replacing the offending equipment.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Summary -->
+    <section id="summary">
+      <h2><span class="num">📌</span><span class="th">สรุปบทเรียน</span><span class="en">Chapter summary</span></h2>
+      <div class="card">
+        <ul class="mb-0">
+          <li><span class="th">กำลังชั่วขณะ \(p = vi\) ในวงจรไฟสลับ <b>กระเพื่อมด้วยความถี่สองเท่า</b>
+            ของแหล่งจ่าย และถ้ากระแสไม่ตรงเฟสกับแรงดัน จะมีบางช่วงที่ \(p\) ติดลบ
+            คือพลังงานไหลย้อนกลับจากโหลดไปหาแหล่งจ่าย</span>
+            <span class="en">The instantaneous power \(p = vi\) <b>pulsates at twice</b> the supply frequency,
+            and where the current is out of phase with the voltage, \(p\) goes negative for part of each
+            half-cycle — energy flowing back out of the load.</span></li>
+          <li><span class="th">ค่าอาร์เอ็มเอสนิยามจากหลักความสมมูลทางความร้อน คือแรงดันไฟตรงที่ให้ความร้อนเท่ากัน
+            สำหรับคลื่นไซน์เท่านั้น \(V_{\text{rms}} = V_m/\sqrt{2}\)
+            ส่วนพัลส์ PWM ดิวตี้ \(D\) ให้ \(V_{\text{rms}} = V_m\sqrt{D}\)</span>
+            <span class="en">The rms value is defined by equal heating — the DC voltage that would heat the
+            same. For sinusoids alone \(V_{\text{rms}} = V_m/\sqrt{2}\); a PWM pulse of duty \(D\) gives
+            \(V_{\text{rms}} = V_m\sqrt{D}\).</span></li>
+          <li><span class="th">กำลังไฟฟ้ากระแสสลับมีสามชนิด <b>กำลังปรากฏ</b> \(S = VI\) หน่วย VA
+            <b>กำลังจริง</b> \(P = S\cos\theta\) หน่วย W และ <b>กำลังรีแอคทีฟ</b> \(Q = S\sin\theta\)
+            หน่วย var ทั้งสามสัมพันธ์กันด้วย \(S = \sqrt{P^2 + Q^2}\)</span>
+            <span class="en">AC power comes in three kinds: <b>apparent</b>, \(S = VI\) in VA;
+            <b>real</b>, \(P = S\cos\theta\) in W; and <b>reactive</b>, \(Q = S\sin\theta\) in var — related by
+            \(S = \sqrt{P^2 + Q^2}\).</span></li>
+          <li><span class="th">มิเตอร์ kWh บันทึกเฉพาะ \(P\) แต่สายไฟและหม้อแปลงต้องรับ \(S\)
+            นี่คือเหตุผลที่หม้อแปลงมีพิกัดเป็น kVA ไม่ใช่ kW</span>
+            <span class="en">The kWh meter records only \(P\), while cables and transformers must carry
+            \(S\) — which is why transformers are rated in kVA and not kW.</span></li>
+          <li><span class="th">สามเหลี่ยมกำลังคือสามเหลี่ยมอิมพีแดนซ์ในบทที่ 6 คูณด้วย \(I^2\)
+            มุม \(\theta\) จึงเป็นค่าเดิม และตัวประกอบกำลัง \(\text{pf} = \cos\theta = P/S\)</span>
+            <span class="en">The power triangle is Chapter 6's impedance triangle times \(I^2\), so
+            \(\theta\) is unchanged and the power factor is \(\cos\theta = P/S\).</span></li>
+          <li><span class="th">รวมโหลดหลายตัวโดย <b>บวก \(P\) กับ \(P\) และ \(Q\) กับ \(Q\) แยกกัน</b>
+            แล้วจึงหา \(S\) ในขั้นสุดท้าย ห้ามบวก \(S\) กับ \(S\) เด็ดขาด</span>
+            <span class="en">Combine loads by <b>adding \(P\) to \(P\) and \(Q\) to \(Q\) separately</b>,
+            finding \(S\) only at the end. Never add \(S\) to \(S\).</span></li>
+          <li><span class="th">แก้ตัวประกอบกำลังด้วยตัวเก็บประจุ \(Q_C = P(\tan\theta_1 - \tan\theta_2)\)
+            และ \(C = Q_C/(\omega V^2)\) ตั้งเป้าที่ 0.92–0.95 ไม่ใช่ 1.00
+            และต้องปลดตัวเก็บประจุพร้อมมอเตอร์เสมอเพื่อป้องกันการกระตุ้นตัวเอง</span>
+            <span class="en">Correct with a capacitor from \(Q_C = P(\tan\theta_1 - \tan\theta_2)\) and
+            \(C = Q_C/(\omega V^2)\). Aim for 0.92–0.95, not 1.00, and always switch the capacitor out with
+            the motor to prevent self-excitation.</span></li>
+          <li><span class="th">การแก้ตัวประกอบกำลังลด <b>กระแส</b> และ <b>กำลังสูญเสีย \(I^2R\)</b> ได้จริง
+            และคืนความจุให้หม้อแปลง แต่ <b>ไม่ลดกำลังจริง \(P\)</b> และลดแรงดันตกได้น้อยมาก
+            ถ้าสายเป็นความต้านทานล้วน</span>
+            <span class="en">Correction genuinely reduces <b>current</b> and <b>\(I^2R\) loss</b> and hands
+            capacity back to the transformer, but it <b>does not reduce \(P\)</b>, and it barely reduces
+            voltage drop on a cable that is purely resistive.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- =============================================== Activity -->
+    <section id="activity">
+      <h2><span class="num">🧭</span><span class="th">กิจกรรมในชั้นเรียน</span>
+          <span class="en">Class activity</span></h2>
+
+      <div class="activity">
+        <div class="activity-head">
+          <h3><span class="th">กิจกรรมที่ 7.1 — ออกแบบชุดตัวเก็บประจุให้โรงคัดบรรจุผลผลิต</span>
+              <span class="en">Activity 7.1 — Designing a capacitor bank for a packhouse</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">45 นาที</span><span class="en">45 minutes</span></span>
+            <span>👥 <span class="th">กลุ่มละ 3–4 คน</span><span class="en">Groups of 3–4</span></span>
+            <span>🎯 <span class="th">CLO2, CLO4, CLO5</span><span class="en">CLO2, CLO4, CLO5</span></span>
+          </div>
+        </div>
+        <div class="activity-body">
+          <p><span class="th"><b>สถานการณ์:</b> โรงคัดบรรจุผลผลิตขนาดเล็กใช้ไฟหนึ่งเฟส 230 V 50 Hz
+            ผ่านหม้อแปลงพิกัด <b>7.5 kVA</b> ที่มีอยู่เดิม เจ้าของฟาร์มต้องการเพิ่มสายพานลำเลียง
+            ขนาด 0.75 kW อีกหนึ่งชุด แต่ผู้รับเหมาบอกว่า "หม้อแปลงเต็มแล้ว ต้องเปลี่ยนเป็น 10 kVA"
+            ซึ่งมีค่าใช้จ่ายสูงมาก กลุ่มของคุณได้รับมอบหมายให้ตรวจสอบว่าจริงหรือไม่
+            และหาทางเลือกที่ถูกกว่า</span>
+            <span class="en"><b>Scenario:</b> A small packhouse runs on a single-phase 230 V, 50 Hz supply
+            through an existing <b>7.5 kVA</b> transformer. The owner wants to add a 0.75 kW conveyor, but the
+            contractor says the transformer is full and must be replaced with a 10 kVA unit — at considerable
+            expense. Your group has been asked to check whether that is true, and to find a cheaper
+            way.</span></p>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ใบงานกิจกรรมที่ 7.1 — โหลดที่มีอยู่เดิม</span>
+                <span class="en">Activity 7.1 worksheet — the existing loads</span></caption>
+              <thead>
+                <tr>
+                  <th><span class="th">โหลด</span><span class="en">Load</span></th>
+                  <th class="num">P (W)</th>
+                  <th class="num">pf</th>
+                  <th class="num">θ</th>
+                  <th class="num">S (VA)</th>
+                  <th class="num">Q (var)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="th">ปั๊มน้ำล้างผลผลิต</span><span class="en">Produce-wash pump</span></td>
+                  <td class="num">2200</td><td class="num">0.78</td>
+                  <td><input type="text" aria-label="a1"></td><td><input type="text" aria-label="a2"></td>
+                  <td><input type="text" aria-label="a3"></td>
+                </tr>
+                <tr>
+                  <td><span class="th">ปั๊มสำรอง</span><span class="en">Standby pump</span></td>
+                  <td class="num">1100</td><td class="num">0.72</td>
+                  <td><input type="text" aria-label="b1"></td><td><input type="text" aria-label="b2"></td>
+                  <td><input type="text" aria-label="b3"></td>
+                </tr>
+                <tr>
+                  <td><span class="th">คอมเพรสเซอร์ห้องเย็น</span><span class="en">Cold-room compressor</span></td>
+                  <td class="num">1500</td><td class="num">0.80</td>
+                  <td><input type="text" aria-label="c1"></td><td><input type="text" aria-label="c2"></td>
+                  <td><input type="text" aria-label="c3"></td>
+                </tr>
+                <tr>
+                  <td><span class="th">พัดลมระเหย 2 ตัว</span><span class="en">Two evaporator fans</span></td>
+                  <td class="num">500</td><td class="num">0.65</td>
+                  <td><input type="text" aria-label="d1"></td><td><input type="text" aria-label="d2"></td>
+                  <td><input type="text" aria-label="d3"></td>
+                </tr>
+                <tr>
+                  <td><span class="th">ไฟส่องสว่าง LED</span><span class="en">LED lighting</span></td>
+                  <td class="num">300</td><td class="num">0.92</td>
+                  <td><input type="text" aria-label="e1"></td><td><input type="text" aria-label="e2"></td>
+                  <td><input type="text" aria-label="e3"></td>
+                </tr>
+                <tr>
+                  <td colspan="3"><b><span class="th">รวม (บวก P และ Q แยกกัน)</span><span class="en">Totals — P and Q separately</span></b></td>
+                  <td><input type="text" aria-label="t1"></td><td><input type="text" aria-label="t2"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ol class="steps">
+            <li><span class="th"><b>กรอกตาราง</b> โดยหา \(\theta = \cos^{-1}(\text{pf})\) แล้ว
+              \(S = P/\text{pf}\) และ \(Q = P\tan\theta\) ของทุกโหลด</span>
+              <span class="en"><b>Fill in the table</b>: find \(\theta = \cos^{-1}(\text{pf})\), then
+              \(S = P/\text{pf}\) and \(Q = P\tan\theta\) for each load.</span></li>
+            <li><span class="th"><b>รวม \(P\) และ \(Q\) แยกกัน</b> แล้วหา \(S_T\) ตัวประกอบกำลังรวม
+              และกระแสที่ไหลผ่านหม้อแปลง</span>
+              <span class="en"><b>Add \(P\) and \(Q\) separately</b>, then find \(S_T\), the overall power
+              factor, and the current through the transformer.</span></li>
+            <li><span class="th"><b>ตรวจคำกล่าวอ้างของผู้รับเหมา</b> \(S_T\) ที่ได้เทียบกับพิกัด 7.5 kVA
+              เป็นกี่เปอร์เซ็นต์ และถ้าเพิ่มสายพาน 0.75 kW ที่ pf 0.75 เข้าไปอีก จะเกินพิกัดจริงหรือไม่</span>
+              <span class="en"><b>Test the contractor's claim:</b> what percentage of the 7.5 kVA rating is
+              your \(S_T\), and would adding the 0.75 kW conveyor at pf 0.75 genuinely exceed the
+              rating?</span></li>
+            <li><span class="th"><b>เสนอทางเลือกด้วยตัวเก็บประจุ</b> คำนวณ \(Q_C\) และ \(C\)
+              ที่ทำให้ตัวประกอบกำลังรวมเป็น 0.95 แล้วหา \(S_T\) ใหม่
+              หลังแก้แล้วยังเหลือความจุให้สายพานหรือไม่ เหลือเท่าใด</span>
+              <span class="en"><b>Propose the capacitor alternative:</b> compute the \(Q_C\) and \(C\) that
+              bring the overall power factor to 0.95, then the new \(S_T\). Is there room for the conveyor
+              afterwards, and how much?</span></li>
+            <li><span class="th"><b>เปรียบเทียบต้นทุน</b> สมมติตัวเก็บประจุพร้อมคอนแทกเตอร์และการติดตั้ง
+              ราคา 8,000 บาท ส่วนหม้อแปลง 10 kVA พร้อมติดตั้งราคา 120,000 บาท
+              จงระบุว่าทางเลือกใดคุ้มกว่า และมีเงื่อนไขใดที่จะทำให้คำตอบเปลี่ยน</span>
+              <span class="en"><b>Compare the costs:</b> take the capacitor with its contactor and
+              installation at 8,000 baht against a 10 kVA transformer installed at 120,000 baht. Which is
+              the better choice, and under what circumstances would the answer change?</span></li>
+            <li><span class="th"><b>อภิปรายข้อจำกัด</b> ตัวเก็บประจุชุดเดียวที่ตู้ประธาน
+              ทำงานได้ดีเมื่อโหลดเต็ม แต่จะเกิดอะไรขึ้นในคืนที่เดินเพียงคอมเพรสเซอร์ห้องเย็นตัวเดียว
+              และจะแก้ปัญหานั้นอย่างไร เตรียมนำเสนอ 3 นาที</span>
+              <span class="en"><b>Discuss the limitations:</b> a single bank at the main board works well at
+              full load, but what happens on a night when only the cold-room compressor runs, and how would
+              you deal with it? Present in three minutes.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">✅ <span class="th">เกณฑ์การประเมิน (10 คะแนน)</span>
+              <span class="en">Marking guide (10 marks)</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th">ตารางถูกต้องครบทุกช่องพร้อมหน่วย และรวม P กับ Q แยกกันอย่างถูกวิธี — 4 คะแนน</span>
+                  <span class="en">A correct, fully completed table with units, and P and Q properly added
+                  separately — 4 marks</span></li>
+              <li><span class="th">คำนวณ \(Q_C\) และ \(C\) ได้ถูกต้อง และสรุปความจุที่เหลือได้ — 3 คะแนน</span>
+                  <span class="en">Correct \(Q_C\) and \(C\), with the remaining capacity stated — 3 marks</span></li>
+              <li><span class="th">เปรียบเทียบต้นทุนและอภิปรายข้อจำกัดของโหลดเบาได้อย่างมีเหตุผล — 3 คะแนน</span>
+                  <span class="en">A reasoned cost comparison and discussion of the light-load problem —
+                  3 marks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Laboratory -->
+    <section id="lab">
+      <h2><span class="num">🧪</span><span class="th">ปฏิบัติการที่ 7</span>
+          <span class="en">Laboratory 7</span></h2>
+
+      <div class="lab">
+        <div class="lab-head">
+          <h3><span class="th">ปฏิบัติการที่ 7 — วัดกำลังสามชนิด และแก้ตัวประกอบกำลังด้วยตัวเก็บประจุ</span>
+              <span class="en">Laboratory 7 — Measuring the three powers, and correcting the power factor</span></h3>
+          <div class="meta">
+            <span>⏱ <span class="th">2 ชั่วโมง</span><span class="en">2 hours</span></span>
+            <span>👥 <span class="th">กลุ่มละ 2–3 คน</span><span class="en">Groups of 2–3</span></span>
+            <span>🎯 <span class="th">CLO2, CLO5, CLO6</span><span class="en">CLO2, CLO5, CLO6</span></span>
+          </div>
+        </div>
+        <div class="lab-body">
+
+          <h4 class="mt-0"><span class="th">วัตถุประสงค์</span><span class="en">Objectives</span></h4>
+          <ol>
+            <li><span class="th">วัด \(S\), \(P\), \(Q\) และตัวประกอบกำลังของโหลด R–L จากการวัด
+              แรงดัน กระแส และมุมเฟส</span>
+                <span class="en">Measure \(S\), \(P\), \(Q\) and the power factor of an R–L load from
+                measurements of voltage, current and phase angle.</span></li>
+            <li><span class="th">ยืนยันด้วยการวัดว่า \(P\) ที่คำนวณจาก \(VI\cos\theta\)
+              เท่ากับ \(I^2R\) ที่คำนวณจากความต้านทานจริงของวงจร</span>
+                <span class="en">Confirm by measurement that the \(P\) from \(VI\cos\theta\) equals the
+                \(I^2R\) from the circuit's actual resistance.</span></li>
+            <li><span class="th">แก้ตัวประกอบกำลังด้วยตัวเก็บประจุขนาน แล้ววัดกระแสที่ลดลงจริง
+              หาค่าความจุที่ทำให้กระแสต่ำสุด</span>
+                <span class="en">Correct the power factor with a parallel capacitor, measure the fall in
+                current, and find the capacitance that minimises it.</span></li>
+            <li><span class="th">เปรียบเทียบการอ่านค่าของมิเตอร์แบบอาร์เอ็มเอสแท้กับมิเตอร์แบบเฉลี่ย
+              เมื่อวัดสัญญาณ PWM</span>
+                <span class="en">Compare a true-rms meter with an averaging meter on a PWM waveform.</span></li>
+          </ol>
+
+          <h4><span class="th">อุปกรณ์</span><span class="en">Equipment</span></h4>
+          <ul>
+            <li><span class="th">เครื่องกำเนิดสัญญาณ · ออสซิลโลสโคปสองช่อง · มัลติมิเตอร์แบบอาร์เอ็มเอสแท้
+              และมัลติมิเตอร์ราคาประหยัดแบบเฉลี่ยอีกหนึ่งตัว</span>
+                <span class="en">A function generator, a two-channel oscilloscope, a true-rms multimeter, and
+                one cheap averaging multimeter as well</span></li>
+            <li><span class="th">ตัวเหนี่ยวนำ 100 mH · ตัวต้านทาน 330 Ω (โหลด) และ 10 Ω (ตัวตรวจจับกระแส)</span>
+                <span class="en">A 100 mH inductor, a 330 Ω resistor as the load and a 10 Ω resistor as a
+                current sense</span></li>
+            <li><span class="th">ตัวเก็บประจุชนิดฟิล์มไม่มีขั้ว 0.1, 0.22, 0.33, 0.47 และ 1.0 µF</span>
+                <span class="en">Non-polarised film capacitors of 0.1, 0.22, 0.33, 0.47 and 1.0 µF</span></li>
+            <li><span class="th">แผงต่อวงจร · สายวัด · และ (สำหรับการสาธิตโดยอาจารย์) มอเตอร์หนึ่งเฟสขนาดเล็ก
+              พร้อมแคลมป์มิเตอร์และเพาเวอร์มิเตอร์</span>
+                <span class="en">A breadboard, test leads, and — for the instructor's demonstration only — a
+                small single-phase motor with a clamp meter and a power meter</span></li>
+          </ul>
+
+          <div class="callout callout-danger">
+            <div class="callout-title">⚠️ <span class="th">ข้อควรระวัง</span>
+              <span class="en">Safety precautions</span></div>
+            <ul class="mb-0 small">
+              <li><span class="th"><b>ตอนที่ 1 ถึง 4 ทั้งหมดใช้ไฟ 5 V จากเครื่องกำเนิดสัญญาณเท่านั้น
+                ห้ามนักศึกษาต่อวงจรกับไฟบ้าน 230 V โดยเด็ดขาด</b>
+                การวัดที่แรงดันไฟบ้านเป็นการสาธิตของอาจารย์เท่านั้น</span>
+                  <span class="en"><b>Parts 1 to 4 use only 5 V from the function generator; students must
+                  never connect any of this to the 230 V mains.</b> Measurements at mains voltage are the
+                  instructor's demonstration only.</span></li>
+              <li><span class="th"><b>คายประจุตัวเก็บประจุทุกตัวก่อนเปลี่ยน</b> แม้ที่ 5 V พลังงานจะน้อย
+                แต่ควรฝึกเป็นนิสัยตั้งแต่ตอนนี้ เพราะในงานจริงตัวเก็บประจุแก้ตัวประกอบกำลัง
+                ที่ 230 V เก็บพลังงานมากพอจะทำให้เกิดประกายไฟรุนแรง ตามที่คำนวณไว้ในตัวอย่างที่ 5.2</span>
+                  <span class="en"><b>Discharge every capacitor before changing it.</b> At 5 V the energy is
+                  small, but make it a habit now: a real correction capacitor at 230 V holds quite enough
+                  energy for a violent spark, as Example 5.2 showed.</span></li>
+              <li><span class="th">สายกราวด์ของโพรบทั้งสองช่องต่อถึงกันภายในสโคป ต้องหนีบที่จุดเดียวกันเสมอ</span>
+                  <span class="en">Both probe grounds are joined inside the scope; always clip them to the
+                  same point.</span></li>
+              <li><span class="th">ระหว่างการสาธิตด้วยมอเตอร์ อาจารย์จะชี้ให้เห็นว่าเหตุใดตัวเก็บประจุ
+                จึงต้องปลดพร้อมมอเตอร์ นักศึกษาต้องยืนห่างตามที่กำหนดและไม่แตะวงจรใด ๆ</span>
+                  <span class="en">During the motor demonstration the instructor will show why the capacitor
+                  must be switched out with the motor. Students are to keep to the marked distance and touch
+                  nothing.</span></li>
+            </ul>
+          </div>
+
+          <h4><span class="th">ขั้นตอนการทดลอง</span><span class="en">Procedure</span></h4>
+
+          <p><b><span class="th">ตอนที่ 1: สร้างโหลดที่มีตัวประกอบกำลังต่ำ</span>
+            <span class="en">Part 1: Building a load with a poor power factor</span></b></p>
+          <ol class="steps">
+            <li><span class="th"><b>วัดความต้านทานกระแสตรงของขดลวด</b> ด้วยมัลติมิเตอร์ก่อนต่อวงจร
+              บันทึกไว้เป็น \(R_L\) ค่านี้จะต้องนำไปรวมกับตัวต้านทาน 330 Ω ในการคำนวณทุกครั้ง
+              (นี่คือสาเหตุของความคลาดเคลื่อนที่พบในปฏิบัติการที่ 6)</span>
+                <span class="en"><b>Measure the inductor's DC resistance</b> with the meter before wiring
+                anything, and record it as \(R_L\). It must be added to the 330 Ω in every calculation — this
+                is the source of the discrepancy found in Laboratory 6.</span></li>
+            <li><span class="th">ต่อ 330 Ω อนุกรมกับตัวเหนี่ยวนำ 100 mH และตัวตรวจจับกระแส 10 Ω
+              ป้อนคลื่นไซน์ 5 V อาร์เอ็มเอส ความถี่ <b>500 Hz</b></span>
+                <span class="en">Wire the 330 Ω in series with the 100 mH inductor and the 10 Ω current
+                sense, and feed a 5 V rms sine wave at <b>500 Hz</b>.</span></li>
+            <li><span class="th">คำนวณล่วงหน้าก่อนวัด \(X_L = 2\pi(500)(0.1)\) และ
+              \(|Z| = \sqrt{(330+R_L+10)^2 + X_L^2}\) แล้วทำนายกระแสและมุมเฟส</span>
+                <span class="en">Before measuring, compute \(X_L = 2\pi(500)(0.1)\) and
+                \(|Z| = \sqrt{(330+R_L+10)^2 + X_L^2}\), and predict the current and phase angle.</span></li>
+            <li><span class="th">วัดกระแสจากแรงดันคร่อมตัวตรวจจับ 10 Ω และวัดมุมเฟสด้วยวิธี \(\Delta t\)
+              ของปฏิบัติการที่ 6 บันทึกลงตารางบันทึกผลที่ 7.5</span>
+                <span class="en">Measure the current from the voltage across the 10 Ω sense, and the phase
+                angle by the \(\Delta t\) method of Laboratory 6. Record in results table 7.5.</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 2: คำนวณกำลังทั้งสามชนิดจากค่าที่วัดได้</span>
+            <span class="en">Part 2: The three powers from your measurements</span></b></p>
+          <ol class="steps">
+            <li><span class="th">หา \(S = VI\), \(\text{pf} = \cos\theta\), \(P = S\cos\theta\)
+              และ \(Q = S\sin\theta\) จากค่าที่วัดได้ในตอนที่ 1</span>
+                <span class="en">Find \(S = VI\), \(\text{pf} = \cos\theta\), \(P = S\cos\theta\) and
+                \(Q = S\sin\theta\) from the Part 1 measurements.</span></li>
+            <li><span class="th"><b>ตรวจทานด้วยเส้นทางที่สอง</b> คำนวณ \(P = I^2(330+R_L+10)\)
+              และ \(Q = I^2 X_L\) แล้วเทียบกับคำตอบข้างบน ต่างกันกี่เปอร์เซ็นต์</span>
+                <span class="en"><b>Check by the second route:</b> compute \(P = I^2(330+R_L+10)\) and
+                \(Q = I^2 X_L\), and compare with the figures above. By what percentage do they
+                differ?</span></li>
+            <li><span class="th">ตรวจว่า \(S = \sqrt{P^2+Q^2}\) เป็นจริงกับตัวเลขที่วัดได้หรือไม่</span>
+                <span class="en">Verify that \(S = \sqrt{P^2+Q^2}\) holds for your measured
+                numbers.</span></li>
+          </ol>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางบันทึกผลที่ 7.5 — โหลด R–L ก่อนแก้</span>
+                <span class="en">Results table 7.5 — the R–L load before correction</span></caption>
+              <thead>
+                <tr>
+                  <th class="num">V (V)</th><th class="num">I (mA)</th><th class="num">Δt (µs)</th>
+                  <th class="num">θ</th><th class="num">S (mVA)</th>
+                  <th class="num">P (mW)</th><th class="num">Q (mvar)</th><th class="num">pf</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" aria-label="r1"></td><td><input type="text" aria-label="r2"></td>
+                  <td><input type="text" aria-label="r3"></td><td><input type="text" aria-label="r4"></td>
+                  <td><input type="text" aria-label="r5"></td><td><input type="text" aria-label="r6"></td>
+                  <td><input type="text" aria-label="r7"></td><td><input type="text" aria-label="r8"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><b><span class="th">ตอนที่ 3: แก้ตัวประกอบกำลังและหาค่าที่ดีที่สุด</span>
+            <span class="en">Part 3: Correcting the power factor, and finding the best value</span></b></p>
+          <ol class="steps">
+            <li><span class="th"><b>คำนวณก่อนต่อ</b> จาก \(Q\) ที่วัดได้ในตอนที่ 2
+              หาความจุที่ต้องใช้เพื่อหักล้าง \(Q\) ให้หมดจาก \(C = Q/(\omega V^2)\)
+              โดย \(\omega = 2\pi(500)\) และ \(V = 5\) V ควรได้ค่าใกล้ 0.47 µF</span>
+                <span class="en"><b>Compute before you connect:</b> from the \(Q\) measured in Part 2, find
+                the capacitance that would cancel it entirely, \(C = Q/(\omega V^2)\) with
+                \(\omega = 2\pi(500)\) and \(V = 5\) V. It should come out near 0.47 µF.</span></li>
+            <li><span class="th">ต่อตัวเก็บประจุ <b>ขนานกับโหลดทั้งชุด</b> ไม่ใช่อนุกรม
+              โดยเริ่มจาก 0.1 µF แล้ววัดกระแสรวมที่ไหลจากแหล่งจ่าย</span>
+                <span class="en">Connect the capacitor <b>in parallel with the whole load</b>, not in series.
+                Start with 0.1 µF and measure the total current from the source.</span></li>
+            <li><span class="th">ทำซ้ำกับ 0.22, 0.33, 0.47 และ 1.0 µF บันทึกกระแสรวมและมุมเฟสทุกครั้ง</span>
+                <span class="en">Repeat with 0.22, 0.33, 0.47 and 1.0 µF, recording the total current and
+                phase angle each time.</span></li>
+            <li><span class="th">เขียนกราฟกระแสรวมเทียบกับความจุ กราฟควรมี <b>จุดต่ำสุด</b>
+              ค่าความจุที่จุดนั้นตรงกับที่คำนวณไว้ในข้อ 1 หรือไม่</span>
+                <span class="en">Plot total current against capacitance. The curve should show a
+                <b>minimum</b>; does the capacitance there match your calculation in step 1?</span></li>
+            <li><span class="th"><b>สังเกตสิ่งที่สำคัญที่สุด</b> ที่ 1.0 µF กระแสรวมเป็นอย่างไรเทียบกับที่ 0.47 µF
+              และมุมเฟสเปลี่ยนเครื่องหมายหรือไม่ นี่คือการสาธิต <b>การแก้เกิน</b>
+              ที่กล่าวถึงในคำเตือนของหัวข้อ 7.4</span>
+                <span class="en"><b>Note the most important observation:</b> at 1.0 µF, how does the total
+                current compare with 0.47 µF, and has the phase angle changed sign? This is
+                <b>over-correction</b>, the hazard warned of in Section 7.4.</span></li>
+            <li><span class="th">ตรวจว่ากระแสที่ไหลผ่าน <b>ตัวโหลดเอง</b> เปลี่ยนไปหรือไม่เมื่อใส่ตัวเก็บประจุ
+              (วัดที่ตัวตรวจจับ 10 Ω ซึ่งอยู่ในกิ่งของโหลด) แล้วอธิบายว่าเหตุใดจึงเป็นเช่นนั้น</span>
+                <span class="en">Check whether the current through <b>the load itself</b> changes when the
+                capacitor is fitted — measure at the 10 Ω sense, which is in the load branch — and explain
+                why.</span></li>
+          </ol>
+
+          <div class="table-wrap datasheet">
+            <table>
+              <caption><span class="th">ตารางบันทึกผลที่ 7.6 — ผลของความจุที่เพิ่มขึ้น</span>
+                <span class="en">Results table 7.6 — the effect of increasing capacitance</span></caption>
+              <thead>
+                <tr>
+                  <th class="num">C (µF)</th>
+                  <th class="num"><span class="th">กระแสรวม (mA)</span><span class="en">Total I (mA)</span></th>
+                  <th class="num"><span class="th">กระแสในโหลด (mA)</span><span class="en">Load branch I (mA)</span></th>
+                  <th class="num">θ</th>
+                  <th class="num">pf</th>
+                  <th class="num"><span class="th">นำ / ตาม</span><span class="en">Lead / lag</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">0 (<span class="th">ไม่ใส่</span><span class="en">none</span>)</td>
+                  <td><input type="text" aria-label="s1"></td><td><input type="text" aria-label="s2"></td>
+                  <td><input type="text" aria-label="s3"></td><td><input type="text" aria-label="s4"></td>
+                  <td><input type="text" aria-label="s5"></td></tr>
+                <tr><td class="num">0.10</td>
+                  <td><input type="text" aria-label="t1"></td><td><input type="text" aria-label="t2"></td>
+                  <td><input type="text" aria-label="t3"></td><td><input type="text" aria-label="t4"></td>
+                  <td><input type="text" aria-label="t5"></td></tr>
+                <tr><td class="num">0.22</td>
+                  <td><input type="text" aria-label="u1"></td><td><input type="text" aria-label="u2"></td>
+                  <td><input type="text" aria-label="u3"></td><td><input type="text" aria-label="u4"></td>
+                  <td><input type="text" aria-label="u5"></td></tr>
+                <tr><td class="num">0.33</td>
+                  <td><input type="text" aria-label="v1"></td><td><input type="text" aria-label="v2"></td>
+                  <td><input type="text" aria-label="v3"></td><td><input type="text" aria-label="v4"></td>
+                  <td><input type="text" aria-label="v5"></td></tr>
+                <tr><td class="num">0.47</td>
+                  <td><input type="text" aria-label="w1"></td><td><input type="text" aria-label="w2"></td>
+                  <td><input type="text" aria-label="w3"></td><td><input type="text" aria-label="w4"></td>
+                  <td><input type="text" aria-label="w5"></td></tr>
+                <tr><td class="num">1.00</td>
+                  <td><input type="text" aria-label="x1"></td><td><input type="text" aria-label="x2"></td>
+                  <td><input type="text" aria-label="x3"></td><td><input type="text" aria-label="x4"></td>
+                  <td><input type="text" aria-label="x5"></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><b><span class="th">ตอนที่ 4: มิเตอร์สองตัวที่ให้คำตอบไม่เหมือนกัน</span>
+            <span class="en">Part 4: Two meters that disagree</span></b></p>
+          <ol class="steps">
+            <li><span class="th">เปลี่ยนเครื่องกำเนิดสัญญาณเป็นคลื่นสี่เหลี่ยม 0 ถึง 5 V ความถี่ 500 Hz
+              ปรับดิวตี้ไซเคิลเป็น 50 % ป้อนเข้าตัวต้านทาน 330 Ω ตัวเดียว</span>
+                <span class="en">Switch the generator to a 0-to-5 V square wave at 500 Hz with 50 % duty, into
+                the 330 Ω resistor alone.</span></li>
+            <li><span class="th">วัดแรงดันด้วยมิเตอร์ทั้งสองตัวในโหมด AC แล้วบันทึกทั้งสองค่า
+              จากตารางที่ 7.1 ค่าที่ถูกต้องควรเป็นเท่าใด</span>
+                <span class="en">Measure the voltage with both meters on AC and record both readings. From
+                Table 7.1, what should the correct value be?</span></li>
+            <li><span class="th">ปรับดิวตี้เป็น 25 % แล้ววัดใหม่ทั้งสองตัว
+              คราวนี้ค่าที่ถูกต้องคือ \(5\sqrt{0.25} = 2.5\) V มิเตอร์ตัวใดอ่านใกล้กว่า
+              และอีกตัวคลาดเคลื่อนกี่เปอร์เซ็นต์</span>
+                <span class="en">Set the duty to 25 % and measure again with both. The correct value is now
+                \(5\sqrt{0.25} = 2.5\) V; which meter is closer, and by what percentage is the other
+                wrong?</span></li>
+            <li><span class="th">คำนวณกำลังในตัวต้านทานจากค่าที่อ่านได้ของมิเตอร์แต่ละตัว
+              แล้วเทียบกับ \(P = D V^2/R\) ที่ถูกต้อง</span>
+                <span class="en">Work out the power in the resistor from each meter's reading, and compare
+                with the correct \(P = D V^2/R\).</span></li>
+          </ol>
+
+          <p><b><span class="th">ตอนที่ 5: การสาธิตโดยอาจารย์ — มอเตอร์จริงที่แรงดันไฟบ้าน</span>
+            <span class="en">Part 5: Instructor demonstration — a real motor at mains voltage</span></b></p>
+          <ol class="steps">
+            <li><span class="th">อาจารย์ต่อมอเตอร์หนึ่งเฟสเข้ากับเพาเวอร์มิเตอร์ที่อ่านได้ทั้ง
+              \(V\), \(I\), \(P\) และ pf พร้อมกัน นักศึกษาบันทึกค่าทั้งสี่ขณะไม่มีโหลดและขณะมีโหลด</span>
+                <span class="en">The instructor connects a single-phase motor through a power meter reading
+                \(V\), \(I\), \(P\) and pf together. Students record all four at no load and under
+                load.</span></li>
+            <li><span class="th">เทียบ pf ที่ไม่มีโหลดกับที่มีโหลด แล้วอภิปรายว่าตรงกับตารางที่ 7.4
+              และคำเตือนเรื่องมอเตอร์ใหญ่เกินงานหรือไม่</span>
+                <span class="en">Compare the no-load with the loaded power factor, and discuss whether it
+                agrees with Table 7.4 and the warning about oversized motors.</span></li>
+            <li><span class="th">อาจารย์ต่อตัวเก็บประจุแก้ตัวประกอบกำลังผ่านคอนแทกเตอร์ แล้วให้สังเกตว่า
+              \(I\) ลดลงในขณะที่ \(P\) แทบไม่เปลี่ยน — คือหัวใจของรูปที่ 7.4 ทั้งรูป</span>
+                <span class="en">The instructor switches in a correction capacitor through a contactor; watch
+                \(I\) fall while \(P\) hardly moves — the whole point of Figure 7.4.</span></li>
+          </ol>
+
+          <h4><span class="th">คำถามท้ายปฏิบัติการ</span><span class="en">Questions</span></h4>
+          <ol>
+            <li><span class="th">ค่า \(P\) ที่ได้จากสองเส้นทาง (\(VI\cos\theta\) และ \(I^2R\))
+              ต่างกันกี่เปอร์เซ็นต์ ให้ระบุสาเหตุอย่างน้อยสามข้อ
+              (พิจารณาความคลาดเคลื่อนของการอ่าน \(\Delta t\) บนหน้าจอ
+              ความต้านทานของขดลวดที่เปลี่ยนตามอุณหภูมิ และค่า \(L\) ที่คลาดเคลื่อนจากที่พิมพ์)</span>
+              <span class="en">By what percentage did the two routes to \(P\) — \(VI\cos\theta\) and
+              \(I^2R\) — differ? Give at least three reasons, considering the error in reading \(\Delta t\)
+              off the screen, the winding resistance shifting with temperature, and the tolerance on the
+              printed \(L\).</span></li>
+            <li><span class="th">ในตอนที่ 3 กระแสในกิ่งของโหลด <b>ไม่เปลี่ยน</b> เลยขณะที่กระแสรวมลดลง
+              จงอธิบายด้วยกฎกระแสของเคอร์ชฮอฟฟ์ในรูปเฟเซอร์ว่าเหตุใดจึงเป็นเช่นนั้น
+              และผลนี้บอกอะไรเกี่ยวกับตำแหน่งที่ควรติดตั้งตัวเก็บประจุในฟาร์ม</span>
+              <span class="en">In Part 3 the load-branch current <b>did not change</b> while the total fell.
+              Explain why, using Kirchhoff's current law in phasor form, and say what that implies about where
+              a correction capacitor should be installed on a farm.</span></li>
+            <li><span class="th">ที่ 1.0 µF วงจรถูกแก้เกินจนตัวประกอบกำลังกลายเป็นนำหน้า
+              จงอธิบายว่าเหตุใดกระแสรวมจึงสูงขึ้นอีก และเหตุใดการไฟฟ้าจึงคิดค่าปรับกรณีนำหน้าด้วย</span>
+              <span class="en">At 1.0 µF the circuit is over-corrected into a leading power factor. Explain
+              why the total current rises again, and why utilities penalise a leading power factor too.</span></li>
+            <li><span class="th">จากตอนที่ 4 ถ้าใช้มิเตอร์แบบเฉลี่ยวัดแรงดันของชุดหรี่ไฟ LED ปลูกพืช
+              ที่ทำงานที่ดิวตี้ 30 % แล้วนำค่าที่อ่านได้ไปคำนวณกำลัง
+              ผลจะคลาดเคลื่อนไปทางสูงหรือต่ำ และคิดเป็นกี่เท่า</span>
+              <span class="en">From Part 4, if an averaging meter were used on an LED grow-light dimmer
+              running at 30 % duty and its reading used to compute power, would the answer be too high or
+              too low, and by what factor?</span></li>
+            <li><span class="th">ออกแบบ: โรงเรือนหนึ่งมีโหลดรวม \(P = 4.5\) kW ที่ตัวประกอบกำลัง 0.72
+              ต่อกับไฟ 230 V 50 Hz ผ่านสายที่มีความต้านทานไปกลับ 0.8 Ω
+              จงหา (ก) ตัวเก็บประจุที่ต้องใช้เพื่อแก้เป็น 0.93 (ข) กระแสก่อนและหลังแก้
+              (ค) กำลังสูญเสียในสายที่ประหยัดได้ และ (ง) พลังงานที่ประหยัดได้ต่อปี
+              ถ้าโหลดทำงาน 8 ชั่วโมงต่อวัน 300 วันต่อปี</span>
+              <span class="en">Design: a greenhouse carries a total \(P = 4.5\) kW at a power factor of 0.72
+              on a 230 V, 50 Hz supply, through a cable of 0.8 Ω there and back. Find (a) the capacitor
+              needed to correct to 0.93, (b) the current before and after, (c) the cable loss saved, and
+              (d) the energy saved per year if the load runs eight hours a day for 300 days.</span></li>
+          </ol>
+
+          <div class="callout callout-tip mb-0">
+            <div class="callout-title">📄 <span class="th">การส่งรายงาน (20 คะแนน)</span>
+              <span class="en">Report submission (20 marks)</span></div>
+            <p class="mb-0"><span class="th">ส่งรายงานความยาวไม่เกิน 7 หน้า ประกอบด้วย วัตถุประสงค์
+              ค่า \(R_L\) ที่วัดได้พร้อมระบุว่านำไปใช้ที่ใด ตารางบันทึกผลที่ 7.5 และ 7.6 ที่กรอกครบ
+              สามเหลี่ยมกำลังตามมาตราส่วนของโหลดก่อนแก้และหลังแก้ที่ค่าความจุดีที่สุด
+              กราฟกระแสรวมเทียบกับความจุพร้อมระบุจุดต่ำสุดและบริเวณที่แก้เกิน
+              ตารางเปรียบเทียบการอ่านของมิเตอร์สองตัวในตอนที่ 4 ค่าที่บันทึกจากการสาธิตในตอนที่ 5
+              ตัวอย่างการคำนวณอย่างละเอียด 1 ชุด คำตอบของคำถามท้ายปฏิบัติการ และข้อสรุป
+              ภายในสัปดาห์ถัดไป</span>
+              <span class="en">Submit a report of no more than seven pages — objectives; the measured
+              \(R_L\) with a statement of where it was used; the completed results tables 7.5 and 7.6; scale
+              power triangles for the load before correction and at the best capacitance; the plot of total
+              current against capacitance with the minimum and the over-corrected region marked; the
+              comparison of the two meters from Part 4; the figures recorded during the Part 5 demonstration;
+              one fully worked calculation; answers to the questions; and a conclusion — by the following
+              week.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================== Post-test -->
+    <section id="posttest">
+      <h2><span class="num">📝</span><span class="th">แบบทดสอบหลังเรียน</span>
+          <span class="en">Post-test</span></h2>
+      <p class="muted"><span class="th">ทำหลังอ่านเนื้อหาและทำปฏิบัติการแล้ว ควรได้อย่างน้อย 6 จาก 8 ข้อ</span>
+        <span class="en">Take this after the notes and the laboratory; aim for at least 6 out of 8.</span></p>
+
+      <section class="quiz" id="posttest-q" data-quiz="post" data-chapter="ch07">
+        <div class="quiz-head">
+          <h3><span class="th">หลังเรียน: บทที่ 7</span><span class="en">Post-test: Chapter 7</span></h3>
+          <p><span class="th">8 ข้อ · ปรนัย · มีคำอธิบายทุกข้อ</span>
+             <span class="en">8 multiple-choice questions · every answer explained</span></p>
+        </div>
+        <div class="quiz-body">
+
+          <div class="q" data-answer="c"
+               data-explain-th="กำลังชั่วขณะมีพจน์ cos(2ωt − θ) จึงกระเพื่อมด้วยความถี่สองเท่าของแหล่งจ่าย คือ 100 Hz ซึ่งเป็นเหตุผลที่มอเตอร์หนึ่งเฟสฮัมที่ 100 Hz"
+               data-explain-en="The instantaneous power contains cos(2ωt − θ) and so pulsates at twice the supply frequency, 100 Hz — which is why single-phase motors hum at 100 Hz.">
+            <div class="q-text"><span class="th">โหลดต่อกับไฟ 50 Hz กำลังชั่วขณะ p = vi กระเพื่อมด้วยความถี่เท่าใด</span>
+              <span class="en">A load runs on a 50 Hz supply. At what frequency does the instantaneous power p = vi pulsate?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>25 Hz</span></label>
+              <label class="opt" data-opt="b"><span>50 Hz</span></label>
+              <label class="opt" data-opt="c"><span>100 Hz</span></label>
+              <label class="opt" data-opt="d"><span class="th">ไม่กระเพื่อม เป็นค่าคงที่</span><span class="en">it does not pulsate; it is constant</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="พัลส์ PWM จาก 0 ถึง V ที่ดิวตี้ D มีค่าอาร์เอ็มเอส V√D ดังนั้น 24√0.25 = 24 × 0.5 = 12 V ไม่ใช่ 0.25 × 24 = 6 V ซึ่งเป็นค่าเฉลี่ย"
+               data-explain-en="A PWM pulse from 0 to V at duty D has rms value V√D, so 24√0.25 = 24 × 0.5 = 12 V — not 0.25 × 24 = 6 V, which is the average.">
+            <div class="q-text"><span class="th">แหล่งจ่าย 24 V สวิตช์แบบ PWM ที่ดิวตี้ไซเคิล 25 % มีแรงดันอาร์เอ็มเอสเท่าใด</span>
+              <span class="en">A 24 V supply is switched by PWM at 25 % duty. What is the rms voltage?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>6.0 V</span></label>
+              <label class="opt" data-opt="b"><span>12.0 V</span></label>
+              <label class="opt" data-opt="c"><span>17.0 V</span></label>
+              <label class="opt" data-opt="d"><span>24.0 V</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="ตัวประกอบกำลังคือ P/S = 1403/2031 = 0.691 ซึ่งบอกว่าในกำลังปรากฏ 100 หน่วยที่สายต้องรับ มีเพียง 69.1 หน่วยที่กลายเป็นงาน"
+               data-explain-en="The power factor is P/S = 1403/2031 = 0.691: of every 100 units of apparent power the cable carries, only 69.1 become work.">
+            <div class="q-text"><span class="th">มอเตอร์ตัวหนึ่งมีกำลังปรากฏ 2031 VA และกำลังจริง 1403 W ตัวประกอบกำลังเป็นเท่าใด</span>
+              <span class="en">A motor has an apparent power of 2031 VA and a real power of 1403 W. What is its power factor?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>1.447</span></label>
+              <label class="opt" data-opt="b"><span>0.309</span></label>
+              <label class="opt" data-opt="c"><span>0.723</span></label>
+              <label class="opt" data-opt="d"><span>0.691</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="รวมโดยบวก P กับ P และ Q กับ Q แยกกัน ได้ P = 3000 W และ Q = 3500 var จากนั้น S = √(3000² + 3500²) = √21 250 000 = 4610 VA ห้ามบวก S กับ S"
+               data-explain-en="Add P to P and Q to Q separately: P = 3000 W and Q = 3500 var, then S = √(3000² + 3500²) = √21 250 000 = 4610 VA. Never add S to S.">
+            <div class="q-text"><span class="th">โหลดสองตัวต่อขนานกัน ตัวแรก 2000 W กับ 1500 var ตัวที่สอง 1000 W กับ 2000 var กำลังปรากฏรวมเป็นเท่าใด</span>
+              <span class="en">Two parallel loads: the first 2000 W with 1500 var, the second 1000 W with 2000 var. What is the total apparent power?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>4610 VA</span></label>
+              <label class="opt" data-opt="b"><span>6500 VA</span></label>
+              <label class="opt" data-opt="c"><span>3000 VA</span></label>
+              <label class="opt" data-opt="d"><span>4500 VA</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="c"
+               data-explain-th="ตัวเก็บประจุจ่ายกำลังรีแอคทีฟ ส่วนตัวเหนี่ยวนำใช้กำลังรีแอคทีฟ ทั้งสองจึงหักล้างกันได้ ซึ่งเป็นหลักการของการแก้ตัวประกอบกำลังทั้งหมด"
+               data-explain-en="A capacitor supplies reactive power while an inductor consumes it, so the two cancel — the whole principle of power-factor correction.">
+            <div class="q-text"><span class="th">ในแง่ของกำลังรีแอคทีฟ ตัวเก็บประจุทำหน้าที่อย่างไร</span>
+              <span class="en">In terms of reactive power, what does a capacitor do?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span class="th">ใช้กำลังรีแอคทีฟเช่นเดียวกับตัวเหนี่ยวนำ</span><span class="en">consumes it, just as an inductor does</span></label>
+              <label class="opt" data-opt="b"><span class="th">เปลี่ยนกำลังรีแอคทีฟเป็นกำลังจริง</span><span class="en">converts it into real power</span></label>
+              <label class="opt" data-opt="c"><span class="th">จ่ายกำลังรีแอคทีฟ จึงหักล้างกับตัวเหนี่ยวนำได้</span><span class="en">supplies it, and so cancels an inductor's</span></label>
+              <label class="opt" data-opt="d"><span class="th">ไม่เกี่ยวข้องกับกำลังรีแอคทีฟเลย</span><span class="en">has nothing to do with reactive power</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="b"
+               data-explain-th="พิกัดหม้อแปลงเป็น kVA เพราะข้อจำกัดคือความร้อนจากกระแสและการอิ่มตัวของแกน จึงจ่ายได้เพียง P = S × pf = 100 × 0.8 = 80 kW"
+               data-explain-en="A transformer is rated in kVA because its limits are current heating and core saturation, so it can deliver only P = S × pf = 100 × 0.8 = 80 kW.">
+            <div class="q-text"><span class="th">หม้อแปลงพิกัด 100 kVA จ่ายโหลดที่มีตัวประกอบกำลัง 0.8 ได้กำลังจริงสูงสุดเท่าใด</span>
+              <span class="en">What is the most real power a 100 kVA transformer can deliver to a load at power factor 0.8?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>100 kW</span></label>
+              <label class="opt" data-opt="b"><span>80 kW</span></label>
+              <label class="opt" data-opt="c"><span>125 kW</span></label>
+              <label class="opt" data-opt="d"><span>60 kW</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="d"
+               data-explain-th="ตัวเก็บประจุลด Q จึงลด S และลดกระแส แต่ P คือกำลังที่โหลดใช้ทำงาน ซึ่งไม่เกี่ยวกับตัวเก็บประจุเลย มอเตอร์ยังสูบน้ำได้เท่าเดิมและกินวัตต์เท่าเดิม"
+               data-explain-en="The capacitor reduces Q and so reduces S and the current, but P is the power the load uses to do its work and has nothing to do with the capacitor: the motor pumps the same water and draws the same watts.">
+            <div class="q-text"><span class="th">เมื่อแก้ตัวประกอบกำลังของมอเตอร์จาก 0.70 เป็น 0.95 กำลังจริง P ที่มอเตอร์กินเปลี่ยนไปอย่างไร</span>
+              <span class="en">When a motor's power factor is corrected from 0.70 to 0.95, what happens to the real power P it draws?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span class="th">ลดลงตามอัตราส่วน 0.70/0.95</span><span class="en">falls in the ratio 0.70/0.95</span></label>
+              <label class="opt" data-opt="b"><span class="th">เพิ่มขึ้นตามอัตราส่วน 0.95/0.70</span><span class="en">rises in the ratio 0.95/0.70</span></label>
+              <label class="opt" data-opt="c"><span class="th">ลดลงประมาณ 27 % เท่ากับกระแส</span><span class="en">falls about 27 %, like the current</span></label>
+              <label class="opt" data-opt="d"><span class="th">ไม่เปลี่ยนเลย</span><span class="en">it does not change at all</span></label>
+            </div>
+          </div>
+
+          <div class="q" data-answer="a"
+               data-explain-th="กำลังสูญเสียในสายเป็น I²R กระแสลดจาก 10 A เหลือ 7 A จึงเหลือ (7/10)² = 0.49 เท่า คือลดลง 51 % ไม่ใช่ 30 % ตามอัตราส่วนกระแส"
+               data-explain-en="Cable loss is I²R, so cutting the current from 10 A to 7 A leaves (7/10)² = 0.49 of it — a fall of 51 %, not the 30 % of the current ratio.">
+            <div class="q-text"><span class="th">การแก้ตัวประกอบกำลังทำให้กระแสในสายลดจาก 10 A เหลือ 7 A กำลังสูญเสียในสายลดลงกี่เปอร์เซ็นต์</span>
+              <span class="en">Correction cuts a cable's current from 10 A to 7 A. By what percentage does the loss in the cable fall?</span></div>
+            <div class="opts">
+              <label class="opt" data-opt="a"><span>51 %</span></label>
+              <label class="opt" data-opt="b"><span>30 %</span></label>
+              <label class="opt" data-opt="c"><span>70 %</span></label>
+              <label class="opt" data-opt="d"><span>49 %</span></label>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </section>
+
+    <!-- =============================================== References -->
+    <section id="refs">
+      <h2><span class="num">📚</span><span class="th">เอกสารอ้างอิง</span><span class="en">References</span></h2>
+      <ol class="references">
+        <li>Boylestad, R. L. (2016). <i>Introductory Circuit Analysis</i> (13th ed.), Ch. 19.
+          Pearson.
+          <span class="small muted">— <span class="th">อธิบายสามเหลี่ยมกำลังและการแก้ตัวประกอบกำลังพร้อมตัวอย่างจำนวนมาก</span>
+          <span class="en">the power triangle and correction, with many worked examples</span></span></li>
+        <li>Alexander, C. K., &amp; Sadiku, M. N. O. (2020). <i>Fundamentals of Electric Circuits</i>
+          (7th ed.), Ch. 11. McGraw-Hill.</li>
+        <li>Nilsson, J. W., &amp; Riedel, S. A. (2019). <i>Electric Circuits</i> (11th ed.), Ch. 10.
+          Pearson.</li>
+        <li>Irwin, J. D., &amp; Nelms, R. M. (2021). <i>Basic Engineering Circuit Analysis</i>
+          (12th ed.), Ch. 9. Wiley.</li>
+        <li>Hughes, E., Hiley, J., Brown, K., &amp; Smith, I. M. (2016).
+          <i>Hughes Electrical and Electronic Technology</i> (12th ed.), Ch. 11–12. Pearson.
+          <span class="small muted">— <span class="th">แนวปฏิบัติของการแก้ตัวประกอบกำลังในโรงงานจริง</span>
+          <span class="en">how correction is actually done in industry</span></span></li>
+        <li>Wildi, T. (2014). <i>Electrical Machines, Drives, and Power Systems</i> (6th ed.), Ch. 7.
+          Pearson.
+          <span class="small muted">— <span class="th">เชื่อมกำลังรีแอคทีฟกับพฤติกรรมของมอเตอร์ในบทที่ 12</span>
+          <span class="en">connects reactive power with the motor behaviour of Chapter 12</span></span></li>
+        <li>International Electrotechnical Commission. (2019).
+          <i>IEC 60831-1: Shunt power capacitors of the self-healing type for AC systems</i>. IEC.
+          <span class="small muted">— <span class="th">ข้อกำหนดของตัวเก็บประจุแก้ตัวประกอบกำลัง รวมถึงตัวต้านทานคายประจุ</span>
+          <span class="en">requirements for correction capacitors, discharge resistors included</span></span></li>
+        <li>Institute of Electrical and Electronics Engineers. (2010).
+          <i>IEEE Std 1459: Definitions for the Measurement of Electric Power Quantities Under Sinusoidal,
+          Nonsinusoidal, Balanced, or Unbalanced Conditions</i>. IEEE.
+          <span class="small muted">— <span class="th">นิยามของ S, P และ Q เมื่อรูปคลื่นไม่เป็นไซน์ ซึ่งเป็นกรณีของอินเวอร์เตอร์</span>
+          <span class="en">what S, P and Q mean once the waveform is not a sinusoid, as with inverters</span></span></li>
+        <li><span class="th">การไฟฟ้าส่วนภูมิภาค. (2566). <i>อัตราค่าไฟฟ้าและเงื่อนไขการใช้ไฟฟ้า</i>.
+          นนทบุรี: กฟภ.</span>
+          <span class="en">Provincial Electricity Authority. (2023). <i>Electricity Tariffs and Conditions of
+          Supply</i>. Nonthaburi: PEA.</span>
+          <span class="small muted">— <span class="th">เกณฑ์และค่าปรับตัวประกอบกำลังที่ใช้จริงในประเทศไทย ดูเพิ่มในบทที่ 10</span>
+          <span class="en">Thailand's actual power-factor thresholds and penalties; see also Chapter 10</span></span></li>
+        <li>American Society of Agricultural and Biological Engineers. (2020).
+          <i>ASABE EP342.3: Design and Installation of Electrical Systems for Agricultural Buildings</i>.
+          ASABE.</li>
+      </ol>
+    </section>
+
+    <!-- =============================================== Chapter nav -->
+    <nav class="chapter-nav">
+      <a href="ch06.html">
+        <div class="dir">← <span class="th">บทก่อนหน้า</span><span class="en">Previous</span></div>
+        <div class="ttl"><span class="th">บทที่ 6 · ระบบไฟฟ้ากระแสสลับ</span>
+          <span class="en">Chapter 6 · The Alternating-Current System</span></div>
+      </a>
+      <a href="ch08.html" class="next">
+        <div class="dir"><span class="th">บทถัดไป</span><span class="en">Next chapter</span> →</div>
+        <div class="ttl"><span class="th">บทที่ 8 · ระบบไฟฟ้าสามเฟส</span>
+          <span class="en">Chapter 8 · Three-Phase Systems</span></div>
+      </a>
+    </nav>
+
+  </main>
+</div>
+</div>
+
+<!-- ============================================================= FOOTER -->
+<footer class="site-foot">
+  <div class="container">
+    <div class="foot-bottom">
+      <span>2026 Prepared by <b>Jedsada Saijai</b></span>
+      <span><span class="th">บทที่ 7 — กำลังไฟฟ้ากระแสสลับ</span>
+        <span class="en">Chapter 7 — Alternating-Current Power</span></span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/quiz.js"></script>
+</body>
+</html>
