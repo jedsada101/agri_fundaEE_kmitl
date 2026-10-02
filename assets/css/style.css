@@ -2,25 +2,26 @@
    Fundamental of Electrical Engineering
    Agri-Intelligence Engineering (AIE) — KMITL
 
-   The visual language follows Future London Academy
-   (futurelondonacademy.co.uk): near-black #1a1a1a carrying a single bright
-   yellow #ffe32b, oversized uppercase display headings, very round corners
-   (20 to 32px), wide whitespace and almost no borders. Rebuilt here as one
-   small standalone stylesheet, so the site still opens from a file with no
-   framework and no network.
+   The visual language follows templatemo's Lava landing page: a white
+   ground, Poppins throughout, dark #1e1e1e headings over grey body text,
+   and the template's signature motif, a 145-degree gradient running from
+   orange #f4813f into coral #f1556a, with amber #fba70b pill buttons in
+   upper case that turn coral on hover. Rebuilt here as one small standalone
+   stylesheet, so the site still opens from a file with no framework and no
+   network.
 
    Two deliberate departures from that reference, both forced by what this
    site has to carry:
 
    1. Thai has no upper case, so `text-transform: uppercase` is applied to
-      the English spans alone. Setting it on a heading would leave the Thai
-      untouched and the two languages looking unrelated.
+      the English spans alone. Setting it on a button or a heading would
+      leave the Thai untouched and the two languages looking unrelated.
 
-   2. The yellow is a surface, never a text colour on white: #ffe32b on white
-      is about 1.5:1, far under the 4.5:1 that body text needs. It carries
-      dark text on top of it instead. For the same reason the figures keep
-      their own orange, blue and green linework, which stays legible as a
-      thin line where yellow would vanish.
+   2. The template's warm accents sit between 2:1 and 3.4:1 on white, under
+      the 4.5:1 that body text needs. They are therefore used as fills
+      carrying white text, while links and small print take a darkened
+      lava orange that does pass. The figures likewise keep their own
+      orange, blue and green linework, which carries meaning of its own.
 
    Copyright (c) 2026 Jedsada Saijai. All rights reserved.
    ========================================================================== */
@@ -28,30 +29,32 @@
 /* ---------------------------------------------------------------- 1. Tokens */
 :root {
   /* Reference palette */
-  --fla-black: #1a1a1a;
-  --fla-black-2: #2c2c2c;
-  --fla-yellow: #ffe32b;
-  --fla-yellow-dark: #e6cb13;
-  --fla-yellow-soft: #fffbe0;
-  --fla-coral: #ff7665;
-  --fla-grey: #e5e5e5;
-  --fla-grey-2: #999999;
+  --lava-dark: #1e1e1e;
+  --lava-dark-2: #191a20;
+  --lava-orange: #f4813f;
+  --lava-coral: #f1556a;
+  --lava-amber: #fba70b;
+  --lava-deep: #bf4518;        /* the orange, darkened until it passes on white */
+  --lava-soft: #fdefe9;
+  --lava-grey: #eeeeee;
+  --lava-grey-2: #7a7a7a;
+  --lava-gradient: linear-gradient(145deg, #f4813f 0%, #f1556a 100%);
 
   /* Semantic */
-  --brand: var(--fla-black);
-  --brand-dark: #000000;
-  --brand-soft: var(--fla-yellow-soft);
-  --accent: var(--fla-yellow);
-  --accent-dark: var(--fla-yellow-dark);
-  --ink: var(--fla-black);
+  --brand: var(--lava-deep);
+  --brand-dark: #9e3712;
+  --brand-soft: var(--lava-soft);
+  --accent: var(--lava-amber);
+  --accent-dark: var(--lava-coral);
+  --ink: var(--lava-dark);
   --ink-2: #4a4a4a;
   --ink-3: #767676;
-  --line: var(--fla-grey);
-  --line-2: #f0f0f0;
+  --line: var(--lava-grey);
+  --line-2: #f5f5f5;
   --bg: #ffffff;
-  --bg-alt: #f7f7f5;
-  --surface-2: #f7f7f5;
-  --bg-dark: var(--fla-black);
+  --bg-alt: #f7f7f7;
+  --surface-2: #f7f7f7;
+  --bg-dark: var(--lava-dark);
 
   --ok: #1f8a4c;
   --ok-soft: #e9f6ee;
@@ -62,23 +65,24 @@
   --info: #2b6cb0;
   --info-soft: #e9f2fb;
 
-  /* Type. Archivo stands in for the reference's proprietary OnyFuture;
-     Anuphan is its Thai counterpart, geometric in the same way. */
-  --font-sans: "Archivo", "Anuphan", "Noto Sans Thai", "Leelawadee UI",
+  /* Type. Poppins is the template's own face; Sarabun is its Thai
+     companion, matching it in weight and roundness. */
+  --font-sans: "Poppins", "Sarabun", "Noto Sans Thai", "Leelawadee UI",
     "Tahoma", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  --font-thai: "Anuphan", "Noto Sans Thai", "Leelawadee UI", "Tahoma",
-    "Archivo", sans-serif;
+  --font-thai: "Sarabun", "Noto Sans Thai", "Leelawadee UI", "Tahoma",
+    "Poppins", sans-serif;
   --font-mono: "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
 
-  /* Shape: round, in the reference's manner */
-  --radius: 16px;
-  --radius-md: 20px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
-  --radius-pill: 999px;
-  --shadow-sm: 0 1px 2px rgba(26, 26, 26, .05), 0 2px 10px rgba(26, 26, 26, .04);
-  --shadow: 0 8px 28px rgba(26, 26, 26, .07);
-  --shadow-lg: 0 22px 56px rgba(26, 26, 26, .12);
+  /* Shape: the template keeps its corners modest, 5 to 10px, and saves
+     the full pill for its buttons */
+  --radius: 6px;
+  --radius-md: 10px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-pill: 25px;
+  --shadow-sm: 0 1px 2px rgba(30, 30, 30, .05), 0 3px 12px rgba(30, 30, 30, .05);
+  --shadow: 0 10px 30px rgba(241, 85, 106, .10);
+  --shadow-lg: 0 22px 56px rgba(30, 30, 30, .13);
 
   --container: 1180px;
   --reading: 820px;
@@ -92,6 +96,8 @@
 .u-caps .en,
 .hero .eyebrow .en,
 .section-head .eyebrow .en { text-transform: uppercase; letter-spacing: .06em; }
+
+::selection { background: var(--lava-coral); color: #fff; }
 
 /* -------------------------------------------------------------- 2. Reset */
 *, *::before, *::after { box-sizing: border-box; }
@@ -124,7 +130,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
 h1, h2, h3, h4, h5 {
   font-weight: 700;
   line-height: 1.22;
-  color: var(--fla-black);
+  color: var(--lava-dark);
   margin: 0 0 .6em;
   letter-spacing: -.018em;
 }
@@ -139,7 +145,7 @@ ul, ol { margin: 0 0 1.2em; padding-left: 1.4em; }
 li { margin-bottom: .45em; }
 li::marker { color: var(--brand); font-weight: 600; }
 ol li::marker { color: var(--ink-3); }
-strong, b { font-weight: 600; color: var(--fla-black); }
+strong, b { font-weight: 600; color: var(--lava-dark); }
 code, kbd, samp {
   font-family: var(--font-mono);
   font-size: .88em;
@@ -199,11 +205,11 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   color: var(--brand);
   margin-bottom: .55rem;
 }
-.hero .eyebrow { color: var(--fla-yellow); }
+.hero .eyebrow { color: #fff; opacity: .9; }
 
 /* ------------------------------------------------------------ 5. Top bar */
 .topbar {
-  background: var(--fla-black);
+  background: var(--lava-dark);
   color: #a8a8a8;
   font-size: .82rem;
   line-height: var(--topbar-h);
@@ -221,7 +227,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 }
 .topbar .sep { color: #4a4a4a; }
 .topbar .right { margin-left: auto; color: #8c8c8c; }
-.topbar b { color: var(--fla-yellow); font-weight: 600; }
+.topbar b { color: var(--lava-amber); font-weight: 600; }
 @media (max-width: 720px) { .topbar { display: none; } }
 
 /* ------------------------------------------------------------ 6. Navbar */
@@ -245,7 +251,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   margin-inline: auto;
   min-height: var(--nav-h);
   padding-inline: 26px;
-  background: var(--fla-black);
+  background: var(--lava-dark);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -265,15 +271,15 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 }
 .brand:hover { text-decoration: none; color: #fff; }
 /* Part of the wordmark is picked out in the accent colour */
-.brand .hi { color: var(--fla-yellow); }
+.brand .hi { color: var(--lava-amber); }
 .brand-mark {
   width: 36px; height: 36px;
   display: grid; place-items: center;
-  background: var(--fla-yellow);
-  color: var(--fla-black);
+  background: var(--lava-gradient);
+  color: #fff;
   border-radius: var(--radius-pill);
   font-size: 1.1rem;
-  box-shadow: 0 4px 14px rgba(255, 227, 43, .40);
+  box-shadow: 0 4px 14px rgba(241, 85, 106, .45);
 }
 .brand small {
   display: block;
@@ -301,8 +307,8 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   font-weight: 400;
   color: #fff;
 }
-.nav-links a:hover { color: var(--fla-yellow); text-decoration: none; }
-.nav-links a.active { color: var(--fla-yellow); }
+.nav-links a:hover { color: var(--lava-amber); text-decoration: none; }
+.nav-links a.active { color: var(--lava-amber); }
 .nav-links .btn { margin-left: 10px; }
 
 .lang-switch {
@@ -323,7 +329,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 }
 .lang-switch button:hover { color: #fff; }
 .lang-switch button[aria-pressed="true"] {
-  background: var(--fla-yellow); color: var(--fla-black); font-weight: 700;
+  background: var(--lava-amber); color: #fff; font-weight: 600;
 }
 
 .nav-toggle {
@@ -340,8 +346,8 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 /* The full wordmark plus the menu needs the whole 1110px bar, so the
    collapsed menu takes over as soon as the container starts to shrink. */
 @media (max-width: 1109px) {
-  .nav { background: var(--fla-black); }
-  .nav.is-stuck { background: var(--fla-black); backdrop-filter: none; }
+  .nav { background: var(--lava-dark); }
+  .nav.is-stuck { background: var(--lava-dark); backdrop-filter: none; }
   .nav-inner { padding-inline: 20px; position: relative; }
   .nav-toggle { display: block; order: 3; }
   .lang-switch { order: 2; margin-left: auto; }
@@ -352,7 +358,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    background: var(--fla-black);
+    background: var(--lava-dark);
     box-shadow: var(--shadow);
     padding: 6px 20px 18px;
     max-height: calc(100vh - var(--nav-h));
@@ -369,8 +375,8 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   position: relative;
   margin-top: calc(-1 * var(--nav-h));
   padding: calc(var(--nav-h) + clamp(48px, 7vw, 104px)) 0 clamp(56px, 7vw, 104px);
-  background: var(--fla-black);
-  color: #ededed;
+  background: var(--lava-gradient);
+  color: #fff;
   overflow: hidden;
 }
 /* Two soft washes lift the flat black hero without needing a photograph */
@@ -379,10 +385,10 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(120% 90% at 86% 8%, rgba(255, 227, 43, .20) 0%,
-                    rgba(255, 227, 43, 0) 58%),
-    radial-gradient(90% 80% at 4% 96%, rgba(255, 118, 101, .12) 0%,
-                    rgba(255, 118, 101, 0) 60%);
+    radial-gradient(110% 86% at 88% 6%, rgba(251, 167, 11, .38) 0%,
+                    rgba(251, 167, 11, 0) 60%),
+    radial-gradient(80% 70% at 2% 98%, rgba(30, 30, 30, .22) 0%,
+                    rgba(30, 30, 30, 0) 62%);
   pointer-events: none;
 }
 .hero > .container { position: relative; z-index: 1; }
@@ -395,25 +401,25 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   letter-spacing: -.022em;
 }
 .hero h1 .en { text-transform: uppercase; }
-.hero p.lead { font-size: 1.1rem; color: #c9c9c9; max-width: 62ch; }
+.hero p.lead { font-size: 1.1rem; color: rgba(255, 255, 255, .92); max-width: 62ch; }
 .hero-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 26px;
   margin-top: 26px;
   font-size: .92rem;
-  color: #a8a8a8;
+  color: rgba(255, 255, 255, .84);
 }
-.hero-meta strong { color: var(--fla-yellow); font-weight: 700; }
+.hero-meta strong { color: #fff; font-weight: 700; }
 
 .breadcrumb {
   font-size: .82rem;
-  color: #8c8c8c;
+  color: rgba(255, 255, 255, .74);
   margin-bottom: 1.1rem;
   letter-spacing: .03em;
 }
-.breadcrumb a { color: #d4d4d4; }
-.breadcrumb a:hover { color: var(--fla-yellow); }
+.breadcrumb a { color: #fff; }
+.breadcrumb a:hover { color: var(--lava-amber); }
 
 /* ----------------------------------------------------------- 8. Buttons */
 .btn {
@@ -433,24 +439,27 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 }
 .btn:hover { text-decoration: none; transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
-/* The reference's signature control: a yellow pill carrying black text. */
+/* The template's signature control: an amber pill in upper case that
+   turns coral on hover. Upper case reaches the English span only. */
 .btn-primary {
-  background: var(--fla-yellow);
-  border-color: var(--fla-yellow);
-  color: var(--fla-black);
-  font-weight: 700;
+  background: var(--lava-amber);
+  border-color: var(--lava-amber);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: .06em;
   box-shadow: none;
 }
+.btn-primary .en { text-transform: uppercase; }
 .btn-primary:hover {
-  background: var(--fla-yellow-dark);
-  border-color: var(--fla-yellow-dark);
-  color: var(--fla-black);
+  background: var(--lava-coral);
+  border-color: var(--lava-coral);
+  color: #fff;
 }
 /* On the dark hero a yellow pill still reads, so only the outline changes. */
-.btn-outline { border-color: var(--fla-black); background: #fff; color: var(--fla-black); font-weight: 600; }
-.btn-outline:hover { background: var(--fla-black); color: #fff; }
+.btn-outline { border-color: var(--lava-orange); background: #fff; color: var(--lava-deep); font-weight: 600; }
+.btn-outline:hover { background: var(--lava-orange); border-color: var(--lava-orange); color: #fff; }
 .btn-ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .55); }
-.btn-ghost:hover { background: #fff; color: var(--fla-black); border-color: #fff; }
+.btn-ghost:hover { background: #fff; color: var(--lava-dark); border-color: #fff; }
 .btn-sm { padding: 8px 17px; font-size: .82rem; border-width: 2px; }
 .btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; }
 .btn-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
@@ -469,7 +478,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 .card-link:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow);
-  border-color: var(--fla-black);
+  border-color: var(--lava-dark);
   text-decoration: none;
 }
 
@@ -477,8 +486,8 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   width: 52px; height: 52px;
   display: grid; place-items: center;
   border-radius: 50%;
-  background: var(--fla-yellow);
-  color: var(--fla-black);
+  background: var(--lava-gradient);
+  color: #fff;
   font-size: 1.4rem;
   margin-bottom: 18px;
 }
@@ -519,7 +528,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   color: var(--ink-2);
   border: 1px solid var(--line);
 }
-.badge-brand { background: var(--fla-yellow); color: var(--fla-black); border-color: transparent; }
+.badge-brand { background: var(--lava-amber); color: #fff; border-color: transparent; }
 .badge-ok { background: var(--ok-soft); color: var(--ok); border-color: #c6e8d5; }
 .badge-info { background: var(--info-soft); color: var(--info); border-color: #cfe1f5; }
 .badge-exam { background: #f1eaff; color: #6b3fd4; border-color: #ddd0fb; }
@@ -607,7 +616,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  color: var(--fla-black);
+  color: var(--lava-dark);
   margin-bottom: .5em;
   font-size: .98rem;
 }
@@ -628,7 +637,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   box-shadow: var(--shadow-sm);
 }
 .example-head {
-  background: var(--fla-black);
+  background: var(--lava-dark);
   color: #fff;
   padding: 11px 20px;
   font-weight: 600;
@@ -677,11 +686,11 @@ th, td {
   vertical-align: top;
 }
 thead th {
-  background: var(--fla-black);
+  background: var(--lava-dark);
   color: #fff;
   font-weight: 500;
   font-size: .88rem;
-  border-color: var(--fla-black-2);
+  border-color: var(--lava-dark-2);
 }
 tbody tr:nth-child(even) { background: var(--bg-alt); }
 tbody tr:hover { background: var(--brand-soft); }
@@ -704,7 +713,7 @@ figcaption {
   color: var(--ink-3);
   line-height: 1.6;
 }
-figcaption b { color: var(--fla-black); }
+figcaption b { color: var(--lava-dark); }
 
 /* Animated figures — the state lives in data-anim on the box, so the button
    label and the animation are driven entirely by CSS.                      */
@@ -771,7 +780,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
 .quiz-head {
   padding: 20px 24px;
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(120deg, var(--fla-black), var(--fla-black-2));
+  background: linear-gradient(120deg, var(--lava-dark), var(--lava-dark-2));
   color: #fff;
 }
 .quiz-head h3 { color: #fff; margin: 0 0 .25em; font-size: 1.16rem; }
@@ -832,11 +841,11 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
   padding-top: 18px;
   border-top: 1px solid var(--line);
 }
-.quiz-score { font-weight: 600; color: var(--fla-black); }
+.quiz-score { font-weight: 600; color: var(--lava-dark); }
 .quiz-score .pct {
   display: inline-block;
-  background: var(--fla-yellow);
-  color: var(--fla-black);
+  background: var(--lava-gradient);
+  color: #fff;
   border-radius: var(--radius-pill);
   padding: 2px 12px;
   font-size: 1.2rem;
@@ -875,7 +884,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
   width: 27px; height: 27px;
   display: grid; place-items: center;
   border-radius: 50%;
-  background: var(--fla-black);
+  background: var(--lava-dark);
   color: #fff;
   font-size: .82rem;
   font-weight: 600;
@@ -941,12 +950,12 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
   font-size: .74rem; font-weight: 600; letter-spacing: 1.4px;
   text-transform: uppercase; color: var(--ink-3);
 }
-.chapter-nav .ttl { font-weight: 600; color: var(--fla-black); }
+.chapter-nav .ttl { font-weight: 600; color: var(--lava-dark); }
 .chapter-nav .next { text-align: right; }
 
 /* Near-black footer, continuing the hero */
 .site-foot {
-  background: var(--fla-black);
+  background: var(--lava-dark);
   color: #9a9a9a;
   padding: clamp(48px, 6vw, 96px) 0 34px;
   font-size: .88rem;
@@ -960,9 +969,9 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
   margin-bottom: 1.4rem;
 }
 .site-foot .foot-logo { color: #ffffff; font-weight: 800; }
-.site-foot .foot-logo .hi { color: var(--fla-yellow); }
+.site-foot .foot-logo .hi { color: var(--lava-amber); }
 .site-foot a { color: #b6b6b6; }
-.site-foot a:hover { color: var(--fla-yellow); text-decoration: none; }
+.site-foot a:hover { color: var(--lava-amber); text-decoration: none; }
 .site-foot ul { list-style: none; padding: 0; }
 .site-foot li { margin-bottom: .45em; }
 .site-foot code { background: #2e2e2e; border-color: #3d3d3d; color: #ddd; }
