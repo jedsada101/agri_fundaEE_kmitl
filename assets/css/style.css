@@ -2,68 +2,96 @@
    Fundamental of Electrical Engineering
    Agri-Intelligence Engineering (AIE) — KMITL
 
-   Stylesheet modelled on the "Fox" template (ThemeWagon / Colorlib):
-   its palette (#fd5f00 on #0d1128), Poppins type, the dark navbar floating in
-   a 1110px container over a washed hero, uppercase section sub-headings, and
-   the near-black footer — rebuilt here as a small standalone stylesheet so the
-   site keeps working offline with no Bootstrap or jQuery.
+   The visual language follows Future London Academy
+   (futurelondonacademy.co.uk): near-black #1a1a1a carrying a single bright
+   yellow #ffe32b, oversized uppercase display headings, very round corners
+   (20 to 32px), wide whitespace and almost no borders. Rebuilt here as one
+   small standalone stylesheet, so the site still opens from a file with no
+   framework and no network.
+
+   Two deliberate departures from that reference, both forced by what this
+   site has to carry:
+
+   1. Thai has no upper case, so `text-transform: uppercase` is applied to
+      the English spans alone. Setting it on a heading would leave the Thai
+      untouched and the two languages looking unrelated.
+
+   2. The yellow is a surface, never a text colour on white: #ffe32b on white
+      is about 1.5:1, far under the 4.5:1 that body text needs. It carries
+      dark text on top of it instead. For the same reason the figures keep
+      their own orange, blue and green linework, which stays legible as a
+      thin line where yellow would vanish.
 
    Copyright (c) 2026 Jedsada Saijai. All rights reserved.
    ========================================================================== */
 
 /* ---------------------------------------------------------------- 1. Tokens */
 :root {
-  /* Fox palette */
-  --fox-orange: #fd5f00;
-  --fox-orange-2: #fda638;
-  --fox-orange-dark: #d94f00;
-  --fox-orange-soft: #fff1e8;
-  --fox-navy: #0d1128;
-  --fox-navy-soft: #1a2040;
-  --fox-footer: #232323;
-  --fox-wash: #f1453d;
+  /* Reference palette */
+  --fla-black: #1a1a1a;
+  --fla-black-2: #2c2c2c;
+  --fla-yellow: #ffe32b;
+  --fla-yellow-dark: #e6cb13;
+  --fla-yellow-soft: #fffbe0;
+  --fla-coral: #ff7665;
+  --fla-grey: #e5e5e5;
+  --fla-grey-2: #999999;
 
   /* Semantic */
-  --brand: var(--fox-orange);
-  --brand-dark: var(--fox-orange-dark);
-  --brand-soft: var(--fox-orange-soft);
-  --ink: #212529;
-  --ink-2: #4a515a;
-  --ink-3: #6c757d;
-  --line: #e4e7ec;
-  --line-2: #eef1f5;
+  --brand: var(--fla-black);
+  --brand-dark: #000000;
+  --brand-soft: var(--fla-yellow-soft);
+  --accent: var(--fla-yellow);
+  --accent-dark: var(--fla-yellow-dark);
+  --ink: var(--fla-black);
+  --ink-2: #4a4a4a;
+  --ink-3: #767676;
+  --line: var(--fla-grey);
+  --line-2: #f0f0f0;
   --bg: #ffffff;
-  --bg-alt: #f7f8fa;
-  --bg-dark: var(--fox-navy);
+  --bg-alt: #f7f7f5;
+  --surface-2: #f7f7f5;
+  --bg-dark: var(--fla-black);
 
-  --ok: #1f9d55;
-  --ok-soft: #e8f6ee;
-  --warn: #d98300;
-  --warn-soft: #fff6e5;
-  --bad: #d64545;
-  --bad-soft: #fdecec;
+  --ok: #1f8a4c;
+  --ok-soft: #e9f6ee;
+  --warn: #b06f00;
+  --warn-soft: #fff6e0;
+  --bad: #d14836;
+  --bad-soft: #fdeceb;
   --info: #2b6cb0;
   --info-soft: #e9f2fb;
 
-  /* Type */
-  --font-sans: "Poppins", "Sarabun", "Noto Sans Thai", "Leelawadee UI",
+  /* Type. Archivo stands in for the reference's proprietary OnyFuture;
+     Anuphan is its Thai counterpart, geometric in the same way. */
+  --font-sans: "Archivo", "Anuphan", "Noto Sans Thai", "Leelawadee UI",
     "Tahoma", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  --font-thai: "Sarabun", "Noto Sans Thai", "Leelawadee UI", "Tahoma",
-    "Poppins", sans-serif;
+  --font-thai: "Anuphan", "Noto Sans Thai", "Leelawadee UI", "Tahoma",
+    "Archivo", sans-serif;
   --font-mono: "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
 
-  /* Shape */
-  --radius: 10px;
-  --radius-lg: 16px;
-  --shadow-sm: 0 1px 2px rgba(13, 17, 40, .06), 0 2px 8px rgba(13, 17, 40, .05);
-  --shadow: 0 6px 24px rgba(13, 17, 40, .08);
-  --shadow-lg: 0 18px 48px rgba(13, 17, 40, .14);
+  /* Shape: round, in the reference's manner */
+  --radius: 16px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(26, 26, 26, .05), 0 2px 10px rgba(26, 26, 26, .04);
+  --shadow: 0 8px 28px rgba(26, 26, 26, .07);
+  --shadow-lg: 0 22px 56px rgba(26, 26, 26, .12);
 
-  --container: 1110px;     /* Fox's container width */
+  --container: 1180px;
   --reading: 820px;
   --nav-h: 76px;
   --topbar-h: 40px;
 }
+
+/* Uppercase belongs to the Latin text only: Thai has no upper case, and
+   asking for it would silently leave the two languages out of step. */
+.en { text-transform: inherit; }
+.u-caps .en,
+.hero .eyebrow .en,
+.section-head .eyebrow .en { text-transform: uppercase; letter-spacing: .06em; }
 
 /* -------------------------------------------------------------- 2. Reset */
 *, *::before, *::after { box-sizing: border-box; }
@@ -90,23 +118,28 @@ a:hover { color: var(--brand-dark); text-decoration: underline; }
 hr { border: 0; border-top: 1px solid var(--line); margin: 2.5rem 0; }
 [hidden] { display: none !important; }
 
+/* The reference sets its headings large, tight and heavy, well apart from
+   the body text. Thai keeps a slightly looser line, needing room for its
+   vowels and tone marks above and below. */
 h1, h2, h3, h4, h5 {
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--fox-navy);
+  font-weight: 700;
+  line-height: 1.22;
+  color: var(--fla-black);
   margin: 0 0 .6em;
-  letter-spacing: -.01em;
+  letter-spacing: -.018em;
 }
-h1 { font-size: clamp(2rem, 1.3rem + 2.8vw, 3.2rem); font-weight: 700; }
-h2 { font-size: clamp(1.55rem, 1.2rem + 1.6vw, 2.35rem); margin-top: 2.2em; }
-h3 { font-size: clamp(1.18rem, 1.05rem + .6vw, 1.45rem); margin-top: 1.8em; }
+html[lang="th"] h1, html[lang="th"] h2,
+html[lang="th"] h3, html[lang="th"] h4 { line-height: 1.38; letter-spacing: 0; }
+h1 { font-size: clamp(2.1rem, 1.3rem + 3.1vw, 3.5rem); font-weight: 800; }
+h2 { font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.5rem); margin-top: 2.4em; font-weight: 800; }
+h3 { font-size: clamp(1.2rem, 1.05rem + .7vw, 1.55rem); margin-top: 1.9em; }
 h4 { font-size: 1.08rem; margin-top: 1.5em; }
 p { margin: 0 0 1.1em; }
 ul, ol { margin: 0 0 1.2em; padding-left: 1.4em; }
 li { margin-bottom: .45em; }
 li::marker { color: var(--brand); font-weight: 600; }
 ol li::marker { color: var(--ink-3); }
-strong, b { font-weight: 600; color: var(--fox-navy); }
+strong, b { font-weight: 600; color: var(--fla-black); }
 code, kbd, samp {
   font-family: var(--font-mono);
   font-size: .88em;
@@ -138,7 +171,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 }
 .container-reading { max-width: var(--reading); }
 
-/* Fox uses 7em of section padding */
+/* Wide section padding: the reference gives its content a lot of air */
 .section { padding: clamp(54px, 7vw, 112px) 0; }
 .section-alt { background: var(--bg-alt); }
 .section-dark { background: var(--bg-dark); color: #cfd4e4; }
@@ -149,13 +182,14 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 .grid-3 { grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); }
 .grid-4 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
 
-/* Fox's .heading-section */
+/* Section heading block */
 .section-head { max-width: 760px; margin-bottom: 3rem; }
 .section-head.center { margin-inline: auto; text-align: center; }
 .section-head h2 { margin-top: 0; font-weight: 600; }
 .section-head p { color: var(--ink-3); font-size: 1.04rem; margin-bottom: 0; }
 
-/* Fox's .subheading — uppercase, widely tracked, above the heading */
+/* The small tracked label above a heading. Uppercase reaches the Latin
+   text only, Thai having no upper case to apply it to. */
 .eyebrow {
   display: block;
   font-size: .92rem;
@@ -165,12 +199,12 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   color: var(--brand);
   margin-bottom: .55rem;
 }
-.hero .eyebrow { color: var(--fox-orange-2); }
+.hero .eyebrow { color: var(--fla-yellow); }
 
 /* ------------------------------------------------------------ 5. Top bar */
 .topbar {
-  background: var(--fox-navy-soft);
-  color: #b9c0d8;
+  background: var(--fla-black);
+  color: #a8a8a8;
   font-size: .82rem;
   line-height: var(--topbar-h);
   height: var(--topbar-h);
@@ -185,14 +219,15 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   gap: 8px 26px;
   flex-wrap: wrap;
 }
-.topbar .sep { color: #4b5480; }
-.topbar .right { margin-left: auto; color: #8f98bb; }
-.topbar b { color: #fff; font-weight: 500; }
+.topbar .sep { color: #4a4a4a; }
+.topbar .right { margin-left: auto; color: #8c8c8c; }
+.topbar b { color: var(--fla-yellow); font-weight: 600; }
 @media (max-width: 720px) { .topbar { display: none; } }
 
 /* ------------------------------------------------------------ 6. Navbar */
-/* Fox floats a dark 1110px bar over the hero; the outer strip is transparent
-   until the page is scrolled, when it fills in so content cannot show through */
+/* A dark bar floats over the hero on a rounded block, as the reference
+   does; the outer strip stays transparent until the page is scrolled,
+   when it fills in so that content cannot show through behind it. */
 .nav {
   position: sticky;
   top: 0;
@@ -210,7 +245,8 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   margin-inline: auto;
   min-height: var(--nav-h);
   padding-inline: 26px;
-  background: var(--fox-navy);
+  background: var(--fla-black);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   gap: 18px;
@@ -228,16 +264,16 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   white-space: nowrap;
 }
 .brand:hover { text-decoration: none; color: #fff; }
-/* Fox picks out part of its wordmark in the accent colour */
-.brand .hi { color: var(--fox-orange-2); }
+/* Part of the wordmark is picked out in the accent colour */
+.brand .hi { color: var(--fla-yellow); }
 .brand-mark {
   width: 36px; height: 36px;
   display: grid; place-items: center;
-  background: var(--brand);
-  color: #fff;
-  border-radius: 9px;
+  background: var(--fla-yellow);
+  color: var(--fla-black);
+  border-radius: var(--radius-pill);
   font-size: 1.1rem;
-  box-shadow: 0 4px 14px rgba(253, 95, 0, .45);
+  box-shadow: 0 4px 14px rgba(255, 227, 43, .40);
 }
 .brand small {
   display: block;
@@ -265,14 +301,14 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   font-weight: 400;
   color: #fff;
 }
-.nav-links a:hover { color: var(--fox-orange-2); text-decoration: none; }
-.nav-links a.active { color: var(--fox-orange-2); }
+.nav-links a:hover { color: var(--fla-yellow); text-decoration: none; }
+.nav-links a.active { color: var(--fla-yellow); }
 .nav-links .btn { margin-left: 10px; }
 
 .lang-switch {
   display: inline-flex;
   border: 1px solid rgba(255, 255, 255, .28);
-  border-radius: 6px;
+  border-radius: var(--radius-pill);
   overflow: hidden;
 }
 .lang-switch button {
@@ -286,13 +322,15 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   color: #c7cde4;
 }
 .lang-switch button:hover { color: #fff; }
-.lang-switch button[aria-pressed="true"] { background: var(--brand); color: #fff; }
+.lang-switch button[aria-pressed="true"] {
+  background: var(--fla-yellow); color: var(--fla-black); font-weight: 700;
+}
 
 .nav-toggle {
   display: none;
   border: 1px solid rgba(255, 255, 255, .28);
   background: transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-pill);
   width: 42px; height: 40px;
   cursor: pointer;
   font-size: 1.15rem;
@@ -302,8 +340,8 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 /* The full wordmark plus the menu needs the whole 1110px bar, so the
    collapsed menu takes over as soon as the container starts to shrink. */
 @media (max-width: 1109px) {
-  .nav { background: var(--fox-navy); }
-  .nav.is-stuck { background: var(--fox-navy); backdrop-filter: none; }
+  .nav { background: var(--fla-black); }
+  .nav.is-stuck { background: var(--fla-black); backdrop-filter: none; }
   .nav-inner { padding-inline: 20px; position: relative; }
   .nav-toggle { display: block; order: 3; }
   .lang-switch { order: 2; margin-left: auto; }
@@ -314,7 +352,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    background: var(--fox-navy);
+    background: var(--fla-black);
     box-shadow: var(--shadow);
     padding: 6px 20px 18px;
     max-height: calc(100vh - var(--nav-h));
@@ -331,41 +369,51 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   position: relative;
   margin-top: calc(-1 * var(--nav-h));
   padding: calc(var(--nav-h) + clamp(48px, 7vw, 104px)) 0 clamp(56px, 7vw, 104px);
-  background: #0d1128 url("../img/hero-bg.svg") center / cover no-repeat;
-  color: #e8ebf5;
+  background: var(--fla-black);
+  color: #ededed;
   overflow: hidden;
 }
-/* Fox washes its hero photo with a flat colour overlay */
+/* Two soft washes lift the flat black hero without needing a photograph */
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(115deg, rgba(253, 95, 0, .30) 0%, rgba(241, 69, 61, .16) 38%,
-                    rgba(13, 17, 40, .62) 74%, rgba(13, 17, 40, .86) 100%);
+    radial-gradient(120% 90% at 86% 8%, rgba(255, 227, 43, .20) 0%,
+                    rgba(255, 227, 43, 0) 58%),
+    radial-gradient(90% 80% at 4% 96%, rgba(255, 118, 101, .12) 0%,
+                    rgba(255, 118, 101, 0) 60%);
   pointer-events: none;
 }
 .hero > .container { position: relative; z-index: 1; }
-.hero h1 { color: #fff; margin-bottom: .45em; text-shadow: 0 2px 24px rgba(0, 0, 0, .35); }
-.hero p.lead { font-size: 1.12rem; color: #d3d8ea; max-width: 60ch; }
+.hero h1 {
+  color: #fff;
+  margin-bottom: .42em;
+  font-size: clamp(2.1rem, 5.4vw, 3.9rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.022em;
+}
+.hero h1 .en { text-transform: uppercase; }
+.hero p.lead { font-size: 1.1rem; color: #c9c9c9; max-width: 62ch; }
 .hero-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 26px;
   margin-top: 26px;
   font-size: .92rem;
-  color: #b0b8d4;
+  color: #a8a8a8;
 }
-.hero-meta strong { color: #fff; font-weight: 600; }
+.hero-meta strong { color: var(--fla-yellow); font-weight: 700; }
 
 .breadcrumb {
-  font-size: .84rem;
-  color: #9aa3c4;
+  font-size: .82rem;
+  color: #8c8c8c;
   margin-bottom: 1.1rem;
-  letter-spacing: .02em;
+  letter-spacing: .03em;
 }
-.breadcrumb a { color: #d3d8ea; }
-.breadcrumb a:hover { color: var(--fox-orange-2); }
+.breadcrumb a { color: #d4d4d4; }
+.breadcrumb a:hover { color: var(--fla-yellow); }
 
 /* ----------------------------------------------------------- 8. Buttons */
 .btn {
@@ -373,7 +421,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   align-items: center;
   gap: 8px;
   border: 2px solid transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-pill);
   padding: 11px 24px;
   font: inherit;
   font-size: .9rem;
@@ -385,18 +433,25 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 }
 .btn:hover { text-decoration: none; transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
+/* The reference's signature control: a yellow pill carrying black text. */
 .btn-primary {
-  background: var(--brand);
-  border-color: var(--brand);
-  color: #fff;
-  box-shadow: 0 6px 18px rgba(253, 95, 0, .32);
+  background: var(--fla-yellow);
+  border-color: var(--fla-yellow);
+  color: var(--fla-black);
+  font-weight: 700;
+  box-shadow: none;
 }
-.btn-primary:hover { background: var(--brand-dark); border-color: var(--brand-dark); color: #fff; }
-.btn-outline { border-color: var(--line); background: #fff; color: var(--fox-navy); }
-.btn-outline:hover { border-color: var(--brand); color: var(--brand); }
+.btn-primary:hover {
+  background: var(--fla-yellow-dark);
+  border-color: var(--fla-yellow-dark);
+  color: var(--fla-black);
+}
+/* On the dark hero a yellow pill still reads, so only the outline changes. */
+.btn-outline { border-color: var(--fla-black); background: #fff; color: var(--fla-black); font-weight: 600; }
+.btn-outline:hover { background: var(--fla-black); color: #fff; }
 .btn-ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, .55); }
-.btn-ghost:hover { background: #fff; color: var(--fox-navy); border-color: #fff; }
-.btn-sm { padding: 7px 15px; font-size: .82rem; border-width: 1px; }
+.btn-ghost:hover { background: #fff; color: var(--fla-black); border-color: #fff; }
+.btn-sm { padding: 8px 17px; font-size: .82rem; border-width: 2px; }
 .btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; }
 .btn-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
 
@@ -404,21 +459,26 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 .card {
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  padding: 26px;
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-xl);
+  padding: 30px;
+  box-shadow: none;
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 .card h3 { margin-top: 0; }
 .card > :last-child { margin-bottom: 0; }
-.card-link:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: #f3d4c0; text-decoration: none; }
+.card-link:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--fla-black);
+  text-decoration: none;
+}
 
 .icon-box {
   width: 52px; height: 52px;
   display: grid; place-items: center;
   border-radius: 50%;
-  background: var(--brand-soft);
-  color: var(--brand);
+  background: var(--fla-yellow);
+  color: var(--fla-black);
   font-size: 1.4rem;
   margin-bottom: 18px;
 }
@@ -428,10 +488,10 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
 .ch-card .ch-week {
   font-size: .72rem;
   font-weight: 600;
-  letter-spacing: 1.6px;
+  letter-spacing: 1.8px;
   text-transform: uppercase;
-  color: var(--brand);
-  margin-bottom: 8px;
+  color: var(--ink-3);
+  margin-bottom: 10px;
 }
 .ch-card h3 { font-size: 1.1rem; margin-bottom: .5rem; }
 .ch-card p { color: var(--ink-3); font-size: .92rem; flex-grow: 1; }
@@ -459,7 +519,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   color: var(--ink-2);
   border: 1px solid var(--line);
 }
-.badge-brand { background: var(--brand-soft); color: var(--brand-dark); border-color: #ffd9c2; }
+.badge-brand { background: var(--fla-yellow); color: var(--fla-black); border-color: transparent; }
 .badge-ok { background: var(--ok-soft); color: var(--ok); border-color: #c6e8d5; }
 .badge-info { background: var(--info-soft); color: var(--info); border-color: #cfe1f5; }
 .badge-exam { background: #f1eaff; color: #6b3fd4; border-color: #ddd0fb; }
@@ -547,7 +607,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  color: var(--fox-navy);
+  color: var(--fla-black);
   margin-bottom: .5em;
   font-size: .98rem;
 }
@@ -568,7 +628,7 @@ span.th, span.en, em.th, em.en, strong.th, strong.en { display: inline; }
   box-shadow: var(--shadow-sm);
 }
 .example-head {
-  background: var(--fox-navy);
+  background: var(--fla-black);
   color: #fff;
   padding: 11px 20px;
   font-weight: 600;
@@ -617,11 +677,11 @@ th, td {
   vertical-align: top;
 }
 thead th {
-  background: var(--fox-navy);
+  background: var(--fla-black);
   color: #fff;
   font-weight: 500;
   font-size: .88rem;
-  border-color: var(--fox-navy-soft);
+  border-color: var(--fla-black-2);
 }
 tbody tr:nth-child(even) { background: var(--bg-alt); }
 tbody tr:hover { background: var(--brand-soft); }
@@ -644,7 +704,7 @@ figcaption {
   color: var(--ink-3);
   line-height: 1.6;
 }
-figcaption b { color: var(--fox-navy); }
+figcaption b { color: var(--fla-black); }
 
 /* Animated figures — the state lives in data-anim on the box, so the button
    label and the animation are driven entirely by CSS.                      */
@@ -711,7 +771,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
 .quiz-head {
   padding: 20px 24px;
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(120deg, var(--fox-navy), var(--fox-navy-soft));
+  background: linear-gradient(120deg, var(--fla-black), var(--fla-black-2));
   color: #fff;
 }
 .quiz-head h3 { color: #fff; margin: 0 0 .25em; font-size: 1.16rem; }
@@ -772,8 +832,16 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
   padding-top: 18px;
   border-top: 1px solid var(--line);
 }
-.quiz-score { font-weight: 600; color: var(--fox-navy); }
-.quiz-score .pct { color: var(--brand); font-size: 1.2rem; font-weight: 700; }
+.quiz-score { font-weight: 600; color: var(--fla-black); }
+.quiz-score .pct {
+  display: inline-block;
+  background: var(--fla-yellow);
+  color: var(--fla-black);
+  border-radius: var(--radius-pill);
+  padding: 2px 12px;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
 
 /* --------------------------------------------------- 16. Activity & Lab */
 .activity, .lab {
@@ -807,7 +875,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
   width: 27px; height: 27px;
   display: grid; place-items: center;
   border-radius: 50%;
-  background: var(--fox-navy);
+  background: var(--fla-black);
   color: #fff;
   font-size: .82rem;
   font-weight: 600;
@@ -817,7 +885,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
 .datasheet input[type="text"], .datasheet input[type="number"] {
   width: 100%;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: var(--radius-pill);
   padding: 6px 9px;
   font: inherit;
   font-size: .9rem;
@@ -873,12 +941,12 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
   font-size: .74rem; font-weight: 600; letter-spacing: 1.4px;
   text-transform: uppercase; color: var(--ink-3);
 }
-.chapter-nav .ttl { font-weight: 600; color: var(--fox-navy); }
+.chapter-nav .ttl { font-weight: 600; color: var(--fla-black); }
 .chapter-nav .next { text-align: right; }
 
-/* Fox's near-black footer */
+/* Near-black footer, continuing the hero */
 .site-foot {
-  background: var(--fox-footer);
+  background: var(--fla-black);
   color: #9a9a9a;
   padding: clamp(48px, 6vw, 96px) 0 34px;
   font-size: .88rem;
@@ -891,10 +959,10 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
   letter-spacing: 0;
   margin-bottom: 1.4rem;
 }
-.site-foot .foot-logo { color: var(--brand); font-weight: 700; }
-.site-foot .foot-logo .hi { color: var(--fox-orange-2); }
+.site-foot .foot-logo { color: #ffffff; font-weight: 800; }
+.site-foot .foot-logo .hi { color: var(--fla-yellow); }
 .site-foot a { color: #b6b6b6; }
-.site-foot a:hover { color: var(--brand); text-decoration: none; }
+.site-foot a:hover { color: var(--fla-yellow); text-decoration: none; }
 .site-foot ul { list-style: none; padding: 0; }
 .site-foot li { margin-bottom: .45em; }
 .site-foot code { background: #2e2e2e; border-color: #3d3d3d; color: #ddd; }
