@@ -1,0 +1,31 @@
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ---------------------------------------------------------------------------
+# Not published yet.
+#
+# Chapters 1 to 11 are written and complete on the author's machine, but are
+# withheld from GitHub for the time being. Their cards still appear on the
+# index page, locked, so that the shape of the course remains visible.
+# ---------------------------------------------------------------------------
+chapters/ch01.html
+chapters/ch02.html
+chapters/ch03.html
+chapters/ch04.html
+chapters/ch05.html
+chapters/ch06.html
+chapters/ch07.html
+chapters/ch08.html
+chapters/ch09.html
+chapters/ch10.html
+chapters/ch11.html
+
+# ---------------------------------------------------------------------------
+# Laboratory worksheets.
+#
+# The lab of each published chapter lives here as a standalone page and is
+# handed out in class rather than published. Each chapter keeps a short
+# notice in place of its lab section.
+# ---------------------------------------------------------------------------
+labs/
