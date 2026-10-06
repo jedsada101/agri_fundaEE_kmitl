@@ -1062,6 +1062,12 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
   object-fit: cover;
   background: #eef1f5;
 }
+.photo.is-diagram img {
+  height: 270px;
+  object-fit: contain;
+  background: #fff;
+  padding: 10px 8px;
+}
 .photo-body { padding: 10px 12px 12px; }
 .photo-ttl {
   font-size: .92rem;
