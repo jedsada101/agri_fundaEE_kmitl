@@ -1044,7 +1044,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 4
    separated from the person it belongs to. */
 .photo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
 }
 .photo {

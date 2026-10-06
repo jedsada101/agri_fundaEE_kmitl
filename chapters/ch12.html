@@ -77,9 +77,22 @@
   @keyframes fee-march  { to { stroke-dashoffset: -32; } }
   @keyframes fee-blink  { 0%, 40% { opacity: 1; } 55%, 100% { opacity: .15; } }
 
-  /* 12.1 — the loop turns once in 6 s; the force arrows turn with it. */
-  .tq-fig .rotor { transform-origin: 470px 150px; animation: fee-rotate 6s linear infinite; }
-  .tq-fig .cur   { stroke-dasharray: 8 8; animation: fee-march 1.2s linear infinite; }
+  /* 12.2 — the loop does NOT turn. The forces are fixed in space, because
+     B and I are, so away from the upright position they have a tangential
+     component that pulls the loop back. It therefore rocks about that
+     position like a pendulum and settles there: the whole reason a
+     commutator is needed. The arrows sit in a counter-rotated group so
+     that they keep their direction in space while the loop swings. */
+  .tq-fig .rocker, .tq-fig .fixdir, .tq-fig .cur { transform-box: view-box; }
+  @keyframes tq-rock   { from { transform: rotate(-52deg); } to { transform: rotate(52deg); } }
+  @keyframes tq-unrock { from { transform: rotate(52deg); }  to { transform: rotate(-52deg); } }
+  .tq-fig .rocker { transform-origin: 470px 160px;
+                    animation: tq-rock 3.6s ease-in-out infinite alternate; }
+  .tq-fig .f-top  { transform-origin: 470px 98px;
+                    animation: tq-unrock 3.6s ease-in-out infinite alternate; }
+  .tq-fig .f-bot  { transform-origin: 470px 222px;
+                    animation: tq-unrock 3.6s ease-in-out infinite alternate; }
+  .tq-fig .cur    { stroke-dasharray: 8 8; animation: fee-march 1.2s linear infinite; }
 
   /* 12.2 — the armature and its commutator turn together, 6 s a turn.
      The brushes stay put, which is the whole point of the picture.    */
@@ -211,11 +224,12 @@
     <ul>
       <li><a href="#objectives"><span class="th">จุดประสงค์การเรียนรู้</span><span class="en">Objectives</span></a></li>
       <li><a href="#pretest"><span class="th">แบบทดสอบก่อนเรียน</span><span class="en">Pre-test</span></a></li>
-      <li><a href="#s1"><span class="th">12.1 แรง แรงบิด และแรงเคลื่อนย้อนกลับ</span><span class="en">12.1 Force, torque and back-e.m.f.</span></a></li>
+      <li><a href="#s1"><span class="th">12.1 แรงและแรงบิดบนขดลวด</span><span class="en">12.1 Force and torque on a loop</span></a></li>
       <li><a href="#s2"><span class="th">12.2 มอเตอร์กระแสตรง</span><span class="en">12.2 The DC motor</span></a></li>
       <li class="toc-sub"><a href="#s2-1"><span class="th">12.2.1 คอมมิวเตเตอร์และแปรงถ่าน</span><span class="en">12.2.1 Commutator and brushes</span></a></li>
       <li class="toc-sub"><a href="#s2-2"><span class="th">12.2.2 สามประเภทและการใช้งาน</span><span class="en">12.2.2 Three types and their uses</span></a></li>
-      <li class="toc-sub"><a href="#s2-3"><span class="th">12.2.3 สมการของมอเตอร์แม่เหล็กถาวร</span><span class="en">12.2.3 The permanent-magnet equations</span></a></li>
+      <li class="toc-sub"><a href="#s2-3"><span class="th">12.2.3 แรงเคลื่อนย้อนกลับ</span><span class="en">12.2.3 Back-e.m.f.</span></a></li>
+      <li class="toc-sub"><a href="#s2-4"><span class="th">12.2.4 สมการของมอเตอร์แม่เหล็กถาวร</span><span class="en">12.2.4 The permanent-magnet equations</span></a></li>
       <li><a href="#s3"><span class="th">12.3 มอเตอร์เหนี่ยวนำสามเฟส</span><span class="en">12.3 Three-phase induction motor</span></a></li>
       <li><a href="#s4"><span class="th">12.4 มอเตอร์เหนี่ยวนำหนึ่งเฟส</span><span class="en">12.4 Single-phase induction motor</span></a></li>
       <li><a href="#s5"><span class="th">12.5 มอเตอร์บรัชเลสดีซี</span><span class="en">12.5 Brushless DC motor</span></a></li>
@@ -365,8 +379,8 @@
 
     <!-- =============================================== 12.1 -->
     <section id="s1">
-      <h2><span class="num">12.1</span><span class="th">แรง แรงบิด และแรงเคลื่อนย้อนกลับ</span>
-          <span class="en">Force, torque and back-e.m.f.</span></h2>
+      <h2><span class="num">12.1</span><span class="th">แรงและแรงบิดบนขดลวด</span>
+          <span class="en">Force and torque on a loop</span></h2>
 
       <p><span class="th">ในบทที่ 6 เราเห็นแล้วว่าการหมุนขดลวดในสนามแม่เหล็กทำให้เกิดแรงดันไฟฟ้า
         นั่นคือเครื่องกำเนิดไฟฟ้า บทนี้เดินย้อนทางเดิม — <b>ป้อนกระแสเข้าไปในขดลวดที่วางอยู่ในสนามแม่เหล็ก
@@ -391,6 +405,194 @@
         \(L\) = length of conductor lying in the field (m), for a conductor square across the
         field</span></p>
 
+      <p><span class="th">สมการนี้บอก <b>ขนาด</b> ของแรง แต่ไม่ได้บอก <b>ทิศ</b>
+        ซึ่งเป็นสิ่งที่ต้องหาให้ถูกเสมอ เพราะทิศของแรงเป็นตัวกำหนดว่ามอเตอร์จะหมุนไปทางใด
+        รูปเต็มของสมการนี้คือผลคูณเชิงเวกเตอร์ \(\mathbf{F} = I\,\mathbf{L} \times \mathbf{B}\)
+        ซึ่งหาทิศได้ด้วย <b>กฎมือขวา</b></span>
+        <span class="en">That equation gives the <b>size</b> of the force but says nothing of its
+        <b>direction</b>, which must always be got right, since it decides which way the motor turns.
+        Written in full the equation is a vector product,
+        \(\mathbf{F} = I\,\mathbf{L} \times \mathbf{B}\), whose direction follows from the
+        <b>right-hand rule</b>.</span></p>
+
+      <figure>
+        <div class="figure-box">
+          <svg class="sys-fig" viewBox="0 0 680 390" role="img" width="680"
+               aria-label="One set of three perpendicular directions for force, current and field, with a right hand placed on them, a table giving the finger for each rule, and the rule applied to a real conductor">
+            <defs>
+              <marker id="rh-f" viewBox="0 0 10 10" refX="9" refY="5"
+                      markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#2f855a"/>
+              </marker>
+              <marker id="rh-b" viewBox="0 0 10 10" refX="9" refY="5"
+                      markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#2b6cb0"/>
+              </marker>
+            </defs>
+
+            <text class="cap" x="160" y="26" text-anchor="middle">
+              <tspan class="th">ก. สามทิศที่ตั้งฉากกันเสมอ</tspan>
+              <tspan class="en">a. three directions, always perpendicular</tspan></text>
+
+            <!-- the triad: F up, B right, I out of the page -->
+            <circle cx="160" cy="200" r="78" fill="#fafbfc" stroke="#e4e7ec" stroke-width="1.5"/>
+
+            <line x1="160" y1="200" x2="160" y2="134" stroke="#2f855a" stroke-width="3.5"
+                  marker-end="url(#rh-f)"/>
+            <text class="cap" x="160" y="126" text-anchor="middle">F</text>
+            <text class="sub th" x="160" y="112" text-anchor="middle">แรง</text>
+            <text class="sub en" x="160" y="112" text-anchor="middle">force</text>
+
+            <line x1="160" y1="200" x2="226" y2="200" stroke="#2b6cb0" stroke-width="3.5"
+                  marker-end="url(#rh-b)"/>
+            <text class="cap" x="238" y="204" text-anchor="start">B</text>
+            <text class="sub th" x="238" y="220" text-anchor="start">สนาม</text>
+            <text class="sub en" x="238" y="220" text-anchor="start">field</text>
+
+            <circle cx="160" cy="200" r="15" fill="#fff" stroke="#fd5f00" stroke-width="3"/>
+            <circle cx="160" cy="200" r="5" fill="#fd5f00"/>
+            <text class="cap" x="130" y="246" text-anchor="middle">I</text>
+            <text class="sub th" x="124" y="262" text-anchor="middle">กระแส พุ่งออกหาผู้อ่าน</text>
+            <text class="sub en" x="124" y="262" text-anchor="middle">current, out of the page</text>
+
+            <text class="sub th" x="160" y="298" text-anchor="middle">ทั้งสามตั้งฉากกันเสมอ ไม่ว่าจะวางมุมใด</text>
+            <text class="sub en" x="160" y="298" text-anchor="middle">all three are mutually square, at any orientation</text>
+
+            <!-- a right hand laid on them -->
+            <g transform="translate(96,142) scale(0.82)">
+              <path d="M22,84 q-13,0 -13,14 l0,42 q0,20 21,20 l44,0 q21,0 21,-20 l0,-38
+                       q0,-14 -14,-16 z"
+                    fill="#fdebd8" stroke="#c08a52" stroke-width="2"/>
+              <path d="M22,84 l0,-52 q0,-10 10,-10 q10,0 10,10 l0,52 z"
+                    fill="#fdebd8" stroke="#c08a52" stroke-width="2"/>
+              <path d="M81,74 l30,0 q10,0 10,10 q0,10 -10,10 l-30,0 z"
+                    fill="#fdebd8" stroke="#c08a52" stroke-width="2"/>
+              <ellipse cx="56" cy="104" rx="15" ry="13" fill="#f6d8bd"
+                       stroke="#c08a52" stroke-width="2"/>
+              <circle cx="56" cy="104" r="4.5" fill="#c08a52"/>
+            </g>
+            <text class="sub th" x="62" y="188" text-anchor="end">มือขวา</text>
+            <text class="sub en" x="62" y="188" text-anchor="end">right hand</text>
+
+            <line x1="286" y1="46" x2="286" y2="344" stroke="#dfe3e8" stroke-width="1.5"/>
+
+            <!-- the finger table -->
+            <text class="cap" x="400" y="26" text-anchor="middle">
+              <tspan class="th">ข. นิ้วไหนคืออะไร</tspan><tspan class="en">b. which finger is which</tspan></text>
+
+            <rect x="306" y="46" width="188" height="30" fill="#2c3038"/>
+            <text class="np-hd" x="316" y="66" font-size="11.5" font-weight="700" fill="#fff">
+              <tspan class="th">ทิศ</tspan><tspan class="en">direction</tspan></text>
+            <text class="np-hd" x="378" y="66" font-size="11.5" font-weight="700" fill="#fff">
+              <tspan class="th">มือขวา</tspan><tspan class="en">right hand</tspan></text>
+            <text class="np-hd" x="444" y="66" font-size="11.5" font-weight="700" fill="#fff">
+              <tspan class="th">เฟลมมิงซ้าย</tspan><tspan class="en">Fleming left</tspan></text>
+
+            <rect x="306" y="76" width="188" height="32" fill="#f7f7f7"/>
+            <text class="lbl" x="316" y="97" fill="#2f855a">F</text>
+            <text class="sub th" x="378" y="97">หัวแม่มือ</text>
+            <text class="sub en" x="378" y="97">thumb</text>
+            <text class="sub th" x="444" y="97">หัวแม่มือ</text>
+            <text class="sub en" x="444" y="97">thumb</text>
+
+            <rect x="306" y="108" width="188" height="32" fill="#fff"/>
+            <text class="lbl" x="316" y="129" fill="#fd5f00">I</text>
+            <text class="sub th" x="378" y="129">นิ้วชี้</text>
+            <text class="sub en" x="378" y="129">index</text>
+            <text class="sub th" x="444" y="129">นิ้วกลาง</text>
+            <text class="sub en" x="444" y="129">second</text>
+
+            <rect x="306" y="140" width="188" height="32" fill="#f7f7f7"/>
+            <text class="lbl" x="316" y="161" fill="#2b6cb0">B</text>
+            <text class="sub th" x="378" y="161">นิ้วกลาง</text>
+            <text class="sub en" x="378" y="161">middle</text>
+            <text class="sub th" x="444" y="161">นิ้วชี้</text>
+            <text class="sub en" x="444" y="161">first</text>
+            <rect x="306" y="46" width="188" height="126" fill="none"
+                  stroke="#b8bec6" stroke-width="1.5"/>
+
+            <text class="cap" x="306" y="198" text-anchor="start">F = I L × B</text>
+            <text class="sub th" x="306" y="222" text-anchor="start">สองกฎนี้อธิบายเรขาคณิตเดียวกัน</text>
+            <text class="sub en" x="306" y="222" text-anchor="start">the two rules describe one geometry</text>
+            <text class="sub th" x="306" y="238" text-anchor="start">จึงให้คำตอบตรงกันเสมอ</text>
+            <text class="sub en" x="306" y="238" text-anchor="start">so they always agree</text>
+            <text class="sub th" x="306" y="262" text-anchor="start">เลือกใช้กฎใดก็ได้ แต่ต้องใช้ให้สม่ำเสมอ</text>
+            <text class="sub en" x="306" y="262" text-anchor="start">use either, but use it consistently</text>
+            <text class="sub th" x="306" y="278" text-anchor="start">เพราะสลับมือเมื่อใด ได้ทิศตรงข้ามทันที</text>
+            <text class="sub en" x="306" y="278" text-anchor="start">swapping hands reverses the answer</text>
+
+            <text class="cap" x="306" y="310" text-anchor="start">
+              <tspan class="th">ข้อควรจำ</tspan><tspan class="en">worth remembering</tspan></text>
+            <text class="sub th" x="306" y="328" text-anchor="start">กลับกระแสอย่างเดียว หรือกลับแม่เหล็กอย่างเดียว</text>
+            <text class="sub en" x="306" y="328" text-anchor="start">reverse the current alone, or the magnets alone,</text>
+            <text class="sub th" x="306" y="344" text-anchor="start">แรงกลับทิศ · กลับทั้งคู่ แรงเท่าเดิม</text>
+            <text class="sub en" x="306" y="344" text-anchor="start">and F reverses; reverse both and it does not</text>
+
+            <line x1="516" y1="46" x2="516" y2="344" stroke="#dfe3e8" stroke-width="1.5"/>
+
+            <!-- applied to the real conductor -->
+            <text class="cap" x="600" y="26" text-anchor="middle">
+              <tspan class="th">ค. ใช้กับตัวนำจริง</tspan><tspan class="en">c. applied</tspan></text>
+
+            <rect class="pole-n" x="536" y="92" width="28" height="118" rx="4"/>
+            <text class="lbl" x="550" y="156" text-anchor="middle" fill="#2b6cb0">N</text>
+            <rect class="pole-s" x="638" y="92" width="28" height="118" rx="4"/>
+            <text class="lbl" x="652" y="156" text-anchor="middle" fill="#d64545">S</text>
+            <line x1="566" y1="118" x2="636" y2="118" stroke="#2b6cb0" stroke-width="2"
+                  marker-end="url(#rh-b)"/>
+            <line x1="566" y1="184" x2="636" y2="184" stroke="#2b6cb0" stroke-width="2"
+                  marker-end="url(#rh-b)"/>
+            <text class="sub" x="601" y="112" text-anchor="middle" fill="#2b6cb0">B</text>
+
+            <circle class="copper" cx="601" cy="151" r="15"/>
+            <circle cx="601" cy="151" r="4.5" fill="#0d1128"/>
+            <line x1="601" y1="133" x2="601" y2="78" stroke="#2f855a" stroke-width="3.5"
+                  marker-end="url(#rh-f)"/>
+            <text class="cap" x="614" y="82" text-anchor="start">F</text>
+
+            <text class="sub th" x="601" y="234" text-anchor="middle">กระแสพุ่งออกจากหน้ากระดาษ</text>
+            <text class="sub en" x="601" y="234" text-anchor="middle">current out of the page</text>
+            <text class="sub th" x="601" y="250" text-anchor="middle">สนามชี้ไปทางขวา</text>
+            <text class="sub en" x="601" y="250" text-anchor="middle">the field points right</text>
+            <text class="cap" x="601" y="274" text-anchor="middle">
+              <tspan class="th">แรงจึงชี้ขึ้น</tspan><tspan class="en">so the force is upward</tspan></text>
+            <text class="sub th" x="601" y="300" text-anchor="middle">ลองทำตามด้วยมือจริงดู</text>
+            <text class="sub en" x="601" y="300" text-anchor="middle">try it with your own hand</text>
+            <text class="sub th" x="601" y="316" text-anchor="middle">แล้วเทียบกับรูปที่ 12.2</text>
+            <text class="sub en" x="601" y="316" text-anchor="middle">then compare Figure 12.2</text>
+          </svg>
+        </div>
+        <figcaption><b><span class="th">รูปที่ 12.1</span><span class="en">Figure 12.1</span></b>
+          <span class="th"> วิธีหาทิศของแรงที่กระทำกับตัวนำที่มีกระแสไหลอยู่ในสนามแม่เหล็ก
+            <b>ก.</b> ทิศทั้งสาม — แรง \(F\) กระแส \(I\) และสนาม \(B\) — <b>ตั้งฉากกันเสมอ</b>
+            ในรูปนี้กระแสพุ่งออกจากหน้ากระดาษมาหาผู้อ่าน สนามชี้ไปทางขวา แรงจึงชี้ขึ้น
+            มือขวาที่วางทาบอยู่แสดงให้เห็นว่านิ้วแต่ละนิ้วเรียงไปตามทิศใด
+            <b>ข.</b> ตารางเทียบว่านิ้วไหนคืออะไรในแต่ละกฎ
+            กฎมือขวาใช้นิ้วชี้แทนกระแสและนิ้วกลางแทนสนาม
+            ส่วนกฎมือซ้ายของเฟลมมิงสลับสองนิ้วนี้กัน แต่เปลี่ยนไปใช้มือซ้ายแทน
+            <b>ผลลัพธ์จึงตรงกันเสมอ เพราะทั้งสองกฎอธิบายเรขาคณิตชุดเดียวกัน</b>
+            จะใช้กฎใดก็ได้ แต่ต้องใช้ให้สม่ำเสมอ เพราะถ้าสลับมือเมื่อใดจะได้ทิศตรงข้ามทันที
+            <b>ค.</b> นำมาใช้กับตัวนำจริงที่วางอยู่ระหว่างขั้วแม่เหล็ก ได้แรงชี้ขึ้นตามที่คาด
+            ข้อสังเกตที่ควรจำไว้คือ <b>ถ้ากลับทิศกระแสอย่างเดียว หรือกลับขั้วแม่เหล็กอย่างเดียว
+            แรงจะกลับทิศ แต่ถ้ากลับทั้งสองอย่างพร้อมกัน แรงจะยังมีทิศเดิม</b>
+            ซึ่งเป็นเหตุผลที่มอเตอร์กระแสตรงแบบอนุกรมนำไปใช้กับไฟฟ้ากระแสสลับได้
+            และจะได้พบอีกครั้งในหัวข้อ 12.2.2</span>
+          <span class="en"> How to find the direction of the force on a current-carrying conductor in a
+            magnetic field. <b>a.</b> The three directions — force \(F\), current \(I\) and field
+            \(B\) — are <b>always mutually perpendicular</b>. Here the current comes out of the page
+            towards the reader and the field points to the right, so the force is upward; the right hand
+            laid over them shows which finger runs along which direction. <b>b.</b> A table of which
+            finger means what under each rule. The right-hand rule takes the index finger for current
+            and the middle finger for field; Fleming's left-hand rule swaps those two over but changes
+            to the left hand. <b>The answers therefore always agree, because both rules describe one and
+            the same geometry.</b> Use whichever you prefer, but use it consistently: swap hands and the
+            direction reverses at once. <b>c.</b> Applied to a real conductor between two poles, giving
+            the upward force expected. The point worth remembering is that <b>reversing the current
+            alone, or the magnets alone, reverses the force — but reversing both leaves it
+            unchanged</b>, which is why a series DC motor will run on alternating current, as
+            Section 12.2.2 will show.</span></figcaption>
+      </figure>
+
       <p><span class="th">ถ้านำตัวนำสองเส้นที่มีกระแสไหลสวนทางกันมาวางห่างจากแกนหมุนเป็นระยะ \(r\)
         แรงทั้งสองจะผลักไปคนละทิศ เกิดเป็น <b>คู่ควบ</b> ที่หมุนขดลวด
         แรงบิดของขดลวดหนึ่งรอบจึงเป็น</span>
@@ -404,12 +606,13 @@
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
-          <svg class="sys-fig tq-fig" viewBox="0 0 680 300" role="img" width="680"
-               aria-label="Left, the force on one current-carrying conductor in a magnetic field; right, two such conductors forming a couple that turns a loop">
+          <svg class="sys-fig tq-fig" viewBox="0 0 680 360" role="img" width="680"
+               aria-label="A loop carrying current between two magnet poles: the forces are fixed in space, so the loop rocks about the upright position and settles there instead of turning">
             <defs>
               <marker id="t1-f" viewBox="0 0 10 10" refX="9" refY="5"
                       markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -419,157 +622,128 @@
                       markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 z" fill="#2b6cb0"/>
               </marker>
-              <marker id="t1-i" viewBox="0 0 10 10" refX="9" refY="5"
-                      markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <marker id="t1-t" viewBox="0 0 10 10" refX="9" refY="5"
+                      markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 z" fill="#fd5f00"/>
               </marker>
             </defs>
 
-            <!-- left: one conductor -->
-            <text class="lbl" x="170" y="28" text-anchor="middle">F = B I L</text>
-            <rect class="pole-n" x="40" y="60" width="44" height="150" rx="5"/>
-            <text class="lbl" x="62" y="142" text-anchor="middle" fill="#2b6cb0">N</text>
-            <rect class="pole-s" x="256" y="60" width="44" height="150" rx="5"/>
-            <text class="lbl" x="278" y="142" text-anchor="middle" fill="#d64545">S</text>
-            <line class="flux" x1="86" y1="90" x2="254" y2="90" marker-end="url(#t1-b)"/>
-            <line class="flux" x1="86" y1="180" x2="254" y2="180" marker-end="url(#t1-b)"/>
-            <text class="sub" x="170" y="82" text-anchor="middle">B</text>
+            <text class="lbl" x="170" y="24" text-anchor="middle">
+              <tspan class="th">แรงบิดมากที่สุด</tspan><tspan class="en">torque at its greatest</tspan></text>
+            <text class="lbl" x="470" y="24" text-anchor="middle">
+              <tspan class="th">แรงบิดเป็นศูนย์ · ขดลวดหยุดตรงนี้</tspan>
+              <tspan class="en">zero torque: the loop stops here</tspan></text>
 
-            <!-- conductor, current out of the page -->
-            <circle class="copper" cx="170" cy="135" r="15"/>
-            <circle cx="170" cy="135" r="4" fill="#0d1128"/>
-            <text class="sub th" x="170" y="212" text-anchor="middle">กระแส I พุ่งออกจากหน้ากระดาษ</text>
-            <text class="sub en" x="170" y="212" text-anchor="middle">current I out of the page</text>
+            <!-- ===== left: the position of greatest torque, drawn still ===== -->
+            <rect class="pole-n" x="44" y="76" width="34" height="146" rx="5"/>
+            <text class="lbl" x="61" y="155" text-anchor="middle" fill="#2b6cb0">N</text>
+            <rect class="pole-s" x="262" y="76" width="34" height="146" rx="5"/>
+            <text class="lbl" x="279" y="155" text-anchor="middle" fill="#d64545">S</text>
+            <line x1="80" y1="104" x2="260" y2="104" stroke="#2b6cb0" stroke-width="1.5"
+                  marker-end="url(#t1-b)"/>
+            <line x1="80" y1="194" x2="260" y2="194" stroke="#2b6cb0" stroke-width="1.5"
+                  marker-end="url(#t1-b)"/>
+            <text class="sub" x="170" y="98" text-anchor="middle" fill="#2b6cb0">B</text>
 
-            <!-- force -->
-            <line class="force" x1="170" y1="118" x2="170" y2="66" marker-end="url(#t1-f)"/>
-            <text class="lbl" x="184" y="80" fill="#2f855a">F</text>
-            <text class="sub th" x="170" y="238" text-anchor="middle">แรงตั้งฉากกับทั้งกระแสและสนาม</text>
-            <text class="sub en" x="170" y="238" text-anchor="middle">force square to both current and field</text>
-            <text class="sub th" x="170" y="254" text-anchor="middle">หาทิศได้ด้วยกฎมือซ้ายของเฟลมมิง</text>
-            <text class="sub en" x="170" y="254" text-anchor="middle">direction by Fleming's left-hand rule</text>
-
-            <!-- right: the loop -->
-            <text class="lbl" x="470" y="28" text-anchor="middle">T = 2 B I L r</text>
-            <rect class="pole-n" x="340" y="75" width="40" height="150" rx="5"/>
-            <text class="lbl" x="360" y="157" text-anchor="middle" fill="#2b6cb0">N</text>
-            <rect class="pole-s" x="560" y="75" width="40" height="150" rx="5"/>
-            <text class="lbl" x="580" y="157" text-anchor="middle" fill="#d64545">S</text>
-            <line class="flux" x1="382" y1="105" x2="558" y2="105" marker-end="url(#t1-b)"/>
-            <line class="flux" x1="382" y1="195" x2="558" y2="195" marker-end="url(#t1-b)"/>
-
-            <circle cx="470" cy="150" r="62" fill="none" stroke="#c9ced6"
+            <circle cx="170" cy="149" r="58" fill="none" stroke="#c9ced6"
                     stroke-width="1.5" stroke-dasharray="4 4"/>
-            <circle class="shaft" cx="470" cy="150" r="9"/>
+            <line x1="112" y1="149" x2="228" y2="149" stroke="#0d1128" stroke-width="2"/>
+            <circle class="shaft" cx="170" cy="149" r="8"/>
 
-            <g class="rotor">
-              <line x1="470" y1="88" x2="470" y2="212" stroke="#0d1128" stroke-width="2"/>
-              <!-- top conductor: current out, force to the left -->
-              <circle class="copper" cx="470" cy="88" r="13"/>
-              <circle cx="470" cy="88" r="3.5" fill="#0d1128"/>
-              <line class="force" x1="452" y1="88" x2="410" y2="88" marker-end="url(#t1-f)"/>
-              <!-- bottom conductor: current in, force to the right -->
-              <circle class="copper" cx="470" cy="212" r="13"/>
-              <line x1="463" y1="205" x2="477" y2="219" stroke="#0d1128" stroke-width="2"/>
-              <line x1="477" y1="205" x2="463" y2="219" stroke="#0d1128" stroke-width="2"/>
-              <line class="force" x1="488" y1="212" x2="530" y2="212" marker-end="url(#t1-f)"/>
-              <text class="sub" x="470" y="146" text-anchor="middle">r</text>
+            <circle class="copper" cx="228" cy="149" r="13"/>
+            <circle cx="228" cy="149" r="4" fill="#0d1128"/>
+            <line x1="228" y1="133" x2="228" y2="96" stroke="#2f855a" stroke-width="3"
+                  marker-end="url(#t1-f)"/>
+            <circle class="copper" cx="112" cy="149" r="13"/>
+            <line x1="107" y1="144" x2="117" y2="154" stroke="#0d1128" stroke-width="2"/>
+            <line x1="117" y1="144" x2="107" y2="154" stroke="#0d1128" stroke-width="2"/>
+            <line x1="112" y1="165" x2="112" y2="202" stroke="#2f855a" stroke-width="3"
+                  marker-end="url(#t1-f)"/>
+
+            <path d="M138,112 a44,44 0 0 1 64,0" fill="none" stroke="#fd5f00"
+                  stroke-width="2.5" marker-end="url(#t1-t)"/>
+            <text class="cap" x="170" y="126" text-anchor="middle">T</text>
+
+            <text class="sub th" x="170" y="236" text-anchor="middle">แรงตั้งฉากกับแขน จึงให้แรงบิดเต็มที่</text>
+            <text class="sub en" x="170" y="236" text-anchor="middle">the forces are square to the arm, so the torque is full</text>
+
+            <!-- ===== right: the animated rocking loop ===== -->
+            <rect class="pole-n" x="344" y="86" width="34" height="146" rx="5"/>
+            <text class="lbl" x="361" y="165" text-anchor="middle" fill="#2b6cb0">N</text>
+            <rect class="pole-s" x="562" y="86" width="34" height="146" rx="5"/>
+            <text class="lbl" x="579" y="165" text-anchor="middle" fill="#d64545">S</text>
+            <line x1="380" y1="114" x2="560" y2="114" stroke="#2b6cb0" stroke-width="1.5"
+                  marker-end="url(#t1-b)"/>
+            <line x1="380" y1="204" x2="560" y2="204" stroke="#2b6cb0" stroke-width="1.5"
+                  marker-end="url(#t1-b)"/>
+            <text class="sub" x="470" y="108" text-anchor="middle" fill="#2b6cb0">B</text>
+
+            <circle cx="470" cy="160" r="62" fill="none" stroke="#c9ced6"
+                    stroke-width="1.5" stroke-dasharray="4 4"/>
+
+            <g class="rocker">
+              <line x1="470" y1="98" x2="470" y2="222" stroke="#0d1128" stroke-width="2"/>
+              <circle class="copper" cx="470" cy="98" r="13"/>
+              <circle cx="470" cy="98" r="4" fill="#0d1128"/>
+              <g class="fixdir f-top">
+                <line x1="470" y1="82" x2="470" y2="46" stroke="#2f855a" stroke-width="3"
+                      marker-end="url(#t1-f)"/>
+              </g>
+              <circle class="copper" cx="470" cy="222" r="13"/>
+              <line x1="465" y1="217" x2="475" y2="227" stroke="#0d1128" stroke-width="2"/>
+              <line x1="475" y1="217" x2="465" y2="227" stroke="#0d1128" stroke-width="2"/>
+              <g class="fixdir f-bot">
+                <line x1="470" y1="238" x2="470" y2="274" stroke="#2f855a" stroke-width="3"
+                      marker-end="url(#t1-f)"/>
+              </g>
             </g>
+            <circle class="shaft" cx="470" cy="160" r="8"/>
 
-            <text class="sub th" x="470" y="248" text-anchor="middle">แรงสองแรงสวนทางกันที่ระยะ r จากแกน จึงเกิดคู่ควบ</text>
-            <text class="sub en" x="470" y="248" text-anchor="middle">two opposed forces at radius r make a couple</text>
-            <text class="sub th" x="470" y="266" text-anchor="middle">แต่พอหมุนไปครึ่งรอบ แรงจะกลับทิศและหยุดขดลวดไว้</text>
-            <text class="sub en" x="470" y="266" text-anchor="middle">but after half a turn the forces reverse and stall it</text>
-            <text class="cap" x="470" y="286" text-anchor="middle">→ 12.2</text>
+            <text class="sub th" x="470" y="296" text-anchor="middle">แรงชี้ขึ้นและลงเสมอ เพราะ B และ I ไม่เปลี่ยนทิศ</text>
+            <text class="sub en" x="470" y="296" text-anchor="middle">the forces always point up and down, B and I being fixed</text>
+            <text class="sub th" x="470" y="312" text-anchor="middle">พอขดลวดเอียงไป แรงจึงดึงมันกลับมาที่เดิม</text>
+            <text class="sub en" x="470" y="312" text-anchor="middle">so whenever the loop leans, they pull it back upright</text>
+
+            <text class="cap" x="340" y="340" text-anchor="start">
+              <tspan class="th">ผลคือขดลวดแกว่งไปมาแล้วนิ่ง ไม่หมุนต่อ — มอเตอร์สั่นอยู่กับที่</tspan>
+              <tspan class="en">the loop therefore rocks and settles: the motor shudders in place</tspan></text>
+            <text class="sub th" x="30" y="340" text-anchor="start">เทียบกับเข็มทิศที่หันเข้าหาทิศเหนือ</text>
+            <text class="sub en" x="30" y="340" text-anchor="start">like a compass needle finding north</text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.1</span><span class="en">Figure 12.1</span></b>
-          <span class="th"> ทางซ้ายคือแรงที่เกิดกับตัวนำเส้นเดียวที่มีกระแสไหลอยู่ในสนามแม่เหล็ก
-            ทางขวาคือตัวนำสองเส้นที่กระแสไหลสวนทางกัน จึงเกิดแรงสวนทางกันที่ระยะ \(r\) จากแกน
-            กลายเป็นคู่ควบที่หมุนขดลวด <b>ข้อสังเกตที่สำคัญที่สุดของรูปนี้คือ
-            เมื่อขดลวดหมุนไปได้ครึ่งรอบ ตัวนำที่เคยอยู่บนจะไปอยู่ล่าง แรงที่กระทำจึงกลับทิศ
-            และหยุดขดลวดไว้แทนที่จะหมุนต่อ</b> ปัญหานี้เองที่คอมมิวเตเตอร์ในหัวข้อถัดไปมาแก้</span>
-          <span class="en"> On the left, the force on a single current-carrying conductor in a magnetic
-            field. On the right, two conductors carrying current opposite ways, so the forces oppose at a
-            radius \(r\) and make a couple that turns the loop. <b>The most important thing to notice is
-            that after half a revolution the conductor that was on top is underneath, so the forces
-            reverse and stall the loop instead of driving it on.</b> That is exactly the problem the
-            commutator of the next section solves.</span></figcaption>
+        <figcaption><b><span class="th">รูปที่ 12.2</span><span class="en">Figure 12.2</span></b>
+          <span class="th"> ขดลวดหนึ่งรอบที่มีกระแสไหล วางอยู่ระหว่างขั้วแม่เหล็กสองขั้ว
+            <b>ทางซ้าย</b> คือจังหวะที่แรงบิดมากที่สุด ตัวนำอยู่ด้านข้างทั้งคู่
+            แรงที่กระทำจึงตั้งฉากกับแขนหมุนพอดี ขดลวดถูกผลักให้หมุนเต็มแรง
+            <b>ทางขวา</b> คือสิ่งที่เกิดขึ้นจริงเมื่อปล่อยให้ขดลวดหมุนต่อไป
+            <b>จุดสำคัญที่สุดของรูปนี้คือ ทิศของแรงไม่เปลี่ยนตามการหมุนของขดลวดเลย</b>
+            เพราะแรงถูกกำหนดโดยสนาม B กับกระแส I ซึ่งทั้งคู่มีทิศคงที่ในอวกาศ
+            ตัวนำที่กระแสพุ่งออกจะถูกผลักขึ้นเสมอ และตัวนำที่กระแสพุ่งเข้าจะถูกผลักลงเสมอ
+            ไม่ว่ามันจะหมุนไปอยู่ตำแหน่งใดก็ตาม
+            ผลที่ตามมาคือ เมื่อขดลวดหมุนพ้นแนวตั้งไป แรงคู่เดิมจะกลายเป็นแรงที่ <b>ดึงมันกลับ</b>
+            แทนที่จะผลักให้หมุนต่อ แรงบิดจึงกลับทิศ
+            <b>ขดลวดจึงแกว่งกลับไปกลับมารอบแนวตั้งแล้วหยุดนิ่งอยู่ตรงนั้น เหมือนเข็มทิศที่หันเข้าหาทิศเหนือ
+            มอเตอร์สั่นอยู่กับที่ ไม่หมุนไปทางเดียว</b>
+            นี่คือปัญหาที่ต้องแก้ให้ได้ก่อนจะมีมอเตอร์ใช้
+            และทางแก้คือต้องหาวิธีกลับทิศกระแสในขดลวดทุกครั้งที่มันผ่านแนวตั้ง
+            ซึ่งก็คือหน้าที่ของ <b>คอมมิวเตเตอร์และแปรงถ่าน</b> ในหัวข้อถัดไป</span>
+          <span class="en"> A single current-carrying loop between two magnet poles. <b>On the left</b>
+            is the instant of greatest torque, with both conductors at the sides so that the forces act
+            square to the arm and drive the loop round with their full effect. <b>On the right</b> is
+            what actually happens if the loop is allowed to carry on. <b>The most important thing in
+            this figure is that the direction of the force does not turn with the loop.</b> The force is
+            set by the field B and the current I, and both of those are fixed in space: the conductor
+            carrying current out of the page is pushed up, and the one carrying it in is pushed down,
+            wherever they happen to have turned to. The consequence is that once the loop passes the
+            upright position, that same pair of forces <b>pulls it back</b> instead of driving it on.
+            The torque reverses. <b>The loop therefore rocks to and fro about the upright position and
+            comes to rest there, like a compass needle finding north. The motor shudders in place; it
+            does not turn.</b> This is the problem that has to be solved before there can be a motor at
+            all, and the solution is to find a way of reversing the current in the loop every time it
+            passes the upright — which is exactly the work of the <b>commutator and brushes</b> of the
+            next section.</span></figcaption>
       </figure>
 
-      <h3><span class="th">12.1.1 แรงเคลื่อนย้อนกลับ: สิ่งที่ทำให้มอเตอร์ไม่ไหม้</span>
-          <span class="en">12.1.1 Back-e.m.f.: what keeps a motor from burning</span></h3>
-
-      <p><span class="th">เมื่อขดลวดเริ่มหมุน มันก็กลายเป็นเครื่องกำเนิดไฟฟ้าไปด้วยในตัว
-        ขดลวดที่หมุนในสนามแม่เหล็กย่อมเหนี่ยวนำแรงดันขึ้นตามกฎของฟาราเดย์
-        และตามกฎของเลนซ์ แรงดันนี้ต้อง <b>ต้าน</b> สิ่งที่ทำให้มันเกิด จึงมีทิศสวนทางกับแรงดันที่ป้อนเข้าไป
-        เราเรียกมันว่า <b>แรงเคลื่อนย้อนกลับ</b></span>
-        <span class="en">As soon as the coil turns it becomes a generator as well. A coil turning in a
-        magnetic field must induce a voltage by Faraday's law, and by Lenz's law that voltage must
-        <b>oppose</b> whatever produced it — so it acts against the applied supply. We call it the
-        <b>back-e.m.f.</b></span></p>
-
-      <div class="equation">
-        \[ E_b = k\,\Phi\,\omega \qquad\text{and}\qquad V = E_b + I_a R_a \]
-      </div>
-      <p class="eq-note"><span class="th">\(E_b\) = แรงเคลื่อนย้อนกลับ (V), \(k\) = ค่าคงตัวของเครื่อง,
-        \(\Phi\) = ฟลักซ์ต่อขั้ว (Wb), \(\omega\) = ความเร็วเชิงมุม (rad/s),
-        \(R_a\) = ความต้านทานอาร์เมเจอร์ (Ω)</span>
-        <span class="en">\(E_b\) = back-e.m.f. (V), \(k\) = a constant of the machine,
-        \(\Phi\) = flux per pole (Wb), \(\omega\) = angular velocity (rad/s),
-        \(R_a\) = armature resistance (Ω)</span></p>
-
-      <p><span class="th">จัดสมการใหม่จะได้กระแสที่อาร์เมเจอร์ดึง</span>
-        <span class="en">Rearranged, this gives the current the armature draws:</span></p>
-
-      <div class="equation">
-        \[ I_a = \frac{V - E_b}{R_a} \]
-      </div>
-
-      <div class="callout callout-key">
-        <div class="callout-title">🔑 <span class="th">แนวคิดสำคัญ</span><span class="en">Key idea</span></div>
-        <p class="mb-0"><span class="th"><b>มอเตอร์ควบคุมกระแสของตัวเองด้วยความเร็วของตัวเอง</b>
-          ขณะเริ่มเดิน \(\omega = 0\) จึงยังไม่มี \(E_b\) เลย กระแสถูกจำกัดด้วย \(R_a\) เพียงอย่างเดียว
-          ซึ่งมักมีค่าไม่ถึงหนึ่งโอห์ม กระแสจึงพุ่งสูงมาก
-          เมื่อมอเตอร์เร่งขึ้น \(E_b\) โตขึ้นตามความเร็ว ผลต่าง \(V - E_b\) จึงเล็กลง
-          กระแสลดลงเองจนเหลือเท่าที่จำเป็นสำหรับแรงบิดที่โหลดต้องการ
-          <b>และถ้าโหลดหนักขึ้น มอเตอร์จะหมุนช้าลงเล็กน้อย \(E_b\) ลดลง กระแสจึงเพิ่มขึ้นเอง</b>
-          โดยไม่มีวงจรควบคุมใด ๆ ทั้งสิ้น นี่คือกลไกป้อนกลับที่สวยงามที่สุดอย่างหนึ่งในวิศวกรรมไฟฟ้า</span>
-          <span class="en"><b>A motor governs its own current with its own speed.</b> At starting
-          \(\omega = 0\), so there is no \(E_b\) at all and only \(R_a\) — often well under an ohm —
-          limits the current, which is why it surges. As the motor accelerates, \(E_b\) grows with speed,
-          the difference \(V - E_b\) shrinks, and the current falls of its own accord to just what the
-          load's torque demands. <b>Load the shaft more heavily and the motor slows a little, \(E_b\)
-          drops, and the current rises by itself</b> — with no control circuit whatever. It is one of the
-          most elegant feedback mechanisms in electrical engineering.</span></p>
-      </div>
-
-      <p><span class="th">คูณสมการ \(V = E_b + I_a R_a\) ด้วย \(I_a\) ตลอดทั้งสมการ
-        จะได้สมดุลพลังงานที่อธิบายทุกอย่างในบทนี้</span>
-        <span class="en">Multiply \(V = E_b + I_a R_a\) through by \(I_a\) and the energy balance that
-        underlies this whole chapter appears:</span></p>
-
-      <div class="equation">
-        \[ \underbrace{V I_a}_{\text{electrical in}} =
-           \underbrace{E_b I_a}_{\text{mechanical out}} +
-           \underbrace{I_a^{2} R_a}_{\text{copper loss}} \]
-      </div>
-
-      <p><span class="th">กำลังกลที่ได้จึงเป็น \(P_{\text{mech}} = E_b I_a = T\omega\)
-        ซึ่งให้ความสัมพันธ์ของแรงบิดที่ใช้ได้กับมอเตอร์กระแสตรงทุกตัว</span>
-        <span class="en">The mechanical power is thus \(P_{\text{mech}} = E_b I_a = T\omega\), which gives
-        a torque relation that holds for every DC motor:</span></p>
-
-      <div class="equation">
-        \[ T = \frac{E_b I_a}{\omega} = k\,\Phi\,I_a \]
-      </div>
-
-      <p><span class="th">สองสมการนี้คือหัวใจของทั้งบท <b>แรงบิดแปรตามฟลักซ์คูณกระแส
-        ส่วนความเร็วแปรตามแรงดันหารด้วยฟลักซ์</b> ทุกอย่างที่ตามมา — มอเตอร์สามประเภท
-        การควบคุมความเร็ว การเลือกอินเวอร์เตอร์ — ล้วนเป็นผลพวงของสองบรรทัดนี้</span>
-        <span class="en">These two equations are the heart of the chapter: <b>torque follows flux times
-        current, and speed follows voltage divided by flux</b>. Everything that follows — the three kinds
-        of DC motor, speed control, choosing an inverter — falls out of those two lines.</span></p>
     </section>
 
     <!-- =============================================== 12.2 -->
@@ -577,11 +751,11 @@
       <h2><span class="num">12.2</span><span class="th">มอเตอร์กระแสตรง</span>
           <span class="en">The DC motor</span></h2>
 
-      <p><span class="th">รูปที่ 12.1 ทิ้งปัญหาไว้ข้อหนึ่ง คือขดลวดหมุนได้แค่ครึ่งรอบแล้วแรงบิดก็กลับทิศ
+      <p><span class="th">รูปที่ 12.2 ทิ้งปัญหาไว้ข้อหนึ่ง คือขดลวดหมุนได้แค่ครึ่งรอบแล้วแรงบิดก็กลับทิศ
         มอเตอร์กระแสตรงแก้ปัญหานี้ด้วยชิ้นส่วนที่เป็นเอกลักษณ์ที่สุดของมัน
         คือ <b>คอมมิวเตเตอร์</b> และ <b>แปรงถ่าน</b> หัวข้อนี้จะดูให้ละเอียดว่าสองสิ่งนี้หน้าตาเป็นอย่างไร
         ทำงานอย่างไร และต้องแลกกับอะไร</span>
-        <span class="en">Figure 12.1 left us with a problem: the loop turns half a revolution and then the
+        <span class="en">Figure 12.2 left us with a problem: the loop turns half a revolution and then the
         torque reverses. The DC motor solves it with its two most characteristic parts, the
         <b>commutator</b> and the <b>brushes</b>. This section looks closely at what they are, how they
         work, and what they cost.</span></p>
@@ -590,169 +764,106 @@
           <span class="en">12.2.1 Construction: the commutator and brushes</span></h3>
 
       <figure>
-        <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
-            <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
-            <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
-          </button>
-          <svg class="sys-fig dcm-fig" viewBox="0 0 680 430" role="img" width="680"
-               aria-label="Cutaway of a DC motor showing frame, magnets, armature, shaft, commutator and brushes, with a magnified detail of the commutator segments, mica insulation, carbon brush, holder, spring and pigtail">
-            <defs>
-              <pattern id="d2-lam" width="7" height="7" patternUnits="userSpaceOnUse">
-                <rect width="7" height="7" fill="#eef1f5"/>
-                <line x1="0" y1="0" x2="0" y2="7" stroke="#b8bec6" stroke-width="1"/>
-              </pattern>
-              <marker id="d2-ld" viewBox="0 0 8 8" refX="7" refY="4"
-                      markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M0,0 L8,4 L0,8 z" fill="#fd5f00"/>
-              </marker>
-            </defs>
+        <div class="photo-grid">
+          <div class="photo">
+            <img src="../assets/img/motor/commutator-detail.jpg" width="960" height="601" loading="lazy"
+                 alt="The commutator of a large industrial DC machine: a copper cylinder of many narrow segments separated by dark mica lines, with rows of brush holders above and below and the armature winding beyond">
+            <div class="photo-body">
+              <div class="photo-ttl"><span class="th">คอมมิวเตเตอร์ทั้งตัว</span>
+                <span class="en">the whole commutator</span></div>
+              <div class="photo-txt"><span class="th">กระบอกทองแดงที่ผ่าเป็นซี่แคบ ๆ จำนวนมาก
+                <b>เส้นสีเข้มระหว่างซี่คือแผ่นไมกาที่คั่นไว้</b>
+                ด้านซ้ายคือขดลวดอาร์เมเจอร์ที่ต่อเข้ากับซี่เหล่านี้</span>
+                <span class="en">A copper cylinder split into many narrow segments.
+                <b>The dark lines between them are the mica sheets.</b> To the left is the armature
+                winding that connects to them.</span></div>
+              <span class="photo-cred">Christian Kral ·
+                <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> ·
+                <a href="https://commons.wikimedia.org/wiki/File:Buersten_Kommutator2.jpg">Wikimedia Commons</a></span>
+            </div>
+          </div>
 
-            <text class="lbl" x="175" y="26" text-anchor="middle">
-              <tspan class="th">ภาคตัดตามยาว</tspan><tspan class="en">longitudinal cutaway</tspan></text>
-            <text class="lbl" x="520" y="26" text-anchor="middle">
-              <tspan class="th">ขยายที่คอมมิวเตเตอร์</tspan><tspan class="en">commutator, magnified</tspan></text>
+          <div class="photo">
+            <img src="../assets/img/motor/commutator-brushes.jpg" width="960" height="640" loading="lazy"
+                 alt="A row of brush holders pressing carbon brushes onto a commutator, each with a coil spring and a braided copper pigtail running back to the terminal bar">
+            <div class="photo-body">
+              <div class="photo-ttl"><span class="th">ชุดแปรงถ่านที่กดอยู่</span>
+                <span class="en">the brush gear at work</span></div>
+              <div class="photo-txt"><span class="th">แปรงถ่านเรียงกันหลายตัว แต่ละตัวมี
+                <b>สปริงกดลงบนผิวคอมมิวเตเตอร์ และสายทองแดงถักนำกระแสออก</b>
+                โดยไม่ผ่านตัวสปริง เพราะสปริงรับกระแสไม่ไหว</span>
+                <span class="en">Several brushes in a row, each with <b>a spring pressing it onto the
+                commutator and a braided copper pigtail carrying the current away</b> — never through
+                the spring, which could not take it.</span></div>
+              <span class="photo-cred">Christian Kral ·
+                <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> ·
+                <a href="https://commons.wikimedia.org/wiki/File:Commutator_and_brushes_DC_motor.jpg">Wikimedia Commons</a></span>
+            </div>
+          </div>
 
-            <!-- frame and end bells -->
-            <rect class="iron" x="52" y="98" width="222" height="164" rx="8"/>
-            <rect class="iron" x="36" y="112" width="18" height="136" rx="4"/>
-            <rect class="iron" x="272" y="112" width="18" height="136" rx="4"/>
+          <div class="photo">
+            <img src="../assets/img/motor/carbon-brushes.jpg" width="960" height="686" loading="lazy"
+                 alt="Two carbon brushes off the machine, each a rectangular block of carbon with a coil spring and a copper pigtail attached to a terminal tag">
+            <div class="photo-body">
+              <div class="photo-ttl"><span class="th">แปรงถ่านเมื่อถอดออกมา</span>
+                <span class="en">a brush in the hand</span></div>
+              <div class="photo-txt"><span class="th">แท่งคาร์บอนสี่เหลี่ยม สปริง และสายอ่อนถัก
+                <b>ปลายด้านที่สัมผัสจะสึกจนโค้งรับกับผิวคอมมิวเตเตอร์</b>
+                เป็นชิ้นส่วนที่ถอดเปลี่ยนได้โดยไม่ต้องรื้อมอเตอร์</span>
+                <span class="en">A rectangular block of carbon, a spring and a braided pigtail.
+                <b>The working face wears until it matches the curve of the commutator.</b> It is a
+                part that can be changed without stripping the motor.</span></div>
+              <span class="photo-cred">Stan Zurek ·
+                <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> ·
+                <a href="https://commons.wikimedia.org/wiki/File:Carbon_brushes.jpg">Wikimedia Commons</a></span>
+            </div>
+          </div>
 
-            <!-- magnets -->
-            <rect class="pole-n" x="66" y="104" width="104" height="22" rx="4"/>
-            <text class="lbl" x="118" y="120" text-anchor="middle" fill="#2b6cb0">N</text>
-            <rect class="pole-s" x="66" y="234" width="104" height="22" rx="4"/>
-            <text class="lbl" x="118" y="250" text-anchor="middle" fill="#d64545">S</text>
-
-            <!-- shaft -->
-            <rect class="shaft" x="14" y="173" width="300" height="14" rx="4"/>
-            <circle class="shaft" cx="45" cy="180" r="9"/>
-            <circle class="shaft" cx="281" cy="180" r="9"/>
-
-            <!-- armature core with its winding -->
-            <rect x="84" y="128" width="92" height="104" rx="4"
-                  fill="url(#d2-lam)" stroke="#0d1128" stroke-width="2"/>
-            <rect class="copper" x="76" y="134" width="9" height="92" rx="3"/>
-            <rect class="copper" x="175" y="134" width="9" height="92" rx="3"/>
-
-            <!-- commutator on the same shaft -->
-            <rect class="copper" x="196" y="150" width="58" height="60" rx="2"/>
-            <line class="mica" x1="210" y1="150" x2="210" y2="210"/>
-            <line class="mica" x1="225" y1="150" x2="225" y2="210"/>
-            <line class="mica" x1="240" y1="150" x2="240" y2="210"/>
-
-            <!-- brushes, holders and springs -->
-            <rect class="brush" x="214" y="124" width="22" height="24" rx="2"/>
-            <rect class="sym" x="209" y="104" width="32" height="22" rx="2" fill="none"/>
-            <path class="spring" d="M218,124 l6,-6 l-6,-6 l6,-6"/>
-            <rect class="brush" x="214" y="212" width="22" height="24" rx="2"/>
-            <rect class="sym" x="209" y="234" width="32" height="22" rx="2" fill="none"/>
-            <path class="spring" d="M232,236 l-6,6 l6,6 l-6,6"/>
-
-            <line class="wire" x1="241" y1="112" x2="300" y2="112"/>
-            <line class="wire" x1="241" y1="248" x2="300" y2="248"/>
-            <text class="lbl" x="306" y="116">+</text>
-            <text class="lbl" x="306" y="252">−</text>
-
-            <!-- leaders -->
-            <line class="leader" x1="130" y1="180" x2="130" y2="300" stroke="#fd5f00"
-                  stroke-width="1.2" stroke-dasharray="3 3"/>
-            <text class="sub th" x="130" y="314" text-anchor="middle">อาร์เมเจอร์ แกนเหล็กแผ่นบาง</text>
-            <text class="sub en" x="130" y="314" text-anchor="middle">armature, laminated core</text>
-            <text class="sub th" x="130" y="328" text-anchor="middle">พร้อมขดลวดทองแดง</text>
-            <text class="sub en" x="130" y="328" text-anchor="middle">with its copper winding</text>
-
-            <line class="leader" x1="225" y1="210" x2="225" y2="300" stroke="#fd5f00"
-                  stroke-width="1.2" stroke-dasharray="3 3"/>
-            <text class="sub th" x="238" y="314" text-anchor="start">คอมมิวเตเตอร์ หมุนไปกับเพลา</text>
-            <text class="sub en" x="238" y="314" text-anchor="start">commutator, turns with the shaft</text>
-
-            <line class="leader" x1="225" y1="124" x2="225" y2="76" stroke="#fd5f00"
-                  stroke-width="1.2" stroke-dasharray="3 3"/>
-            <text class="sub th" x="225" y="68" text-anchor="middle">แปรงถ่าน อยู่กับที่</text>
-            <text class="sub en" x="225" y="68" text-anchor="middle">brushes, stationary</text>
-
-            <text class="sub th" x="30" y="352" text-anchor="start">เพลาและคอมมิวเตเตอร์หมุนไปด้วยกัน แต่แปรงถ่านไม่ขยับ</text>
-            <text class="sub en" x="30" y="352" text-anchor="start">shaft and commutator turn together while the brushes stay put</text>
-            <text class="sub th" x="30" y="368" text-anchor="start">จุดสัมผัสจึงเลื่อนจากซี่หนึ่งไปอีกซี่หนึ่งตลอดเวลา</text>
-            <text class="sub en" x="30" y="368" text-anchor="start">so the contact slides from one segment to the next</text>
-
-            <!-- magnified detail -->
-            <rect x="386" y="40" width="278" height="300" rx="10" fill="#fcfcfd"
-                  stroke="#dfe3e8" stroke-width="1.5"/>
-
-            <!-- segments laid flat -->
-            <g>
-              <rect class="copper" x="404" y="196" width="52" height="54" rx="2"/>
-              <rect class="copper" x="460" y="196" width="52" height="54" rx="2"/>
-              <rect class="copper" x="516" y="196" width="52" height="54" rx="2"/>
-              <rect class="copper" x="572" y="196" width="52" height="54" rx="2"/>
-              <rect x="456" y="196" width="4" height="54" fill="#ffffff"/>
-              <rect x="512" y="196" width="4" height="54" fill="#ffffff"/>
-              <rect x="568" y="196" width="4" height="54" fill="#ffffff"/>
-            </g>
-            <rect class="shaft" x="396" y="250" width="236" height="20" rx="3"/>
-            <text class="sub th" x="514" y="264" text-anchor="middle">เพลา</text>
-            <text class="sub en" x="514" y="264" text-anchor="middle">shaft</text>
-
-            <!-- the brush bridging two segments -->
-            <rect class="brush" x="496" y="150" width="36" height="46" rx="2"/>
-            <rect class="sym" x="489" y="118" width="50" height="34" rx="3" fill="none"/>
-            <path class="spring" d="M500,118 l14,-9 l-14,-9 l14,-9"/>
-            <path class="wire" d="M539,135 q22,0 22,-22 l0,-24" stroke="#c87533" stroke-width="2.5"/>
-
-            <text class="call" x="404" y="188">
-              <tspan class="th">ซี่ทองแดง</tspan><tspan class="en">copper segment</tspan></text>
-            <text class="call" x="600" y="188" text-anchor="end">
-              <tspan class="th">ไมกาคั่น</tspan><tspan class="en">mica insulation</tspan></text>
-            <line class="leader" x1="570" y1="192" x2="570" y2="200"/>
-
-            <text class="call" x="470" y="176" text-anchor="end">
-              <tspan class="th">แปรงถ่าน</tspan><tspan class="en">carbon brush</tspan></text>
-            <line class="leader" x1="474" y1="172" x2="494" y2="172"/>
-
-            <text class="call" x="556" y="112" text-anchor="start">
-              <tspan class="th">สปริงกด</tspan><tspan class="en">spring</tspan></text>
-            <text class="call" x="566" y="92" text-anchor="start">
-              <tspan class="th">สายอ่อน</tspan><tspan class="en">pigtail</tspan></text>
-            <text class="call" x="484" y="112" text-anchor="end">
-              <tspan class="th">ตัวยึดแปรง</tspan><tspan class="en">brush holder</tspan></text>
-
-            <text class="sub th" x="514" y="296" text-anchor="middle">ขณะนี้แปรงคร่อมรอยต่อพอดี</text>
-            <text class="sub en" x="514" y="296" text-anchor="middle">here the brush bridges a gap</text>
-            <text class="sub th" x="514" y="312" text-anchor="middle">ขดลวดชุดนั้นถูกลัดวงจรชั่วขณะ</text>
-            <text class="sub en" x="514" y="312" text-anchor="middle">that coil is briefly short-circuited</text>
-            <text class="sub th" x="514" y="328" text-anchor="middle">นี่คือจังหวะที่กระแสกลับทิศ</text>
-            <text class="sub en" x="514" y="328" text-anchor="middle">this is the instant of commutation</text>
-
-            <text class="sub th" x="30" y="396" text-anchor="start">แปรงถ่านสึกและเกิดประกายไฟที่รอยต่อ จึงเป็นชิ้นส่วนที่ต้องเปลี่ยนตามอายุ</text>
-            <text class="sub en" x="30" y="396" text-anchor="start">the brushes wear and spark at each gap, so they are a consumable part</text>
-            <text class="sub th" x="30" y="412" text-anchor="start">และเป็นเหตุผลที่มอเตอร์บรัชเลสในหัวข้อ 12.5 ตัดชิ้นส่วนนี้ทิ้ง</text>
-            <text class="sub en" x="30" y="412" text-anchor="start">and the reason the brushless motor of 12.5 does away with them</text>
-          </svg>
+          <div class="photo">
+            <img src="../assets/img/motor/brushes-worn.jpg" width="960" height="960" loading="lazy"
+                 alt="A worn carbon brush beside a new one: the worn block is far shorter and its copper pigtail is close to reaching the working face">
+            <div class="photo-body">
+              <div class="photo-ttl"><span class="th">สึกแล้วเทียบกับของใหม่</span>
+                <span class="en">worn beside new</span></div>
+              <div class="photo-txt"><span class="th">ซ้ายคือแปรงที่สึกจนสั้น ขวาคือของใหม่
+                <b>ถ้าปล่อยจนสายทองแดงโผล่มาถูกคอมมิวเตเตอร์ ผิวทองแดงจะเป็นรอยลึกและต้องกลึงใหม่</b></span>
+                <span class="en">A worn brush on the left, a new one on the right. <b>Let it go until
+                the copper pigtail touches the commutator and the copper is scored deeply enough to
+                need skimming.</b></span></div>
+              <span class="photo-cred">Kakoula10 ·
+                <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> ·
+                <a href="https://commons.wikimedia.org/wiki/File:Commutator_brushes_compare_used_and_new.jpg">Wikimedia Commons</a></span>
+            </div>
+          </div>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.2</span><span class="en">Figure 12.2</span></b>
-          <span class="th"> ภาคตัดตามยาวของมอเตอร์กระแสตรง และภาพขยายที่คอมมิวเตเตอร์
-            <b>คอมมิวเตเตอร์คือกระบอกทองแดงที่ผ่าเป็นซี่ ๆ มีแผ่นไมกาคั่นระหว่างซี่ และหมุนไปพร้อมเพลา</b>
-            ส่วนแปรงถ่านเป็นแท่งคาร์บอนที่อยู่กับที่ ถูกสปริงกดให้แนบกับผิวคอมมิวเตเตอร์ตลอดเวลา
-            และมีสายอ่อนถักนำกระแสออกไปโดยไม่ผ่านตัวสปริง
-            เมื่อเพลาหมุน จุดสัมผัสจึงเลื่อนจากซี่หนึ่งไปอีกซี่หนึ่ง
-            ขณะที่แปรงคร่อมรอยต่อพอดี ขดลวดชุดนั้นถูกลัดวงจรชั่วขณะหนึ่ง แล้วกระแสจึงกลับทิศ
-            นั่นคือจังหวะสับเปลี่ยนที่ทำให้แรงบิดมีทิศเดิมตลอด
-            ราคาที่ต้องจ่ายคือแปรงสึก เกิดประกายไฟ และต้องบำรุงรักษา</span>
-          <span class="en"> A longitudinal cutaway of a DC motor with the commutator magnified.
-            <b>The commutator is a copper cylinder split into segments with mica sheets between them,
-            turning with the shaft.</b> The brushes are stationary carbon blocks held against its surface
-            by springs, with braided pigtails carrying the current so that it never passes through the
-            spring itself. As the shaft turns, the contact slides from one segment to the next; while the
-            brush bridges a gap that coil is briefly short-circuited, and then its current reverses. That
-            is the act of commutation which keeps the torque in one direction. The price is brushes that
-            wear, that spark, and that must be maintained.</span></figcaption>
+        <figcaption><b><span class="th">รูปที่ 12.3</span><span class="en">Figure 12.3</span></b>
+          <span class="th"> คอมมิวเตเตอร์และแปรงถ่านของเครื่องจริง
+            <b>คอมมิวเตเตอร์คือกระบอกทองแดงที่ผ่าเป็นซี่ มีแผ่นไมกาคั่นระหว่างซี่ และหมุนไปพร้อมเพลา</b>
+            ในรูปแรกจะเห็นเส้นสีเข้มคั่นระหว่างซี่ทองแดงอย่างชัดเจน นั่นคือไมกา
+            ส่วนแปรงถ่านเป็นแท่งคาร์บอนที่ <b>อยู่กับที่</b> ถูกสปริงกดให้แนบกับผิวคอมมิวเตเตอร์ตลอดเวลา
+            และมีสายทองแดงถักนำกระแสออกไปต่างหาก ไม่ให้กระแสไหลผ่านตัวสปริงซึ่งรับไม่ไหว
+            <b>เมื่อเพลาหมุน จุดสัมผัสจึงเลื่อนจากซี่หนึ่งไปอีกซี่หนึ่ง
+            และขณะที่แปรงคร่อมรอยต่อระหว่างสองซี่พอดี กระแสในขดลวดชุดนั้นจะกลับทิศ</b>
+            นั่นคือจังหวะสับเปลี่ยนที่ทำให้แรงบิดมีทิศเดิมตลอด แทนที่จะแกว่งกลับไปกลับมาอย่างในรูปที่ 12.2
+            รูปสองรูปสุดท้ายแสดงราคาที่ต้องจ่าย คือแปรงถ่านสึกไปเรื่อย ๆ จนต้องเปลี่ยน
+            และเป็นเหตุผลที่มอเตอร์บรัชเลสในหัวข้อ 12.5 ตัดชิ้นส่วนนี้ทิ้งไปเลย</span>
+          <span class="en"> The commutator and brushes of real machines. <b>The commutator is a copper
+            cylinder split into segments with mica sheets between them, turning with the shaft</b>; in
+            the first photograph the dark lines dividing the copper are that mica. The brushes are
+            blocks of carbon which <b>stay still</b>, held against the surface by springs, with braided
+            copper pigtails carrying the current away separately so that it never passes through a
+            spring, which could not take it. <b>As the shaft turns the contact slides from one segment
+            to the next, and while a brush bridges the joint between two segments the current in that
+            coil reverses.</b> That is the act of commutation which keeps the torque in one direction
+            instead of letting it rock to and fro as it did in Figure 12.2. The last two photographs
+            show the price: the brushes wear away and must be replaced — which is why the brushless
+            motor of Section 12.5 does away with them altogether.</span></figcaption>
       </figure>
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
@@ -850,14 +961,14 @@
             </g>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.3</span><span class="en">Figure 12.3</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.4</span><span class="en">Figure 12.4</span></b>
           <span class="th"> สี่จังหวะในหนึ่งรอบ แสดงว่าคอมมิวเตเตอร์ทำงานอย่างไร
             จุดในวงกลมหมายถึงกระแสพุ่งออกจากหน้ากระดาษ กากบาทหมายถึงพุ่งเข้า
             ที่ 0° ตัวนำบนมีกระแสพุ่งออก แรงจึงผลักไปทางซ้าย และตัวนำล่างผลักไปทางขวา ได้แรงบิดตามเข็ม
             ที่ 90° ขดลวดอยู่ในแนวกลาง แปรงคร่อมรอยต่อพอดี แรงบิดเป็นศูนย์ชั่วขณะ
             และ <b>ที่จังหวะนี้เองที่กระแสในขดลวดกลับทิศ</b>
             ที่ 180° ตัวนำที่เคยอยู่บนย้ายลงล่างแล้ว แต่เพราะกระแสกลับทิศไปด้วย
-            แรงจึงยังผลักไปทางเดิม <b>แรงบิดจึงตามเข็มตลอดทั้งรอบ ไม่กลับทิศอย่างในรูปที่ 12.1</b></span>
+            แรงจึงยังผลักไปทางเดิม <b>แรงบิดจึงตามเข็มตลอดทั้งรอบ ไม่กลับทิศอย่างในรูปที่ 12.2</b></span>
           <span class="en"> Four instants in one revolution showing what the commutator achieves. A dot
             means current out of the page, a cross means into it. At 0° the upper conductor carries
             current out, so its force pushes left while the lower one pushes right: torque clockwise. At
@@ -865,7 +976,7 @@
             zero — and <b>it is at this instant that the coil's current reverses</b>. At 180° the
             conductor that was on top is now underneath, but because its current reversed too, the force
             still pushes the same way. <b>The torque is clockwise throughout the revolution, instead of
-            reversing as it did in Figure 12.1.</b></span></figcaption>
+            reversing as it did in Figure 12.2.</b></span></figcaption>
       </figure>
 
       <h3 id="s2-2"><span class="th">12.2.2 สามประเภท และการใช้งานของแต่ละแบบ</span>
@@ -963,7 +1074,7 @@
             <text class="sub en" x="572" y="272" text-anchor="middle">speed adjustable by field current</text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.4</span><span class="en">Figure 12.4</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.5</span><span class="en">Figure 12.5</span></b>
           <span class="th"> วงจรสมมูลของมอเตอร์กระแสตรงทั้งสามประเภท
             ต่างกันที่แหล่งของสนามแม่เหล็กเท่านั้น
             <b>แบบแม่เหล็กถาวร</b> ใช้แม่เหล็กจริง ฟลักซ์จึงคงที่ตายตัว แรงบิดแปรตรงกับกระแส
@@ -1064,8 +1175,84 @@
           <b>always coupled through gears or a chain, never by a belt that could come off</b>.</span></p>
       </div>
 
-      <h3 id="s2-3"><span class="th">12.2.3 สมการและการคำนวณ: มอเตอร์แม่เหล็กถาวร</span>
-          <span class="en">12.2.3 Equations and worked calculations: the permanent-magnet motor</span></h3>
+      <h3 id="s2-3"><span class="th">12.2.3 แรงเคลื่อนย้อนกลับ: สิ่งที่ทำให้มอเตอร์ไม่ไหม้</span>
+          <span class="en">12.2.3 Back-e.m.f.: what keeps a motor from burning</span></h3>
+
+      <p><span class="th">ตอนนี้คอมมิวเตเตอร์ทำให้มอเตอร์หมุนต่อไปได้จริงแล้ว
+        จึงถึงเวลาถามว่าอะไรเป็นตัวกำหนดกระแสที่มอเตอร์กินเข้าไป
+        คำตอบอยู่ที่ข้อเท็จจริงข้อหนึ่งซึ่งฟังดูขัดกันเอง คือ
+        <b>เมื่อขดลวดเริ่มหมุน มันก็กลายเป็นเครื่องกำเนิดไฟฟ้าไปด้วยในตัว</b>
+        ขดลวดที่หมุนในสนามแม่เหล็กย่อมเหนี่ยวนำแรงดันขึ้นตามกฎของฟาราเดย์
+        และตามกฎของเลนซ์ แรงดันนี้ต้อง <b>ต้าน</b> สิ่งที่ทำให้มันเกิด จึงมีทิศสวนทางกับแรงดันที่ป้อนเข้าไป
+        เราเรียกมันว่า <b>แรงเคลื่อนย้อนกลับ</b></span>
+        <span class="en">As soon as the coil turns it becomes a generator as well. A coil turning in a
+        magnetic field must induce a voltage by Faraday's law, and by Lenz's law that voltage must
+        <b>oppose</b> whatever produced it — so it acts against the applied supply. We call it the
+        <b>back-e.m.f.</b></span></p>
+
+      <div class="equation">
+        \[ E_b = k\,\Phi\,\omega \qquad\text{and}\qquad V = E_b + I_a R_a \]
+      </div>
+      <p class="eq-note"><span class="th">\(E_b\) = แรงเคลื่อนย้อนกลับ (V), \(k\) = ค่าคงตัวของเครื่อง,
+        \(\Phi\) = ฟลักซ์ต่อขั้ว (Wb), \(\omega\) = ความเร็วเชิงมุม (rad/s),
+        \(R_a\) = ความต้านทานอาร์เมเจอร์ (Ω)</span>
+        <span class="en">\(E_b\) = back-e.m.f. (V), \(k\) = a constant of the machine,
+        \(\Phi\) = flux per pole (Wb), \(\omega\) = angular velocity (rad/s),
+        \(R_a\) = armature resistance (Ω)</span></p>
+
+      <p><span class="th">จัดสมการใหม่จะได้กระแสที่อาร์เมเจอร์ดึง</span>
+        <span class="en">Rearranged, this gives the current the armature draws:</span></p>
+
+      <div class="equation">
+        \[ I_a = \frac{V - E_b}{R_a} \]
+      </div>
+
+      <div class="callout callout-key">
+        <div class="callout-title">🔑 <span class="th">แนวคิดสำคัญ</span><span class="en">Key idea</span></div>
+        <p class="mb-0"><span class="th"><b>มอเตอร์ควบคุมกระแสของตัวเองด้วยความเร็วของตัวเอง</b>
+          ขณะเริ่มเดิน \(\omega = 0\) จึงยังไม่มี \(E_b\) เลย กระแสถูกจำกัดด้วย \(R_a\) เพียงอย่างเดียว
+          ซึ่งมักมีค่าไม่ถึงหนึ่งโอห์ม กระแสจึงพุ่งสูงมาก
+          เมื่อมอเตอร์เร่งขึ้น \(E_b\) โตขึ้นตามความเร็ว ผลต่าง \(V - E_b\) จึงเล็กลง
+          กระแสลดลงเองจนเหลือเท่าที่จำเป็นสำหรับแรงบิดที่โหลดต้องการ
+          <b>และถ้าโหลดหนักขึ้น มอเตอร์จะหมุนช้าลงเล็กน้อย \(E_b\) ลดลง กระแสจึงเพิ่มขึ้นเอง</b>
+          โดยไม่มีวงจรควบคุมใด ๆ ทั้งสิ้น นี่คือกลไกป้อนกลับที่สวยงามที่สุดอย่างหนึ่งในวิศวกรรมไฟฟ้า</span>
+          <span class="en"><b>A motor governs its own current with its own speed.</b> At starting
+          \(\omega = 0\), so there is no \(E_b\) at all and only \(R_a\) — often well under an ohm —
+          limits the current, which is why it surges. As the motor accelerates, \(E_b\) grows with speed,
+          the difference \(V - E_b\) shrinks, and the current falls of its own accord to just what the
+          load's torque demands. <b>Load the shaft more heavily and the motor slows a little, \(E_b\)
+          drops, and the current rises by itself</b> — with no control circuit whatever. It is one of the
+          most elegant feedback mechanisms in electrical engineering.</span></p>
+      </div>
+
+      <p><span class="th">คูณสมการ \(V = E_b + I_a R_a\) ด้วย \(I_a\) ตลอดทั้งสมการ
+        จะได้สมดุลพลังงานที่อธิบายทุกอย่างในบทนี้</span>
+        <span class="en">Multiply \(V = E_b + I_a R_a\) through by \(I_a\) and the energy balance that
+        underlies this whole chapter appears:</span></p>
+
+      <div class="equation">
+        \[ \underbrace{V I_a}_{\text{electrical in}} =
+           \underbrace{E_b I_a}_{\text{mechanical out}} +
+           \underbrace{I_a^{2} R_a}_{\text{copper loss}} \]
+      </div>
+
+      <p><span class="th">กำลังกลที่ได้จึงเป็น \(P_{\text{mech}} = E_b I_a = T\omega\)
+        ซึ่งให้ความสัมพันธ์ของแรงบิดที่ใช้ได้กับมอเตอร์กระแสตรงทุกตัว</span>
+        <span class="en">The mechanical power is thus \(P_{\text{mech}} = E_b I_a = T\omega\), which gives
+        a torque relation that holds for every DC motor:</span></p>
+
+      <div class="equation">
+        \[ T = \frac{E_b I_a}{\omega} = k\,\Phi\,I_a \]
+      </div>
+
+      <p><span class="th">สองสมการนี้คือหัวใจของทั้งบท <b>แรงบิดแปรตามฟลักซ์คูณกระแส
+        ส่วนความเร็วแปรตามแรงดันหารด้วยฟลักซ์</b> ทุกอย่างที่ตามมา — มอเตอร์สามประเภท
+        การควบคุมความเร็ว การเลือกอินเวอร์เตอร์ — ล้วนเป็นผลพวงของสองบรรทัดนี้</span>
+        <span class="en">These two equations are the heart of the chapter: <b>torque follows flux times
+        current, and speed follows voltage divided by flux</b>. Everything that follows — the three kinds
+        of DC motor, speed control, choosing an inverter — falls out of those two lines.</span></p>
+      <h3 id="s2-4"><span class="th">12.2.4 สมการและการคำนวณ: มอเตอร์แม่เหล็กถาวร</span>
+          <span class="en">12.2.4 Equations and worked calculations: the permanent-magnet motor</span></h3>
 
       <p><span class="th">เราจะเจาะการคำนวณเฉพาะแบบแม่เหล็กถาวร ด้วยเหตุผลสองข้อ
         ข้อแรกคือมันเป็นแบบที่พบมากที่สุดในงานเกษตรอัจฉริยะ — ปั๊มโซลาร์ หุ่นยนต์ โดรน วาล์วไฟฟ้า
@@ -1107,13 +1294,13 @@
           <span class="th">มอเตอร์ปั๊มน้ำโซลาร์ 24 V</span>
           <span class="en">The 24 V solar pump motor</span></div>
         <div class="example-body">
-          <p><span class="th">มอเตอร์แม่เหล็กถาวรของปั๊มน้ำโซลาร์ตามป้ายพิกัดในรูปที่ 12.5
+          <p><span class="th">มอเตอร์แม่เหล็กถาวรของปั๊มน้ำโซลาร์ตามป้ายพิกัดในรูปที่ 12.6
             ใช้แรงดัน 24 V กินกระแสเต็มพิกัด 21.5 A ที่ความเร็ว 3000 rpm
             วัดความต้านทานอาร์เมเจอร์ได้ \(R_a = 0.21\ \Omega\)
             จงหา (ก) แรงเคลื่อนย้อนกลับ (ข) ค่าคงตัวของมอเตอร์ \(K\)
             (ค) แรงบิดที่พัฒนาขึ้นและแรงบิดที่ออกเพลาจริง
             และ (ง) ประสิทธิภาพ พร้อมแยกการสูญเสียให้ครบ</span>
-            <span class="en">The permanent-magnet motor of the solar pump whose nameplate is Figure 12.5
+            <span class="en">The permanent-magnet motor of the solar pump whose nameplate is Figure 12.6
             runs on 24 V, draws 21.5 A at full load and turns at 3000 rpm; its armature resistance
             measures \(R_a = 0.21\ \Omega\). Find (a) the back-e.m.f., (b) the motor constant \(K\),
             (c) the developed torque and the torque actually delivered at the shaft, and (d) the
@@ -1309,7 +1496,7 @@
               <tspan class="en">Check: 24 × 21.5 = 516 W in against 400 W out gives 77.5 % efficiency</tspan></text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.5</span><span class="en">Figure 12.5</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.6</span><span class="en">Figure 12.6</span></b>
           <span class="th"> ป้ายพิกัดของมอเตอร์กระแสตรงแบบแม่เหล็กถาวร วางผังตามแบบป้ายจริง
             <b>สิ่งที่ต้องอ่านให้เป็นนิสัยคือ กำลังที่ระบุเป็นกำลังที่ออกเพลา ไม่ใช่กำลังที่กินเข้าไป</b>
             เอากระแสคูณแรงดันจะได้กำลังเข้า แล้วเทียบกันจึงได้ประสิทธิภาพ
@@ -1399,7 +1586,8 @@
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
@@ -1491,7 +1679,7 @@
               <tspan class="en">a real 4 % slip is invisible; here it is exaggerated to 1 in 6</tspan></text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.6</span><span class="en">Figure 12.6</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.7</span><span class="en">Figure 12.7</span></b>
           <span class="th"> ภาคตัดขวางของมอเตอร์เหนี่ยวนำสามเฟส ขดลวดสามชุด U V W วางห่างกัน 120°
             รอบสเตเตอร์ ตรงกลางคือโรเตอร์กรงกระรอกซึ่ง <b>ไม่มีสายไฟต่อเข้าไปเลยแม้แต่เส้นเดียว</b>
             ลูกศรสีส้มคือทิศของสนามหมุนที่เกิดจากผลรวมของสามเฟส
@@ -1596,7 +1784,7 @@
             <text class="sub en" x="240" y="246" text-anchor="middle">accelerating: a few seconds, at 6–7 times the current</text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.7</span><span class="en">Figure 12.7</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.8</span><span class="en">Figure 12.8</span></b>
           <span class="th"> เส้นโค้งแรงบิด–ความเร็วของมอเตอร์เหนี่ยวนำ
             อ่านจากซ้ายไปขวาคือเรื่องราวของการออกตัว มอเตอร์เริ่มที่ความเร็วศูนย์
             ด้วยแรงบิดราวสองเท่าของเต็มพิกัด ผ่านจุดต่ำสุด แล้วไต่ขึ้นสู่แรงบิดสูงสุดราว 2.5 เท่า
@@ -1619,11 +1807,11 @@
           <span class="th">มอเตอร์ปั๊มน้ำ 3 kW ของโรงเรือน</span>
           <span class="en">The greenhouse's 3 kW pump motor</span></div>
         <div class="example-body">
-          <p><span class="th">มอเตอร์เหนี่ยวนำตามป้ายพิกัดในรูปที่ 12.8 คือ 3 kW 4 ขั้ว 400 V 50 Hz
+          <p><span class="th">มอเตอร์เหนี่ยวนำตามป้ายพิกัดในรูปที่ 12.9 คือ 3 kW 4 ขั้ว 400 V 50 Hz
             หมุนที่ 1440 rpm เต็มพิกัด จงหา (ก) ความเร็วซิงโครนัสและสลิป
             (ข) ความถี่ของกระแสในโรเตอร์ (ค) แรงบิดที่เพลาเต็มพิกัด
             และ (ง) ความเร็วเมื่อโหลดเหลือเพียง 30 % ของพิกัด</span>
-            <span class="en">The induction motor of Figure 12.8 is 3 kW, 4-pole, 400 V, 50 Hz, running at
+            <span class="en">The induction motor of Figure 12.9 is 3 kW, 4-pole, 400 V, 50 Hz, running at
             1440 rpm at full load. Find (a) the synchronous speed and the slip, (b) the frequency of the
             rotor currents, (c) the full-load shaft torque, and (d) the speed when the load falls to
             30 % of rating.</span></p>
@@ -1770,7 +1958,7 @@
               <tspan class="en">Check: √3 × 400 × 6.1 × 0.82 = 3.47 kW in, agreeing with 3.0 / 0.86 = 3.49 kW</tspan></text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.8</span><span class="en">Figure 12.8</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.9</span><span class="en">Figure 12.9</span></b>
           <span class="th"> ป้ายพิกัดของมอเตอร์เหนี่ยวนำสามเฟส
             สิ่งที่ต่างจากป้ายมอเตอร์กระแสตรงอย่างชัดเจนคือ <b>มีแรงดันและกระแสระบุไว้เป็นคู่</b>
             คือ 400 V เดลตา กับ 690 V สตาร์ ซึ่งเป็นมอเตอร์ตัวเดียวกันแต่ต่อขดลวดคนละแบบ
@@ -1826,7 +2014,8 @@
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
@@ -1895,7 +2084,7 @@
               <tspan class="en">net torque zero, so it cannot start itself</tspan></text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.9</span><span class="en">Figure 12.9</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.10</span><span class="en">Figure 12.10</span></b>
           <span class="th"> ทางซ้าย ขดลวดชุดเดียวที่ป้อนไฟหนึ่งเฟสสร้างสนามที่เต้นอยู่กับที่
             ทางขวา สนามเดียวกันนั้นแยกออกเป็นสนามหมุนสองสนาม ขนาดครึ่งหนึ่ง หมุนสวนทางกัน
             <b>ขณะโรเตอร์ยังหยุดนิ่ง สนามทั้งสองสร้างแรงบิดเท่ากันแต่ทิศตรงข้าม จึงหักล้างกันหมด
@@ -1952,7 +2141,8 @@
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
@@ -2062,7 +2252,7 @@
             <text class="cap" x="452" y="312">90°</text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.10</span><span class="en">Figure 12.10</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.11</span><span class="en">Figure 12.11</span></b>
           <span class="th"> มอเตอร์หนึ่งเฟสแบบตัวเก็บประจุช่วยออกตัว
             ทางซ้ายคือขดลวดสองชุดที่วางห่างกัน 90° ในเชิงพื้นที่
             ขดลวดหลัก M ใช้ลวดเส้นใหญ่ ส่วนขดลวดสตาร์ต S ใช้ลวดเส้นเล็ก
@@ -2156,14 +2346,14 @@
           <span class="th">ตัวเก็บประจุสตาร์ตของปั๊มน้ำบ่อบาดาล</span>
           <span class="en">Sizing the start capacitor of a borehole pump</span></div>
         <div class="example-body">
-          <p><span class="th">ปั๊มน้ำบ่อบาดาลของฟาร์มใช้มอเตอร์หนึ่งเฟส 230 V 50 Hz ตามป้ายพิกัดในรูปที่ 12.11
+          <p><span class="th">ปั๊มน้ำบ่อบาดาลของฟาร์มใช้มอเตอร์หนึ่งเฟส 230 V 50 Hz ตามป้ายพิกัดในรูปที่ 12.12
             ขณะโรเตอร์ยังไม่หมุน ขดลวดหลักมีอิมพีแดนซ์ \(3 + \mathrm{j}9\ \Omega\)
             และขดลวดสตาร์ตมี \(12 + \mathrm{j}6\ \Omega\)
             จงหา (ก) ความต่างเฟสของกระแสสองชุดถ้าไม่ใส่ตัวเก็บประจุ
             (ข) ค่าตัวเก็บประจุที่ทำให้ความต่างเฟสเป็น 90° พอดี
             (ค) เปรียบเทียบแรงบิดออกตัวของสองกรณี และ (ง) กระแสที่สายต้องรับขณะออกตัว</span>
             <span class="en">A farm's borehole pump uses the 230 V, 50 Hz single-phase motor of
-            Figure 12.11. With the rotor at rest the main winding has an impedance of
+            Figure 12.12. With the rotor at rest the main winding has an impedance of
             \(3 + \mathrm{j}9\ \Omega\) and the start winding \(12 + \mathrm{j}6\ \Omega\). Find (a) the
             phase difference between the two currents with no capacitor, (b) the capacitor that makes
             that difference exactly 90°, (c) the two starting torques compared, and (d) the current the
@@ -2330,16 +2520,16 @@
               <tspan class="en">Check: 230 × 5.3 × 0.85 = 1036 W in against 750 W out gives 72 % efficiency</tspan></text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.11</span><span class="en">Figure 12.11</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.12</span><span class="en">Figure 12.12</span></b>
           <span class="th"> ป้ายพิกัดของมอเตอร์เหนี่ยวนำหนึ่งเฟสแบบตัวเก็บประจุช่วยออกตัว
-            สองสิ่งที่ต่างจากป้ายสามเฟสในรูปที่ 12.8 อย่างชัดเจนคือ
+            สองสิ่งที่ต่างจากป้ายสามเฟสในรูปที่ 12.9 อย่างชัดเจนคือ
             <b>มีแรงดันระบุค่าเดียว ไม่มีคู่เดลตากับสตาร์</b> เพราะไม่มีขดลวดสามชุดให้สลับการต่อ
             จึงใช้วิธีเริ่มเดินแบบสตาร์–เดลตาไม่ได้เลย และ <b>มีบรรทัด CAP ระบุค่าตัวเก็บประจุ</b>
             ซึ่งป้ายมอเตอร์สามเฟสไม่มี บรรทัดนี้สำคัญมากตอนซ่อม
             เพราะตัวเก็บประจุเป็นชิ้นส่วนที่เสื่อมบ่อยที่สุดในมอเตอร์ชนิดนี้
             และต้องเปลี่ยนด้วยค่าความจุเท่าเดิมเสมอ ใส่ค่ามากเกินไปจะทำให้ขดลวดสตาร์ตไหม้</span>
           <span class="en"> The nameplate of a capacitor-start single-phase motor. Two things set it
-            apart from the three-phase plate of Figure 12.8 at a glance. <b>It states one voltage, with
+            apart from the three-phase plate of Figure 12.9 at a glance. <b>It states one voltage, with
             no delta and star pair</b>, because there are no three windings to reconnect — which is why
             star–delta starting is simply not available to it. And <b>it carries a CAP line giving the
             capacitor's value</b>, which a three-phase plate never does. That line matters greatly in
@@ -2375,7 +2565,8 @@
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
@@ -2467,8 +2658,8 @@
             <text class="sub en" x="436" y="198" text-anchor="end">windings A B C</text>
 
             <text class="np-sm" x="406" y="234">
-              <tspan class="th">ทำหน้าที่เดียวกับคอมมิวเตเตอร์ทองแดงในรูปที่ 12.2</tspan>
-              <tspan class="en">it does the same job as the copper commutator of Figure 12.2</tspan></text>
+              <tspan class="th">ทำหน้าที่เดียวกับคอมมิวเตเตอร์ทองแดงในรูปที่ 12.3</tspan>
+              <tspan class="en">it does the same job as the copper commutator of Figure 12.3</tspan></text>
             <text class="np-sm" x="406" y="250">
               <tspan class="th">แต่ไม่มีการสัมผัสกัน จึงไม่สึก ไม่มีประกายไฟ</tspan>
               <tspan class="en">but nothing rubs, so nothing wears and nothing sparks</tspan></text>
@@ -2477,18 +2668,18 @@
               <tspan class="en">the price is that it always needs a driver; raw DC will not do</tspan></text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.12</span><span class="en">Figure 12.12</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.13</span><span class="en">Figure 12.13</span></b>
           <span class="th"> มอเตอร์บรัชเลสดีซี โรเตอร์เป็นแม่เหล็กถาวรที่หมุนอยู่ภายในสเตเตอร์ซึ่งมีขดลวดสามชุด
             เซนเซอร์ฮอลล์สามตัวคอยบอกตำแหน่งของโรเตอร์ตลอดเวลา
             ตัวควบคุมอ่านค่าจากเซนเซอร์แล้วสั่งให้สะพานมอสเฟตจ่ายกระแสเข้าเฟสที่ถูกต้องในจังหวะที่ถูกต้อง
-            <b>เปรียบเทียบกับรูปที่ 12.2 แล้วจะเห็นว่าหน้าที่เหมือนกันทุกประการ
+            <b>เปรียบเทียบกับรูปที่ 12.3 แล้วจะเห็นว่าหน้าที่เหมือนกันทุกประการ
             เพียงแต่คอมมิวเตเตอร์ย้ายจากทองแดงกับคาร์บอนที่สัมผัสกัน ไปอยู่ในซิลิคอนที่ไม่สัมผัสอะไรเลย</b>
             ข้อดีคือไม่มีชิ้นส่วนสึกหรอและประสิทธิภาพสูงกว่า ข้อเสียคือใช้ไฟตรงตรง ๆ ไม่ได้
             ต้องมีวงจรขับเสมอ ซึ่งเพิ่มทั้งราคาและจุดที่อาจเสียได้</span>
           <span class="en"> A brushless DC motor. Its rotor is a permanent magnet turning inside a stator
             carrying three windings, and three Hall sensors report the rotor's position continuously. The
             controller reads them and tells a MOSFET bridge to feed current into the right phase at the
-            right moment. <b>Set this beside Figure 12.2 and the job is identical; only the commutator
+            right moment. <b>Set this beside Figure 12.3 and the job is identical; only the commutator
             has moved from copper and carbon rubbing together into silicon that touches nothing at
             all.</b> The gains are no wearing parts and a higher efficiency; the cost is that it cannot
             run on plain DC at all, always needing its driver — which adds both price and something more
@@ -2572,7 +2763,7 @@
               <tspan class="th">ประสิทธิภาพ 87 %</tspan>
               <tspan class="en">87 % efficient</tspan></text>
             <text class="np-sm" x="510" y="232">
-              <tspan class="th">สูงกว่ามอเตอร์แปรงถ่านในรูปที่ 12.5 ถึง 10 จุด</tspan>
+              <tspan class="th">สูงกว่ามอเตอร์แปรงถ่านในรูปที่ 12.6 ถึง 10 จุด</tspan>
               <tspan class="en">ten points above the brushed motor of Fig 12.5</tspan></text>
 
             <text class="np-sm" x="54" y="290">
@@ -2580,7 +2771,7 @@
               <tspan class="en">Check: 48 × 36 = 1728 W in against 1500 W out gives 86.8 %, as stated</tspan></text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.13</span><span class="en">Figure 12.13</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.14</span><span class="en">Figure 12.14</span></b>
           <span class="th"> ป้ายพิกัดของมอเตอร์บรัชเลสดีซี
             มีสามบรรทัดที่ป้ายมอเตอร์ชนิดอื่นไม่มี คือ <b>จำนวนขั้ว</b> ซึ่งบอกว่าต้องสับเปลี่ยนกี่ครั้งต่อรอบ
             <b>ชนิดของเซนเซอร์</b> ซึ่งตัวขับต้องรองรับให้ตรงกันมิฉะนั้นมอเตอร์จะกระตุกและไม่หมุน
@@ -2690,7 +2881,8 @@
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
@@ -2815,7 +3007,7 @@
             <text class="sub en" x="390" y="344">one press of START pulls K1 in and its auxiliary contact holds it until STOP is pressed or the overload acts</text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.14</span><span class="en">Figure 12.14</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.15</span><span class="en">Figure 12.15</span></b>
           <span class="th"> วงจรเริ่มเดินแบบต่อตรง ทางซ้ายคือวงจรกำลังซึ่งมีเพียงสามสิ่ง
             คือเบรกเกอร์ป้องกันการลัดวงจร คอนแทกเตอร์ K1 ที่ทำหน้าที่ปิดเปิด
             และโอเวอร์โหลดรีเลย์ที่ป้องกันมอเตอร์จากกระแสเกินเป็นเวลานาน
@@ -2838,13 +3030,13 @@
       <h3><span class="th">12.6.2 การเริ่มเดินแบบสตาร์–เดลตา</span>
           <span class="en">12.6.2 Star–delta starting</span></h3>
 
-      <p><span class="th">รูปที่ 12.8 แสดงให้เห็นว่าป้ายพิกัดมอเตอร์สามเฟสระบุแรงดันไว้เป็นคู่
+      <p><span class="th">รูปที่ 12.9 แสดงให้เห็นว่าป้ายพิกัดมอเตอร์สามเฟสระบุแรงดันไว้เป็นคู่
         คือ 400 V เดลตา กับ 690 V สตาร์ ความจริงข้อนี้เปิดช่องให้ทำสิ่งที่ฉลาดมาก
         <b>ถ้าตอนออกตัวเราต่อขดลวดเป็นสตาร์ทั้งที่จ่ายไฟ 400 V
         แรงดันที่ตกคร่อมขดลวดแต่ละชุดจะเหลือเพียง \(400/\sqrt{3} = 231\) V</b>
         ซึ่งน้อยกว่าที่ควรเป็นมาก มอเตอร์จึงกินกระแสน้อยลง
         แล้วพอเร่งขึ้นแล้วจึงสลับมาต่อเดลตาให้ได้แรงดันเต็ม</span>
-        <span class="en">Figure 12.8 showed that a three-phase nameplate gives its voltage as a pair:
+        <span class="en">Figure 12.9 showed that a three-phase nameplate gives its voltage as a pair:
         400 V in delta, 690 V in star. That fact opens the way to something very clever. <b>If at
         starting we connect the windings in star while still feeding 400 V, each winding sees only
         \(400/\sqrt{3} = 231\) V</b> — far less than it should — so the motor draws much less current;
@@ -2852,7 +3044,8 @@
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
@@ -2993,7 +3186,7 @@
             <text class="sub en" x="330" y="384">here K2 and K3 alternate every 3 s to show the order; in service the star step lasts 3 to 8 s</text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.15</span><span class="en">Figure 12.15</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.16</span><span class="en">Figure 12.16</span></b>
           <span class="th"> วงจรเริ่มเดินแบบสตาร์–เดลตา ต้องใช้คอนแทกเตอร์สามตัวและมอเตอร์ที่มีขั้วต่อครบหกขั้ว
             <b>K1</b> คือคอนแทกเตอร์ประธาน จ่ายไฟเข้าต้นขดลวดทั้งสาม
             <b>K2</b> ลัดปลายขดลวดทั้งสามเข้าหากันที่จุดเดียว ซึ่งก็คือการต่อสตาร์
@@ -3024,13 +3217,13 @@
           <span class="th">สตาร์–เดลตาใช้ได้กับโหลดแบบใด</span>
           <span class="en">Which loads star–delta will actually start</span></div>
         <div class="example-body">
-          <p><span class="th">มอเตอร์ 3 kW จากรูปที่ 12.8 มีกระแสเต็มพิกัด 6.1 A
+          <p><span class="th">มอเตอร์ 3 kW จากรูปที่ 12.9 มีกระแสเต็มพิกัด 6.1 A
             แรงบิดเต็มพิกัด 19.9 N·m และกระแสขณะเริ่มเดินแบบต่อตรง 6.5 เท่า
             แรงบิดขณะเริ่มเดินแบบต่อตรง 2.0 เท่าของเต็มพิกัด
             จงหาค่าทั้งสองเมื่อเริ่มเดินแบบสตาร์ แล้วตัดสินว่าใช้ได้กับโหลดสองชนิดนี้หรือไม่
             (ก) ปั๊มหอยโข่ง ซึ่งต้องการแรงบิดออกตัวเพียง 20 % ของเต็มพิกัด
             (ข) สายพานลำเลียงที่มีของอยู่เต็ม ซึ่งต้องการ 100 %</span>
-            <span class="en">The 3 kW motor of Figure 12.8 has a full-load current of 6.1 A, a full-load
+            <span class="en">The 3 kW motor of Figure 12.9 has a full-load current of 6.1 A, a full-load
             torque of 19.9 N·m, a direct-on-line starting current of 6.5 times and a direct-on-line
             starting torque of 2.0 times full load. Find both figures for a star start, then decide
             whether it will serve for (a) a centrifugal pump, which needs only 20 % of full-load torque
@@ -3093,7 +3286,8 @@
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
@@ -3192,7 +3386,7 @@
               <tspan class="en">at the highest price, and it is a source of harmonics</tspan></text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.16</span><span class="en">Figure 12.16</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.17</span><span class="en">Figure 12.17</span></b>
           <span class="th"> ทางซ้ายคือซอฟต์สตาร์ตเตอร์ ซึ่งใช้ไทริสเตอร์สองตัวต่อสวนทางกันในแต่ละเฟส
             แล้วควบคุมจังหวะจุดชนวนให้ตัดคลื่นไซน์ออกไปบางส่วน
             <b>ผลคือค่าอาร์เอ็มเอสของแรงดันที่มอเตอร์ได้รับต่ำในตอนแรกแล้วค่อย ๆ เพิ่มขึ้นจนเต็ม</b>
@@ -3321,7 +3515,8 @@
 
       <figure>
         <div class="figure-box is-animated" data-anim="running">
-          <button class="anim-toggle" type="button" aria-label="Pause or play the animation">
+          <button type="button" class="anim-toggle" data-anim-toggle aria-pressed="false"
+                  aria-label="Pause or play the animation">
             <span class="anim-pause">⏸ <span class="th">หยุด</span><span class="en">Pause</span></span>
             <span class="anim-play">▶ <span class="th">เล่น</span><span class="en">Play</span></span>
           </button>
@@ -3385,7 +3580,7 @@
             <text class="sub en" x="90" y="334">the two bars grow and shrink together, because the ratio V/f must stay fixed</text>
           </svg>
         </div>
-        <figcaption><b><span class="th">รูปที่ 12.17</span><span class="en">Figure 12.17</span></b>
+        <figcaption><b><span class="th">รูปที่ 12.18</span><span class="en">Figure 12.18</span></b>
           <span class="th"> การควบคุมแบบ V/f คงที่ จุดทำงานสีส้มเลื่อนไปตามเส้นตรงที่ลากจากจุดกำเนิด
             แถบทั้งสองข้างแสดงแรงดันและความถี่ที่จ่ายออกไป <b>สังเกตว่าทั้งสองโตและหดพร้อมกันเสมอ</b>
             ซึ่งเป็นสิ่งที่ต้องเป็น เพราะอัตราส่วนของทั้งสองคือฟลักซ์ในแกนเหล็ก
@@ -3563,13 +3758,13 @@
           <span class="th">เลือกอินเวอร์เตอร์ให้ปั๊มน้ำของโรงเรือน</span>
           <span class="en">Choosing an inverter for the greenhouse pump</span></div>
         <div class="example-body">
-          <p><span class="th">มอเตอร์ปั๊ม 3 kW ตามป้ายพิกัดในรูปที่ 12.8 กระแสเต็มพิกัด 6.1 A
+          <p><span class="th">มอเตอร์ปั๊ม 3 kW ตามป้ายพิกัดในรูปที่ 12.9 กระแสเต็มพิกัด 6.1 A
             ติดตั้งอินเวอร์เตอร์ไว้ในตู้ควบคุมที่โรงสูบน้ำ
             วัดอุณหภูมิในตู้ช่วงบ่ายฤดูร้อนได้ 45 °C ฟาร์มอยู่สูงจากระดับน้ำทะเล 300 เมตร
             โหลดเป็นปั๊มหอยโข่ง รุ่นที่มีขายมีพิกัดกระแสต่อเนื่องดังนี้
             2.2 kW → 5.8 A, 3.0 kW → 7.2 A, 4.0 kW → 9.0 A, 5.5 kW → 13.0 A
             จงเลือกรุ่นที่เหมาะสม</span>
-            <span class="en">The 3 kW pump motor of Figure 12.8 has a full-load current of 6.1 A. Its
+            <span class="en">The 3 kW pump motor of Figure 12.9 has a full-load current of 6.1 A. Its
             inverter will sit in a control cabinet in the pump house, where the temperature on a hot
             afternoon measures 45 °C; the farm stands 300 m above sea level and the load is a
             centrifugal pump. The range available is rated for continuous current as follows:
@@ -4162,7 +4357,7 @@
           choosing and setting up a drive</span></span></li>
         <li>International Electrotechnical Commission. (2017).
           <i>IEC 60034-1: Rotating electrical machines — Rating and performance</i>. IEC.
-          <span class="small muted">— <span class="th">ที่มาของทุกบรรทัดบนป้ายพิกัดในรูปที่ 12.5, 12.8,
+          <span class="small muted">— <span class="th">ที่มาของทุกบรรทัดบนป้ายพิกัดในรูปที่ 12.6, 12.8,
           12.11 และ 12.13 รวมถึงนิยามของรอบการทำงาน S1 ถึง S10</span>
           <span class="en">the source of every line on the nameplates of Figures 12.5, 12.8, 12.11 and
           12.13, including the duty classes S1 to S10</span></span></li>
